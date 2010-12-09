@@ -1,0 +1,47 @@
+############
+v0.2-1:    #
+############
+*) Release Date: 30-Nov-2010
+
+*) R functions were split up into individual files
+
+Modified functions:
+*) 'dip'       : -) Added error checking for the argument 'out.type'
+*) 'mip'       : -) Added error checking for the argument 'out.type'
+*) 'yip'       : -) Added error checking for the argument 'out.type'
+*) 'drawxaxis' : -) New argument: 'lab.fmt', for specifying the format of the axis' labels
+*) 'hydroplot'/: -) Removed argument: 'sname'
+   'sname2plot': -) New argument: 'lab.fmt'
+                 -) New argument: 'xlab'
+                 -) New argument: 'ylab'
+                 -) New argument: 'col'
+                 -) New argument: 'cex'
+                 -) New argument: 'cex.main'
+                 -) New argument: 'cex.axis'
+                 -) New argument: 'cex.lab'
+                 -) New argument: 'lty'
+                 -) New argument: 'lwd'
+                 -) New argument: '...'
+*) 'sname2ts'  : -) New argument: 'from'
+                 -) New argument: 'to'
+                 -) New argument: 'date.fmt'
+*) 'fdc'       : -) New argument 'cex.axis'.
+                 -) New argument 'cex.lab'.
+*) 'fdcu'      : -) New argument 'cex.axis'.
+                 -) New argument 'cex.lab'.
+
+
+
+###################################################
+# Previous Releases (see old file 'WhatsNew.txt)' #
+###################################################
+
+0.2-0: Release Date: 10-Oct-2010
+0.1.7: Release Date: 05-Mar-2009 (It was never released, because it finally became v0.2-0)
+0.1.6: Release Date: 30-Nov-2009
+0.1.5: Release Date: 16-Nov-2009
+0.1.4: Release Date: 02-Nov-2009
+0.1.3: Release Date: 13-Oct-2009
+0.1.2: Release Date: 01-Oct-2009
+0.1.1: Release Date: 15-Sep-2009
+0.1.0: Release Date: 07-Sep-2009 (but the functions have been developed since 2007)

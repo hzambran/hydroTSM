@@ -1,0 +1,8 @@
+# Required packages:
+install.packages(c("zoo", "gstat", "automap"))
+
+# Suggested packages:
+install.packages(c("sp", "maptools", "e1071", "rgdal"))
+
+# Installation
+install.packages("hydroTSM")
