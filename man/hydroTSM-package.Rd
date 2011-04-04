@@ -15,8 +15,8 @@ Bugs / comments / questions / collaboration of any kind are very welcomed, and i
 \tabular{ll}{
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
-Version: \tab 0.2-1\cr
-Date: \tab 2010-11-30\cr
+Version: \tab 0.2-2\cr
+Date: \tab 2011-03-17\cr
 License: \tab GPL \cr
 LazyLoad: \tab yes\cr
 Packaged: \tab Tue Nov 30 16:59:37 CET 2010; MZB \cr

@@ -13,7 +13,7 @@ dwi <-function(x, ...) UseMethod("dwi")
 
 # x        : variable of type 'zoo'
 # out.unit : aggregation time for the computation of the amount of days with info.
-#	         Valid values are:
+#	     Valid values are:
 #            -) "month": monthly;
 #            -) "year" : annual;
 #            -) "mpy"  : month per year
@@ -119,7 +119,7 @@ dwi.default <- function(x, out.unit="years", from=range(time(x))[1],
 
 # 'x'         : variable of type 'data.frame'
 # out.unit    : aggregation time for the computation of the amount of days with info.
-#	            Valid values are:
+#	        Valid values are:
 #               -) "month": monthly;
 #               -) "year" : annual;
 # from        : starting date for detection of days with inormation
@@ -212,11 +212,11 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
   z <- sapply(1:ncol(x.sel), function(j, y) {
               #y[j] <- length( subset(y[,j], !is.na(y[,j]) ) )
 
-              if (verbose) print( paste("Station: ", format(snames[j], width=6, justify="left"),
-				                        " : ", format(j, width=3, justify="left"), "/",
-					                    nstations, " => ",
-					                    format(round(100*j/nstations,2), width=6, justify="left"),
-					                    "%", sep=""), quote=FALSE )
+              if (verbose) message( paste("Station: ", format(snames[j], width=6, justify="left"),
+				          " : ", format(j, width=3, justify="left"), "/",
+					  nstations, " => ",
+					  format(round(100*j/nstations,2), width=6, justify="left"),
+					  "%", sep="") )
 
               tmp  <- vector2zoo(x=y[,j], dates=dates, date.fmt=date.fmt)
 

@@ -14,20 +14,20 @@ seasonalfunction <- function(x, ...) UseMethod("seasonalfunction")
 
 seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
-	 # Checking that 'x' is a zoo object
-	 if (is.na(match(class(x), c("zoo"))))
-			stop("Invalid argument: 'x' must be of class 'zoo'")
+     # Checking that 'x' is a zoo object
+     if (is.na(match(class(x), c("zoo"))))
+	stop("Invalid argument: 'x' must be of class 'zoo'")
 
      # Checking that the user provied a valid argument for 'FUN'
      if (missing(FUN))
          stop("Missing argument: 'FUN' must be provided")
 
-	 # Checking the user provide a valid value for 'x'
-	 if (is.na(match(sfreq(x), c("daily", "monthly")))) {
-		 stop(paste("Invalid argument: 'x' is not a daily or monthly ts, it is a ", sfreq(x), " ts", sep="") ) }
+     # Checking the user provide a valid value for 'x'
+     if (is.na(match(sfreq(x), c("daily", "monthly")))) {
+	 stop(paste("Invalid argument: 'x' is not a daily or monthly ts, it is a ", sfreq(x), " ts", sep="") ) }
 
      # Requiring the Zoo Library (Z’s ordered observations)
-	 require(zoo)
+     require(zoo)
 
      seasons <- c("DJF", "MAM", "JJA", "SON")
 
@@ -36,10 +36,10 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
      z <- sapply(1:4, function(j) {
 
-		s <- dm2seasonal(x, season=seasons[j], FUN=FUN, na.rm=na.rm)
+	s <- dm2seasonal(x, season=seasons[j], FUN=FUN, na.rm=na.rm)
 
         # 'as.numeric' is necessary for being able to change the names to the output
-	    z[j] <- as.numeric( aggregate( s, by= rep(seasons[j], length(s)), FUN=FUN, na.rm= na.rm ) )
+	z[j] <- as.numeric( aggregate( s, by= rep(seasons[j], length(s)), FUN=FUN, na.rm= na.rm ) )
 
 	 }) # sapply END
 
@@ -48,7 +48,7 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
      nan.index <- which(is.nan(z))
 
      if (length(nan.index) > 0  )
-       z[nan.index] <- NA
+     z[nan.index] <- NA
 
      # Getting the position of all the years in which there were no values
      # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
@@ -57,9 +57,9 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
      # Changing all the Inf and -Inf by NA's
      if ( length(inf.index) > 0 ) { z[inf.index] <- NA }
 
-	 names(z) <- seasons
+     names(z) <- seasons
 
-	 return(z)
+     return(z)
 
 } # 'seasonalfunction.default' end
 
@@ -87,8 +87,8 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 # 'verbose'      : logical; if TRUE, progress messages are printed
 seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
                                         dates, date.fmt="%Y-%m-%d",
-								        out.type="data.frame",
-									    verbose=TRUE,...) {
+                                        out.type="data.frame",
+                                        verbose=TRUE,...) {
 
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
@@ -96,7 +96,7 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 
   # Checking that the user provied a valid argument for 'FUN'
    if (missing(FUN))
-         stop("Missing argument: 'FUN' must be provided")
+       stop("Missing argument: 'FUN' must be provided")
 
   # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {
@@ -144,7 +144,7 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   # Requiring the Zoo Library (Z’s ordered observations)
   require(zoo)
 
-  if (verbose) print("Starting the computations...", quote=FALSE )
+  if (verbose) message("[Starting the computations...]")
 
   seasons <- c("DJF", "MAM", "JJA", "SON")
 
@@ -155,15 +155,15 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 
 	# Creating the data.frame that will store the computed averages for each station
 	z <- as.data.frame(matrix(data = NA, nrow = nstations, ncol = 4,
-						byrow = TRUE, dimnames = NULL) )
+			   byrow = TRUE, dimnames = NULL) )
 
 	z <- sapply(1:nstations, function(j,y) {
 
-		if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
-					              " : ",format(j, width=3, justify="left"), "/",
-					              nstations, " => ",
-					              format(round(100*j/nstations,2), width=6, justify="left"),
-					              "%", sep=""), quote=FALSE )
+		if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
+					    " : ",format(j, width=3, justify="left"), "/",
+					    nstations, " => ",
+					    format(round(100*j/nstations,2), width=6, justify="left"),
+					    "%", sep="") )
 
 		# Transforming the column of 'x' into a zoo object,
 		# using the dates provided by the user
@@ -188,20 +188,20 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 
         for (j in 1:nstations) {
 
-            if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
+            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
                                       " : ", format(j, width=3, justify="left"), "/",
                                       nstations, " => ",
                                       format(round(100*j/nstations,2), width=6, justify="left"),
-                                      "%", sep=""), quote=FALSE )
+                                      "%", sep="") )
 
             # Transforming the column of 'x' into a zoo object,
-		    # using the dates provided by the user
-		    tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
+            # using the dates provided by the user
+	    tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
 
-		    # Computing the annual values
-		    tmp <- seasonalfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
+	    # Computing the annual values
+	    tmp <- seasonalfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
 
-			# Putting the annual/monthly values in the output data.frame
+	    # Putting the annual/monthly values in the output data.frame
             # The first column of 'x' corresponds to the Year
             row.ini <- (j-1)*4 + 1
             row.fin <-  j*4

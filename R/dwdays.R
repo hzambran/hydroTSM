@@ -123,7 +123,7 @@ dwdays.data.frame <- function(x, thr=0, type="wet", na.rm=TRUE,
   # Requiring the Zoo Library (Zoos ordered observations)
   require(zoo)
 
-  if (verbose) print("Starting the computations...", quote=FALSE )
+  if (verbose) message("[Starting the computations...]")
 
 
   # Creating the data.frame that will store the computed averages for each station
@@ -137,18 +137,18 @@ dwdays.data.frame <- function(x, thr=0, type="wet", na.rm=TRUE,
 
   for (j in 1:nstations) {
 
-      if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
+      if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
                                 " : ",format(j, width=3, justify="left"), "/",
                                 nstations, " => ",
                                 format(round(100*j/nstations,2), width=6, justify="left"),
-                                "%", sep=""), quote=FALSE )
+                                "%", sep="") )
 
       # Transforming the column of 'x' into a zoo object,
-	    # using the dates provided by the user
-	    tmp <- vector2zoo(x=y[,j], dates=dates, date.fmt=date.fmt)
+      # using the dates provided by the user
+      tmp <- vector2zoo(x=y[,j], dates=dates, date.fmt=date.fmt)
 
-	    # Computing the monthly values
-	    z[j, ] <- as.numeric(dwdays.default(x=tmp, thr=thr, type=type, na.rm=na.rm, ...))
+      # Computing the monthly values
+      z[j, ] <- as.numeric(dwdays.default(x=tmp, thr=thr, type=type, na.rm=na.rm, ...))
 
 
   } # FOR end
@@ -160,15 +160,15 @@ dwdays.data.frame <- function(x, thr=0, type="wet", na.rm=TRUE,
 
 
 dwdays.matrix  <- function(x, thr=0, type="wet", na.rm=TRUE,
-                            dates,
-                            date.fmt="%Y-%m-%d",
-							verbose=TRUE,...) {
+                           dates,
+                           date.fmt="%Y-%m-%d",
+			   verbose=TRUE,...) {
 
    x <- as.data.frame(x)
 
    NextMethod("dwdays", x, thr=thr, type=type,  na.rm=na.rm,
-                         dates=dates,
-                         date.fmt=date.fmt,
-                         verbose=verbose,...)
+              dates=dates,
+              date.fmt=date.fmt,
+              verbose=verbose,...)
 
 } # 'dwdays.matrix  ' END

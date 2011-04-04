@@ -60,7 +60,7 @@
 # 'p4s'             : Data about the projection of the GIS files, usually created
 #                     by the CRS function of the 'sp' package
 
-# 'cells.size'      : Size of the cells to be used in the regular interoplation grid, [m2]
+# 'cells.size'      : Size of the cells to be used in the regular interpolation grid, [m2]
 # 'grid.type'       : Character, indicating the yype of grid to be computed
 #                     over the area defined by 'SubCatchments.shp'
 #                     Valid values are:
@@ -191,7 +191,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 	      stop("Invalid argument: 'grid.type' must be of in c('regular', 'random', 'stratified', 'hexagonal', 'clustered'")
 
       # Printing the defaul 'cell.size' value when the user didn't provide it
-      if (missing(cell.size)) { print(paste("missing 'cell.size': using 'cell.size= ", cell.size, " [m]", sep="")) }
+      if (missing(cell.size)) { message(paste("[Note: Missing 'cell.size': using 'cell.size= ", cell.size, " [m]. ]", sep="")) }
 
   } # IF end
 
@@ -274,7 +274,7 @@ hydrokrige.default <- function(x.ts, x.gis,
       #names                <- colnames(x.ts)
       x.ts[1:length(x.ts)] <- allNA.action
       #colnames(x.ts)       <- names
-      if (verbose) print(paste("Warning: All the values in x.ts are NA. They were changed to '", allNA.action, "'", sep=""), quote=FALSE, max.levels=0 )
+      if (verbose) message( paste("[Warning: All the values in x.ts are NA. They were changed to '", allNA.action, "'. ]", sep="") )
      }
 
  } # IF end
@@ -293,7 +293,7 @@ hydrokrige.default <- function(x.ts, x.gis,
        # Reading the SubCATCHMENTS of the CATCHMENT
        require(maptools) #it is necessary for usign the function "readShapePoly"
 
-       if (verbose) print(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep=""), quote=FALSE, max.levels=0 )
+       if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
 
        # Reading the Shapefile with the subcatchments
        SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
@@ -301,7 +301,7 @@ hydrokrige.default <- function(x.ts, x.gis,
        # Number of Subcatchmnets
        nSub <- nrow(SubCatchments.shp@data)
 
-       if (verbose) print(paste("[Subcatchments found:", nSub, "]", sep=" "), quote=FALSE, max.levels=0 )
+       if (verbose) message(paste("[Subcatchments found:", nSub, "]", sep=" ") )
 
 
      } else  { #  If the user already provided 'subcatchments' as an 'SpatialPolygonsDataFrame' object
@@ -336,7 +336,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
         if ( !identical( CRS(proj4string(SubCatchments.shp)), p4s ) )  {
 
-	    if (verbose) print(paste("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']", sep=""), quote=FALSE, max.levels=0 )
+	    if (verbose) message(paste("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
             proj4string(SubCatchments.shp) <- p4s
         } # IF end
 
@@ -351,7 +351,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 	    # Verifying the compatibility between  'predictors' and 'subcatchments'
             if ( !identical( proj4string(SubCatchments.shp), proj4string(predictors) ) )  {
 
-		if (verbose) print(paste("[Warning: 'subcatchments' and 'predictors' has different CRS. The projection of the shapefile was changed to the one given by 'predicotrs': '", proj4string(predictors), "']", sep=""), quote=FALSE, max.levels=0 )
+		if (verbose) message(paste("[Warning: 'subcatchments' and 'predictors' has different CRS. The projection of the shapefile was changed to the one given by 'predicotrs': '", proj4string(predictors), "']", sep="") )
                 proj4string(SubCatchments.shp) <- CRS(proj4string(predictors))
 		p4s                            <- CRS(proj4string(predictors))
 
@@ -364,7 +364,7 @@ hydrokrige.default <- function(x.ts, x.gis,
             if ( !missing(subcatchments) ) {
                  if ( !is.na(proj4string(SubCatchments.shp) ) ) { #is projected gives NA when the shp is not projected
 
-                    if (verbose) print(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'subcatchments': '", proj4string(SubCatchments.shp), "']", sep=""), quote=FALSE, max.levels=0 )
+                    if (verbose) message(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'subcatchments': '", proj4string(SubCatchments.shp), "']", sep="") )
                     p4s <- CRS(proj4string(SubCatchments.shp))
 
                 } # IF end
@@ -375,7 +375,7 @@ hydrokrige.default <- function(x.ts, x.gis,
             if ( !missing(predictors) ) {
                  if ( !is.na(proj4string(predictors) ) )  {
 
-                    if (verbose) print(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'predictors': '", proj4string(SubCatchments.shp), "']", sep=""), quote=FALSE, max.levels=0 )
+                    if (verbose) message(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'predictors': '", proj4string(SubCatchments.shp), "']", sep="") )
                     p4s <- CRS(proj4string(predictors))
 
                 } # IF end
@@ -395,7 +395,7 @@ hydrokrige.default <- function(x.ts, x.gis,
  # the predictor grid is sampled from the Shapefile with the subcatchments
  if ( missing(predictors) ) {
 
-    if (verbose) print("['predictors' was not provided. Computing the grid...]", quote=FALSE, max.levels=0)
+    if (verbose) message("['predictors' was not provided. Computing the grid...]")
     # Defining a sampling GRID. If grid.type="regular', then the grid is made
     # of squared cells of 'cell.size'm x 'cell.size'm with regular spacing
     # For avoiding a random grid (sampled randomly from the first cell), and
@@ -417,7 +417,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
      if ( !identical( CRS(proj4string(predictors)), p4s ) )  {
 
-	if (verbose) print(paste("[Warning: 'p4s' and 'predictors' have different CRS. The projection of 'predictors' was changed to the one given by 'p4s': '", p4s@projargs, "']", sep=""), quote=FALSE, max.levels=0 )
+	if (verbose) message(paste("[Warning: 'p4s' and 'predictors' have different CRS. The projection of 'predictors' was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
 	proj4string(predictors) <- p4s
 
      } # ELSE end
@@ -484,7 +484,7 @@ hydrokrige.default <- function(x.ts, x.gis,
  if ( type %in% c("cells", "both", "block") ) {   #until clarifying how the krige function aggregate the values into the subcatchments
 
 
-    if (verbose) print("[Starting grid interpolations...]", quote=FALSE, max.levels=0)
+    if (verbose) message("[Starting grid interpolations...]")
 
     # If ALL the measured values are EQUAL, the following error ir rised
     # 'chfactor.c", line 130: singular matrix in function LDLfactor()'
@@ -492,10 +492,10 @@ hydrokrige.default <- function(x.ts, x.gis,
     if ( length(unique(x.work$value))  == 1  )  {
 
         if (verbose)
-	      print("[Warning: All the measurements are equal. Assigning the constant value to the predictions]", quote=FALSE)
+	      message("[Warning: All the measurements are equal. Assigning the constant value to the predictions]")
 
         # Flag that indicates if all the measurements are equal
-	      constant_field <- TRUE
+	constant_field <- TRUE
 
         constant_value <- unique(x.work$value)
 
@@ -531,7 +531,7 @@ hydrokrige.default <- function(x.ts, x.gis,
            if (verbose) {
                #formula is decomposed in its 3 elements
                f <- strsplit(as.character(formula), " ")
-               print(paste("[Krige formula :", f[2], f[1], f[3], "]", sep=" "), quote=FALSE, max.levels=0)
+               message(paste("[Krige formula :", f[2], f[1], f[3], "]", sep=" "))
            } # IF end
 
            # REquiring automap library
@@ -600,7 +600,7 @@ hydrokrige.default <- function(x.ts, x.gis,
  #############################
  if ( type %in% c("block", "both") ) {
 
-     if (verbose) print("[Starting block interpolations...]", quote=FALSE, max.levels=0)
+     if (verbose) message("[Starting block interpolations...]")
 
      ## If the user provided 'subcatchments', here we verify that has the same projection thn 'x.work'
      #if ( !missing(p4s) & !missing(subcatchments) ) {
@@ -643,7 +643,7 @@ hydrokrige.default <- function(x.ts, x.gis,
         if (verbose) {
             #formula is decomposed in its 3 elements
             f <- strsplit(as.character(formula), " ")
-            print(paste("[Krige formula :", f[2], f[1], f[3], "]", sep=" "), quote=FALSE, max.levels=0)
+            message(paste("[Krige formula :", f[2], f[1], f[3], "]", sep=" "))
         }  # IF end
 
 	#require(automap)
@@ -853,7 +853,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 	        if ( type %in% c("block", "both") ) { at.idw.block <- seq(idw.blk.min, idw.blk.max, length.out=col.nintv) }
 
         } else # col.at == "R"
-    		    { print("Sorry, but 'col.at' = 'R' is not implemented yet. Using 'col.at' = 'auto'", quote=FALSE, max.levels=0)
+    		    { message("[I'm sorry, but 'col.at' = 'R' is not implemented yet. Using 'col.at' = 'auto']")
     		      #at.idw      <- NULL
     		      #at.idw.block<- NULL
     		      if ( type %in% c("cells", "both") ) { at.idw       <- seq(idw.min, idw.max,length.out=col.nintv) }
@@ -1102,7 +1102,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 	 stop("Invalid argument: 'grid.type' must be of in c('regular', 'random', 'stratified', 'hexagonal', 'clustered'")
 
   # Printing the defaul 'cell.size' value when the user didn't provide it
-  if (missing(cell.size)) { print(paste("Missing 'cell.size': using 'cell.size= ", cell.size, " [m]", sep=""), quote=FALSE, max.levels=0) }
+  if (missing(cell.size)) { message(paste("[Missing 'cell.size': using 'cell.size= ", cell.size, " [m]. ]", sep="") ) }
 
   # Checking that 'nmin' is integer
   if ( !missing(nmin) )
@@ -1121,7 +1121,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 
   # Checking that 'type'
   if (is.na(match(type, c("block") ) ) )
-	print("[Warning: when 'x.ts' is a data.frame, 'type' MUST BE 'block'. It has been changed to 'block']", quote=FALSE, max.levels=0)
+	message("[Warning: when 'x.ts' is a data.frame, 'type' MUST BE 'block'. It has been changed to 'block']" )
 
   # Checking that 'col.nintv' is integer
   if ( !missing(col.nintv) )
@@ -1227,7 +1227,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
        # Reading the SubCATCHMENTS of the CATCHMENT
        require(maptools) #it is necessary for usign the function "readShapePoly"
 
-       if (verbose) print(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep=""), quote=FALSE, max.levels=0 )
+       if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
 
        # Reading the Shapefile with the subcatchments
        SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
@@ -1251,7 +1251,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
     # Number of Subcatchmnets
     nSub <- nrow(SubCatchments.shp@data)
 
-    if (verbose) print(paste("[Subcatchments found:", nSub, "]", sep=" "), quote=FALSE, max.levels=0 )
+    if (verbose) message(paste("[Subcatchments found:", nSub, "]", sep=" ") )
 
   } # IF end
 
@@ -1272,7 +1272,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 
         if ( !identical( CRS(proj4string(SubCatchments.shp)), p4s ) )  {
 
-	    if (verbose) print(paste("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']", sep=""), quote=FALSE, max.levels=0 )
+	    if (verbose) message(paste("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
             proj4string(SubCatchments.shp) <- p4s
         } # IF end
 
@@ -1287,9 +1287,9 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 	    # Verifying the compatibility between  'predictors' and 'subcatchments'
             if ( !identical( proj4string(SubCatchments.shp), proj4string(predictors) ) )  {
 
-		if (verbose) print(paste("[Warning: 'subcatchments' and 'predictors' has different CRS. The projection of the shapefile was changed to the one given by 'predicotrs': '", proj4string(predictors), "']", sep=""), quote=FALSE, max.levels=0 )
+		if (verbose) message(paste("[Warning: 'subcatchments' and 'predictors' has different CRS. The projection of the shapefile was changed to the one given by 'predicotrs': '", proj4string(predictors), "']", sep="") )
                 proj4string(SubCatchments.shp) <- CRS(proj4string(predictors))
-		p4s                            <- CRS(proj4string(predictors))
+	             	p4s                            <- CRS(proj4string(predictors))
 
             } # IF end
 
@@ -1300,7 +1300,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
             if ( !missing(subcatchments) ) {
                  if ( !is.na(proj4string(SubCatchments.shp) ) )  {
 
-                    if (verbose) print(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'subcatchments': '", proj4string(SubCatchments.shp), "']", sep=""), quote=FALSE, max.levels=0 )
+                    if (verbose) message(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'subcatchments': '", proj4string(SubCatchments.shp), "']", sep="") )
                     p4s <- CRS(proj4string(SubCatchments.shp))
 
                 } # IF end
@@ -1311,7 +1311,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
             if ( !missing(predictors) ) {
                  if ( !is.na(proj4string(predictors) ) )  {
 
-                    if (verbose) print(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'predictors': '", proj4string(SubCatchments.shp), "']", sep=""), quote=FALSE, max.levels=0 )
+                    if (verbose) message(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'predictors': '", proj4string(SubCatchments.shp), "']", sep="")  )
                     p4s <- CRS(proj4string(predictors))
 
                 } # IF end
@@ -1331,16 +1331,16 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
      # the predictor grid is sampled from the Shapefile with the subcatchments
      if ( missing(predictors) ) {
 
-	if (verbose) print("['predictors' was not provided. Computing the grid...]", quote=FALSE, max.levels=0)
-	# Defining a sampling GRID. If grid.type="regular', then the grid is made
-	# of squared cells of 'cell.size'm x 'cell.size'm with regular spacing
-	# For avoiding a random grid (sampled randomly from the first cell), and
-	# getting a fixed, reproducable grid, it is neccessary to add the argument "offset = c(0.5, 0.5)"
-	predictors <- spsample(SubCatchments.shp, type=grid.type, cellsize=cell.size, offset = c(0.5, 0.5))
-
-	# Making possible that the grid can be used in the interpolations:
-	      # and transforming from 'SpatialPoints' to 'SpatialPixels' the class of 'predictors'
-	gridded(predictors) <- TRUE
+      	if (verbose) message("['predictors' was not provided. Computing the grid...]" )
+      	# Defining a sampling GRID. If grid.type="regular', then the grid is made
+      	# of squared cells of 'cell.size'm x 'cell.size'm with regular spacing
+      	# For avoiding a random grid (sampled randomly from the first cell), and
+      	# getting a fixed, reproducable grid, it is neccessary to add the argument "offset = c(0.5, 0.5)"
+      	predictors <- spsample(SubCatchments.shp, type=grid.type, cellsize=cell.size, offset = c(0.5, 0.5))
+      
+      	# Making possible that the grid can be used in the interpolations:
+      	# and transforming from 'SpatialPoints' to 'SpatialPixels' the class of 'predictors'
+      	gridded(predictors) <- TRUE
 
      }  # IF end
 
@@ -1353,7 +1353,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 
 	 if ( !identical( CRS(proj4string(predictors)), p4s ) )  {
 
-	    if (verbose) print(paste("[Warning: 'p4s' and 'predictors' have different CRS. The projection of 'predictors' was changed to the one given by 'p4s': '", p4s@projargs, "']", sep=""), quote=FALSE, max.levels=0 )
+	    if (verbose) message(paste("[Warning: 'p4s' and 'predictors' have different CRS. The projection of 'predictors' was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
 	    proj4string(predictors) <- p4s
 
 	 } # ELSE end
@@ -1416,7 +1416,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 				 scalebar.plot= scalebar.plot, sb.offset= sb.offset, sb.scale= sb.scale,
 				 verbose=verbose, allNA.action=allNA.action)
 
-	 if (verbose) print( paste("Finished Date : ", dates[d], "  :  ", d, "/", ndates, "      =>      ", round(100*d/ndates,2), "%", sep=""), quote=FALSE, max.levels=0 )
+	 if (verbose) message( paste("Finished Date : ", dates[d], "  :  ", d, "/", ndates, "      =>      ", round(100*d/ndates,2), "%", sep="") )
 
 	 a[ts.row.index, 2:(nSub+1)] <- round(x.idw@data$var1.pred, 3)
 

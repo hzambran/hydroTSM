@@ -42,18 +42,6 @@ gists2spt <- function(x.gis, x.ts, sname, bname, X="x", Y="y", elevation,
    # 0) Checking the arguments
    #####################################################################
 
-   # Checking the class of 'x.ts'
-    if (is.na(match(class(x.ts), c("data.frame", "numeric", "integer") ) ) )
-     stop( "Invalid argument: class(x.ts) must be in c('data.frame', 'numeric', 'integer')" )
-
-	# If 'x.ts' is a data.frame it is convertedinto numeric for being sure
-	# that some functions refered to names of 'x.ts' will work
-	if (class(x.ts) == "data.frame")  {
-	  snames <- colnames(x.ts)
-	  x.ts   <- as.numeric(x.ts)
-	  names(x.ts) <- snames
-	} # IF end
-
    # Checking that the 'sname' argument was provided
    if (missing(sname) ) {
      stop(paste("Missing argument: The argument 'sname' must be provided", sep="") )
@@ -61,6 +49,18 @@ gists2spt <- function(x.gis, x.ts, sname, bname, X="x", Y="y", elevation,
 	   if ( !(sname %in% colnames(x.gis)) ) {
 	     stop(paste("Invalid argument: The field '", sname, "' doesn't exist in 'x.gis'", sep="") )
 	   } # IF end
+
+   # Checking the class of 'x.ts'
+    if (is.na(match(class(x.ts), c("data.frame", "numeric", "integer") ) ) )
+     stop( "Invalid argument: class(x.ts) must be in c('data.frame', 'numeric', 'integer')" )
+
+	# If 'x.ts' is a data.frame with only 1 row, it is converted into numeric,
+        # for being sure that some functions refered to names of 'x.ts' will work
+	if ( (class(x.ts) == "data.frame") )  {
+	  snames <- colnames(x.ts)
+	  x.ts   <- as.numeric(x.ts)
+	  names(x.ts) <- snames
+	} # IF end
 
    # Checking the class of 'x.gis'
    if (class(x.gis) != "data.frame" )

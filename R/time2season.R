@@ -19,11 +19,11 @@
 time2season <- function(x, out.fmt="months") {
 
  # Checking that 'class(x)==Date'
-  if (is.na(match(class(x), c("Date") ) ) )
+ if (is.na(match(class(x), c("Date") ) ) )
      stop("Invalid argument: 'x' must be of class 'Date'")
 
  # Checking the class of out.fmt
-  if (is.na(match(out.fmt, c("seasons", "months") ) ) )
+ if (is.na(match(out.fmt, c("seasons", "months") ) ) )
      stop("Invalid argument: 'out.fmt' must be in c('seasons', 'months')")
 
  months <- format(x, "%m")

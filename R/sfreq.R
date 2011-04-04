@@ -37,7 +37,7 @@ sfreq <- function(x, min.year=1800) {
         } else if (  ( t2 - t1 ) %in% c(365, 366) )  {
           sfreq <- "annual"
         } else
-          stop("Invalid Argument: the sampling frequency of 'x' is not in c('daily', 'monthly', 'annual') " )
+          stop("Invalid argument: the sampling frequency of 'x' is not in c('daily', 'monthly', 'annual') " )
 
   return(sfreq)
 

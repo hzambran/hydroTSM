@@ -57,6 +57,7 @@ fdcu.default <- function (x,
                           xlab="% Time flow equalled or exceeded",
                           ylab="Q, [m3/s]",
                           ylim,
+                          yat=c(0.01, 0.1, 1, 5, 10, 100), 
                           col=c("black", "red"),
                           pch=c(1, 15),
                           lwd=c(1, 0.8),
@@ -107,23 +108,23 @@ fdcu.default <- function (x,
 
        if (length(x.zero.index) > 0 ) {
         x <- x[-x.zero.index]
-        if (verbose) print("[Warning: all 'x' equal to zero will not be plotted]", quote=FALSE)
+        if (verbose) message("[Warning: all 'x' equal to zero will not be plotted]" )
        } # IF end
 
        if (length(lband.zero.index) > 0 ) {
         lband <- lband[-lband.zero.index]
-        if (verbose) print("[Warning: all 'lband' equal to zero will not be plotted]", quote=FALSE)
+        if (verbose) message("[Warning: all 'lband' equal to zero will not be plotted]" )
        } # IF end
 
        if (length(uband.zero.index) > 0 ) {
         uband <- uband[-uband.zero.index]
-        if (verbose) print("[Warning: all 'uband' equal to zero will not be plotted]", quote=FALSE)
+        if (verbose) message("[Warning: all 'uband' equal to zero will not be plotted]" )
        } # IF end
 
        if (!missing(sim)) {
             if (length(sim.zero.index) > 0 ) {
             sim <- sim[-sim.zero.index]
-            if (verbose) print("[Warning: all 'sim' equal to zero will not be plotted]", quote=FALSE)
+            if (verbose) message("[Warning: all 'sim' equal to zero will not be plotted]" )
            } # IF end
        } # IF end
 
@@ -188,13 +189,13 @@ fdcu.default <- function (x,
            points(fdc.sim, sim.sort, cex=cex, col=col[2], pch=pch[2])
          } # IF end
 
-         # Draws the labels corresponding to Annual ticks in the X axis
+         # Draws the labels corresponding to the X axis
          Axis(side = 1, at = seq(0.0, 1, by=0.05), labels = FALSE)
          Axis(side = 1, at = seq(0.0, 1, by=0.1), labels = paste(100*seq(0.0, 1, by=0.1),"%", sep="") )
 
          if (log=="y") {
-           # Draws the labels corresponding to Annual ticks in the Y axis
-           ylabels <- union( c(0.01, 0.1, 1,10), pretty(ylim) )
+           # Draws the labels corresponding to the Y axis
+           ylabels <- union( yat, pretty(ylim) )
            Axis( side = 2, at =ylabels, labels = ylabels )
          } # IF end
 
@@ -206,10 +207,13 @@ fdcu.default <- function (x,
 
              if (!missing(sim)) { #Legend with the OBS + simulations + 95PPU
               legend(leg.pos, legend=leg.txt,  #inset=0.03,
-                 bty="n", cex =0.9, col=c(col[1], col[2], bands.col), lwd=c(lwd[1], lwd[2], 0), lty=c(lty[1], lty[2], 0), pch=c(NA,NA,15), pt.cex=3)
+                     bty="n", cex =0.9, col=c(col[1], col[2], bands.col), 
+                     lwd=c(lwd[1], lwd[2], 0), lty=c(lty[1], lty[2], 0), 
+                     pch=c(NA,NA,15), pt.cex=3)
              } else { #Legend only with the OBS + 95PPU
               legend(leg.pos, legend=c(leg.txt[1], leg.txt[3]),  #inset=0.03,
-                 bty="n", cex =0.9, col=c(col[1], bands.col), lwd=c(lwd[1], 0), lty=c(lty[1], 0), pch=c(NA,15), pt.cex=3)
+                     bty="n", cex =0.9, col=c(col[1], bands.col), lwd=c(lwd[1], 0), 
+                     lty=c(lty[1], 0), pch=c(NA,15), pt.cex=3)
              }# IF end
 
          } # IF end
@@ -234,7 +238,7 @@ fdcu.default <- function (x,
             x.hQ <- x.sort[Qposition(fdc.x, hQ.thr)]
 
             legend(leg.pos, c(paste("Qhigh.thr=", round(x.hQ, 2), sep=""),
-                                   paste("Qlow.thr=", round(x.lQ, 2), sep="") ),
+                              paste("Qlow.thr=", round(x.lQ, 2), sep="") ),
                    cex=0.7, bty="n" ) #bty="n" => no box around the legend
          } # IF end
 
@@ -269,7 +273,9 @@ fdcu.matrix <- function (x,
                          xlab="% Time flow equalled or exceeded",
                          ylab="Q, [m3/s]",
                          ylim,
-                         col=matrix(c(rep("black", ncol(x)), palette("default")[2:(ncol(x)+1)]), byrow=FALSE, ncol=2),
+                         yat=c(0.01, 0.1, 1, 5, 10, 100), 
+                         col=matrix(c(rep("black", ncol(x)), 
+                                    palette("default")[2:(ncol(x)+1)]), byrow=FALSE, ncol=2),
                          pch=matrix(rep(c(1, 15), ncol(x)), byrow=TRUE, ncol=2),
                          lwd=matrix(rep(c(1, 0.8), ncol(x)), byrow=TRUE, ncol=2),
                          lty=matrix(rep(c(1, 3), ncol(x)), byrow=TRUE, ncol=2),
@@ -289,11 +295,11 @@ fdcu.matrix <- function (x,
 
   j <- 1 # starting column for the analysis
 
-  if (verbose) print( paste("Column: ", format(j, width=10, justify="left"),
+  if (verbose) message( paste("Column: ", format(j, width=10, justify="left"),
                       " : ", format(j, width=3, justify="left"), "/",
                       n, " => ",
                       format(round(100*j/n,2), width=6, justify="left"),
-                      "%", sep=""), quote=FALSE )
+                      "%", sep="") )
 
   # Computing and plotting the Flow duration Curve for the first column
   if (missing(sim)) {
@@ -317,11 +323,11 @@ fdcu.matrix <- function (x,
   # Plotting the Flow Duration Curves
   sapply(2:n, function(j) {
 
-         if (verbose) print( paste("Column: ", format(j, width=10, justify="left"),
+         if (verbose) message( paste("Column: ", format(j, width=10, justify="left"),
                              " : ", format(j, width=3, justify="left"), "/",
                              n, " => ",
                              format(round(100*j/n,2), width=6, justify="left"),
-                             "%", sep=""), quote=FALSE )
+                             "%", sep="") )
 
             if (!sim.exists) {
               # Computing and plotting the Flow duration Curve for the first vector
@@ -339,7 +345,7 @@ fdcu.matrix <- function (x,
               } # ELSE end
     } )
 
-    if (verbose) print("Re-plotting the 'sim' lines")
+    if (verbose) message("Re-plotting the 'sim' lines")
 
     # Re-Plotting the lines that were overdrawn by the polygons
     sapply(1:n, function(j) {
@@ -411,7 +417,9 @@ fdcu.data.frame <- function(x,
                          xlab="% Time flow equalled or exceeded",
                          ylab="Q, [m3/s]",
                          ylim,
-                         col=matrix(c(rep("black", ncol(x)), palette("default")[2:(ncol(x)+1)]), byrow=FALSE, ncol=2),
+                         yat=c(0.01, 0.1, 1, 5, 10, 100), 
+                         col=matrix(c(rep("black", ncol(x)), 
+                                    palette("default")[2:(ncol(x)+1)]), byrow=FALSE, ncol=2),
                          pch=matrix(rep(c(1, 15), ncol(x)), byrow=TRUE, ncol=2),
                          lwd=matrix(rep(c(1, 0.8), ncol(x)), byrow=TRUE, ncol=2),
                          lty=matrix(rep(c(1, 3), ncol(x)), byrow=TRUE, ncol=2),
@@ -442,6 +450,7 @@ fdcu.data.frame <- function(x,
                 xlab=xlab,
                 ylab=ylab,
                 ylim=ylim,
+                yat=yat,
                 col=col,
                 pch=pch,
                 lty=lty,

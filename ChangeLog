@@ -1,16 +1,28 @@
 ############
+v0.2-2-1:    #
+############
+*) Release Date: XX-XX-2011
+
+Modified functions:
+*) 'fdc'       : -) New argument 'yat'
+*) 'fdcu'      : -) New argument 'yat'
+
+Other Minor Changes:
+*) All the 'print' calls used to display messages were replaced by a call to the 'message' function.
+
+############
 v0.2-1:    #
 ############
 *) Release Date: 30-Nov-2010
 
-*) R functions were split up into individual files
+*) R functions were split up into individual files.
 
 Modified functions:
 *) 'dip'       : -) Added error checking for the argument 'out.type'
 *) 'mip'       : -) Added error checking for the argument 'out.type'
 *) 'yip'       : -) Added error checking for the argument 'out.type'
 *) 'drawxaxis' : -) New argument: 'lab.fmt', for specifying the format of the axis' labels
-*) 'hydroplot'/: -) Removed argument: 'sname'
+*) 'hydroplot' : -) Removed argument: 'sname'
    'sname2plot': -) New argument: 'lab.fmt'
                  -) New argument: 'xlab'
                  -) New argument: 'ylab'

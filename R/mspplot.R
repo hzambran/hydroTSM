@@ -180,11 +180,11 @@ mspplot <- function(x,
 	require(maptools) #it is necessary for usign the function "readShapePoly"
 	if (class(subcatchments) == "character") {
 
-	   if (verbose) print(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep=""), quote=FALSE, max.levels=0 )
+	   if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
 	   SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
 	   # Number of Subcatchmnets
 	   nSub <- nrow(SubCatchments.shp@data)
-	   if (verbose) print(paste("[Subcatchments found:", nSub, sep=" "), quote=FALSE, max.levels=0 )
+	   if (verbose) message(paste("[Subcatchments found:", nSub, sep=" ") )
 
 	} else {	#  If the user already provided 'subcatchments' as an 'SpatialPolygonsDataFrame' object
 

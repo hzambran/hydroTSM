@@ -1,4 +1,12 @@
 ############
+# v 0.2-1: #
+############
+*) Release Date: 10-Oct-2010
+
+Modified functions:
+*) 'sname2ts'                : -) checking for the 'sname' argument was added
+
+############
 # v 0.2-0: #
 ############
 *) Release Date: 10-Oct-2010

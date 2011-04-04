@@ -76,8 +76,8 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
 				     verbose=TRUE,...) {
 
   # Checking that the user provide a valid value for 'FUN'
-  if (missing(FUN)) {
-		 stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values") }
+  if (missing(FUN))
+      stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values")
 
     # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
@@ -135,7 +135,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
   # Requiring the Zoo Library (Z’s ordered observations)
   require(zoo)
 
-  if (verbose) print("Starting the computations...", quote=FALSE )
+  if (verbose) message("[Starting the computations...]" )
 
 
   if (out.type=="data.frame") {
@@ -147,28 +147,28 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
         z <- as.data.frame(matrix(data = NA, nrow = nmonths, ncol = nstations,
                            byrow = TRUE, dimnames = NULL) )
 
-	      colnames(z) <- field.names
-		    #rownames(z) <- format(as.Date(mip(from=range(dates)[1], to=range(dates)[2])), "%m-%Y")
+	colnames(z) <- field.names
+        #rownames(z) <- format(as.Date(mip(from=range(dates)[1], to=range(dates)[2])), "%m-%Y")
         rownames(z) <- format(time(tmp), "%m-%Y")
 
         y = x
 
         for (j in 1:nstations) {
 
-            if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
+            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
                                       " : ",format(j, width=3, justify="left"), "/",
                                       nstations, " => ",
                                       format(round(100*j/nstations,2), width=6, justify="left"),
-                                      "%", sep=""), quote=FALSE )
+                                      "%", sep="") )
 
-        # Transforming the column of 'x' into a zoo object,
-    		# using the dates provided by the user
-    		tmp <- vector2zoo(x=y[,j], dates=dates, date.fmt=date.fmt)
+            # Transforming the column of 'x' into a zoo object,
+    	    # using the dates provided by the user
+    	    tmp <- vector2zoo(x=y[,j], dates=dates, date.fmt=date.fmt)
 
-    		# Computing the monthly values
-    		m <- daily2monthly.default(x= tmp, FUN=FUN, na.rm=na.rm)
+    	    # Computing the monthly values
+    	    m <- daily2monthly.default(x= tmp, FUN=FUN, na.rm=na.rm)
 
-    		if (out.fmt == "numeric") {
+    	    if (out.fmt == "numeric") {
     		        z[,j] <- as.numeric(m)
             } else if (out.fmt == "zoo") {
     		              z[,j] <- m
@@ -190,11 +190,11 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
 
         for (j in 1:nstations) {
 
-            if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
+            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
                                       " : ",format(j, width=3, justify="left"), "/",
                                       nstations, " => ",
                                       format(round(100*j/nstations,2), width=6, justify="left"),
-                                      "%", sep=""), quote=FALSE )
+                                      "%", sep="") )
 
         # Transforming the column of 'x' into a zoo object,
 		    # using the dates provided by the user
@@ -207,7 +207,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
     		        m <- as.numeric(m)
             } # IF end
 
-		# Putting the annual/monthly values in the output data.frame
+	# Putting the annual/monthly values in the output data.frame
         # The first column of 'x' corresponds to the Year
         row.ini <- (j-1)*nmonths + 1
         row.fin <-  j*nmonths
@@ -227,8 +227,8 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
 
 daily2monthly.matrix  <- function(x, FUN, na.rm=TRUE,
                                   dates, date.fmt="%Y-%m-%d",
-				                          out.type="data.frame",
-				                          out.fmt="numeric",
+				  out.type="data.frame",
+				  out.fmt="numeric",
                                   verbose=TRUE,...) {
 
    x <- as.data.frame(x)

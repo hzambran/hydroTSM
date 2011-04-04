@@ -13,23 +13,23 @@ monthlyfunction <- function(x, ...) UseMethod("monthlyfunction")
 
 monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
-	 # Checking that 'x' is a zoo object
-	 if (is.na(match(class(x), c("zoo"))))
-			stop("Invalid argument: 'x' must be of class 'zoo'")
+     # Checking that 'x' is a zoo object
+     if (is.na(match(class(x), c("zoo"))))
+	stop("Invalid argument: 'x' must be of class 'zoo'")
 
      # Checking that the user provied a valid argument for 'FUN'
      if (missing(FUN))
          stop("Missing argument: 'FUN' must be provided")
 
-	 # Checking the user provide a valid value for 'x'
-	 if (is.na(match(sfreq(x), c("daily", "monthly")))) {
-		 stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") ) }
+     # Checking the user provide a valid value for 'x'
+     if (is.na(match(sfreq(x), c("daily", "monthly"))))
+	stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") )
 
      # Requiring the Zoo Library (Z’s ordered observations)
-	 require(zoo)
+     require(zoo)
 
-	 # 'as.numeric' is necessary for being able to change the names to the output
-	 totals <- as.numeric( aggregate( x, by= format( time(x), "%m" ), FUN=FUN, na.rm= na.rm ) )
+     # 'as.numeric' is necessary for being able to change the names to the output
+     totals <- as.numeric( aggregate( x, by= format( time(x), "%m" ), FUN=FUN, na.rm= na.rm ) )
 
      # Replacing the NaNs by 'NA.
      # NaN's are obtained when using theFUN=mean with complete NA values
@@ -43,9 +43,9 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
      # Changing all the Inf and -Inf by NA's
      if ( length(inf.index) > 0 ) { totals[inf.index] <- NA }
 
-	 names(totals) <- month.abb
+     names(totals) <- month.abb
 
-	 return(totals)
+     return(totals)
 
 } # 'monthlyfunction.default' end
 
@@ -72,9 +72,9 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 #                              The fourth column contains the monthly value corresponding to the year specified in the second column
 # 'verbose'      : logical; if TRUE, progress messages are printed
 monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
-                                    dates, date.fmt="%Y-%m-%d",
-								    out.type="data.frame",
-									verbose=TRUE,...) {
+                                       dates, date.fmt="%Y-%m-%d",
+                                       out.type="data.frame",
+                                       verbose=TRUE,...) {
 
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
@@ -130,7 +130,7 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   # Requiring the Zoo Library (Z’s ordered observations)
   require(zoo)
 
-  if (verbose) print("Starting the computations...", quote=FALSE )
+  if (verbose) message("[Starting the computations...]")
 
   if (out.type == "data.frame") {
 
@@ -144,11 +144,11 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 	z <- sapply(1:nstations, function(j,y) {
 
 
-		if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
-					              " : ",format(j, width=3, justify="left"), "/",
-					              nstations, " => ",
-					              format(round(100*j/nstations,2), width=6, justify="left"),
-					              "%", sep=""), quote=FALSE )
+		if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
+					    " : ",format(j, width=3, justify="left"), "/",
+					    nstations, " => ",
+					    format(round(100*j/nstations,2), width=6, justify="left"),
+					    "%", sep="") )
 
 		# Transforming the column of 'x' into a zoo object,
 		# using the dates provided by the user
@@ -175,20 +175,20 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 
         for (j in 1:nstations) {
 
-            if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
-                                      " : ", format(j, width=3, justify="left"), "/",
-                                      nstations, " => ",
-                                      format(round(100*j/nstations,2), width=6, justify="left"),
-                                      "%", sep=""), quote=FALSE )
+            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
+                                        " : ", format(j, width=3, justify="left"), "/",
+                                        nstations, " => ",
+                                        format(round(100*j/nstations,2), width=6, justify="left"),
+                                        "%", sep="") )
 
             # Transforming the column of 'x' into a zoo object,
-		    # using the dates provided by the user
-		    tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
+	    # using the dates provided by the user
+	    tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
 
-		    # Computing the annual values
-		    tmp <- monthlyfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
+	    # Computing the annual values
+	    tmp <- monthlyfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
 
-			# Putting the annual/monthly values in the output data.frame
+	    # Putting the annual/monthly values in the output data.frame
             # The first column of 'x' corresponds to the Year
             row.ini <- (j-1)*nmonths + 1
             row.fin <-  j*nmonths

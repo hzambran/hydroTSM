@@ -16,14 +16,14 @@ fdcu(x, lband, uband, ...)
 
 \method{fdcu}{default}(x, lband, uband, sim, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
-     ylab="Q, [m3/s]", ylim, col=c("black", "red"), pch=c(1, 15), 
-     lwd=c(1, 0.8), lty=c(1, 3), cex=0.2, cex.axis=1.2, cex.lab=1.2,
+     ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1, 5, 10, 100), col=c("black", "red"), 
+     pch=c(1, 15), lwd=c(1, 0.8), lty=c(1, 3), cex=0.2, cex.axis=1.2, cex.lab=1.2,
      leg.txt= c("Qobs", "Qsim", "95PPU"), verbose= TRUE, thr.shw=TRUE, border=NA, 
      bands.col="lightcyan", bands.density=NULL, bands.angle=45, new=TRUE, ...)
 
 \method{fdcu}{matrix}(x, lband, uband, sim, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
-     ylab="Q, [m3/s]", ylim, col=matrix(c(rep("black", ncol(x)), 
+     ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1, 5, 10, 100), col=matrix(c(rep("black", ncol(x)), 
      palette("default")[2:(ncol(x)+1)]), byrow=FALSE, ncol=2), 
      pch=matrix(rep(c(1, 15), ncol(x)), byrow=TRUE, ncol=2),
      lwd=matrix(rep(c(1, 0.8), ncol(x)), byrow=TRUE, ncol=2),
@@ -35,7 +35,7 @@ fdcu(x, lband, uband, ...)
 
 \method{fdcu}{data.frame}(x, lband, uband, sim, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
-     ylab="Q, [m3/s]", ylim, col=matrix(c(rep("black", ncol(x)), 
+     ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1, 5, 10, 100), col=matrix(c(rep("black", ncol(x)), 
      palette("default")[2:(ncol(x)+1)]), byrow=FALSE, ncol=2),
      pch=matrix(rep(c(1, 15), ncol(x)), byrow=TRUE, ncol=2),
      lwd=matrix(rep(c(1, 0.8), ncol(x)), byrow=TRUE, ncol=2),
@@ -88,6 +88,9 @@ See \code{\link[graphics]{plot}}. A title for the y axis: see \code{\link[graphi
 }
   \item{ylim}{
 See \code{\link[graphics]{plot.default}}. The y limits of the plot.
+}
+  \item{yat}{
+numeric, with points at which tick-marks will try to be drawn in the Y axis, in addition to the defaults computed by R. See the \code{at} argument in \code{\link[graphics]{Axis}}. 
 }
   \item{col}{
 See \code{\link[graphics]{plot.default}}. The colors for lines and points.  Multiple colors can be specified so that each point can be given its own color.  If there are fewer colors than points they are recycled in the standard fashion. Lines will all be plotted in the first colour specified.

@@ -19,7 +19,7 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 
 	 # Checking that 'x' is a zoo object
 	 if (is.na(match(class(x), c("zoo"))))
-			stop("Invalid argument: 'x' must be of class 'zoo'")
+	   stop("Invalid argument: 'x' must be of class 'zoo'")
 
 	 # Checking that the user provide a valid value for 'FUN'
 	 if (missing(FUN)) {
@@ -27,14 +27,14 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 
          # Checking that 'x' is a zoo object
 	 if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
-			stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
+	   stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
 
 	 # Requiring the Zoo Library (Z’s ordered observations)
 	 require(zoo)
 
 	 # Checking the user provide a valid value for 'x'
 	 if (is.na(match(sfreq(x), c("daily", "monthly")))) {
-		 stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") ) }
+	   stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") ) }
 
 	 # Generating an Annual time series of Total Annual Precipitation (Annual sum of daily values)
 	 tmp <- aggregate(x, by=format( time(x), "%Y" ), FUN, na.rm= na.rm)
@@ -44,12 +44,12 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
          nan.index <- which(is.nan(tmp))
 
          # Changing all the NaN's by NA's
-         if ( length(nan.index) > 0 ) { tmp[nan.index] <- NA }
+         if ( length(nan.index) > 0 ) 
+            tmp[nan.index] <- NA
 
 	 # If the user wants a complete data format for the output annual series:
-	 if (out.fmt == "%Y-%m-%d") {
+	 if (out.fmt == "%Y-%m-%d")
 	   time(tmp) <- as.Date(paste( time(tmp), "-01-01", sep=""))
-	 } # IF END
 
 	 return(tmp)
 
@@ -82,8 +82,8 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
                                     out.type="data.frame",
                                     verbose=TRUE,...) {
   # Checking that the user provide a valid value for 'FUN'
-  if (missing(FUN)) {
-		 stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values") }
+  if (missing(FUN))
+    stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values")
 
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
@@ -143,7 +143,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
   # Requiring the Zoo Library (Z’s ordered observations)
   require(zoo)
 
-  if (verbose) print("Starting the computations...", quote=FALSE )
+  if (verbose) message("[Starting the computations...]")
 
   if (out.type == "data.frame") {
 
@@ -160,11 +160,11 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
 	z[1:nstations] <- sapply(1:nstations, function(j,y) {
 
 
-		if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
-					              " : ",format(j, width=3, justify="left"), "/",
-					              nstations, " => ",
-					              format(round(100*j/nstations,2), width=6, justify="left"),
-					              "%", sep=""), quote=FALSE )
+	  if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
+                                      " : ",format(j, width=3, justify="left"), "/",
+                                      nstations, " => ",
+                                      format(round(100*j/nstations,2), width=6, justify="left"),
+                                      "%", sep="") )
 
 		# Transforming the column of 'x' into a zoo object,
 		# using the dates provided by the user
@@ -189,11 +189,11 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
 
         for (j in 1:nstations) {
 
-            if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
+            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
                                       " : ",format(j, width=3, justify="left"), "/",
                                       nstations, " => ",
                                       format(round(100*j/nstations,2), width=6, justify="left"),
-                                      "%", sep=""), quote=FALSE )
+                                      "%", sep="") )
 
       # Transforming the column of 'x' into a zoo object,
 	    # using the dates provided by the user

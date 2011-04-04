@@ -4,33 +4,33 @@
 ############################################################################
 #                  May 15th, 2009; Sep 01st 2009                           #
 ############################################################################
-# 'x   '    :  daily, monthly or annual 'zoo' or 'data.frame' object
-# 'FUN'      :Function that will be applied to ALL the values in 'x' belonging to each weather season of the year
+# 'x   '  :  daily, monthly or annual 'zoo' or 'data.frame' object
+# 'FUN'   :  Function that will be applied to ALL the values in 'x' belonging to each weather season of the year
 #             (e.g., Fun can be some of c('mean', 'max', 'min', 'sd'))
-# 'na.rm'    : Logical. Should missing values be removed?
+# 'na.rm' : Logical. Should missing values be removed?
 #              TRUE : the annual values are computed considering only those values different from NA
 #              FALSE: if there is AT LEAST one NA within a year, the annual values are NA
 annualfunction <- function(x, FUN, na.rm=TRUE,...) UseMethod("annualfunction")
 
 annualfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
-	 # Checking that 'x' is a zoo object
-	 if (is.na(match(class(x), c("zoo"))))
-			stop("Invalid argument: 'x' must be of class 'zoo'")
+     # Checking that 'x' is a zoo object
+     if (is.na(match(class(x), c("zoo"))))
+	stop("Invalid argument: 'x' must be of class 'zoo'")
 
-	 # If the user did not provide a title for the plots, this is created automatically
+     # If the user did not provide a title for the plots, this is created automatically
      if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
 
      # Requiring the Zoo Library
-	 require(zoo)
+     require(zoo)
 
-	 # 'FUN' is first applied to all the values of 'x' belonging to the same year
-	 totals <- aggregate( x, by= format( time(x), "%Y" ), FUN=FUN, na.rm= na.rm )
+     # 'FUN' is first applied to all the values of 'x' belonging to the same year
+     totals <- aggregate( x, by= format( time(x), "%Y" ), FUN=FUN, na.rm= na.rm )
 
      #  'FUN' is applied to all the previously computed annual values to get the final result.
-	 totals <- aggregate( totals, by= rep("value", length(totals)), FUN=FUN, na.rm= na.rm )
+     totals <- aggregate( totals, by= rep("value", length(totals)), FUN=FUN, na.rm= na.rm )
 
-	 return(totals)
+     return(totals)
 
 } # 'annualfunction.default' end
 
@@ -60,10 +60,10 @@ annualfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 #                              The second column will store the ID of the station,
 #                              The third column will contain the seasonal 
 #                                value corresponding to that year and that station.
-# 'verbose'      : logical; if TRUE, progress messages are printed 
+# 'verbose' : logical; if TRUE, progress messages are printed 
 annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
-                                    dates, date.fmt="%Y-%m-%d",
-									verbose=TRUE,...) {
+                                      dates, date.fmt="%Y-%m-%d",
+                                      verbose=TRUE,...) {
 	  
   # If the user did not provide a title for the plots, this is created automatically
   if (missing(FUN)) stop("Missing argument: 'FUN' must be provided") 
@@ -110,7 +110,7 @@ annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   # Requiring the Zoo Library
   require(zoo)
   
-  if (verbose) print("Starting the computations...", quote=FALSE )
+  if (verbose) message("[Starting the computations...]")
 
   # Creating the data.frame that will store the computed averages for each station
   z <- NA*numeric(nstations)
@@ -119,11 +119,11 @@ annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
       
   z[1:nstations] <- sapply(1:nstations, function(j, y) {
         
-      if (verbose) print( paste("Station: ", format(snames[j], width=10, justify="left"),
+      if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
                                 " : ",format(j, width=3, justify="left"), "/", 
                                 nstations, " => ", 
                                 format(round(100*j/nstations,2), width=6, justify="left"), 
-                                "%", sep=""), quote=FALSE )
+                                "%", sep="") )
                             
       # Transforming the column of 'x' into a zoo object, 
       # using the dates provided by the user

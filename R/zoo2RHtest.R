@@ -33,7 +33,7 @@ zoo2RHtest <- function(x, fname="pcp.txt", tstep.out="daily", dec=".", na="-999.
 
   # Checking the user provide a valid value for 'x'
   if (is.na(match(sfreq(x), c("daily", "monthly", "annual")))) {
-		 stop(paste("Invalid argument: 'x' is not a daily, mothly or annual ts, it is a ", sfreq(x), " ts", sep="") ) }
+     stop(paste("Invalid argument: 'x' is not a daily, mothly or annual ts, it is a ", sfreq(x), " ts", sep="") ) }
 
   if ( tstep.out=="daily") {
     out <- data.frame(years=years, months=months, days=days, values=values)

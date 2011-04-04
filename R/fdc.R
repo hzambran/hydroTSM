@@ -2,6 +2,7 @@
 # fdc: Flow Duration Curve, computation and plot     #
 ######################################################
 #                   June 04, 2009                    #
+# Updates: 25-Feb-2011                               #
 ######################################################
 
 # Plot the flow Duration Curve in the original time units of 'x' and
@@ -23,6 +24,8 @@ fdc.default <- function (x,
                          xlab="% Time flow equalled or exceeded",
                          ylab="Q, [m3/s]",
                          ylim,
+                         yat=c(0.01, 0.1, 1, 5, 10, 100), 
+                         #yaxp=c(range(x),2),
                          col="black",
                          pch=1,
                          lwd=1,
@@ -31,7 +34,7 @@ fdc.default <- function (x,
                          cex.axis=1.2,
                          cex.lab=1.2,
                          leg.txt=NULL,
-			                   verbose= TRUE,
+			 verbose= TRUE,
                          thr.shw=TRUE,
                          new=TRUE,
                          ...) {
@@ -47,7 +50,7 @@ fdc.default <- function (x,
        x.zero.index <- which(x==0)
        if (length(x.zero.index) > 0 ) {
         x <- x[-x.zero.index]
-        if (verbose) print("[Warning: all 'x' equal to zero will not be plotted]", quote=FALSE)
+        if (verbose) message("[Warning: all 'x' equal to zero will not be plotted]")
        } # IF end
      } # IF end
 
@@ -73,8 +76,8 @@ fdc.default <- function (x,
 
 	 # 4) Exceedence Probability
 	 dc[1:n] <- sapply(1:n, function(j,y) {
-						  dc[j] <- length( which(y >= y[j]) )
-					  }, y = x)
+			  dc[j] <- length( which(y >= y[j]) )
+		    }, y = x)
 
 	 # Computing the probabilitites
 	 dc <- dc/n
@@ -86,7 +89,7 @@ fdc.default <- function (x,
 	 if (plot) {
 
           if ( missing(ylim) ) {
-            ylim <- range(x)
+            ylim <- range(x, na.rm=TRUE)
           } # IF end
 
           # If a new plot has to be created
@@ -94,7 +97,7 @@ fdc.default <- function (x,
 
             # Creating the plot, but without anything on it, for allowing the call to polygon
              if (log=="y") {
-               plot(dc, x,  xaxt = "n", yaxt="n", type="o", pch=pch, col=col, lty=lty,
+               plot(dc, x,  xaxt = "n", yaxt = "n", type="o", pch=pch, col=col, lty=lty,
                     cex=cex, cex.axis=cex.axis, cex.lab=cex.lab, main=main, xlab=xlab, ylab=ylab, ylim=ylim, log=log, ...)
              } else {
                plot(dc, x,  xaxt = "n", type="o", pch=pch, col=col, lty=lty,
@@ -106,15 +109,15 @@ fdc.default <- function (x,
                    cex=cex)
             } # ELSE end
 
-          # Draws the labels corresponding to Annual ticks in the X axis
+          # Draws the labels corresponding to the X axis
           Axis(side = 1, at = seq(0.0, 1, by=0.05), cex.axis=cex.axis, labels = FALSE)
           Axis(side = 1, at = seq(0.0, 1, by=0.1), cex.axis=cex.axis, 
                labels = paste(100*seq(0.0, 1, by=0.1),"%", sep="") )
 
           if (log=="y") {
-            # Draws the labels corresponding to Annual ticks in the Y axis
-            ylabels <- union( c(0.01, 0.1, 1,10), pretty(ylim) )
-            Axis( side = 2, at =ylabels, cex.axis=cex.axis, labels = ylabels )
+            # Draws the labels corresponding to the Y axis
+            ylabels <- union( yat, pretty(ylim) )
+            Axis( side = 2, at =ylabels, cex.axis=cex.axis, labels = ylabels)
           } # IF end
 
           # If the user provided a value for 'lQ.thr', a vertical line is drawn
@@ -166,8 +169,9 @@ fdc.matrix <- function (x,
                         log="y",
                         main= "Flow Duration Curve",
                         xlab="% Time flow equalled or exceeded",
-			                  ylab="Q, [m3/s]",
+			ylab="Q, [m3/s]",
                         ylim,
+                        yat=c(0.01, 0.1, 1, 5, 10, 100), 
                         col=palette("default")[1:ncol(x)],
                         pch=1:ncol(x),
                         lwd=rep(1, ncol(x)),
@@ -183,33 +187,40 @@ fdc.matrix <- function (x,
 
   n <- ncol(x)
 
-  if (missing(ylim)) { ylim <- range(x) }
+  if (missing(ylim)) 
+     ylim <- range(x)
+
+  if (thr.shw==TRUE) {
+    message("[Note: 'thr.shw' was set to FALSE to avoid confusing legends...]")
+    thr.shw <- FALSE
+  } # IF end
 
   j <- 1 # starting column for the analysis
 
-  if (verbose) print( paste("Column: ", format(j, width=10, justify="left"),
+  if (verbose) message( paste("Column: ", format(j, width=10, justify="left"),
                             " : ", format(j, width=3, justify="left"), "/",
                             n, " => ",
                             format(round(100*j/n,2), width=6, justify="left"),
-                            "%", sep=""), quote=FALSE )
+                            "%", sep="") )
 
-  # Computing and plotting the Flow duration Curve for the first vector
-  fdc(x=x[,1], plot=plot, pch=pch[1], col=col[1], lty=lty[1],
-      cex=cex, main=main, xlab= xlab, ylab=ylab, log=log, verbose=verbose,
-      thr.shw=FALSE, new=TRUE, ...)
+  # Computing and plotting the Flow duration Curve for the first column
+  fdc(x=x[,1], plot=plot, log=log, pch=pch[1], col=col[1], lty=lty[1],
+      cex=cex, main=main, xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, 
+      verbose=verbose, thr.shw=FALSE, new=TRUE, ...)
 
   # Plotting the Flow Duration Curves
   sapply(2:n, function(j) {
 
-        if (verbose) print( paste("Column: ", format(j, width=10, justify="left"),
+        if (verbose) message( paste("Column: ", format(j, width=10, justify="left"),
                                 " : ", format(j, width=3, justify="left"), "/",
                                 n, " => ",
                                 format(round(100*j/n,2), width=6, justify="left"),
-                                "%", sep=""), quote=FALSE )
-			# Computing and plotting the Flow duration Curve for the first vector
-            fdc(x=x[,j], plot=plot, pch=pch[j], col=col[j], lty=lty[j],
+                                "%", sep="") )
+
+	    # Computing and plotting the Flow duration Curve for the other columns
+            fdc(x=x[,j], plot=plot, log=log, pch=pch[j], col=col[j], lty=lty[j],
                 cex=cex, cex.axis=cex.axis, cex.lab=cex.lab, main=main, 
-                xlab= xlab, ylab=ylab, log=log, verbose=verbose,
+                xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, verbose=verbose,
                 thr.shw=FALSE, new=FALSE, ...)
         } )
 
@@ -231,8 +242,9 @@ fdc.data.frame <- function(x,
                            log="y",
                            main= "Flow Duration Curve",
                            xlab="% Time flow equalled or exceeded",
-						               ylab="Q, [m3/s]",
+			   ylab="Q, [m3/s]",
                            ylim,
+                           yat=c(0.01, 0.1, 1, 5, 10, 100), 
                            col=palette("default")[1:ncol(x)],
                            pch=1:ncol(x),
                            lwd=rep(1, ncol(x)),
@@ -252,10 +264,12 @@ fdc.data.frame <- function(x,
                lQ.thr=lQ.thr,
                hQ.thr=hQ.thr,
                plot=plot,
+               log=log,
                main=main,
                xlab=xlab,
                ylab=ylab,
-               log=log,
+               ylim=ylim,
+               yat=yat,               
                col=col,
                pch=pch,
                lty=lty,
@@ -265,8 +279,7 @@ fdc.data.frame <- function(x,
                verbose=verbose,
                leg.txt= leg.txt,
                thr.shw=thr.shw,
-               new=new,
-               ylim=ylim,
+               new=new,               
                ...)
 
 } # 'fdc.data.frame' END

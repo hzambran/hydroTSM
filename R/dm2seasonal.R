@@ -119,7 +119,7 @@ dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, ...) {
 #                              The fouth column will contain the seasonal value, corresponding to the year specified in the second column
 dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
                                    dates, date.fmt="%Y-%m-%d",
-								   out.type="data.frame",... ) {
+				   out.type="data.frame",... ) {
 
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
@@ -182,7 +182,7 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
   # Requiring the Zoo Library (Z’s ordered observations)
   require(zoo)
 
-  print("Starting the computations...", quote=FALSE )
+  message("[Starting the computations...]")
 
   if (out.type == "data.frame") {
 
@@ -191,18 +191,18 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
 
 	# Creating the data.frame that will store the computed averages for each station
 	z <- as.data.frame(matrix(data = NA, nrow = nyears, ncol = nstations,
-						byrow = TRUE, dimnames = NULL) )
+                                  byrow = TRUE, dimnames = NULL) )
 	colnames(z) <- field.names
 
 	rownames(z) <- Starting.Year:Ending.Year
 
 	z[1:nstations] <- sapply(1:nstations, function(j,y) {
 
-		print( paste("Station: ", format(snames[j], width=10, justify="left"),
-					 " : ",format(j, width=3, justify="left"), "/",
-					 nstations, " => ",
-					 format(round(100*j/nstations,2), width=6, justify="left"),
-					 "%", sep=""), quote=FALSE )
+		message( paste("Station: ", format(snames[j], width=10, justify="left"),
+                               " : ",format(j, width=3, justify="left"), "/",
+                               nstations, " => ",
+                               format(round(100*j/nstations,2), width=6, justify="left"),
+                               "%", sep="") )
 
 		# Transforming the column of 'x' into a zoo object,
 		# using the dates provided by the user
@@ -226,18 +226,18 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
 
         for (j in 1:nstations) {
 
-            print( paste("Station: ", format(snames[j], width=10, justify="left"),
+            message( paste("Station: ", format(snames[j], width=10, justify="left"),
                          " : ",format(j, width=3, justify="left"), "/",
                          nstations, " => ",
                          format(round(100*j/nstations,2), width=6, justify="left"),
-                         "%", sep=""), quote=FALSE )
+                         "%", sep="") )
 
             # Transforming the column of 'x' into a zoo object,
-		    # using the dates provided by the user
-		    tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
+	    # using the dates provided by the user
+            tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
 
-		    # Computing the seasonal values
-		    s.a <- dm2seasonal.default(x= tmp, season=season, FUN=FUN, na.rm=na.rm)
+	    # Computing the seasonal values
+            s.a <- dm2seasonal.default(x= tmp, season=season, FUN=FUN, na.rm=na.rm)
 
             # Putting the annual seasonal values in the output data.frame
             # The first column of 'x' corresponds to the Year
