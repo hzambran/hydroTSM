@@ -2,15 +2,15 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 
 0.2-2-1   (under development)
-    o 'fdc' and 'fdcu': New argument 'yat', for setting the position of the 'y' axis labels.
-    o All the 'print' calls used to display information messages were replaced by a call to the 'message' function.
+    o fdc and fdcu: new argument yat, for setting the position of the y axis labels.
+    o All the print calls used to display information messages were replaced by a call to the message function.
 
 0.2-1   30-Nov-2010
 
     o R functions were split up into individual files.
-    o 'dip', 'mip', 'yip': added error checking for the argument 'out.type'
-    o 'drawxaxis': new argument: 'lab.fmt', for specifying the format of the axis' labels
-    o 'hydroplot', 'sname2plot': removed argument 'sname', and new arguments: 'lab.fmt', 'xlab', 'ylab', 'col', 'cex', 'cex.main', 'cex.axis', 'cex.lab', 'lty', 'lwd', '...'
+    o dip, mip, yip: added error checking for the argument out.type
+    o drawxaxis: new argument: lab.fmt, for specifying the format of the axis' labels
+    o hydroplot, sname2plot: removed argument 'sname', and new arguments: lab.fmt, xlab, ylab, col, cex, cex.main, cex.axis, cex.lab, lty, lwd, ...
     o 'sname2ts'  : New arguments: 'from', 'to', 'date.fmt'
     o 'fdc' and 'fdcu': New arguments: 'cex.axis', 'cex.lab'
 
