@@ -1,18 +1,18 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 
-0.2-2-1   (under development)
-    o fdc and fdcu: new argument yat, for setting the position of the y axis labels.
-    o All the print calls used to display information messages were replaced by a call to the message function.
+0.2-2   (under development)
+    o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels.
+    o All the 'print' calls used to display information messages were replaced by a call to the 'message' function.
 
 0.2-1   30-Nov-2010
 
     o R functions were split up into individual files.
-    o dip, mip, yip: added error checking for the argument out.type
-    o drawxaxis: new argument: lab.fmt, for specifying the format of the axis' labels
-    o hydroplot, sname2plot: removed argument 'sname', and new arguments: lab.fmt, xlab, ylab, col, cex, cex.main, cex.axis, cex.lab, lty, lwd, ...
-    o 'sname2ts'  : New arguments: 'from', 'to', 'date.fmt'
-    o 'fdc' and 'fdcu': New arguments: 'cex.axis', 'cex.lab'
+    o 'dip', 'mip', 'yip': added error checking for 'out.type'
+    o 'drawxaxis': new argument: lab.fmt, for specifying the format of the axis' labels
+    o 'hydroplot', 'sname2plot': removed argument 'sname', and new arguments: 'lab.fmt', 'xlab', 'ylab', 'col', 'cex', 'cex.main', 'cex.axis', 'cex.lab', 'lty', 'lwd', '...'
+    o 'sname2ts': new arguments: 'from', 'to', 'date.fmt'
+    o 'fdc', 'fdcu': new arguments: 'cex.axis', 'cex.lab'
 
 
 
@@ -21,7 +21,7 @@ NEWS/ChangeLog for hydroTSM
 ###################################################
 
 0.2-0: Release Date: 10-Oct-2010
-0.1.7: Release Date: 05-Mar-2009 (It was never released, because it finally becames v0.2-0)
+0.1.7: Release Date: 05-Mar-2009 (It was never released, because it finally becomes v0.2-0)
 0.1.6: Release Date: 30-Nov-2009
 0.1.5: Release Date: 16-Nov-2009
 0.1.4: Release Date: 02-Nov-2009
