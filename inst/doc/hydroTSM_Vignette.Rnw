@@ -1,0 +1,248 @@
+\documentclass[a4paper]{article}
+
+\author{Mauricio Zambrano-Bigiarini}
+%\pdfbookmark[0]{Titlepage}{title} % Sets a PDF bookmark for the title page
+\title{Tutorial for Introductory Analysis of \\
+       Daily Precipitation Data with R}
+\date{Oct 2010}
+
+\begin{document}
+
+\maketitle
+
+\section{Installation}
+\label{sec:Installation}
+
+\begin{enumerate}
+
+\item Packages required by the \textit{hydroTSM} library:
+
+<<eval=FALSE>>=
+install.packages(c("zoo", "gstat", "automap"))
+@
+
+\item Packages suggested by the \textit{hydroTSM} library:
+
+<<eval=FALSE>>=
+install.packages(c("Hmisc", "e1071", "sp", "maptools", "rgdal"))
+@
+
+\item \textit{hydroTSM} library:
+
+<<eval=FALSE>>=
+install.packages(c("hydroTSM"))
+@
+
+\end{enumerate}
+
+
+\section{Setting Up the Environment}
+\label{sec:SettingUptheEnvironment}
+
+\begin{enumerate}
+
+\item Loading the \textit{hydroTSM} library, which contains the data and the functions used in this analysis
+<<>>=
+library(hydroTSM)
+@
+
+\item Loading daily streamflows at the station San Martino di Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to 31/Dec/1990.
+
+<<>>=
+data(SanMartinoPPts)
+@
+
+\item Selecting only a 3-years time-slice for the analysis
+
+<<>>=
+x <- window(SanMartinoPPts, start=as.Date("1988-01-01"))
+@
+
+\item Monthly values of precipitation
+<<>>=
+( m <- daily2monthly(x, FUN=sum) )
+@
+
+\item Dates of the daily values of 'x'
+<<>>=
+dates <- time(x)
+@
+
+\item Amount of years in 'x' (needed for computations)
+<<>>=
+( nyears <- length( seq(from=dates[1], to=dates[length(dates)], by="years") ) )
+@
+
+\end{enumerate}
+
+
+\section{Basic Exploratory Data Analysis}
+\label{sec:BasicEDA}
+
+\begin{enumerate}
+
+\item Summary statistics
+<<>>=
+smry(x)
+@
+
+
+\item Using the \textit{hydroplot} function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x' (for this example, only daily and monthly plots are produced)
+
+\begin{center}
+<<fig=TRUE, pdf=TRUE, eps=FALSE, width=10, height=8>>=
+hydroplot(x, var.type="Precipitation", sname="San Martino", pfreq = "dm")
+@
+\end{center}
+
+\item Amount of days with information (not \texttt{NA}) per year
+<<>>=
+dwi(x)
+@
+
+\item Amount of days with information (not \texttt{NA}) per month per year
+<<>>=
+dwi(x, out.unit="mpy")
+@
+
+
+\item Plotting the monthly precipitation values for each year, useful for identifying dry/wet months.
+
+<<>>=     
+# Daily zoo to monthly zoo
+m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
+     
+# Creating a matrix with monthly values per year in each column
+M <- matrix(m, ncol=12, byrow=TRUE)
+colnames(M) <- month.abb
+rownames(M) <- unique(format(time(m), "%Y"))
+     
+# Plotting the monthly precipitation values
+require(lattice)
+matrixplot(M, ColorRamp="Precipitation", 
+           main="Monthly precipitation at San Martino st., [mm/month]")
+@
+
+\end{enumerate}
+
+
+
+\section{Annual Analysis}
+\label{sec:AnnualAnalysis}
+
+\begin{enumerate}
+
+\item Annual Values
+<<>>=
+daily2annual(x, FUN=sum, na.rm=T)
+@
+
+\item Average Annual Precipitation
+
+Obvious way:
+
+<<>>=
+mean( daily2annual(x, FUN=sum, na.rm=T) )
+@
+
+Another way (more useful for streamflows, where \texttt{FUN=mean}):
+
+The function \textit{annualfunction} applies \texttt{FUN} twice over \texttt{x}: (i) firstly, over all the elements of \texttt{x} belonging to the same year, in order to obtain the corresponding annual values, and (ii) secondly, over all the annual values of \texttt{x} previously obtained, in order to obtain a single annual value.
+
+<<>>=
+annualfunction(x, FUN=sum, na.rm=TRUE) / nyears
+@
+
+\end{enumerate}
+
+
+\section{Monthly Analysis}
+\label{sec:MonthlyAnalysis}
+
+
+
+\begin{enumerate}
+\item Median of the monthly values at station 'x'. Not needed, just for looking at these values in the boxplots
+
+<<>>=
+monthlyfunction(m, FUN=median, na.rm=TRUE)
+@
+
+\item Vector with the three-letter abbreviations for the month names
+<<>>=
+cmonth <- format(time(m), "%b")
+@
+
+\item Creating ordered monthly factors
+<<>>=
+months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
+@
+
+\item Boxplot of the monthly values
+<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
+boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation", 
+         ylab="Precipitation, [mm]", xlab="Month")
+@
+
+\end{enumerate}
+
+
+
+\section{Seasonal Analysis}
+\label{sec:SeasonalAnalysis}
+
+
+
+\begin{enumerate}
+\item Average seasonal values of precipitation
+
+<<>>=
+seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
+@
+
+\item Extracting the seasonal values for each year
+<<>>=
+( DJF <- dm2seasonal(x, season="DJF", FUN=sum) )
+( MAM <- dm2seasonal(m, season="MAM", FUN=sum) )
+( JJA <- dm2seasonal(m, season="JJA", FUN=sum) )
+( SON <- dm2seasonal(m, season="SON", FUN=sum) )
+@
+
+
+\item Plotting the time evolution of the seasonal precipitation values
+<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
+par(mfcol = c(2, 2))
+plot(DJF, type="o", cex=0.4, col="blue", xlab="Time", 
+     ylab="Precipitation, [mm]", ylim=c(0, 1000), 
+     main="Winter (DJF) Precipitation" )
+plot(MAM, type="o", cex=0.4, col="blue", xlab="Time", 
+     ylab="Precipitation, [mm]", ylim=c(0, 1000),
+     main="Spring (MAM) Precipitation")
+plot(JJA, type="o", cex=0.4, col="blue", xlab="Time", 
+     ylab="Precipitation, [mm]", ylim=c(0, 1000),
+     main="Summer (JJA) Precipitation" )
+plot(SON, type="o", cex=0.4, col="blue", xlab="Time", 
+     ylab="Precipitation, [mm]", ylim=c(0, 1000),
+     main="Autumn (SON) Precipitation")
+@
+
+
+\item Boxplots of the seasonal precipitation values of each year
+<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
+par(mfcol = c(2, 2))
+
+boxplot( coredata(DJF), col="lightblue", ylab="Precipitation, [mm]", 
+         main="Winter (DJF) Precipitation")
+boxplot( coredata(MAM), col="lightblue", ylab="Precipitation, [mm]", 
+         main="Spring (MAM) Precipitation")
+boxplot( coredata(JJA), col="lightblue", ylab="Precipitation, [mm]", 
+         main="Summer (JJA) Precipitation")
+boxplot( coredata(SON), col="lightblue", ylab="Precipitation, [mm]", 
+         main="Autumn (SON) Precipitation")
+@
+
+
+\end{enumerate}
+
+
+\end{document}
