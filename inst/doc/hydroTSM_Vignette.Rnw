@@ -3,7 +3,7 @@
 \author{Mauricio Zambrano-Bigiarini}
 %\pdfbookmark[0]{Titlepage}{title} % Sets a PDF bookmark for the title page
 \title{Tutorial for Introductory Analysis of \\
-       Daily Precipitation Data with R}
+       Daily Precipitation Data with hydroTSM}
 \date{Oct 2010}
 
 %\VignetteIndexEntry{An R Package for time series management, analysis and interpolation for hydrological modelling}

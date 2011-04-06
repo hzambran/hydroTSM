@@ -4,7 +4,9 @@ NEWS/ChangeLog for hydroTSM
 0.2-2	(under development)
 	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels.
 	o All the 'print' calls used to display information messages were replaced by a call to the 'message' function.
-	o SVN started to be used for package develpement in Rforge (thanks to Simon Urbanek for his great support)
+	o SVN started to be used for package development in Rforge (thanks to Simon Urbanek for his great support
+	o Vignette added ('Introductory Analysis of Daily Precipitation Data with hydroTSM')
+	
 
 0.2-1	30-Nov-2010
 
