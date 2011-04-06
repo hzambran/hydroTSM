@@ -6,6 +6,12 @@
        Daily Precipitation Data with R}
 \date{Oct 2010}
 
+%\VignetteIndexEntry{An R Package for time series management, analysis and interpolation for hydrological modelling}
+%\VignetteDepends{zoo, gstat, automap}
+%\VignetteKeyword{hydrology}
+%\VignetteKeyword{hydrological modelling}
+
+
 \begin{document}
 
 \maketitle
