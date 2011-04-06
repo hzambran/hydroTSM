@@ -19,27 +19,11 @@
 \section{Installation}
 \label{sec:Installation}
 
-\begin{enumerate}
-
-\item Packages required by the \textit{hydroTSM} library:
+\item Installing hydroTSM, along with the required and suggested packages:
 
 <<eval=FALSE>>=
-install.packages(c("zoo", "gstat", "automap"))
+install.packages("hydroTSM", dependencies=c("Depends", "Suggests"))
 @
-
-\item Packages suggested by the \textit{hydroTSM} library:
-
-<<eval=FALSE>>=
-install.packages(c("Hmisc", "e1071", "sp", "maptools", "rgdal"))
-@
-
-\item \textit{hydroTSM} library:
-
-<<eval=FALSE>>=
-install.packages(c("hydroTSM"))
-@
-
-\end{enumerate}
 
 
 \section{Setting Up the Environment}
