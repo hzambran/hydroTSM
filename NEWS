@@ -1,11 +1,12 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 
-0.2-2	(under development)
+0.2-2	14-Apr-2011
 	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels.
-	o All the 'print' calls used to display information messages were replaced by a call to the 'message' function.
-	o SVN started to be used for package development in Rforge (thanks to Simon Urbanek for his great support
+	o All the 'print' calls used to display information messages were replaced by a call to 'message'.
+	o SVN started to be used for package development in Rforge (thanks to Simon Urbanek for his great support)
 	o Vignette added ('Introductory Analysis of Daily Precipitation Data with hydroTSM')
+	o Updated dependence on R >= 2.10.0 
 	
 
 0.2-1	30-Nov-2010
@@ -13,7 +14,8 @@ NEWS/ChangeLog for hydroTSM
 	o R functions were split up into individual files.
 	o 'dip', 'mip', 'yip': added error checking for 'out.type'
 	o 'drawxaxis': new argument: lab.fmt, for specifying the format of the axis' labels
-	o 'hydroplot', 'sname2plot': removed argument 'sname', and new arguments: 'lab.fmt', 'xlab', 'ylab', 'col', 'cex', 'cex.main', 'cex.axis', 
+	o 'hydroplot', 'sname2plot': removed argument 'sname', and new arguments: 'lab.fmt', 'xlab', 'ylab', 'col', 
+	  'cex', 'cex.main', 'cex.axis', 
 	  'cex.lab', 'lty', 'lwd', '...'
 	o 'sname2ts': new arguments: 'from', 'to', 'date.fmt'
 	o 'fdc', 'fdcu': new arguments: 'cex.axis', 'cex.lab'

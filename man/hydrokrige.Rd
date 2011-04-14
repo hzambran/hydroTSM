@@ -330,7 +330,7 @@ EbroDEM1000m$ELEVATION <- EbroDEM1000m$band1
 # Saving memory
 EbroDEM1000m$band1 <- NULL
 
-# Computing the KED
+# Computing KED
 \dontrun{
 x.ked <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis, 
                     X="EAST_ED50", Y="NORTH_ED50", sname="ID", 
