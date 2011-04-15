@@ -4,8 +4,8 @@ NEWS/ChangeLog for hydroTSM
 0.2-3	(under development)
 	o 'drawxaxis':  -) it was re-writen, in order to take advantage of some functionalities of the 'xts' 
 			   package (now added as a dependence).
-	 		-) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "weeks", "hours", "minutes", and "seconds", 
-			   which should work with sub-daily time series.
+	 		-) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "weeks", "hours", "minutes", 
+			   and "seconds", which should work with sub-daily time series.
 
 0.2-2	14-Apr-2011
 	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels.
