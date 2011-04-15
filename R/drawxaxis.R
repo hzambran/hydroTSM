@@ -38,7 +38,7 @@ drawxaxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, cex.
  # Ticks: Draws the ticks for the time series in the x axis, without labels
  if (tick.tstep == "auto") {
    ticks <- x
- } else ticks <- to.period(x, period=tick.tstep, indexAt='startof') 
+ } else ticks <- suppressWarnings(to.period(x, period=tick.tstep, indexAt='startof')) 
  ticks.coords <- xy.coords(.index(ticks), ticks[, 1])
  axis(side =1, at = ticks.coords$x, labels = FALSE, col = "#BBBBBB", ...)
 
