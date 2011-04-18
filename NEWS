@@ -6,9 +6,9 @@ NEWS/ChangeLog for hydroTSM
 	o 'drawxaxis':  -) it was re-written, in order to take advantage of some features of the 'xts' 
 			   package (now added as a dependence), and now it should work with sub-daily 
 			   time series.
-			-) it name changed from 'drawxaxis' to 'drawTimeAxis', in order to have a 
+			-) its name changed from 'drawxaxis' to 'drawTimeAxis', in order to have a 
 			   more intuitive name. The old 'drawxaxis' function is deprecated, but 
-			   still be kept for compatibility reasons.			
+			   still be kept for back-compatibility reasons.			
 	 		-) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
 	 		   "minutes", and "seconds", and its default value was changed to "auto".
 	o 'hydroplot':  -) it takes advantage of the new 'drawTimeAxis' function.
