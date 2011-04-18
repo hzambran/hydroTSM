@@ -3,59 +3,11 @@
 #             (without missing dates) of several gauging stations, it  #
 #             takes the name of one gauging station and plots 9 graphs #
 #             (see 'hydroplot' description)                            #
-#                             17-Dic-2008                              #
 ########################################################################
-
-# 'x':               : data.frame whose columns contains the time series
-#                      (without missing values) for several gauging stations.
-# 'sname'            : character with the name of the station whose values will be ploted.
-#                      This name MUST eixst as column name in 'x'
-#                      Additinonal columns are allowed, e.g. one column with Dates an other with IDs
-# 'dates'            : "numeric", "factor", "Date" indicating how to obtain the
-#                      dates for correponding to the 'st.name' station
-#                      If 'dates' is a number, it indicates the index of the column in 'x' that stores the dates
-#                      If 'dates' is a factor, it have to be converted into 'Date' class,
-#                          using the date format  specified by 'date.fmt'
-#                      If 'dates' is already of Date class, the following line verifies that
-#                          the number of days in 'dates' be equal to the number of element in the
-#                          time series corresponding to the 'st.name' station
-# 'date.fmt'         : format in which the dates are stored in 'dates'.
-#                      ONLY required when class(dates)== "character", "factor" or "numeric"
-# 'var.type'         : character representing the type of variable being plotted
-#                      Used for determining the function used for computing the
-#                      Monthly and Annual values when 'FUN' is missing
-#                      Valid values are:
-#                      -) "Precipitation" => FUN = sum
-#                      -) "Temperature"   => FUN = mean
-#                      -) "Flow"          => FUN = mean
-# 'FUN'             : ONLY required when 'var.type' is missing
-#                     Function that have to be applied for transforming from daily to monthly or annual time step
-#                     For precipitation FUN MUST be "sum"
-#                     For temperature and flow time series, FUN MUST be "mean"#
-# 'na.rm'           : Logical. Should missing values be removed?
-#                     TRUE : the monthly and annual values  are computed considering only those values different from NA
-#                     FALSE: if there is AT LEAST one NA within a year, the monthly and annual values are NA
-# 'var.unit'		 : string repreenting the measurement unit of the variable being plotted ("mm" for precipitation, "C" for temperature, and "m3/s" for flow)
-# 'main'             : string repreenting the main title of the plot. If the user did not provide a title, this is
-#                      created automatically as: main= paste(var.type, "at", st.name, sep=" "),
-# 'win.len1'		 : number of days for being used in the computation of the first moving average
-# 'win.len2'		 : number of days for being used in the computation of the second moving average
-# 'ptype'            : type of plot that will be plotted
-#                    : ptype= "ts" => only time series
-#                    : ptype= "ts+boxplot" => only time series + boxplot
-#                    : ptype= "ts+histogram" => only time series + histogram
-#                    : ptype= "ts+boxplot+histogram" => time series + boxplot + histogram
-# 'tick.tstep'       : string indicating the time step that have to be used for
-#                      putting the ticks ont he time axis.
-#                      Possible values are: 'days', 'months', 'years'
-# 'lab.tstep'        : string indicating the time step that have to be used for
-#                      putting the labels ont he time axis.
-# 'pfreq'            : Passed to the 'hydroplot' function.
-#                      Character indicating how many plots are desired by the user.
-#                      Valid values are:
-#                      -) 'dma': Daily, Monthly and Annual values are plotted
-#                      -) 'ma' : Monthly and Annual values are plotted
-#                      -) 'dm' : Daily and Monthly values are plotted
+# Author : Mauricio Zambrano-Bigiarini                                 # 
+# Started: 17-Dic-2008                                                 #
+# Updates: 17-Apr-2011                                                 #
+########################################################################
 sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        ptype="ts+boxplot+hist",
 		       pfreq="dma",                      
@@ -64,10 +16,10 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        main=NULL, xlab="Time", ylab=NULL,
                        win.len1=365*1,
                        win.len2=365*3,                      
-                       tick.tstep="months",
-                       lab.tstep="years",
-                       lab.fmt,
-                       cex=0.7,
+                       tick.tstep="auto",
+                       lab.tstep="auto",
+                       lab.fmt=NULL,
+                       cex=0.3,
                        cex.main=1.3,
                        cex.lab=1.3,
                        cex.axis=1.3,

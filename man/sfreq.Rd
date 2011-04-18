@@ -14,10 +14,10 @@ sfreq(x, min.year = 1800)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-variable of type zoo or ts, with AT LEAST 2 elements, AND with a daily, monthly or annual sampling frequency.
+variable of type zoo, xts or ts, with AT LEAST 2 elements, AND with a daily, monthly or annual sampling frequency.
 }
   \item{min.year}{
-integer used for a correct identification of the sampling frequency when \code{x} is an annual zoo.
+integer used for a correct identification of the sampling frequency when \code{x} is an annual time series.
 }
 }
 %%\details{

@@ -13,22 +13,22 @@ Hydrological time series plotting and extraction.
 }
 \usage{
 hydroplot(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
-          var.type, var.unit="units", main=NULL, xlab="Time", ylab=NULL,
-          win.len1=365*1, win.len2=365*3, tick.tstep="months", 
-          lab.tstep="years", lab.fmt, cex=0.7, cex.main=1.3, cex.lab=1.3,
-          cex.axis=1.3, col=c("blue", "lightblue", "lightblue"), ...)
+          var.type, var.unit="units", main=NULL, xlab="Time", ylab,
+          win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto", 
+          lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
+          col=c("blue", "lightblue", "lightblue"), ...)
 
 sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
            var.type, var.unit="units",main=NULL, xlab="Time", ylab=NULL,
-           win.len1=365*1, win.len2=365*3, tick.tstep="months", lab.tstep="years",
-           lab.fmt, cex=0.7, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
+           win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto",
+           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
            col=c("blue", "lightblue", "lightblue"), 
            dates, date.fmt = "\%Y-\%m-\%d")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-zoo object or data.frame with columns storing the time series of several gauging stations.
+zoo, xts or data.frame object, with columns storing the time series of one or more gauging stations.
 }
   \item{sname}{
 ONLY required when \code{x} is a data frame. \cr
@@ -158,7 +158,7 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 data(OcaEnOnaQts)
 
 # 3 ts, 3 boxplots and 3 histograms
-hydroplot(OcaEnOnaQts, FUN=mean, var.unit = "m3/s")
+hydroplot(OcaEnOnaQts, FUN=mean, ylab= "Q", var.unit = "m3/s")
 
 # only the original time series
 hydroplot(OcaEnOnaQts, pfreq="o")

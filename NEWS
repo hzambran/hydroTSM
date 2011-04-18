@@ -2,10 +2,23 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 
 0.2-3	(under development)
+	o TODO: replace 'drawxaxis' by 'drawTimeAxis' in all the package
 	o 'drawxaxis':  -) it was re-written, in order to take advantage of some features of the 'xts' 
-			   package (now added as a dependence).
-	 		-) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "weeks", "hours", "minutes", 
-			   and "seconds", which should work with sub-daily time series.
+			   package (now added as a dependence), and now it should work with sub-daily 
+			   time series.
+			-) it name changed from 'drawxaxis' to 'drawTimeAxis', in order to have a 
+			   more intuitive name. The old 'drawxaxis' function is deprecated, but 
+			   still be kept for compatibility reasons.			
+	 		-) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
+	 		   "minutes", and "seconds", and its default value was changed to "auto".
+	o 'hydroplot':  -) it takes advantage of the new 'drawTimeAxis' function.
+	  'sname2plot'  -) it works with xts objects as well.
+			-) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
+	 		   "minutes", and "seconds", and its default value was changed to "auto". 
+	 		-) the name of 'x' is now used as default for the Y axis label.
+	 		-) an incorrect default title for the daily histogram was fixed.
+	 		-) the default value for 'cex' was changed from 0.7 to 0.3
+	o 'sfreq':  	-) it works now with xts objects
 
 0.2-2	14-Apr-2011
 	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels.

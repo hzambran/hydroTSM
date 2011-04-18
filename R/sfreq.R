@@ -1,26 +1,19 @@
-#################################################
-# sfreq: Sampling frequency of a ts/zoo object  #
-#################################################
-#              May 13th, 2009                   #
-#################################################
-# This function generates a table indicating the number of days
-# with information (<>NA's) within a data.frame
-
-# 'x'        : variable of type 'zoo' or 'ts', with AT LEAST 2 elements, AND
-#              with a Daily, Monthly or Annual sampling frequency.
-# 'min.year' : integer used for a correct identification of the sampling fequency
-#              when 'x' is an annual zoo (e.g.: time(x) = "1961") => the minimum possible years starts
-#              in 'min.year'
-
-# Result     : Possible values are:
-#              -) 'daily'   : indicating that the sampling freqeuncy in 'x' is daily
-#              -) 'monthly' : indicating that the sampling freqeuncy in 'x' is monthly
-#              -) 'annual'  : indicating that the sampling freqeuncy in 'x' is annual
+################################################################################
+# sfreq: Sampling frequency of a ts/zoo object                                 #
+################################################################################
+# This function generates a table indicating the number of days                #
+# with information (<>NA's) within a data.frame                                #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: May 13th, 2009                                                      #
+# Updates: March 2009, Nov 2010, April 2011                                    #
+################################################################################
 sfreq <- function(x, min.year=1800) {
 
-  # Checking that 'class(x)==Date'
-  if (is.na(match(class(x), c("zoo", "ts") ) ) )
-     stop("Invalid argument: 'x' must be in c('zoo', 'ts')" )
+  # Checking that 'class(x)'
+  valid.class <- c("xts", "zoo", "ts")    
+  if (length(which(!is.na(match(class(x), valid.class )))) <= 0) 
+     stop("Invalid argument: 'x' must be in c('xts', 'zoo', 'ts')" )
 
   if ( length(x) < 2) stop("Invalid argument: 'length(x)' must be larger than 2 for finding its sampling frequency" )
 
