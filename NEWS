@@ -11,14 +11,15 @@ NEWS/ChangeLog for hydroTSM
 			   still be kept for back-compatibility reasons.			
 	 		-) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
 	 		   "minutes", and "seconds", and its default value was changed to "auto".
-	o 'hydroplot':  -) it takes advantage of the new 'drawTimeAxis' function.
-	  'sname2plot'  -) it works with xts objects as well.
+	o 'hydroplot' : -) it takes advantage of the new 'drawTimeAxis' function.
+	  'sname2plot': -) it works with xts objects as well.
 			-) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
 	 		   "minutes", and "seconds", and its default value was changed to "auto". 
 	 		-) the name of 'x' is now used as default for the Y axis label.
 	 		-) an incorrect default title for the daily histogram was fixed.
 	 		-) the default value for 'cex' was changed from 0.7 to 0.3
-	 		-) new arguments: from, to, for sub-setting the plotting of the original time series
+	 		-) new arguments: 'from', 'to', for plotting a slice of the original time series
+	o 'hydroplot':  -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
 	o 'sfreq':  	-) it works now with xts objects
 
 0.2-2	14-Apr-2011

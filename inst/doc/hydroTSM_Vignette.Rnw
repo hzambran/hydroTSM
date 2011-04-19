@@ -4,10 +4,10 @@
 %\pdfbookmark[0]{Titlepage}{title} % Sets a PDF bookmark for the title page
 \title{Tutorial for Introductory Analysis of \\
        Daily Precipitation Data with hydroTSM}
-\date{Oct 2010}
+\date{Oct 2010, Apr 2011}
 
-%\VignetteIndexEntry{An R Package for time series management, analysis and interpolation for hydrological modelling}
-%\VignetteDepends{zoo, gstat, automap}
+%\VignetteIndexEntry{Tutorial for introductory analysis of daily precipitation data with hydroTSM}
+%\VignetteDepends{xts (>= 0.8-1), zoo (>= 1.7-0), gstat, automap}
 %\VignetteKeyword{hydrology}
 %\VignetteKeyword{hydrological modelling}
 
@@ -19,10 +19,10 @@
 \section{Installation}
 \label{sec:Installation}
 
-Installing hydroTSM, along with the required and suggested packages:
+Installing hydroTSM:
 
 <<eval=FALSE>>=
-install.packages("hydroTSM", dependencies=c("Depends", "Suggests"))
+install.packages("hydroTSM")
 @
 
 
@@ -45,7 +45,7 @@ data(SanMartinoPPts)
 \item Selecting only a 3-years time-slice for the analysis
 
 <<>>=
-x <- window(SanMartinoPPts, start=as.Date("1988-01-01"))
+x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
 @
 
 \item Monthly values of precipitation
@@ -60,7 +60,7 @@ dates <- time(x)
 
 \item Amount of years in 'x' (needed for computations)
 <<>>=
-( nyears <- length( seq(from=dates[1], to=dates[length(dates)], by="years") ) )
+( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
 @
 
 \end{enumerate}
@@ -77,11 +77,11 @@ smry(x)
 @
 
 
-\item Using the \textit{hydroplot} function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x' (for this example, only daily and monthly plots are produced)
+\item Using the \textit{hydroplot} function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x' (for this example, only daily and monthly plots are produced). Only data starting from 01-Jan-1987 are plotted.
 
 \begin{center}
 <<fig=TRUE, pdf=TRUE, eps=FALSE, width=10, height=8>>=
-hydroplot(x, var.type="Precipitation", sname="San Martino", pfreq = "dm")
+hydroplot(x, var.type="Precipitation", main="at San Martino", pfreq = "dm", from="1987-01-01")
 @
 \end{center}
 
@@ -124,7 +124,7 @@ matrixplot(M, ColorRamp="Precipitation",
 
 \item Annual Values
 <<>>=
-daily2annual(x, FUN=sum, na.rm=T)
+daily2annual(x, FUN=sum, na.rm=TRUE)
 @
 
 \item Average Annual Precipitation
@@ -132,12 +132,14 @@ daily2annual(x, FUN=sum, na.rm=T)
 Obvious way:
 
 <<>>=
-mean( daily2annual(x, FUN=sum, na.rm=T) )
+mean( daily2annual(x, FUN=sum, na.rm=TRUE) )
 @
 
 Another way (more useful for streamflows, where \texttt{FUN=mean}):
 
-The function \textit{annualfunction} applies \texttt{FUN} twice over \texttt{x}: (i) firstly, over all the elements of \texttt{x} belonging to the same year, in order to obtain the corresponding annual values, and (ii) secondly, over all the annual values of \texttt{x} previously obtained, in order to obtain a single annual value.
+The function \textit{annualfunction} is applied \texttt{FUN} twice over \texttt{x}: \cr
+( i) firstly, over all the elements of \texttt{x} belonging to the same year, in order to obtain the corresponding annual values, and \cr
+(ii) secondly, over all the annual values of \texttt{x} previously obtained, in order to obtain a single annual value.
 
 <<>>=
 annualfunction(x, FUN=sum, na.rm=TRUE) / nyears

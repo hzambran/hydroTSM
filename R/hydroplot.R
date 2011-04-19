@@ -249,7 +249,7 @@
  # Requiring the Zoo Library (Z’s ordered observations)
  require(zoo)
 
- # Checking if the Daily ts have to be plotted
+ # Checking if the Daily Boxplot have to be plotted
  if ( pfreq %in% c("dma", "dm") ) {
    # Generating a factor based on the year in which each daily date falls
    cyear <- format(time(x), "%Y")
@@ -261,7 +261,7 @@
             cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, ...)
  } # IF end
 
- # Checking if the Monthly ts have to be plotted
+ # Checking if the Monthly Boxplot have to be plotted
  if ( pfreq %in% c("dma", "dm", "ma") ) {
    # Generating a factor based on the month in which each monthly date falls
    cmonth <- format(time(x.monthly), "%b")
@@ -273,7 +273,7 @@
             cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, ...)
  } # IF end
 
- # Checking if the Annual ts have to be plotted
+ # Checking if the Annual Boxplot have to be plotted
  if ( pfreq %in% c("dma", "ma") ) {
    # Generating the title of the Annual plot
    title <- paste("Annual Boxplot", main, sep= " ")
@@ -396,6 +396,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                       col=c("blue", "lightblue", "lightblue"),
                       from, 
                       to,
+                      date.fmt= "%Y-%m-%d",
                       ...) {
 
      # Checking that 'x' is a zoo or xts object
@@ -455,6 +456,8 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
      
      ##########################################   
      ## In case 'fom' and 'to' are provided  ##
+     dates <- time(x)
+     
      # Checking the validity of the 'from' argument
      if (missing(from)) { 
         from     <- dates[1]

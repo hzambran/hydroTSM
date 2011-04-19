@@ -16,7 +16,8 @@ hydroplot(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",
           var.type, var.unit="units", main=NULL, xlab="Time", ylab,
           win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
-          col=c("blue", "lightblue", "lightblue"), ...)
+          col=c("blue", "lightblue", "lightblue"), 
+          from, to, date.fmt= "\%Y-\%m-\%d", ...)
 
 sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
            var.type, var.unit="units",main=NULL, xlab="Time", ylab=NULL,
@@ -119,7 +120,7 @@ If \code{dates} is a factor, it is converted into Date class, using the date for
 If \code{dates} is already of Date class, the code verifies that the number of days in \code{dates} be equal to the number of element in \code{x}
 }
   \item{date.fmt}{
-Character indicating the format in which the dates are stored in \var{dates}, e.g. \kbd{\%Y-\%m-\%d}. See \code{format} in \code{\link[base]{as.Date}}. \cr
+Character indicating the format in which the dates are stored in \var{dates}, \var{from} and \var{to}. See \code{format} in \code{\link[base]{as.Date}}. \cr
 ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
 }
   \item{from}{
@@ -131,7 +132,7 @@ OPTIONAL, used for extracting a subset of values. \cr
 Character indicating the ending date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
 }
   \item{\dots}{
-further arguments passed to the \code{plot.zoo} and \code{Axis} functions or from other methods.
+further arguments passed to the \code{plot.zoo} and \code{axis} functions or from other methods.
 }
 }
 \details{
@@ -170,6 +171,9 @@ hydroplot(OcaEnOnaQts, FUN=mean, ylab= "Q", var.unit = "m3/s")
 
 # only the original time series
 hydroplot(OcaEnOnaQts, pfreq="o")
+
+# only the year 1962 of the original time series
+hydroplot(OcaEnOnaQts, pfreq="o", from="1962-01-01", to="1962-12-31")
 
 #############
 ## Loading the monthly time series of precipitation within the Ebro River basin.
