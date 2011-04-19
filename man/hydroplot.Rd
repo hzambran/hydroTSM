@@ -23,7 +23,7 @@ sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",
            win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto",
            lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
            col=c("blue", "lightblue", "lightblue"), 
-           dates, date.fmt = "\%Y-\%m-\%d")
+           dates, date.fmt = "\%Y-\%m-\%d", from, to)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -121,6 +121,14 @@ If \code{dates} is already of Date class, the code verifies that the number of d
   \item{date.fmt}{
 Character indicating the format in which the dates are stored in \var{dates}, e.g. \kbd{\%Y-\%m-\%d}. See \code{format} in \code{\link[base]{as.Date}}. \cr
 ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
+}
+  \item{from}{
+OPTIONAL, used for extracting a subset of values. \cr
+Character indicating the starting date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
+}
+  \item{to}{
+OPTIONAL, used for extracting a subset of values. \cr
+Character indicating the ending date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
 }
   \item{\dots}{
 further arguments passed to the \code{plot.zoo} and \code{Axis} functions or from other methods.

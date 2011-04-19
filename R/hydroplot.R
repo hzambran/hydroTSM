@@ -366,7 +366,7 @@
 #########################################################################
 # Author : Mauricio Zambrano-Bigiarini                                  # 
 # Started: 2008                                                         #
-# Updates: 17-Apr-2011                                                  #
+# Updates: 19-Apr-2011                                                  #
 #########################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -394,6 +394,8 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                       cex.lab=1.3,
                       cex.axis=1.3,
                       col=c("blue", "lightblue", "lightblue"),
+                      from, 
+                      to,
                       ...) {
 
      # Checking that 'x' is a zoo or xts object
@@ -450,6 +452,37 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                                }
                       } #ELSE end
      } # IF end
+     
+     ##########################################   
+     ## In case 'fom' and 'to' are provided  ##
+     # Checking the validity of the 'from' argument
+     if (missing(from)) { 
+        from     <- dates[1]
+        from.pos <- 1
+     } else {
+         from <- as.Date(from, format=date.fmt)
+         if ( length( which(dates == from) ) > 0 ) {
+           from.pos <- which( dates == from )
+          } else stop("Invalid argument: 'from' is not in 'dates' ")
+       } # ELSE end
+
+     # Checking the validity of the 'to' argument
+      if (missing(to)) { 
+        to.pos <- length(dates)
+        to     <- dates[to.pos]     
+     } else {
+         to <- as.Date(to, format=date.fmt)
+         if ( length( which(dates == to) ) > 0 ) {
+           to.pos <- which( dates == to )
+         } else stop("Invalid argument: 'to' is not in 'dates' ")
+       } # ELSE end
+
+     # Checking that 'to' is larger than 'from'
+     if (to.pos < from.pos) stop("Invalid argument: 'to' have to be located in a row below the row corresponding to 'from'")
+     
+     # Extracting a subset of the values
+     x <- window(x, start=from, end=to)
+     #################
 
      # Assigning a dummy value to FUN, which is not used when pfreq="o"
      if (pfreq == "o") FUN <- mean

@@ -18,6 +18,7 @@ NEWS/ChangeLog for hydroTSM
 	 		-) the name of 'x' is now used as default for the Y axis label.
 	 		-) an incorrect default title for the daily histogram was fixed.
 	 		-) the default value for 'cex' was changed from 0.7 to 0.3
+	 		-) new arguments: from, to, for sub-setting the plotting of the original time series
 	o 'sfreq':  	-) it works now with xts objects
 
 0.2-2	14-Apr-2011
