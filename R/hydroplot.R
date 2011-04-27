@@ -118,7 +118,7 @@
                    main=main, xlab=xlab, ylab=ylab, 
                    cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                    lty=lty, lwd=lwd, ...)
-          axis(2)
+          axis(2, cex.lab=1.3, cex.axis=1.3)
           # Draws monthly ticks in the X axis, but labels only in years
           drawxaxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
@@ -135,7 +135,7 @@
                    main=title, xlab=xlab, ylab=paste(ylab," [", var.unit,"/day]", sep=""), 
                    cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                    lty=lty, lwd=lwd, ...)
-          axis(2)
+          axis(2, cex.lab=cex.lab, cex.axis=cex.axis)
           # Draws monthly ticks in the X axis, but labels only in years
           drawxaxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
@@ -162,7 +162,7 @@
                  main=title, xlab=xlab, ylab=paste(ylab," [", var.unit,"/month]", sep=""),
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ... )
-        axis(2)
+        axis(2, cex.lab=cex.lab, cex.axis=cex.axis)
 
 
         # Draws monthly ticks in the X axis, but labels only in years
@@ -189,7 +189,7 @@
                    main=title, xlab="Time", ylab=paste(ylab," [", var.unit,"/year]", sep=""),
                    cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                    lty=lty, lwd=lwd, ...)
-          axis(2)
+          axis(2, cex.lab=cex.lab, cex.axis=cex.axis)
           # Draws monthly ticks in the X axis, but labels only in years
           drawxaxis(x.annual, tick.tstep="years", lab.tstep="years", lab.fmt="%Y",
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
