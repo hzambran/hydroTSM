@@ -1,7 +1,8 @@
 ########################################################################
 #  'vector2zoo': Transforms a numerical vector 'x' with a corresponding#
 #             'Date' vector (any format) into a 'zoo' object           #
-#                       17-Dic-2008, 01-Oct-2009, 06-Oct-2010          #
+#                       17-Dic-2008, 01-Oct-2009, 06-Oct-2010 ;        #
+#                       05-May-2011                                    #
 ########################################################################
 #  Transform a numericl vectorial  and  its corresponding dates into
 #  a 'zoo' variable, for being used by other procedures of this library
@@ -22,8 +23,11 @@ vector2zoo <- function(x, dates, date.fmt="%Y-%m-%d") {
   if (is.na(match(class(dates), c("Date", "character", "factor"))))
         stop("Invalid argument: 'class(dates)' must be in c('Date', 'character', 'factor')")
 
-   if (is.na(match(class(dates), c("Date"))))
+  if (is.na(match(class(dates), c("Date"))))
       dates <- as.Date(dates, format= date.fmt)
+      
+  if (length(x) != length(dates)) 
+     stop(paste("Invalid argument: length(x) != length(dates) (", length(x), "!=", length(dates), ")", sep="") )
 
   # Transforming into a 'zoo' type the values in the time series
   b <- as.zoo(x)
