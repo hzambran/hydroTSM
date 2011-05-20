@@ -14,9 +14,9 @@ dwi <-function(x, ...) UseMethod("dwi")
 # x        : variable of type 'zoo'
 # out.unit : aggregation time for the computation of the amount of days with info.
 #	     Valid values are:
-#            -) "month": monthly;
-#            -) "year" : annual;
-#            -) "mpy"  : month per year
+#            -) "months": monthly;
+#            -) "years" : annual;
+#            -) "mpy"   : month per year
 # from     : Character indicating the starting date for the values stored in all the files that
 #            will be read. It HAs to be in the format indicated by 'date.fmt'
 # to       : Character indicating the starting date for the values stored in all the files that
@@ -120,8 +120,8 @@ dwi.default <- function(x, out.unit="years", from=range(time(x))[1],
 # 'x'         : variable of type 'data.frame'
 # out.unit    : aggregation time for the computation of the amount of days with info.
 #	        Valid values are:
-#               -) "month": monthly;
-#               -) "year" : annual;
+#               -) "months": monthly;
+#               -) "years" : annual;
 # from        : starting date for detection of days with inormation
 # to          : date format that will be used in the output variable
 # date.fmt    : date format of "from" and "to". For CHE files, the format must be "%d-%m-%Y"
@@ -141,7 +141,7 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
 
   # Checking the validity of the 'out.unit' argument
   if ( is.na( match(out.unit, c("years", "months") ) ) ) {
-       stop("Invalid argument value: 'out.unit' must be in c('years', 'months')" ) }
+         stop("Invalid argument value: For data.frames, 'out.unit' must be in c('years', 'months')" ) }
 
   # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {

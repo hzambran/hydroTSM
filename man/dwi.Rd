@@ -27,9 +27,9 @@ Measurements at several gauging stations can be stored in a data.frame of matrix
 }
   \item{out.unit}{
 aggregation time for the computation of the amount of days with information. Valid values are: \cr
--) \kbd{month}: monthly;  \cr
--) \kbd{year} : annual;   \cr
--) \kbd{mpy}  : month per year
+-) \kbd{months}: monthly;  \cr
+-) \kbd{years} : annual;   \cr
+-) \kbd{mpy}   : month per year (not available for data.frames)
 }
   \item{from}{
 Character indicating the starting date for the computations. It has to be in the format indicated by \code{date.fmt}.\cr
