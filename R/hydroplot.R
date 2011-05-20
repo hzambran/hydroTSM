@@ -83,8 +83,9 @@
           win.len <- win.len1
           if (length(x) >= win.len) {
             d.ma1 <- TRUE
-            daily.ma1 <- ma.zoo(x, win.len) }
+            daily.ma1 <- ma.zoo(x, win.len) 
             if (!is.xts(daily.ma1)) daily.ma1 <- as.xts(daily.ma1)
+          }            
       } # IF end
 
       # Generating a Moving Average of the Daily time series, with a window width 'win.len2'
@@ -92,8 +93,9 @@
           win.len <- win.len2
           if (length(x) >= win.len) {
             d.ma2 <- TRUE
-            daily.ma2 <- ma.zoo(x, win.len) }
+            daily.ma2 <- ma.zoo(x, win.len)
             if (!is.xts(daily.ma2)) daily.ma2 <- as.xts(daily.ma2)
+          }            
       } # IF end
 
       # Generating a Moving Average of the Monthly time series, with a window width 'win.len1'
@@ -106,12 +108,10 @@
       win.len <- round(win.len2/365,1)*12
       if (length(x.monthly) >= win.len) {
         m.ma2 <- TRUE
-        monthly.ma2 <- ma.zoo( x.monthly, win.len ) }
-        
+        monthly.ma2 <- ma.zoo( x.monthly, win.len ) }        
       
       # If 'x' is not 'xts' it is transformed into one
       if ( !(is.xts(x)) ) x <- as.xts(x)
-
 
       # Plotting only the original zoo or xts object, without moving averages and legends
       if ( pfreq == "o") {
