@@ -23,6 +23,7 @@ NEWS/ChangeLog for hydroTSM
 	o 'hydroplot':  -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
 	o 'sfreq':  	-) it works now with xts objects
 	o 'vector2zoo': -) added error checking for detecting if the lenght of the numeric vector and the dates are equal.
+	o 'dwi'       : -) fixed documentation of the 'out.unit' argument.
 
 0.2-2	14-Apr-2011
 	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels (thanks to Santosh Aryal !)
