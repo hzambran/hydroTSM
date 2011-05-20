@@ -68,7 +68,7 @@
               'months', 'weeks', 'days', 'hours', 'minutes', 'seconds')")
 
       # Requiring the Zoo Library (Zoo's ordered observations)
-      require(zoo)
+      require(xts)
 
       # Booleans indicating if the moving averages for the dayly and monthly
       # time series can be computed and ploted. By default they  are FALSE,
@@ -84,6 +84,7 @@
           if (length(x) >= win.len) {
             d.ma1 <- TRUE
             daily.ma1 <- ma.zoo(x, win.len) }
+            if (!is.xts(daily.ma1)) daily.ma1 <- as.xts(daily.ma1)
       } # IF end
 
       # Generating a Moving Average of the Daily time series, with a window width 'win.len2'
@@ -92,6 +93,7 @@
           if (length(x) >= win.len) {
             d.ma2 <- TRUE
             daily.ma2 <- ma.zoo(x, win.len) }
+            if (!is.xts(daily.ma2)) daily.ma2 <- as.xts(daily.ma2)
       } # IF end
 
       # Generating a Moving Average of the Monthly time series, with a window width 'win.len1'
@@ -105,10 +107,10 @@
       if (length(x.monthly) >= win.len) {
         m.ma2 <- TRUE
         monthly.ma2 <- ma.zoo( x.monthly, win.len ) }
-
-
+        
+      
       # If 'x' is not 'xts' it is transformed into one
-      if ( !("xts" %in% class(x)) ) x <- as.xts(x)
+      if ( !(is.xts(x)) ) x <- as.xts(x)
 
 
       # Plotting only the original zoo or xts object, without moving averages and legends
@@ -501,7 +503,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
        # If 'x' is too short for plotting annual values, 'pfreq' is automatically changed
        if ( ( (sfreq(x) == "daily") & ( length(x) <= 366 ) ) |
             ( (sfreq(x) == "monthly") & ( length(x) <= 12 ) ) ) {
-           if ( match(pfreq, c("dma", "ma") ) ) {
+           if ( pfreq %in% c("dma", "ma") ) {
              if (pfreq == "dma") pfreq <- "dm"
              if (pfreq == "ma") pfreq <- "m"
              message(paste("[Warning: your ts is too short for plotting annual time series => 'pfreq'= ", pfreq, "]", sep="") )
