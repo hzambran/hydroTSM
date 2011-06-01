@@ -9,5 +9,6 @@ Description: S3 functions for management, analysis, interpolation and plot of hy
 License: GPL (>=2)
 Depends: R (>= 2.10.0), xts (>= 0.8-1), zoo (>= 1.7-0), gstat, automap
 Suggests: sp, maptools, e1071, rgdal, lattice
-URL: http://www.rforge.net/hydroTSM/, https://www.rforge.net/bugzilla/describecomponents.cgi?product=hydroTSM, http://cran.r-project.org/web/packages/hydroTSM/
+URL: http://www.rforge.net/hydroTSM/, http://cran.r-project.org/web/packages/hydroTSM/
+BugsURL: https://www.rforge.net/bugzilla/describecomponents.cgi?product=hydroTSM
 LazyLoad: yes
