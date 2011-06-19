@@ -14,9 +14,10 @@ annualfunction <- function(x, FUN, na.rm=TRUE,...) UseMethod("annualfunction")
 
 annualfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
-     # Checking that 'x' is a zoo object
-     if (is.na(match(class(x), c("zoo"))))
-	stop("Invalid argument: 'x' must be of class 'zoo'")
+     # Checking that the user provied a valid class for 'x'   
+     valid.class <- c("xts", "zoo")    
+     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+         stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
      # If the user did not provide a title for the plots, this is created automatically
      if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
@@ -137,3 +138,16 @@ annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   return(z)
   
 } #'annualfunction.data.frame' END
+
+
+annualfunction.matrix <- function(x, FUN, na.rm=TRUE,
+                                  dates, date.fmt="%Y-%m-%d",
+                                  verbose=TRUE,...) {
+ 
+ x <- as.data.frame(x)
+ #NextMethod("daily2annual")
+ annualfunction.data.frame(x=x, FUN=FUN, na.rm=na.rm,
+                           dates=dates, date.fmt=date.fmt,
+                           verbose=verbose,...)
+                                                                 
+} # 'annualfunction.matrix' END

@@ -13,9 +13,10 @@ monthlyfunction <- function(x, ...) UseMethod("monthlyfunction")
 
 monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
-     # Checking that 'x' is a zoo object
-     if (is.na(match(class(x), c("zoo"))))
-	stop("Invalid argument: 'x' must be of class 'zoo'")
+     # Checking that the user provied a valid class for 'x'   
+     valid.class <- c("xts", "zoo")    
+     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+        stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
      # Checking that the user provied a valid argument for 'FUN'
      if (missing(FUN))
@@ -207,3 +208,18 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   return( z )
 
  } #'monthlyfunction.data.frame' END
+ 
+ 
+ 
+monthlyfunction.matrix <- function(x, FUN, na.rm=TRUE,
+                                   dates, date.fmt="%Y-%m-%d",
+                                   out.type="data.frame",
+                                   verbose=TRUE,...) {
+ x <- as.data.frame(x)
+ #NextMethod("daily2annual")
+ monthlyfunction.data.frame(x=x, FUN=FUN, na.rm=na.rm,
+                            dates=dates, date.fmt=date.fmt,
+                            out.type=out.type,
+                            verbose=verbose,...)
+                                                                    
+ } # 'monthlyfunction.matrix' END                                    

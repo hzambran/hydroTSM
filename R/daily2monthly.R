@@ -17,9 +17,10 @@ daily2monthly <-function(x, ...) UseMethod("daily2monthly")
 
 daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
 
-  # Checking the user provide a valid value for 'x'
-  if (is.na(match(class(x), c("zoo"))))
-        stop("Invalid argument: 'x' must be of class 'zoo'")
+  # Checking that the user provied a valid class for 'x'   
+  valid.class <- c("xts", "zoo")    
+  if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+      stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
   # Checking the user provide a valid value for 'FUN'
   if (missing(FUN)) {

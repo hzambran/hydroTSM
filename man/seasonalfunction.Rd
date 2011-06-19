@@ -3,6 +3,7 @@
 \alias{seasonalfunction}
 \alias{seasonalfunction.default}
 \alias{seasonalfunction.data.frame}
+\alias{seasonalfunction.matrix}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Seasonal Function

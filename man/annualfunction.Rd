@@ -1,8 +1,9 @@
 \name{annualfunction}
 \Rdversion{1.1}
-\alias{annualfunction.data.frame}
-\alias{annualfunction.default}
 \alias{annualfunction}
+\alias{annualfunction.default}
+\alias{annualfunction.data.frame}
+\alias{annualfunction.matrix}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Annual Function
@@ -16,6 +17,9 @@ annualfunction(x, FUN, na.rm = TRUE, ...)
 \method{annualfunction}{default}(x, FUN, na.rm = TRUE, ...)
 
 \method{annualfunction}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+        verbose = TRUE, ...)
+        
+\method{annualfunction}{matrix}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
         verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.

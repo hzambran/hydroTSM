@@ -33,9 +33,10 @@
                          cex.main=1.3, cex.lab=1.3, cex.axis=1.3, col="blue", 
                          lwd=1, lty=1, ...) {
 
-      # Checking that 'x' is a zoo or xts object
-      if (is.na(match(class(x), c("zoo", "xts"))))
-            stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
+      # Checking that the user provied a valid class for 'x'   
+      valid.class <- c("xts", "zoo")    
+      if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+         stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
       # Checking that 'x.monthly' is a zoo or xts object
       if ( length(x.monthly) > 1 ) {
@@ -364,11 +365,122 @@
 
 
 #########################################################################
+# hydroplotseasonal: Seasonal plots of hydrological time series         #
+#########################################################################
+# Author : Mauricio Zambrano-Bigiarini                                  # 
+# Started: 19-Jun-2011                                                  #
+# Updates:                                                              #
+#########################################################################
+.hydroplotseasonal <- function(x, FUN, na.rm=TRUE,
+		               tick.tstep= "auto", lab.tstep= "auto", lab.fmt=NULL,
+                               var.unit="units", main=NULL, xlab="Time", ylab=NULL, 
+                               cex.main=1.3, cex.lab=1.3, cex.axis=1.3, col="blue", 
+                               lwd=1, lty=1, ...) {
+      
+      # checking the class of 'x'      
+      if (is.na(match(class(x), c("zoo", "xts"))))
+         stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
+          
+      # Valid tseps for ''tick.tstep' and 'lab.tstep' 
+      valid.tstep <- c("auto", "years", "quarters", "months", "weeks", "days", 
+                       "hours", "minutes", "seconds")
+
+      # Checking that the user provied a valid argument for 'tick.tstep'
+      if (is.na(match(tick.tstep, valid.tstep ) ) )
+         stop("Invalid argument: 'tick.tstep' must be in c('auto', 'years', 'quarters',
+              'months', 'weeks', 'days', 'hours', 'minutes', 'seconds')")
+
+      # Checking that the user provied a valid argument for 'lab.tstep'
+      if (is.na(match(lab.tstep, valid.tstep ) ) )
+         stop("Invalid argument: 'lab.tstep' must be in c('auto', 'years', 'quarters',
+              'months', 'weeks', 'days', 'hours', 'minutes', 'seconds')")
+
+      # Requiring the Zoo Library (Zoo's ordered observations)
+      require(xts)
+
+      # Checking the length of x
+      if ( sfreq(x) == "daily" ) {
+        if (length(x) < 365 )
+          stop("Invalid argument: daily time series need -at least- 365 values !")
+      } else if ( sfreq(x) == "monthly" ) {
+          if (length(x) < 12 )
+            stop("Invalid argument: monthly time series need -at least- 1 12 values !")
+        } else  stop("Invalid argument: seasonal plots can not be drawn for annual time series !")    
+      
+      # If 'x' is not 'xts' it is transformed into one
+      if ( !(is.xts(x)) ) x <- as.xts(x)
+      
+      
+      # Computing the seasonal values
+      DJF <- dm2seasonal(x, season="DJF", FUN=FUN, out.fmt="%Y-%m-%d")
+      MAM <- dm2seasonal(x, season="MAM", FUN=FUN, out.fmt="%Y-%m-%d")
+      JJA <- dm2seasonal(x, season="JJA", FUN=FUN, out.fmt="%Y-%m-%d")
+      SON <- dm2seasonal(x, season="SON", FUN=FUN, out.fmt="%Y-%m-%d")
+
+      # Transforming the seasonal values into xts objects
+      DJF <- as.xts(DJF)
+      MAM <- as.xts(MAM)
+      JJA <- as.xts(JJA)
+      SON <- as.xts(SON)
+
+
+      #################################
+      # Plotting seasonal time series #
+      #################################
+      def.par <- par(no.readonly = TRUE) # save default, for resetting... 
+      on.exit(par(def.par))
+      
+      layout( matrix( c(1,1,1,1,1,1,1,1,1,5,5,2,2,2,2,2,2,2,2,2,6,6,3,3,3,3,3,3,3,3,3,7,7,4,4,4,4,4,4,4,4,4,8,8), ncol=11, byrow=TRUE) ) 
+      
+        # DJF
+        plot.xts(DJF, axes=FALSE, type="o", main="Winter (DJF)", xlab=xlab, ylab=ylab, 
+                 cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
+                 lty=lty, lwd=lwd, ...)
+        axis(2, cex.lab=1.3, cex.axis=1.3)
+        drawxaxis(DJF, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+                  cex.lab=cex.lab, cex.axis=cex.axis, ...)
+                
+        # MAM
+        plot.xts(MAM, axes=FALSE, type="o", main="Spring (MAM)", xlab=xlab, ylab=ylab, 
+                 cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
+                 lty=lty, lwd=lwd, ...)
+        axis(2, cex.lab=1.3, cex.axis=1.3)
+        drawxaxis(MAM, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+                  cex.lab=cex.lab, cex.axis=cex.axis, ...)
+                
+        # JJA
+        plot.xts(JJA, axes=FALSE, type="o", main="Summer (JJA)", xlab=xlab, ylab=ylab, 
+                 cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
+                 lty=lty, lwd=lwd, ...)
+        axis(2, cex.lab=1.3, cex.axis=1.3)
+        drawxaxis(JJA, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+                  cex.lab=cex.lab, cex.axis=cex.axis, ...)
+      
+        # SON
+        plot.xts(SON, axes=FALSE, type="o", main="Autumn (SON)", xlab=xlab, ylab=ylab, 
+                 cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
+                 lty=lty, lwd=lwd, ...)
+        axis(2, cex.lab=1.3, cex.axis=1.3)
+        drawxaxis(SON, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+                  cex.lab=cex.lab, cex.axis=cex.axis, ...)
+      
+      #################################
+      # Plotting seasonal time series #
+      #################################
+        boxplot(coredata(DJF), col= "lightblue", ylab = ylab, main = "Winter (DJF)")
+        boxplot(coredata(MAM), col= "lightblue", ylab = ylab, main = "Spring (MAM)")
+        boxplot(coredata(JJA), col= "lightblue", ylab = ylab, main = "Summer (JJA)")
+        boxplot(coredata(SON), col= "lightblue", ylab = ylab, main = "Autumn (SON)")     
+                                
+} # .hydroplotseasonal END
+
+
+#########################################################################
 # hydroplot: Daily, Monthly and Annual plots of hydrological time series#
 #########################################################################
 # Author : Mauricio Zambrano-Bigiarini                                  # 
 # Started: 2008                                                         #
-# Updates: 19-Apr-2011                                                  #
+# Updates: 19-Apr-2011 ; 19-Jun-2011                                    #
 #########################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -401,9 +513,10 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                       date.fmt= "%Y-%m-%d",
                       ...) {
 
-     # Checking that 'x' is a zoo or xts object
-     if (is.na(match(class(x), c("zoo", "xts"))))
-            stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
+     # Checking that the user provied a valid class for 'x'   
+     valid.class <- c("xts", "zoo")    
+     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+        stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
             
      # 'xname' value
      xname <- deparse(substitute(x))
@@ -419,12 +532,12 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
 
      # Checking that the user provied a valid argument for 'pfreq'
      if ( sfreq(x) == "daily" ) {
-       if (is.na(match(pfreq, c("o", "dma", "dm", "ma"))))
-          stop("Invalid argument: 'pfreq' must be in c('o', 'dma', 'ma', 'dm')")
+       if (is.na(match(pfreq, c("o", "dma", "dm", "ma", "seasonal"))))
+          stop("Invalid argument: 'pfreq' must be in c('o', 'dma', 'ma', 'dm', 'seasonal')")
      } else if ( sfreq(x) == "monthly" ) {
-         if ( pfreq != "ma" ) {
+         if (is.na(match(pfreq, c("ma", "seasonal")))) {
             message("[Warning: 'x' is a monthly object, so 'pfreq' has been changed to 'ma']")
-            pfreq="ma"
+            pfreq <- "ma"
          }
        } # ELSE end
 
@@ -457,7 +570,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
      } # IF end
      
      ##########################################   
-     ## In case 'fom' and 'to' are provided  ##
+     ## In case 'from' and 'to' are provided  ##
      dates <- time(x)
      
      # Checking the validity of the 'from' argument
@@ -497,6 +610,23 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
 
      # Requiring the Zoo Library
      require(zoo)
+     
+     # IF the user wants SEASONAL plots
+     if (pfreq == "seasonal") {
+       
+       if (!missing(ptype)) {
+         if ( ptype != "ts+boxplot") {
+           message("[Note: 'pfreq=seasonal' => 'ptype' has been changed to 'ts+boxplot']")
+           ptype <- "ts+boxplot"
+         } # IF end
+       } # IF end
+       
+       .hydroplotseasonal(x=x, FUN=FUN, na.rm=na.rm, tick.tstep= tick.tstep, 
+                          lab.tstep= lab.tstep, lab.fmt=lab.fmt, var.unit=var.unit, 
+                          main=main, xlab=xlab, ylab=ylab, cex.main=cex.main, 
+                          cex.lab=cex.lab, cex.axis=cex.axis, col=col, ...)
+                               
+     } else {
      
      if (pfreq != "o") {
 
@@ -548,7 +678,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                     cex=cex, cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col[1], ...)
      } # IF end
 
-     else if (ptype=="ts+boxplot") {
+     else if ( (ptype=="ts+boxplot") & (pfreq != "seasonal") ) {
        # Setting up the screen with 3 rows and 3 columns
        if (pfreq == "dma") { par(mfcol=c(3,2))
        } else if (pfreq %in% c("dm", "ma")) { par(mfcol=c(2,2))
@@ -602,5 +732,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                       var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab, 
                       cex=cex, cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col[3], ...)
      } # ELSE end
+     
+   } # ELSE end (if (pfreq == "seasonal")
 
  } # 'hydroplot end

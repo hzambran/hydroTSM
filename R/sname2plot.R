@@ -82,10 +82,15 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
   # time series corresponding to the 'sname' station
   if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates
-     )' must be equal to 'nrow(x)'")
+     )' must be equal to 'nrow(x)'")     
+
+  # 'ylab' value
+  if ( missing(ylab) ) { 
+     ylab <- sname
+  } else if ( is.null(ylab) ) ylab <- sname
      
   ##########################################   
-  ## In case 'fom' and 'to' are provided  ##
+  ## In case 'from' and 'to' are provided  ##
   # Checking the validity of the 'from' argument
   if (missing(from)) { 
      from     <- dates[1]
@@ -139,10 +144,10 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
     # 8: Histogram of the monthly time series
     # 9: Histogram of the annual time series
     hydroplot(x, FUN=FUN, na.rm=na.rm, ptype=ptype, pfreq=pfreq,                      
-          var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
-          win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
-          lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
-          cex.axis=cex.axis, col=col)
+              var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
+              win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
+              lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
+              cex.axis=cex.axis, col=col)
 
   } else stop( paste("The station name", sname, "does not exist in 'x'", sep=" ") )
 

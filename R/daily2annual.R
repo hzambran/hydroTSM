@@ -17,15 +17,16 @@ daily2annual <-function(x, ...) UseMethod("daily2annual")
 
 daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 
-	 # Checking that 'x' is a zoo object
-	 if (is.na(match(class(x), c("zoo"))))
-	   stop("Invalid argument: 'x' must be of class 'zoo'")
+	 # Checking that the user provied a valid class for 'x'   
+         valid.class <- c("xts", "zoo")    
+         if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+           stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
 	 # Checking that the user provide a valid value for 'FUN'
 	 if (missing(FUN)) {
-		 stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values") }
+           stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values") }
 
-         # Checking that 'x' is a zoo object
+         # Checking 'out.fmt'
 	 if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
 	   stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
 

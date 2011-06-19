@@ -2,7 +2,8 @@
 # dm2seasonal: Generic function for computing seasonal values for every #
 #              year of a daily/monthly zoo object                       #
 #########################################################################
-#                  May 15th, 2009; Aug 31th 2009                        #
+# Started: 15-May-2009 ;                                                #
+# Updates: 31-Aug-2009 ; 19-Jun-2011                                    #
 #########################################################################
 
 # 'x   '    : variable of type 'zoo' or 'data.frame'
@@ -16,14 +17,19 @@
 # 'na.rm'    : Logical. Should missing values be removed?
 #              TRUE : the seasonal values  are computed considering only those values different from NA
 #              FALSE: if there is AT LEAST one NA within a season, the corresponding values are NA
+# 'out.fmt'  : character indicating the format for the output time series. Possible values are:
+#              -) "%Y"      : only the year will be used for the time. Default option. (e.g., "1961" "1962"...)
+#              -) "%Y-%m-%d": a complete date format will be used for the time. Default option. (e.g., "1961" "1962"...)
+
 dm2seasonal <-function(x, ...) UseMethod("dm2seasonal")
 
 
-dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, ...) {
+dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 
-  # Checking that the user provied a valid argument for 'x'
-  if ( is.na( match( class(x), c("zoo") ) ) )
-      stop("Invalid argument: 'class(x)' must be 'zoo'")
+  # Checking that the user provied a valid class for 'x'   
+  valid.class <- c("xts", "zoo")    
+  if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+      stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
   # Checking that the user provied a valid argument for 'season'
   if ( missing(season) ) {
@@ -39,6 +45,10 @@ dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, ...) {
   # Checking that 'x' is a Daily or Monthly ts
   if (is.na(match(sfreq(x), c("daily", "monthly") ) ) )
       stop(paste("Invalid argument: 'x' must be a daily or monthly ts, but 'sfreq(x)' is", sfreq(x), sep=" ")  )
+      
+  # Checking 'out.fmt'
+  if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
+    stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
 
   dates <- time(x)
 
@@ -91,6 +101,10 @@ dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, ...) {
 
   # Changing all the Inf and -Inf by NA's
   if ( length(inf.index) > 0 ) { s.a[inf.index] <- NA }
+  
+  # If the user wants a complete data format for the output ts:
+  if (out.fmt == "%Y-%m-%d")
+    time(s.a) <- as.Date(paste( time(s.a), "-01-01", sep=""))
 
   return(s.a)
 
@@ -119,7 +133,8 @@ dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, ...) {
 #                              The fouth column will contain the seasonal value, corresponding to the year specified in the second column
 dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
                                    dates, date.fmt="%Y-%m-%d",
-				   out.type="data.frame",... ) {
+				   out.type="data.frame", 
+				   out.fmt="%Y", ... ) {
 
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
@@ -135,6 +150,10 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
 
   # Checking that the user provied a valid argument for 'FUN'
   if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
+  
+  # Checking 'out.fmt'
+  if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
+    stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
 
   # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {
@@ -208,7 +227,7 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
 		# using the dates provided by the user
 		tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
 
-		z[,j] <- dm2seasonal.default(x= tmp, season=season, FUN=FUN, na.rm=na.rm)
+		z[,j] <- dm2seasonal.default(x= tmp, season=season, FUN=FUN, na.rm=na.rm, out.fmt=out.fmt)
 
 	}, y = x) # sapply END
 
@@ -237,7 +256,7 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
             tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
 
 	    # Computing the seasonal values
-            s.a <- dm2seasonal.default(x= tmp, season=season, FUN=FUN, na.rm=na.rm)
+            s.a <- dm2seasonal.default(x= tmp, season=season, FUN=FUN, na.rm=na.rm, out.fmt=out.fmt)
 
             # Putting the annual seasonal values in the output data.frame
             # The first column of 'x' corresponds to the Year
@@ -256,3 +275,18 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
   return( z )
 
  } #'dm2seasonal.data.frame' END
+ 
+ 
+dm2seasonal.matrix  <- function(x, season, FUN, na.rm=TRUE,
+                                dates, date.fmt="%Y-%m-%d",
+				out.type="data.frame", 
+				out.fmt="%Y", ... ) {
+
+   x <- as.data.frame(x)
+   #NextMethod("daily2annual")
+   dm2seasonal.data.frame(x=x, season=season, FUN=FUN, na.rm=na.rm,
+                          dates=dates, date.fmt=date.fmt,
+			  out.type=out.type, 
+			  out.fmt=out.fmt, ... )
+
+} # 'dm2seasonal.matrix  ' END

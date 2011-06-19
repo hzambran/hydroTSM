@@ -1,8 +1,9 @@
 \name{monthlyfunction}
 \Rdversion{1.1}
-\alias{monthlyfunction.data.frame}
-\alias{monthlyfunction.default}
 \alias{monthlyfunction}
+\alias{monthlyfunction.default}
+\alias{monthlyfunction.matrix}
+\alias{monthlyfunction.data.frame}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Monthly Function

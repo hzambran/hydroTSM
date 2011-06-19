@@ -15,8 +15,8 @@ seasonalfunction <- function(x, ...) UseMethod("seasonalfunction")
 seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
      # Checking that 'x' is a zoo object
-     if (is.na(match(class(x), c("zoo"))))
-	stop("Invalid argument: 'x' must be of class 'zoo'")
+     if ( !(class(x) %in% c("zoo", "xts") ) )
+       stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
 
      # Checking that the user provied a valid argument for 'FUN'
      if (missing(FUN))
@@ -219,3 +219,18 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   return( z )
 
  } #'seasonalfunction.data.frame' END
+ 
+ 
+ seasonalfunction.matrix <- function(x, FUN, na.rm=TRUE,
+                                     dates, date.fmt="%Y-%m-%d",
+                                     out.type="data.frame",
+                                     verbose=TRUE,...) {
+                                     
+   x <- as.data.frame(x)
+   #NextMethod("daily2annual")
+   seasonalfunction.data.frame(x=x, FUN=FUN, na.rm=na.rm,
+                               dates=dates, date.fmt=date.fmt,
+                               out.type=out.type,
+                               verbose=verbose,...)
+
+} # 'seasonalfunction.matrix  ' END

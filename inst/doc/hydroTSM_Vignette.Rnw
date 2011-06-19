@@ -7,7 +7,6 @@
 \date{Oct 2010, Apr 2011}
 
 %\VignetteIndexEntry{Tutorial for introductory analysis of daily precipitation data with hydroTSM}
-%\VignetteDepends{xts (>= 0.8-1), zoo (>= 1.7-0), gstat, automap}
 %\VignetteKeyword{hydrology}
 %\VignetteKeyword{hydrological modelling}
 
@@ -137,8 +136,8 @@ mean( daily2annual(x, FUN=sum, na.rm=TRUE) )
 
 Another way (more useful for streamflows, where \texttt{FUN=mean}):
 
-The function \textit{annualfunction} is applied \texttt{FUN} twice over \texttt{x}: \cr
-( i) firstly, over all the elements of \texttt{x} belonging to the same year, in order to obtain the corresponding annual values, and \cr
+The function \textit{annualfunction} is applied \texttt{FUN} twice over \texttt{x}: 
+( i) firstly, over all the elements of \texttt{x} belonging to the same year, in order to obtain the corresponding annual values, and
 (ii) secondly, over all the annual values of \texttt{x} previously obtained, in order to obtain a single annual value.
 
 <<>>=

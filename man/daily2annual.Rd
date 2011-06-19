@@ -42,7 +42,7 @@ Logical. Should missing values be removed? \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a year, the corresponding annual value is NA.
 }
   \item{out.fmt}{
-Character indicating the format for the output time series. See \code{format} in \code{\link[base]{as.Date}}. Possible values are: \cr
+Character indicating the date format for the output time series. See \code{format} in \code{\link[base]{as.Date}}. Possible values are: \cr
 -) \kbd{\%Y}        : only the year will be used for the time. Default option. (e.g., "1961" "1962"...) \cr
 -) \kbd{\%Y-\%m-\%d}: a complete date format will be used for the time. (e.g., "1961-01-01" "1962-01-01"...)
 }

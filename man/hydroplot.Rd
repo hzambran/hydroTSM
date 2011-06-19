@@ -7,7 +7,7 @@
 Hydrological time series plotting and extraction.
 }
 \description{
-\code{hydroplot}: When \code{x} is a zoo object it plots (a maximum of) 9 graphs (lines plot, boxplots and/or histograms) of the daily, monthly and/or annual time series. \cr
+\code{hydroplot}: When \code{x} is a zoo object it plots (a maximum of) 9 graphs (lines plot, boxplots and/or histograms) of the daily, monthly, annual and/or seasonal time series. \cr
 
 \code{sname2plot}: When \code{x} is a data frame whose columns contain the time series of several gauging stations, it takes the name of one gauging station and plots the graphs described before.
 }
@@ -51,10 +51,11 @@ Character indicating the type of plot that will be plotted. Valid values are: \c
 }
   \item{pfreq}{
 Character indicating how many plots are desired by the user. Valid values are: \cr                    
--) \kbd{dma}: Daily, Monthly and Annual values are plotted \cr
--) \kbd{dm} : Daily and Monthly values are plotted  \cr
--) \kbd{ma} : Monthly and Annual values are plotted \cr
--) \kbd{o}  : only the original zoo object is plotted, and \code{ptype} is changed to \kbd{ts}
+-) \kbd{dma}     : Daily, Monthly and Annual values are plotted \cr
+-) \kbd{dm}      : Daily and Monthly values are plotted  \cr
+-) \kbd{ma}      : Monthly and Annual values are plotted \cr
+-) \kbd{o}       : Only the original zoo object is plotted, and \code{ptype} is changed to \kbd{ts} \cr
+-) \kbd{seasonal}: Line and bloxplots of seasonal time series (winter="DJF", spring="MAM", summer="JJA", autum="SON"). When \code{pfreq} is \kbd{seasonal}, \code{ptype} is set to  \kbd{ts+boxplot}
 }
   \item{var.type}{
 ONLY required when \code{FUN} is missing. \cr
@@ -163,16 +164,17 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 \code{\link{sname2ts}}
 }
 \examples{
+#############
 ## Loading daily streamflows at the station Oca en Ona (Ebro River basin, Spain) ##
 data(OcaEnOnaQts)
 
-# 3 ts, 3 boxplots and 3 histograms
+## 3 ts, 3 boxplots and 3 histograms
 hydroplot(OcaEnOnaQts, FUN=mean, ylab= "Q", var.unit = "m3/s")
 
-# only the original time series
+## only the original time series
 hydroplot(OcaEnOnaQts, pfreq="o")
 
-# only the year 1962 of the original time series
+## only the year 1962 of the original time series
 hydroplot(OcaEnOnaQts, pfreq="o", from="1962-01-01", to="1962-12-31")
 
 #############
@@ -182,6 +184,9 @@ data(EbroPPtsMonthly)
 ## Plotting the monthly and annual values of precipitation at station "P9001", 
 ## stored in 'EbroPPtsMonthly'.
 sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", dates=1, pfreq="ma")
+
+## Plotting seasonal precipitation at station "P9001"
+sname2plot(EbroPPtsMonthly, sname="P9001", FUN=sum, dates=1, pfreq="seasonal")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

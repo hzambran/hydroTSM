@@ -1,8 +1,9 @@
 \name{dm2seasonal}
 \Rdversion{1.1}
-\alias{dm2seasonal.data.frame}
-\alias{dm2seasonal.default}
 \alias{dm2seasonal}
+\alias{dm2seasonal.default}
+\alias{dm2seasonal.data.frame}
+\alias{dm2seasonal.matrix}
 
 \title{
 Daily/Monthly -> Seasonal Values
@@ -13,10 +14,13 @@ Generic function for computing a seasonal value for every year of a daily/monthl
 \usage{
 dm2seasonal(x, ...)
 
-\method{dm2seasonal}{default}(x, season, FUN, na.rm = TRUE, ...)
+\method{dm2seasonal}{default}(x, season, FUN, na.rm = TRUE, out.fmt="\%Y", ...)
 
 \method{dm2seasonal}{data.frame}(x, season, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
-        out.type = "data.frame", ...)
+        out.type = "data.frame", out.fmt="\%Y", ...)
+        
+\method{dm2seasonal}{matrix}(x, season, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+        out.type = "data.frame", out.fmt="\%Y", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -38,6 +42,11 @@ Function that will be applied to ALL the values of \code{x} belonging to the giv
 Logical. Should missing values be removed? \cr
 -) \kbd{TRUE} : the seasonal values  are computed considering only those values different from NA (\bold{very important when \code{FUN=sum}}) \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a weather season, the corresponding seasonal values are NA
+}
+  \item{out.fmt}{
+Character indicating the date format for the output time series. See \code{format} in \code{\link[base]{as.Date}}. Possible values are: \cr
+-) \kbd{\%Y}        : only the year will be used for the time. Default option. (e.g., "1961" "1962"...) \cr
+-) \kbd{\%Y-\%m-\%d}: a complete date format will be used for the time. (e.g., "1961-01-01" "1962-01-01"...)
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates. \cr
