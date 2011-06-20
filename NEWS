@@ -4,6 +4,7 @@ NEWS/ChangeLog for hydroTSM
 0.2-3	(under development)
 	o TODO: replace 'drawxaxis' by 'drawTimeAxis' in all the package
 	o TODO: check line 60 in 'drawxaxis', for argument gt=1. ( suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, gt=1)) )
+	o NAMESPACE created, wich leads to reduced dependency of the packages gstat, automap, sp, maptools, e1071
 	o 'drawxaxis'       : -) it was re-written, in order to take advantage of some features of the 'xts' 
 			         package (now added as a dependence), and now it should work with sub-daily 
 			         time series.
