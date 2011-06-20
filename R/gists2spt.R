@@ -163,13 +163,14 @@ gists2spt <- function(x.gis, x.ts, sname, bname, X="x", Y="y", elevation,
      # 'y' especified by the user
      if ( !("y" %in% colnames(x.spt) ) ) { x.spt[,"y"] <- x.spt[,Y] }
 
-     require(sp)
+     # for 'coordinates' and 'proj4string'
+     #require(sp)
 
      # Settting the COORDINATES of 'x.spt'
-     coordinates(x.spt) <- ~x + y
+     sp::coordinates(x.spt) <- ~x + y
 
      # Projecting the coordinates of 'x.spt'
-      if (!missing(p4s)) proj4string(x.spt) = p4s
+      if (!missing(p4s)) sp::proj4string(x.spt) = p4s
 
    } # IF end
 

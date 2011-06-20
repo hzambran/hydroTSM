@@ -291,12 +291,12 @@ hydrokrige.default <- function(x.ts, x.gis,
      if (class(subcatchments) == "character") {
 
        # Reading the SubCATCHMENTS of the CATCHMENT
-       require(maptools) #it is necessary for usign the function "readShapePoly"
+       #require(maptools) #it is necessary for usign the function "readShapePoly"
 
        if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
 
        # Reading the Shapefile with the subcatchments
-       SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
+       SubCatchments.shp <- maptools:::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
 
        # Number of Subcatchmnets
        nSub <- nrow(SubCatchments.shp@data)
@@ -326,7 +326,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
  # 3.1) Verifying the compatibility between 'p4s' with 'predictors' and ''SubCatchments.shp'', when they are present
 
- require(sp) # for 'proj4string'
+ #require(sp) # for 'proj4string'
 
  # If the user provided 'p4s'
  if ( p4s.exists ) {
@@ -334,7 +334,7 @@ hydrokrige.default <- function(x.ts, x.gis,
     # 3.1.2) If the user provided 'subcatchments',
     if ( !missing(subcatchments) ) {
 
-        if ( !identical( CRS(proj4string(SubCatchments.shp)), p4s ) )  {
+        if ( !identical( CRS(sp::proj4string(SubCatchments.shp)), p4s ) )  {
 
 	    if (verbose) message(paste("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
             proj4string(SubCatchments.shp) <- p4s
@@ -514,12 +514,12 @@ hydrokrige.default <- function(x.ts, x.gis,
     if (!hasArg(formula) ) {
 
         #Library gstat is required for the 'krige/idw' function
-        require(gstat)
+        #require(gstat)
 
         # Interpolating with the INVERSE DISTANCE WEIGHTED, , using the
         # 'nmax' nearest neighbours, 'nmin' minimum number of stations and
         # 'maxdist' maximum searching radious
-        x.idw <- idw(value~1, locations=x.work, newdata=predictors, nmin=nmin, nmax=nmax, maxdist=maxdist, ...)
+        x.idw <- gstat::idw(value~1, locations=x.work, newdata=predictors, nmin=nmin, nmax=nmax, maxdist=maxdist, ...)
 
         # min and max values for colors
         idw.min  <- min(x.idw["var1.pred"]@data, na.rm=TRUE)
@@ -535,13 +535,13 @@ hydrokrige.default <- function(x.ts, x.gis,
            } # IF end
 
            # REquiring automap library
-           require(automap)
+           #require(automap)
 
            # If ALL the values in x.work are equal, only 1 variogam family is attempted
            if (constant_field) {
-               x.autokrige.cells <- autoKrige(formula, input_data=x.work, new_data=predictors, model = c("Sph"), nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
+               x.autokrige.cells <- automap::autoKrige(formula, input_data=x.work, new_data=predictors, model = c("Sph"), nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
            } else {
-               x.autokrige.cells <- autoKrige(formula, input_data=x.work, new_data=predictors, nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
+               x.autokrige.cells <- automap::autoKrige(formula, input_data=x.work, new_data=predictors, nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
              } #LSE end
 
            #Assigning the outputs of autokrige
@@ -647,7 +647,7 @@ hydrokrige.default <- function(x.ts, x.gis,
         }  # IF end
 
 	#require(automap)
-        #x.autokrige.block <- autoKrige(formula, input_data=x.work, new_data=SubCatchments.shp, nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
+        #x.autokrige.block <- automap::autoKrige(formula, input_data=x.work, new_data=SubCatchments.shp, nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
 	#x.idw.block <- x.autokrige.block$krige_output
 
 	x.idw.block <- SubCatchments.shp
@@ -1225,12 +1225,12 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
      if (class(subcatchments) == "character") {
 
        # Reading the SubCATCHMENTS of the CATCHMENT
-       require(maptools) #it is necessary for usign the function "readShapePoly"
+       #require(maptools) #it is necessary for usign the function "readShapePoly"
 
        if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
 
        # Reading the Shapefile with the subcatchments
-       SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
+       SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
 
 
      } else  { #  # If the user provided 'subcatchments' already as an 'SpatialPolygonsDataFrame' object
@@ -1262,7 +1262,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 
  # 4.1) Verifying the compatibility between 'p4s' with 'predictors' and ''SubCatchments.shp'', when they are present
 
- require(sp) # for 'proj4string'
+ #require(sp) # for 'proj4string'
 
  # If the user provided 'p4s'
  if ( p4s.exists ) {
@@ -1270,7 +1270,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
     # 4.1.2) If the user provided 'subcatchments',
     if ( !missing(subcatchments) ) {
 
-        if ( !identical( CRS(proj4string(SubCatchments.shp)), p4s ) )  {
+        if ( !identical( CRS(sp::proj4string(SubCatchments.shp)), p4s ) )  {
 
 	    if (verbose) message(paste("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
             proj4string(SubCatchments.shp) <- p4s

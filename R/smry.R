@@ -52,9 +52,9 @@ smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), 
             z[8,1] <- sd(x, na.rm = na.rm)	                             # Standard Deviation
             z[9,1] <- sd(x, na.rm = na.rm) / abs(mean(x, na.rm = na.rm)) # Coefficient of variation ( coef. of variation = sd / |mean| )
 
-            require(e1071) # for the following 2 functions
-            z[10,1] <- skewness(x, na.rm = na.rm)  # Skewness (using  e1071 package)
-            z[11,1] <- kurtosis(x, na.rm = na.rm)  # Kurtosis (using  e1071 package)
+            #require(e1071) # for the following 2 functions
+            z[10,1] <- e1071::skewness(x, na.rm = na.rm)  # Skewness (using  e1071 package)
+            z[11,1] <- e1071::kurtosis(x, na.rm = na.rm)  # Kurtosis (using  e1071 package)
 
             z <- round( z, digits)
 
