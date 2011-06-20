@@ -9,7 +9,7 @@ Krige for Hydrological Time Series
 \description{
 Automatic interpolation for hydrological ts, with optional plot (wrapper to some functions of the \pkg{gstat} and \pkg{automap} packages) \cr
 
-Originally it was thought as a way to make easier the computation of average precipitation over subcatchments (given as input in a shapefile map), based on values measured at several gauging stations. \cr
+Originally it was thought as a way to make easier the computation of average precipitation over subcatchments (given as input in a shapefile map), based on values measured at several gauging stations, but nowadays it can also be used for interpolating any variable over a grid given by a raster map.\cr
 
 Available algorithms: inverse distance weighted (\acronym{IDW}), ordinary kriging (\acronym{OK}) and kriging with external drift (\acronym{KED})\cr 
 
@@ -86,8 +86,8 @@ ONLY necessary when \code{catchment.name} is different from \kbd{all}.
 OPTIONAL. character, field name in \code{x.gis} that stores the elevation of the gauging stations (m a.s.l.).
 }
   \item{predictors}{
-OPTIONAL. \link[sp]{SpatialGridDataFrame-class} object, with prediction/simulation locations (needed for \acronym{KED}). \cr
-It must not contain NA's. Usually, a digital elevation model (DEM) read with the \code{\link[rgdal]{readGDAL}} function of the \pkg{rgdal} package. See the \env{newdata} argument in \code{\link[gstat]{krige}}. \cr
+OPTIONAL. \link[sp]{SpatialGridDataFrame-class} object, with prediction/simulation locations (it is needed for \acronym{KED}). \cr
+Usually, a digital elevation model (DEM) read with the \code{\link[rgdal]{readGDAL}} function of the \pkg{rgdal} package. See the \env{newdata} argument in \code{\link[gstat]{krige}}. \cr
 It should contain attribute columns with the independent variables (if present) and the coordinates with names as defined in \code{x.gis} \cr
 If \code{predictors} is missing, the grid to be used as prediction/simulation locations is generated from sampling the polygon specified by the user in \code{subcatchments}, according to the arguments provided by \code{cells.size} and \code{grid.type}
 }
@@ -301,9 +301,11 @@ x.idw <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis,
 }
            
 ##################################################
-## 2) Ordinary Kriging interpolation and plot
+## 2) Ordinary Kriging interpolation and plot, in catchments defined by a shapefile
 ## Probably you will need to resize your window
 \dontrun{ 
+
+# Computing OK, over of 3000x3000m, sampled withinthe subcatchments defined by 'subcatchments'
 x.ok <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis, 
                    X="EAST_ED50", Y="NORTH_ED50", sname="ID", bname="CHE_BASIN_NAME",
                    type= "both", formula=value~1,
@@ -318,7 +320,35 @@ x.ok <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis,
 }
 
 ##################################################
-## 3) Kriging with External Drift interpolation and plot
+## 3)  Ordinary Kriging interpolation and plot, in catchments defined by a raster map
+## Probably you will need to resize your window
+
+#Loading the DEM
+data(EbroDEM1000m)
+
+#Giving a meaningful name to the predictor
+EbroDEM1000m$ELEVATION <- EbroDEM1000m$band1
+
+# Saving memory
+EbroDEM1000m$band1 <- NULL
+
+# Computing OK, over the spatial grid defined by the DEM
+\dontrun{
+x.ok <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis, 
+                   X="EAST_ED50", Y="NORTH_ED50", sname="ID", 
+                   formula=value~1,
+                   p4s= p4s, 
+                   predictors=EbroDEM1000m,
+                   ColorRamp= "Precipitation", 
+                   main= "OK Precipitation on the Ebro",
+                   arrow.plot= TRUE, 
+                   arrow.offset= c(900000,4750000), arrow.scale= 20000,
+                   scalebar.plot= TRUE, 
+                   sb.offset= c(400000,4480000), sb.scale= 100000)
+}
+
+##################################################
+## 4) Kriging with External Drift interpolation and plot
 ## Probably you will need to resize your window
 
 #Loading the DEM
@@ -349,7 +379,7 @@ x.ked <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis,
 }
 
 ##################################################
-## 4) Block IDW interpolation and plot of 'EbroPPtsMonthly' for 3 months
+## 5) Block IDW interpolation and plot of 'EbroPPtsMonthly' for 3 months
 \dontrun{
 x.idw <- hydrokrige(x.ts= EbroPPtsMonthly, x.gis=EbroPPgis, 
                   X="EAST_ED50", Y="NORTH_ED50", sname="ID", 

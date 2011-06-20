@@ -57,7 +57,7 @@ drawTimeAxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, c
 
  # Labels: Computes the string for the labels of the X axis
  if (lab.tstep == "auto") {
-   labs.dates  <- suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, format = lab.fmt))
+   labs.dates  <- suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, gt=1))
    labs.coords <- xy.coords(.index(x), x[, 1]) 
    labs.lab    <- names(labs.dates)
  } else {
