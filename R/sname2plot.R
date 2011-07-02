@@ -25,7 +25,7 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        cex.axis=1.3,
                        col=c("blue", "lightblue", "lightblue"),
                        dates, date.fmt = "%Y-%m-%d",
-                       from, to
+                       from, to, h=NULL
                        ) {
 
   # Checking the user provides 'sname'

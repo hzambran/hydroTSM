@@ -375,7 +375,7 @@
 		               tick.tstep= "auto", lab.tstep= "auto", lab.fmt=NULL,
                                var.unit="units", main=NULL, xlab="Time", ylab=NULL, 
                                cex.main=1.3, cex.lab=1.3, cex.axis=1.3, col="blue", 
-                               lwd=1, lty=1, ...) {
+                               lwd=1, lty=1, h=NULL, ...) {
       
       # checking the class of 'x'      
       if (is.na(match(class(x), c("zoo", "xts"))))
@@ -432,6 +432,8 @@
       
       layout( matrix( c(1,1,1,1,1,1,1,1,1,5,5,2,2,2,2,2,2,2,2,2,6,6,3,3,3,3,3,3,3,3,3,7,7,4,4,4,4,4,4,4,4,4,8,8), ncol=11, byrow=TRUE) ) 
       
+        if (length(h)==1) h <- rep(h,4)
+        
         # DJF
         plot.xts(DJF, axes=FALSE, type="o", main="Winter (DJF)", xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
@@ -439,6 +441,7 @@
         axis(2, cex.lab=1.3, cex.axis=1.3)
         drawxaxis(DJF, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
+        abline(h=h[1], col="red", lty=2)
                 
         # MAM
         plot.xts(MAM, axes=FALSE, type="o", main="Spring (MAM)", xlab=xlab, ylab=ylab, 
@@ -447,6 +450,7 @@
         axis(2, cex.lab=1.3, cex.axis=1.3)
         drawxaxis(MAM, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
+        abline(h=h[2], col="red", lty=2)
                 
         # JJA
         plot.xts(JJA, axes=FALSE, type="o", main="Summer (JJA)", xlab=xlab, ylab=ylab, 
@@ -455,6 +459,7 @@
         axis(2, cex.lab=1.3, cex.axis=1.3)
         drawxaxis(JJA, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
+        abline(h=h[3], col="red", lty=2)
       
         # SON
         plot.xts(SON, axes=FALSE, type="o", main="Autumn (SON)", xlab=xlab, ylab=ylab, 
@@ -463,14 +468,19 @@
         axis(2, cex.lab=1.3, cex.axis=1.3)
         drawxaxis(SON, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
+        abline(h=h[4], col="red", lty=2)
       
       #################################
-      # Plotting seasonal time series #
+      # Plotting seasonal boxplots    #
       #################################
         boxplot(coredata(DJF), col= "lightblue", ylab = ylab, main = "Winter (DJF)")
+        abline(h=h[1], col="red", lty=2) 
         boxplot(coredata(MAM), col= "lightblue", ylab = ylab, main = "Spring (MAM)")
+        abline(h=h[2], col="red", lty=2) 
         boxplot(coredata(JJA), col= "lightblue", ylab = ylab, main = "Summer (JJA)")
-        boxplot(coredata(SON), col= "lightblue", ylab = ylab, main = "Autumn (SON)")     
+        abline(h=h[3], col="red", lty=2) 
+        boxplot(coredata(SON), col= "lightblue", ylab = ylab, main = "Autumn (SON)")   
+        abline(h=h[4], col="red", lty=2)  
                                 
 } # .hydroplotseasonal END
 
@@ -511,6 +521,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                       from, 
                       to,
                       date.fmt= "%Y-%m-%d",
+                      h=NULL,
                       ...) {
 
      # Checking that the user provied a valid class for 'x'   
@@ -624,7 +635,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
        .hydroplotseasonal(x=x, FUN=FUN, na.rm=na.rm, tick.tstep= tick.tstep, 
                           lab.tstep= lab.tstep, lab.fmt=lab.fmt, var.unit=var.unit, 
                           main=main, xlab=xlab, ylab=ylab, cex.main=cex.main, 
-                          cex.lab=cex.lab, cex.axis=cex.axis, col=col, ...)
+                          cex.lab=cex.lab, cex.axis=cex.axis, col=col, h=h,...)
                                
      } else {
      

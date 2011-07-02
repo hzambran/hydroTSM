@@ -23,6 +23,7 @@ NEWS/ChangeLog for hydroTSM
 	 		      -) the default value for 'cex' was changed from 0.7 to 0.3
 	 		      -) new arguments: 'from', 'to', for plotting a slice of the original time series
 	 		      -) thanks to Tom Elliott for pointing out my attention to this function again !.
+	 		      -) new argument: 'h', for plotting horizontal lines in seasonal plots
 	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
 	o 'sfreq'           : -) it works now with xts objects
 	o 'vector2zoo'      : -) added error checking for detecting if the lenght of the numeric vector and the dates are equal.

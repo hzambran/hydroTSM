@@ -17,14 +17,14 @@ hydroplot(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",
           win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
           col=c("blue", "lightblue", "lightblue"), 
-          from, to, date.fmt= "\%Y-\%m-\%d", ...)
+          from, to, date.fmt= "\%Y-\%m-\%d", h=NULL, ...)
 
 sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
            var.type, var.unit="units",main=NULL, xlab="Time", ylab=NULL,
            win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto",
            lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
            col=c("blue", "lightblue", "lightblue"), 
-           dates, date.fmt = "\%Y-\%m-\%d", from, to)
+           dates, date.fmt = "\%Y-\%m-\%d", from, to, h=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -131,6 +131,10 @@ Character indicating the starting date for the values to be extracted. It must b
   \item{to}{
 OPTIONAL, used for extracting a subset of values. \cr
 Character indicating the ending date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
+}
+  \item{h}{
+OPTIONAL, only used when \code{pfreq=seasonal}, for plotting horizontal lines in each seasonal plot. \cr
+numeric, with 1 or 4 elements, with the value used for plotting an horizontal line in each seasonal plot, in the following order: winter (DJF), spring (MAM), summer (JJA), autumn (SON).
 }
   \item{\dots}{
 further arguments passed to the \code{plot.zoo} and \code{axis} functions or from other methods.
