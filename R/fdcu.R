@@ -57,7 +57,8 @@ fdcu.default <- function (x,
                           xlab="% Time flow equalled or exceeded",
                           ylab="Q, [m3/s]",
                           ylim,
-                          yat=c(0.01, 0.1, 1, 5, 10, 100), 
+                          yat=c(0.01, 0.1, 1), 
+                          xat=c(0.01, 0.025, 0.05),
                           col=c("black", "red"),
                           pch=c(1, 15),
                           lwd=c(1, 0.8),
@@ -168,12 +169,8 @@ fdcu.default <- function (x,
          bands <- c( lband.sort, rev(uband.sort) )
 
          if (new) {
-             # Creating the plot, but without anything on it, for allowing the call to polygon
-             if (log=="y") {
-               plot(fdc.x, x.sort, type="n", xaxt = "n", yaxt = "n", main=main, xlab=xlab, ylab=ylab, log=log, ylim=ylim, ...)
-             } else {
-               plot(fdc.x, x.sort, type="n", xaxt = "n", main=main, xlab=xlab, ylab=ylab, log=log, ylim=ylim, ...)
-               } # ELSE end
+             # Creating the plot, but without anything on it, for allowing the call to polygon            
+             plot(fdc.x, x.sort, type="n", xaxt = "n", yaxt = "n", main=main, xlab=xlab, ylab=ylab, log=log, ylim=ylim, ...)             
          } # IF end
 
          # Plotting the polygons between the lower and upper bands
@@ -189,15 +186,22 @@ fdcu.default <- function (x,
            points(fdc.sim, sim.sort, cex=cex, col=col[2], pch=pch[2])
          } # IF end
 
-         # Draws the labels corresponding to the X axis
-         Axis(side = 1, at = seq(0.0, 1, by=0.05), labels = FALSE)
-         Axis(side = 1, at = seq(0.0, 1, by=0.1), labels = paste(100*seq(0.0, 1, by=0.1),"%", sep="") )
-
-         if (log=="y") {
-           # Draws the labels corresponding to the Y axis
-           ylabels <- union( yat, pretty(ylim) )
-           Axis( side = 2, at =ylabels, labels = ylabels )
-         } # IF end
+         # Drawing the ticks and labels corresponding to the Y axis 
+          ylabels <- pretty(ylim)
+          if ( (log=="y") | (log=="xy") | (log=="yx") ) {            
+            ylabels <- union( yat, ylabels )            
+          } # IF end
+          Axis( side = 2, at =ylabels, cex.axis=cex.axis, labels = ylabels)
+          
+          # Drawing the ticks and labels corresponding to the X axis
+          xpos    <- seq(0.0, 1, by=0.05)
+          xlabels <- seq(0.0, 1, by=0.1)
+          if ( (log=="x") | (log=="xy") | (log=="yx") ) {            
+            xpos    <- union( xat, xpos ) 
+            xlabels <- union( xat, xlabels )            
+          } # IF end
+          Axis(side = 1, at = xpos, cex.axis=cex.axis, labels = FALSE)
+          Axis(side = 1, at = xlabels, cex.axis=cex.axis, labels = paste(100*xlabels,"%", sep="") )
 
          # Drawing a legend. bty="n" => no border
          if (!is.null(leg.txt)) {
@@ -273,7 +277,8 @@ fdcu.matrix <- function (x,
                          xlab="% Time flow equalled or exceeded",
                          ylab="Q, [m3/s]",
                          ylim,
-                         yat=c(0.01, 0.1, 1, 5, 10, 100), 
+                         yat=c(0.01, 0.1, 1), 
+                         xat=c(0.01, 0.025, 0.05),
                          col=matrix(c(rep("black", ncol(x)), 
                                     palette("default")[2:(ncol(x)+1)]), byrow=FALSE, ncol=2),
                          pch=matrix(rep(c(1, 15), ncol(x)), byrow=TRUE, ncol=2),
@@ -306,7 +311,7 @@ fdcu.matrix <- function (x,
 
       sim.exists <- FALSE
       fdcu(x=x[,1], lband=lband[,1], uband=uband[,1], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
-           plot=TRUE, main=main, xlab= xlab, ylab=ylab, log=log, col=col[1,], pch=pch[1,],
+           plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[1,], pch=pch[1,],
            lwd=lwd[1,], lty=lty[1,], cex=cex[1], cex.axis=cex.axis, cex.lab=cex.lab, 
            verbose, leg.txt=NULL, thr.shw=thr.shw, border=border[1],
            bands.col= bands.col[1], bands.density=bands.density[1], bands.angle=bands.angle[1], new=TRUE, ...)
@@ -314,7 +319,7 @@ fdcu.matrix <- function (x,
 
     sim.exists <- TRUE
     fdcu(x=x[,1], lband=lband[,1], uband=uband[,1], sim=sim[,1], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
-           plot=TRUE, main=main, xlab= xlab, ylab=ylab, log=log, col=col[1,], pch=pch[1,],
+           plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[1,], pch=pch[1,],
            lwd=lwd[1,], lty=lty[1,], cex=cex[1], cex.axis=cex.axis, cex.lab=cex.lab,
            verbose, leg.txt=NULL, thr.shw=thr.shw, border=border[1],
            bands.col= bands.col[1], bands.density=bands.density[1], bands.angle=bands.angle[1], new=TRUE, ...)
@@ -332,13 +337,13 @@ fdcu.matrix <- function (x,
             if (!sim.exists) {
               # Computing and plotting the Flow duration Curve for the first vector
               fdcu(x=x[,j], lband=lband[,j], uband=uband[,j], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
-                   plot=TRUE, main=main, xlab= xlab, ylab=ylab, log=log, col=col[j,], pch=pch[j,],
+                   plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[j,], pch=pch[j,],
                    lwd=lwd[j,], lty=lty[j,], cex=cex[j], cex.axis=cex.axis, cex.lab=cex.lab, 
                    verbose, leg.txt=NULL, thr.shw=FALSE, border=border[j],
                    bands.col= bands.col[j], bands.density=bands.density[j], bands.angle=bands.angle[j], new=FALSE, ...)
             } else {
               fdcu(x=x[,j], lband=lband[,j], uband=uband[,j], sim=sim[,j], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
-                   plot=TRUE, main=main, xlab= xlab, ylab=ylab, log=log, col=col[j,], pch=pch[j,],
+                   plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[j,], pch=pch[j,],
                    lwd=lwd[j,], lty=lty[j,], cex=cex[j], cex.axis=cex.axis, cex.lab=cex.lab, 
                    verbose, leg.txt=NULL, thr.shw=FALSE, border=border[j],
                    bands.col= bands.col[j], bands.density=bands.density[j], bands.angle=bands.angle[j], new=FALSE, ...)
@@ -417,7 +422,8 @@ fdcu.data.frame <- function(x,
                          xlab="% Time flow equalled or exceeded",
                          ylab="Q, [m3/s]",
                          ylim,
-                         yat=c(0.01, 0.1, 1, 5, 10, 100), 
+                         yat=c(0.01, 0.1, 1), 
+                         xat=c(0.01, 0.025, 0.05),
                          col=matrix(c(rep("black", ncol(x)), 
                                     palette("default")[2:(ncol(x)+1)]), byrow=FALSE, ncol=2),
                          pch=matrix(rep(c(1, 15), ncol(x)), byrow=TRUE, ncol=2),
@@ -451,6 +457,7 @@ fdcu.data.frame <- function(x,
                 ylab=ylab,
                 ylim=ylim,
                 yat=yat,
+                xat=xat,
                 col=col,
                 pch=pch,
                 lty=lty,

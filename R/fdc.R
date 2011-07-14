@@ -24,7 +24,8 @@ fdc.default <- function (x,
                          xlab="% Time flow equalled or exceeded",
                          ylab="Q, [m3/s]",
                          ylim,
-                         yat=c(0.01, 0.1, 1, 5, 10, 100), 
+                         yat=c(0.01, 0.1, 1), 
+                         xat=c(0.01, 0.025, 0.05),
                          #yaxp=c(range(x),2),
                          col="black",
                          pch=1,
@@ -94,31 +95,28 @@ fdc.default <- function (x,
 
           # If a new plot has to be created
           if (new) {
-
-            # Creating the plot, but without anything on it, for allowing the call to polygon
-             if (log=="y") {
                plot(dc, x,  xaxt = "n", yaxt = "n", type="o", pch=pch, col=col, lty=lty,
-                    cex=cex, cex.axis=cex.axis, cex.lab=cex.lab, main=main, xlab=xlab, ylab=ylab, ylim=ylim, log=log, ...)
-             } else {
-               plot(dc, x,  xaxt = "n", type="o", pch=pch, col=col, lty=lty,
                     cex=cex, cex.axis= cex.axis, cex.lab=cex.lab, main=main, xlab=xlab, ylab=ylab, ylim=ylim, log=log, ...)
-               } # ELSE end
-
           } else {
-             lines(dc, x,  xaxt = "n", type="o", pch=pch, col=col, lty=lty,
-                   cex=cex)
+             lines(dc, x,  xaxt = "n", type="o", pch=pch, col=col, lty=lty, cex=cex)
             } # ELSE end
 
-          # Draws the labels corresponding to the X axis
-          Axis(side = 1, at = seq(0.0, 1, by=0.05), cex.axis=cex.axis, labels = FALSE)
-          Axis(side = 1, at = seq(0.0, 1, by=0.1), cex.axis=cex.axis, 
-               labels = paste(100*seq(0.0, 1, by=0.1),"%", sep="") )
-
-          if (log=="y") {
-            # Draws the labels corresponding to the Y axis
-            ylabels <- union( yat, pretty(ylim) )
-            Axis( side = 2, at =ylabels, cex.axis=cex.axis, labels = ylabels)
+          # Drawing the ticks and labels corresponding to the Y axis 
+          ylabels <- pretty(ylim)
+          if ( (log=="y") | (log=="xy") | (log=="yx") ) {            
+            ylabels <- union( yat, ylabels )            
           } # IF end
+          Axis( side = 2, at =ylabels, cex.axis=cex.axis, labels = ylabels)
+          
+          # Drawing the ticks and labels corresponding to the X axis
+          xpos    <- seq(0.0, 1, by=0.05)
+          xlabels <- seq(0.0, 1, by=0.1)
+          if ( (log=="x") | (log=="xy") | (log=="yx") ) {            
+            xpos    <- union( xat, xpos ) 
+            xlabels <- union( xat, xlabels )            
+          } # IF end
+          Axis(side = 1, at = xpos, cex.axis=cex.axis, labels = FALSE)
+          Axis(side = 1, at = xlabels, cex.axis=cex.axis, labels = paste(100*xlabels,"%", sep="") )               
 
           # If the user provided a value for 'lQ.thr', a vertical line is drawn
           if ( !is.na(lQ.thr) ) {
@@ -142,7 +140,7 @@ fdc.default <- function (x,
 
               legend("bottomleft", c(paste("Qhigh.thr=", round(x.hQ, 2), sep=""),
                                      paste("Qlow.thr=", round(x.lQ, 2), sep="") ),
-                     cex=0.7, bty="n" ) #bty="n" => no box around the legend
+                     cex=0.7, bty="n") #bty="n" => no box around the legend
           } # IF end
 	 } # IF end
 
@@ -151,8 +149,7 @@ fdc.default <- function (x,
 
 	 return(dc)
 
-
-} # 'fdc' END
+} # 'fdc.default' END
 
 
 ######################################################################
@@ -171,7 +168,8 @@ fdc.matrix <- function (x,
                         xlab="% Time flow equalled or exceeded",
 			ylab="Q, [m3/s]",
                         ylim,
-                        yat=c(0.01, 0.1, 1, 5, 10, 100), 
+                        yat=c(0.01, 0.1, 1), 
+                        xat=c(0.01, 0.025, 0.05),
                         col=palette("default")[1:ncol(x)],
                         pch=1:ncol(x),
                         lwd=rep(1, ncol(x)),
@@ -220,7 +218,7 @@ fdc.matrix <- function (x,
 	    # Computing and plotting the Flow duration Curve for the other columns
             fdc(x=x[,j], plot=plot, log=log, pch=pch[j], col=col[j], lty=lty[j],
                 cex=cex, cex.axis=cex.axis, cex.lab=cex.lab, main=main, 
-                xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, verbose=verbose,
+                xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, xat=xat, verbose=verbose,
                 thr.shw=FALSE, new=FALSE, ...)
         } )
 
@@ -244,7 +242,8 @@ fdc.data.frame <- function(x,
                            xlab="% Time flow equalled or exceeded",
 			   ylab="Q, [m3/s]",
                            ylim,
-                           yat=c(0.01, 0.1, 1, 5, 10, 100), 
+                           yat=c(0.01, 0.1, 1), 
+                           xat=c(0.01, 0.025, 0.05), 
                            col=palette("default")[1:ncol(x)],
                            pch=1:ncol(x),
                            lwd=rep(1, ncol(x)),
@@ -269,7 +268,8 @@ fdc.data.frame <- function(x,
                xlab=xlab,
                ylab=ylab,
                ylim=ylim,
-               yat=yat,               
+               yat=yat,   
+               xat=xat,
                col=col,
                pch=pch,
                lty=lty,

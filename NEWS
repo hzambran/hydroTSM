@@ -39,9 +39,10 @@ NEWS/ChangeLog for hydroTSM
 	                      -) it works with xts objects as well.
 	o 'seasonalfunction': -) it works with matrix objects as well.
 	                      -) it works with xts objects as well.
+	o 'fdc' and 'fdcu'  : -) new argument 'xat', for setting the position of the 'x' axis labels when 'log="x"'
 
 0.2-2	14-Apr-2011
-	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels (thanks to Santosh Aryal !)
+	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels  when 'log="y"' (thanks to Santosh Aryal !)
 	o All the 'print' calls used to display information messages were replaced by a call to 'message'.
 	o SVN started to be used for package development in Rforge (thanks to Simon Urbanek for his great support)
 	o Vignette added ('Introductory Analysis of Daily Precipitation Data with hydroTSM')
