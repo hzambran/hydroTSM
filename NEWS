@@ -22,7 +22,7 @@ NEWS/ChangeLog for hydroTSM
 	 		      -) the name of 'x' is now used as default for the Y axis label.
 	 		      -) an incorrect default title for the daily histogram was fixed.
 	 		      -) the default value for 'cex' was changed from 0.7 to 0.3	 		      
-	 		      -) thanks to T. Elliott for pointing out my attention to this function again !.
+	 		      -) thanks to Tom Elliott for pointing out my attention to this function again !.
 	 		      -) new argument: 'h', for plotting horizontal lines in seasonal plots
 	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
 	o 'sfreq'           : -) it now works with xts objects
