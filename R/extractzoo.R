@@ -46,15 +46,16 @@ extractzoo <- function(x, trgt, ...) {
     else if (class(trgt)=="character") {
 
 	  # Checking a valid value for 'trgt'
-      if (is.na(match(trgt, c("DJF", "MAM", "JJA", "SON") ) ) )
-         stop("Invalid argument: 'trgt' must be in c('DJF', 'MAM', 'JJA', 'SON')")
+         if (is.na(match(trgt, c("DJF", "MAM", "JJA", "SON") ) ) )
+           stop("Invalid argument: 'trgt' must be in c('DJF', 'MAM', 'JJA', 'SON')")
 
 	  # Gets the season each element of 'x' belongs to
-      seasons <- time2season(time(x), out.fmt="months")
+          seasons <- time2season(time(x), out.fmt="months")
 
-      # Selects only those elements of 'x' belonging to the desired season
-      index <- which(seasons == trgt)
-	} # ELSE end
+          # Selects only those elements of 'x' belonging to the desired season
+          index <- which(seasons == trgt)
+
+      } # ELSE end
 
   return(x[index])
 

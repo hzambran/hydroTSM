@@ -86,7 +86,7 @@ The \var{FUN} value for the winter season (DJF) is computed considering the cons
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{dm2seasonal}}, \code{\link{monthlyfunction}}, \code{\link{annualfunction}}, \code{\link{extractzoo}} 
+\code{\link{dm2seasonal}}, \code{\link{time2season}}, \code{\link{monthlyfunction}}, \code{\link{annualfunction}}, \code{\link{extractzoo}} 
 }
 \examples{
 ## Loading the SanMartino precipitation data
@@ -121,5 +121,5 @@ sum( extractzoo(x, trgt="SON") ) / nyears
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-%%\keyword{ ~kwd1 }
+\keyword{manip}
 %%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
