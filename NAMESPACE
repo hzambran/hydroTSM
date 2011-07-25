@@ -1,8 +1,8 @@
-importFrom("maptools", readShapePoly)
-importFrom("sp", proj4string, coordinates)
+importFrom("e1071", skewness, kurtosis)
+importFrom("sp", proj4string, coordinates, spplot)
+#importFrom("maptools", readShapePoly)
 importFrom("gstat", krige, idw)
 importFrom("automap", autoKrige)
-importFrom("e1071", skewness, kurtosis)
 exportPattern("^[^\\.]")
 
 

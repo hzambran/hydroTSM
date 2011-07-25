@@ -4,13 +4,16 @@ NEWS/ChangeLog for hydroTSM
 0.2-3	(under development)
 	o TODO: replace 'drawxaxis' by 'drawTimeAxis' in all the package
 	o TODO: check line 60 in 'drawxaxis', for argument gt=1. ( suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, gt=1)) )
-	o NAMESPACE created, wich leads to reduced dependency of the packages gstat, automap, sp, maptools, e1071
+	o NAMESPACE created, which leads to reduced dependency of the packages  e1071, gstat, automap, sp.
+	o hydroTSM now depends on xts >= 0.8-1 (=> zoo >= 1.7-0), in order to make use of improved plotting capabilities for ts objects.
+	o 'maptools' package is now "suggested" instead of a dependence. It is only used for reading shapefiles in the 
+	  'hydrokrige' and 'mspplot' functions.
 	o 'drawxaxis'       : -) it was re-written, in order to take advantage of some features of the 'xts' 
 			         package (now added as a dependence), and now it should work with sub-daily 
 			         time series.
 			      -) its name was changed from 'drawxaxis' to 'drawTimeAxis', in order to have a 
 			         more intuitive name. The old 'drawxaxis' function is deprecated, but 
-			         it is still kept for back-compatibility.			
+			         still be kept for back-compatibility reasons.			
 	 		      -) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
 	 		         "minutes", and "seconds", and its default value was changed to "auto".
 	o 'hydroplot'       : -) it takes advantage of the new 'drawTimeAxis' function.
@@ -18,15 +21,15 @@ NEWS/ChangeLog for hydroTSM
 	                      -) it works with xts objects as well.
 			      -) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
 	 		         "minutes", and "seconds", and its default value was changed to "auto". 
-	 		      -) new arguments: 'from', 'to', for plotting a slice of the original time series
 	 		      -) the name of 'x' is now used as default for the Y axis label.
 	 		      -) an incorrect default title for the daily histogram was fixed.
-	 		      -) the default value for 'cex' was changed from 0.7 to 0.3	 		      
+	 		      -) the default value for 'cex' was changed from 0.7 to 0.3
+	 		      -) new arguments: 'from', 'to', for plotting a slice of the original time series
 	 		      -) thanks to Tom Elliott for pointing out my attention to this function again !.
 	 		      -) new argument: 'h', for plotting horizontal lines in seasonal plots
 	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
-	o 'sfreq'           : -) it now works with xts objects
-	o 'vector2zoo'      : -) added error checking for detecting if the lenght of the numeric vector and the dates are equal.
+	o 'sfreq'           : -) it works now with xts objects
+	o 'vector2zoo'      : -) added error checking for detecting if the length of the numeric vector and the dates are equal.
 	o 'dwi'             : -) fixed documentation of the 'out.unit' argument.
 	o 'dm2seasonal'     : -) new argument 'out.fmt', for better compatibility with zoo and xts objects.
 	                      -) it works with matrix objects as well.

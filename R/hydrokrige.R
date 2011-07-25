@@ -873,7 +873,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
     if ( type %in% c("cells", "both") ) {
         # Plotting the interpolated Precipitation values with the scale bar, north arrow, stations, and catchment borders
-        a <- spplot(x.idw["var1.pred"], sp.layout = map.layout,
+        a <- sp::spplot(x.idw["var1.pred"], sp.layout = map.layout,
                     scales=list(draw=TRUE, y=list(rot=90), abbreviate=FALSE),
                     main=main, col.regions= ColorRamp(col.nintv),
                     at = at.idw )
@@ -885,7 +885,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
     if ( type %in% c("block", "both") ) {
 
-        a <- spplot(x.idw.block["var1.pred"], sp.layout = map.layout,
+        a <- sp::spplot(x.idw.block["var1.pred"], sp.layout = map.layout,
                     scales=list(draw=TRUE, y=list(rot=90), abbreviate=FALSE),
                     main=main, col.regions= ColorRamp(col.nintv),
                     at= at.idw.block)
@@ -1225,13 +1225,14 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
      if (class(subcatchments) == "character") {
 
        # Reading the SubCATCHMENTS of the CATCHMENT
-       #require(maptools) #it is necessary for usign the function "readShapePoly"
+       if (require(maptools)) { #it is necessary for usign the function "readShapePoly"
 
-       if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
+         if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
 
-       # Reading the Shapefile with the subcatchments
-       SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
-
+         # Reading the Shapefile with the subcatchments
+         SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
+       
+       } else stop( paste("Missing package: You need 'maptools' for reading the '", basename(subcatchments), "' shapefile", sep="") )
 
      } else  { #  # If the user provided 'subcatchments' already as an 'SpatialPolygonsDataFrame' object
 
