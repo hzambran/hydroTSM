@@ -5,4 +5,6 @@ importFrom("gstat", krige, idw)
 importFrom("automap", autoKrige)
 exportPattern("^[^\\.]")
 
+S3method(monthlyfunction, zoo)
+
 

@@ -2,7 +2,8 @@
 # monthlyfunction: Generic function for applying any R function to     #
 #                  ALL the values in 'x' belonging to a given month    #
 ########################################################################
-#                  May 15th, 2009; Aug 31th 2009                       #
+# Started: May 15th, 2009;                                             #
+# Updates: 31-Aug-2009 ; 25-Jul-2011                                   #
 ########################################################################
 # 'x   '    : variable of type 'zoo' or 'data.frame', with daily or monthly frequency
 # 'FUN'      : Function that will be applied to ALL the values in 'x' belonging to each one of the 12 months of the year
@@ -51,7 +52,109 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 } # 'monthlyfunction.default' end
 
 
+# co: numeric, with the column position in 'x' to be used for applying FUN
+# x: zoo matrix
+.monthlyfunctioncol <- function(col, x, FUN2, na.rm=TRUE, verbose=TRUE, snames, nstations, ...) {
 
+  if (verbose) message( paste("Station: ", format(snames[col], width=10, justify="left"),
+					    " : ",format(col, width=3, justify="left"), "/",
+					    nstations, " => ",
+					    format(round(100*col/nstations,2), width=6, justify="left"),
+					    "%", sep="") )
+					    
+  monthlyfunction.default(x[,col], FUN=FUN2, na.rm=na.rm, ...)
+  
+} # '.monthlyfunctioncol' END
+
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 25-Jul-2011                 #
+########################################
+monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,
+                                out.type="data.frame",
+                                verbose=TRUE,...) {
+
+  # Checking that the user provied a valid argument for 'out.type'
+  if (is.na(match( out.type, c("data.frame", "db") ) ) )
+      stop("Invalid argument: 'out.type' must be in c('data.frame', 'db'")
+
+   # Checking that the user provied a valid argument for 'FUN'
+   if (missing(FUN))
+         stop("Missing argument: 'FUN' must be provided")
+
+  # Amount of stations in 'x'
+  nstations <- ncol(x)
+  
+  if (length(nstations) == 0) {
+    z <- monthlyfunction.default(x= x, FUN=FUN, na.rm=na.rm, ...)
+  } else {
+      if (verbose) message("[Starting the computations...]")
+      
+      # ID of all the stations in 'x'
+      snames <- colnames(x)
+      
+      if (is.null(snames)) snames <- paste("V", 1:nstations, sep="")
+    
+      if (out.type == "data.frame") {
+        z <- sapply(1:nstations, FUN=.monthlyfunctioncol, x=x, FUN2=FUN, na.rm=na.rm, verbose=verbose, snames=snames, nstations=nstations, ...)
+        z <- t(z) # I don't know WHY !!
+        rownames(z) <- snames
+      } else if (out.type == "db") {
+  
+        # Computing the Starting and Ending Year of the analysis
+        Starting.Year <- as.numeric(format(start(x), "%Y"))
+        Ending.Year   <- as.numeric(format(end(x), "%Y"))
+
+        # Amount of Years belonging to the desired period
+        nyears <- Ending.Year - Starting.Year + 1
+        
+        # Computing the numeric index of the resulting months
+        month.index <- unique(as.numeric(format( time(x), "%m" )))
+     
+        # Amount of different months belonging to the desired period
+        nmonths <- length(month.index)
+        
+        # Total amount of months belonging to the desired period
+        totalmonths <- nmonths*nyears
+
+        # Creating a vector with the names of the field that will be used for storing the results
+        field.names <- c("StationID", "Year", "Month", "Value" )
+
+        # Creating the data.frame that will store the computed averages for each subcatchment
+        z <- as.data.frame(matrix(data = NA, nrow = totalmonths*nstations, ncol = 4, byrow = TRUE, dimnames = NULL) )
+        
+        for (j in 1:nstations) {
+
+            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
+                                        " : ", format(j, width=3, justify="left"), "/",
+                                        nstations, " => ",
+                                        format(round(100*j/nstations,2), width=6, justify="left"),
+                                        "%", sep="") )
+
+	    # Computing the annual values
+	    tmp <- monthlyfunction.default(x= x[,j], FUN=FUN, na.rm=na.rm, ..)
+
+	    # Putting the annual/monthly values in the output data.frame
+            # The first column of 'x' corresponds to the Year
+            row.ini <- (j-1)*totalmonths + 1
+            row.fin <-  j*totalmonths
+
+            z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeted 'totalmonths' times
+            z[row.ini:row.fin, 2] <- rep(Starting.Year:Ending.Year, each=nmonths)
+            z[row.ini:row.fin, 3] <- month.abb[month.index]
+            z[row.ini:row.fin, 4] <- tmp
+
+        } # FOR end
+        colnames(z) <- field.names
+      } # IF end
+    } # ELSE end
+
+  return( z )
+
+ } #'monthlyfunction.zoo' END
+ 
+ 
+ 
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
 #             If 'dates' is a number, it indicates the index of the column in
@@ -72,6 +175,10 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 #                              The third column stores the ID of the station,
 #                              The fourth column contains the monthly value corresponding to the year specified in the second column
 # 'verbose'      : logical; if TRUE, progress messages are printed
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Updates: 25-Jul-2011                 #
+########################################
 monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
                                        dates, date.fmt="%Y-%m-%d",
                                        out.type="data.frame",
@@ -112,100 +219,11 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   # using the date format  specified by 'date.fmt'
   if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
 
-  # Amount of stations in 'x'
-  nstations <- ncol(x)
-
-  # ID of all the stations in 'x'
-  snames <- colnames(x)
-
-  # Computing the Starting and Ending Year of the analysis
-  Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
-  Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
-
-  # Amount of Years belonging to the desired period
-  nyears <- Ending.Year - Starting.Year + 1
-
-  # Amount of months belonging to the desired period
-  nmonths <- 12*nyears
-
-  # Requiring the Zoo Library (Z’s ordered observations)
-  require(zoo)
-
-  if (verbose) message("[Starting the computations...]")
-
-  if (out.type == "data.frame") {
-
-	# Vector with the names of the field that will be used for storing the results
-	field.names <- month.abb
-
-	# Creating the data.frame that will store the computed averages for each station
-	z <- as.data.frame(matrix(data = NA, nrow = nstations, ncol = 12,
-						byrow = TRUE, dimnames = NULL) )
-
-	z <- sapply(1:nstations, function(j,y) {
-
-
-		if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
-					    " : ",format(j, width=3, justify="left"), "/",
-					    nstations, " => ",
-					    format(round(100*j/nstations,2), width=6, justify="left"),
-					    "%", sep="") )
-
-		# Transforming the column of 'x' into a zoo object,
-		# using the dates provided by the user
-		tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
-
-		# Computing the annual values
-		z[,1:12] <- monthlyfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
-
-	}, y = x) # sapply END
-
-    z <- t(z) # I don't know WHY !!
-    rownames(z) <- snames
-
-  } else if (out.type == "db") {
-
-        # Creating a vector with the names of the field that will be used for storing the results
-        field.names <- c("StationID", "Year", "Month", "Value" )
-
-        # Creating the data.frame that will store the computed averages for each subcatchment
-        z <- as.data.frame(matrix(data = NA, nrow = nmonths*nstations, ncol = 4,
-                           byrow = TRUE, dimnames = NULL) )
-
-        y = x
-
-        for (j in 1:nstations) {
-
-            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
-                                        " : ", format(j, width=3, justify="left"), "/",
-                                        nstations, " => ",
-                                        format(round(100*j/nstations,2), width=6, justify="left"),
-                                        "%", sep="") )
-
-            # Transforming the column of 'x' into a zoo object,
-	    # using the dates provided by the user
-	    tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
-
-	    # Computing the annual values
-	    tmp <- monthlyfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
-
-	    # Putting the annual/monthly values in the output data.frame
-            # The first column of 'x' corresponds to the Year
-            row.ini <- (j-1)*nmonths + 1
-            row.fin <-  j*nmonths
-
-            z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeted 'nmonths' times
-            z[row.ini:row.fin, 2] <- rep(Starting.Year:Ending.Year, each=12)
-            z[row.ini:row.fin, 3] <- month.abb
-            z[row.ini:row.fin, 4] <- tmp
-
-        } # FOR end
-
-        colnames(z) <- field.names
-
-    } # IF end
-
-  return( z )
+  x       <- as.zoo(x)
+  time(x) <- dates
+  
+  #NextMethod("monthlyfunction")
+  monthlyfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, out.type=out.type, verbose=verbose,...)
 
  } #'monthlyfunction.data.frame' END
  
