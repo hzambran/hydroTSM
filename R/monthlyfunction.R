@@ -31,7 +31,7 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
      require(zoo)
 
      # 'as.numeric' is necessary for being able to change the names to the output
-     totals <- as.numeric( aggregate( x, by= format( time(x), "%m" ), FUN=FUN, na.rm= na.rm ) )
+     totals <- aggregate( x, by= format( time(x), "%m" ), FUN=FUN, na.rm= na.rm )
 
      # Replacing the NaNs by 'NA.
      # NaN's are obtained when using theFUN=mean with complete NA values
@@ -43,9 +43,16 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
      inf.index <- which(is.infinite(totals))
 
      # Changing all the Inf and -Inf by NA's
-     if ( length(inf.index) > 0 ) { totals[inf.index] <- NA }
+     if ( length(inf.index) > 0 ) totals[inf.index] <- NA
+     
+     # numeric index with the months really present in 'x' (when shorther than 1 year)
+     month.index <- as.numeric( time(totals) )
+     
+     # Transformation needed in order to change the default names of the result
+     totals <- as.numeric(totals)
 
-     names(totals) <- month.abb
+     # Giving meaningful names to the output
+     names(totals) <- month.abb[month.index]
 
      return(totals)
 
