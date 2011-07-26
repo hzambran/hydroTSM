@@ -132,7 +132,7 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,
                                         "%", sep="") )
 
 	    # Computing the annual values
-	    tmp <- monthlyfunction.default(x= x[,j], FUN=FUN, na.rm=na.rm, ..)
+	    tmp <- monthlyfunction.default(x= x[,j], FUN=FUN, na.rm=na.rm, ...)
 
 	    # Putting the annual/monthly values in the output data.frame
             # The first column of 'x' corresponds to the Year

@@ -1,6 +1,7 @@
 \name{monthlyfunction}
 \Rdversion{1.1}
 \alias{monthlyfunction}
+\alias{monthlyfunction.zoo}
 \alias{monthlyfunction.default}
 \alias{monthlyfunction.matrix}
 \alias{monthlyfunction.data.frame}
@@ -15,6 +16,8 @@ Generic function for obtaining 12 monthly values of a zoo object, by applying an
 monthlyfunction(x, ...)
 
 \method{monthlyfunction}{default}(x, FUN, na.rm = TRUE, ...)
+
+\method{monthlyfunction}{zoo}(x, FUN, na.rm=TRUE, out.type="data.frame", verbose=TRUE,...)
 
 \method{monthlyfunction}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
              out.type = "data.frame", verbose = TRUE, ...)
@@ -34,16 +37,19 @@ Logical. Should missing values be removed? \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a month, the corresponding monthly value will be NA 
 }
   \item{dates}{
+It is only used when \code{x} is not a zoo object. \cr
 numeric, factor, Date indicating how to obtain the dates. \cr
 If \code{dates} is a number, it indicates the index of the column in \code{x} that stores the dates \cr
 If \code{dates} is a factor, it is converted into 'Date' class, using the date format specified by \code{date.fmt} \cr
 If \code{dates} is already of Date class, the code verifies that the number of days in \code{dates} be equal to the number of elements in \code{x}
 }
   \item{date.fmt}{
+It is only used when \code{x} is not a zoo object. \cr
 character indicating the format in which the dates are stored in \var{dates}, e.g. \kbd{\%Y-\%m-\%d}. See \code{format} in \code{\link[base]{as.Date}}. \cr
 ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
 }
   \item{out.type}{
+It is only used when \code{x} is a matrix or data.frame. \cr
 Character defining the desired type of output. Valid values are: \cr
 -) \kbd{data.frame}: a data.frame, with 12 columns representing the months, and as many rows as gauging stations are included in \code{x} \cr
 -) \kbd{db}        : a data.frame, with 4 columns will be produced. Useful for a posterior boxplot \cr
