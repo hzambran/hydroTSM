@@ -34,7 +34,7 @@ daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
       stop(paste("Invalid argument: 'x' is not a daily ts, it is a ", sfreq(x), " ts", sep="") ) }
 
   # Generating a Monthly time series of Total Monthly Precipitation (Monthly sum of daily values)
-  tmp <-aggregate( x, by=as.Date( as.yearmon( time(x) ) ), FUN, na.rm= na.rm )
+  tmp <-aggregate( x, by=zoo::as.Date( as.yearmon( time(x) ) ), FUN, na.rm= na.rm )
 
   # Getting the position of all the years in which there were no values
   # mean(NA:NA, na.rm=TRUE) == NaN
