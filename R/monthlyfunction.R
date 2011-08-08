@@ -19,10 +19,6 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
      if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
         stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
-     # Checking the user provide a valid value for 'x'
-     if (is.na(match(sfreq(x), c("daily", "monthly"))))
-	stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") )
-
      # Requiring the Zoo Library (Z’s ordered observations)
      require(zoo)
 
@@ -40,6 +36,10 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 
      # Checking that the user provied a valid argument for 'FUN'
      if (missing(FUN))  stop("Missing argument: 'FUN' must be provided")
+     
+     # Checking the user provide a valid value for 'x'
+     if (is.na(match(sfreq(x), c("daily", "monthly"))))
+	stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") )
 
      # Time index of 'x'
      dates <- time(x)
