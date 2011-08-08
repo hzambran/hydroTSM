@@ -36,7 +36,7 @@ NEWS/ChangeLog for hydroTSM
 	                      -) it works with xts objects as well.
 	o 'daily2annual'    : -) it works with xts objects as well.
 	o 'daily2monthly'   : -) it works with xts objects as well.
-	o 'monthlyfunction' : -) new 'monthlyfunction.zoo', which works with vectors and matrixes
+	o 'monthlyfunction' : -) new 'monthlyfunction.zoo', ~ 8 times faster than before (when out.type="data.frame")
 			      -) it works now with matrix objects as well.
 	                      -) it works now with xts objects as well.
 	o 'annualfunction'  : -) it works with matrix objects as well.
