@@ -135,16 +135,22 @@ nyears <- length( seq(from=dates[1], to=dates[length(dates)], by="years") )
 \dontrun{
 
 ## Sum of the monthly values in each station of 'x'
-m <- monthlyfunction(x, FUN=sum, dates=1, out.type="db")
+z <- zoo( x[, 2:ncol(x)], dates)
+m <- monthlyfunction(z, FUN=sum)
+
+
+## Another way of computing the sum of the monthly values in each station of 'x'
+## This way is usefult for posteriori boxplots
+m2 <- monthlyfunction(x, FUN=sum, dates=1, out.type="db")
 
 ## Average monthly precipitation in each station of 'x'
-m$Value <- m$Value / nyears 
+m2$Value <- m2$Value / nyears 
 
 ## Creating monthly factors
-m$Month <- factor(m$Month, levels=month.abb)
+m2$Month <- factor(m2$Month, levels=month.abb)
 
 ## boxplot of the monthly values in all stations
-boxplot(Value ~ Month, m, col="lightyellow", main="Monthly Precipitation, [mm/month]")
+boxplot(Value ~ Month, m2, col="lightyellow", main="Monthly Precipitation, [mm/month]")
 }
 
 }
