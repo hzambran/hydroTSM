@@ -3,7 +3,7 @@
 #              year of a daily/monthly zoo object                       #
 #########################################################################
 # Started: 15-May-2009 ;                                                #
-# Updates: 31-Aug-2009 ; 19-Jun-2011                                    #
+# Updates: 31-Aug-2009 ; 19-Jun-2011 ; 08-Aug-2011                      #
 #########################################################################
 
 # 'x   '    : variable of type 'zoo' or 'data.frame'
@@ -30,6 +30,23 @@ dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
   valid.class <- c("xts", "zoo")    
   if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
       stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
+ 
+  # Requiring the Zoo Library (Z’s ordered observations)
+  require(zoo)
+
+  dm2seasonal.zoo(x=x, season=season, FUN=FUN, na.rm=na.rm, out.fmt=out.fmt, ...)
+
+} # 'dm2seasonal.default' END
+
+
+
+
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 08-Aug-2011                 #
+# Updates: 08-Aug-2011                 #
+########################################
+dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 
   # Checking that the user provied a valid argument for 'season'
   if ( missing(season) ) {
@@ -73,6 +90,7 @@ dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
   # December of 1991 be used together with Jan/92 and Feb/92,
   # instead of with Jan/91 and Feb/91
   if (season == "DJF") {
+  
 			syears            <- as.numeric(format( time(s), "%Y" ))
 			dec.index         <- which(format(time(s), "%m") == 12)
 			dec.years         <- syears[dec.index]
@@ -82,25 +100,22 @@ dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 			s.a <- aggregate( s, by= syears, FUN=FUN, na.rm= na.rm)
 
 			# Removing the last value of december, because it is outside of the analysis period
-			s.a <- s.a[1:(length(s.a)-1)]
-  } else  {
+			if ( (is.matrix(x)) | (is.data.frame(x)) ) {
+			  s.a <- s.a[1:(nrow(s.a)-1), ]
+			} else s.a <- s.a[1:(length(s.a)-1)]
+			
+  } else  s.a <- aggregate( s, by= format( time(s), "%Y" ), FUN=FUN, na.rm= na.rm )
+	
 
-			s.a <- aggregate( s, by= format( time(s), "%Y" ), FUN=FUN, na.rm= na.rm )
-	}
-
-  # Getting the position of all the years in which there were no values
+  # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN
   nan.index <- which(is.nan(s.a))
+  if ( length(nan.index) > 0 ) s.a[nan.index] <- NA 
 
-  # Changing all the NaN's by NA's
-  if ( length(nan.index) > 0 ) { s.a[nan.index] <- NA }
-
-  # Getting the position of all the years in which there were no values
+  # Replacing all the Inf and -Inf by NA's
   # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
   inf.index <- which(is.infinite(s.a))
-
-  # Changing all the Inf and -Inf by NA's
-  if ( length(inf.index) > 0 ) { s.a[inf.index] <- NA }
+  if ( length(inf.index) > 0 ) s.a[inf.index] <- NA 
   
   # If the user wants a complete data format for the output ts:
   if (out.fmt == "%Y-%m-%d")
@@ -108,10 +123,15 @@ dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 
   return(s.a)
 
-} # 'dm2seasonal.default' END
+} # 'dm2seasonal.zoo' END
 
 
 
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 15-May-2009                 #
+# Updates: 08-Aug-2011                 #
+########################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
 #             If 'dates' is a number, it indicates the index of the column in
@@ -154,6 +174,10 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
   # Checking 'out.fmt'
   if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
     stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
+    
+  # Checking a valid value for 'season'
+  if (is.na(match(season, c("DJF", "MAM", "JJA", "SON") ) ) )
+     stop("Invalid argument: 'season' must be in c('DJF', 'MAM', 'JJA', 'SON')")
 
   # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {
@@ -181,57 +205,30 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
   if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
-  # Checking a valid value for 'season'
-  if (is.na(match(season, c("DJF", "MAM", "JJA", "SON") ) ) )
-     stop("Invalid argument: 'season' must be in c('DJF', 'MAM', 'JJA', 'SON')")
-
-  # Amount of stations in 'x'
-  nstations <- ncol(x)
-
-  # ID of all the stations in 'x'
-  snames <- colnames(x)
-
-  # Computing the Starting and Ending Year of the analysis
-  Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
-  Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
-
-  # Amount of Years belonging to the desired season
-  nyears <- Ending.Year - Starting.Year + 1
-
-  # Requiring the Zoo Library (Z’s ordered observations)
-  require(zoo)
-
-  message("[Starting the computations...]")
-
+  x       <- as.zoo(x)
+  time(x) <- dates  
+     
+  ##############################################################################
   if (out.type == "data.frame") {
-
-	# Vector with the names of the field that will be used for storing the results
-	field.names <- c(snames )
-
-	# Creating the data.frame that will store the computed averages for each station
-	z <- as.data.frame(matrix(data = NA, nrow = nyears, ncol = nstations,
-                                  byrow = TRUE, dimnames = NULL) )
-	colnames(z) <- field.names
-
-	rownames(z) <- Starting.Year:Ending.Year
-
-	z[1:nstations] <- sapply(1:nstations, function(j,y) {
-
-		message( paste("Station: ", format(snames[j], width=10, justify="left"),
-                               " : ",format(j, width=3, justify="left"), "/",
-                               nstations, " => ",
-                               format(round(100*j/nstations,2), width=6, justify="left"),
-                               "%", sep="") )
-
-		# Transforming the column of 'x' into a zoo object,
-		# using the dates provided by the user
-		tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
-
-		z[,j] <- dm2seasonal.default(x= tmp, season=season, FUN=FUN, na.rm=na.rm, out.fmt=out.fmt)
-
-	}, y = x) # sapply END
-
+  
+    dm2seasonal.zoo(x=x, season=season, FUN=FUN, na.rm=na.rm, out.fmt=out.fmt, ...)
+    
   } else if (out.type == "db") {
+
+        # Amount of stations in 'x'
+        nstations <- ncol(x)
+
+        # ID of all the stations in 'x'
+        snames <- colnames(x)
+
+        # Computing the Starting and Ending Year of the analysis
+        Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
+        Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
+
+        # Amount of Years belonging to the desired season
+        nyears <- Ending.Year - Starting.Year + 1
+
+        message("[Starting the computations...]")
 
         # Creating a vector with the names of the field that will be used for storing the results
         field.names <- c("StationID", "Year", "Season", "Value" )
@@ -245,11 +242,11 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
 
         for (j in 1:nstations) {
 
-            message( paste("Station: ", format(snames[j], width=10, justify="left"),
+            message( paste("[ Station: ", format(snames[j], width=10, justify="left"),
                          " : ",format(j, width=3, justify="left"), "/",
                          nstations, " => ",
                          format(round(100*j/nstations,2), width=6, justify="left"),
-                         "%", sep="") )
+                         "% ]", sep="") )
 
             # Transforming the column of 'x' into a zoo object,
 	    # using the dates provided by the user

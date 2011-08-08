@@ -12,29 +12,48 @@
 #              FALSE: if there is AT LEAST one NA within a month, the FUN and monthly values are NA
 seasonalfunction <- function(x, ...) UseMethod("seasonalfunction")
 
+
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 11-Sep-2009                 #
+# Updates: 08-Aug-2011                 #
+########################################
 seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
      # Checking that 'x' is a zoo object
      if ( !(class(x) %in% c("zoo", "xts") ) )
        stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
 
+     # Requiring the Zoo Library (Z’s ordered observations)
+     require(zoo)
+
+     seasonalfunction.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
+
+} # 'seasonalfunction.default' end
+
+
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 08-Aug-2011                 #
+# Updates: 08-Aug-2011                 #
+########################################
+seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
+
      # Checking that the user provied a valid argument for 'FUN'
-     if (missing(FUN))
-         stop("Missing argument: 'FUN' must be provided")
+     if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
 
      # Checking the user provide a valid value for 'x'
      if (is.na(match(sfreq(x), c("daily", "monthly")))) {
 	 stop(paste("Invalid argument: 'x' is not a daily or monthly ts, it is a ", sfreq(x), " ts", sep="") ) }
 
-     # Requiring the Zoo Library (Z’s ordered observations)
-     require(zoo)
-
      seasons <- c("DJF", "MAM", "JJA", "SON")
+     
+     nseasons <- length(seasons)
 
      # Creating the output variable
-     z <- NA*numeric(4)
+     z <- NA*numeric(nseasons)
 
-     z <- sapply(1:4, function(j) {
+     z <- sapply(1:nseasons, function(j) {
 
 	s <- dm2seasonal(x, season=seasons[j], FUN=FUN, na.rm=na.rm)
 
@@ -46,25 +65,27 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
      ## Replacing the NaNs by 'NA.
      ## NaN's are obtained when using theFUN=mean with complete NA values
      nan.index <- which(is.nan(z))
+     if (length(nan.index) > 0  ) z[nan.index] <- NA
 
-     if (length(nan.index) > 0  )
-     z[nan.index] <- NA
-
+     ## Replacing all the Inf and -Inf by NA's
      # Getting the position of all the years in which there were no values
      # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
      inf.index <- which(is.infinite(z))
-
-     # Changing all the Inf and -Inf by NA's
      if ( length(inf.index) > 0 ) { z[inf.index] <- NA }
 
      names(z) <- seasons
 
      return(z)
 
-} # 'seasonalfunction.default' end
+} # 'seasonalfunction.zoo' end
 
 
 
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 11-Sep-2009                 #
+# Updates: 08-Aug-2011                 #
+########################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
 #             If 'dates' is a number, it indicates the index of the column in
@@ -221,6 +242,12 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
  } #'seasonalfunction.data.frame' END
  
  
+ 
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 11-Sep-2009                 #
+# Updates: 08-Aug-2011                 #
+########################################
  seasonalfunction.matrix <- function(x, FUN, na.rm=TRUE,
                                      dates, date.fmt="%Y-%m-%d",
                                      out.type="data.frame",

@@ -6,5 +6,6 @@ importFrom("automap", autoKrige)
 exportPattern("^[^\\.]")
 
 S3method(monthlyfunction, zoo)
+S3method(dm2seasonal, zoo)
 
 

@@ -2,6 +2,7 @@
 \Rdversion{1.1}
 \alias{dm2seasonal}
 \alias{dm2seasonal.default}
+\alias{dm2seasonal.zoo}
 \alias{dm2seasonal.data.frame}
 \alias{dm2seasonal.matrix}
 
@@ -15,6 +16,8 @@ Generic function for computing a seasonal value for every year of a daily/monthl
 dm2seasonal(x, ...)
 
 \method{dm2seasonal}{default}(x, season, FUN, na.rm = TRUE, out.fmt="\%Y", ...)
+
+\method{dm2seasonal}{zoo}(x, season, FUN, na.rm = TRUE, out.fmt="\%Y", ...)
 
 \method{dm2seasonal}{data.frame}(x, season, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
         out.type = "data.frame", out.fmt="\%Y", ...)
@@ -107,6 +110,11 @@ data(EbroPPtsMonthly)
 ## Winter (DJF) mean values of precipitation for the first 3 stations 
 ## in 'EbroPPtsMonthly' (its first column stores the dates)
 dm2seasonal(EbroPPtsMonthly[,1:4], FUN=mean, season="DJF", dates=1)
+
+## The same previous example, but using a zoo object
+dates <- as.Date(EbroPPtsMonthly[,1]) # dates of the zoo object
+z     <- zoo(EbroPPtsMonthly[ ,2:ncol(EbroPPtsMonthly)], dates) # zoo creation
+dm2seasonal(z, FUN=mean, season="DJF")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

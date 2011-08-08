@@ -52,7 +52,7 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      nan.index          <- which(is.nan(totals))
      if ( length(nan.index) > 0 )  totals[ nan.index] <- NA
      
-     # Changing all the Inf and -Inf by NA's
+     # Replacing all the Inf and -Inf by NA's
      # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
      inf.index <- which(is.infinite(totals))
      if ( length(inf.index) > 0 ) totals[inf.index] <- NA
@@ -139,12 +139,18 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
   if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
+  
+  # If 'dates' is already of Date class, the following line verifies that
+  # the number of days in 'dates' be equal to the number of element in the
+  # time series corresponding to the 'st.name' station
+  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+     stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   x       <- as.zoo(x)
   time(x) <- dates
   
   ##############################################################################
-  if (out.type != "db") {
+  if (out.type == "data.frame") {
   
     monthlyfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
     
