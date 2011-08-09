@@ -6,7 +6,7 @@
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: May 13th, 2009                                                      #
-# Updates: March 2009, Nov 2010, April 2011                                    #
+# Updates: March 2009, Nov 2010, April 2011 ; 09-Aug-2011                      #
 ################################################################################
 sfreq <- function(x, min.year=1800) {
 
@@ -20,7 +20,7 @@ sfreq <- function(x, min.year=1800) {
   t1 <- time(x[1])
   t2 <- time(x[2])
 
-  if ( ( class(t1) == "character" ) & ( as.numeric(t1) > min.year ) ) {
+  if ( (( class(t1) == "character" ) & ( as.numeric(t1) > min.year )) | ( class(t1) == "factor" ) ) {
     sfreq <- "annual"
   } else
       if ( ( t2 - t1 ) == 1)  {

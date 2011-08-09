@@ -14,7 +14,7 @@ This function transforms a character vector of dates into a character vector of 
 -) autumn = SON: September, October, November  \cr
 }
 \usage{
-time2season(x, out.fmt = "months")
+time2season(x, out.fmt = "months", type="default")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,6 +25,11 @@ vector with the dates that have to be transformed. class(x) must be Date
 character, indicating the format of the output seasons. Possible values are: \cr
 -) \kbd{seasons} =>  "winter", "spring",  "summer", autumn"  \cr
 -) \kbd{months}  =>  "DJF", "MAM",  "JJA", SON" 
+}
+  \item{type}{
+character, indicating which weather seasons will be used for computing the output. Possible values are: \cr
+-) \kbd{default}          =>  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov  \cr
+-) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov 
 }
 }
 %%\details{
@@ -39,9 +44,9 @@ character vector with the weather season to which each date in \var{x} belongs
 \author{
 Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 }
-%%\note{
-%%  ~~further notes~~
-%%}
+\note{
+  Weather seasons corresponding to French Polynesia were defined following a comment from Lydie Sichoix
+}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 

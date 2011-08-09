@@ -16,7 +16,7 @@
 
 # 'result': vector with the wheater season to which each date in 'x' belongs
 
-time2season <- function(x, out.fmt="months") {
+time2season <- function(x, out.fmt="months", type="default") {
 
  # Checking that 'class(x)==Date'
  if (is.na(match(class(x), c("Date") ) ) )
@@ -25,27 +25,51 @@ time2season <- function(x, out.fmt="months") {
  # Checking the class of out.fmt
  if (is.na(match(out.fmt, c("seasons", "months") ) ) )
      stop("Invalid argument: 'out.fmt' must be in c('seasons', 'months')")
+     
+ # Checking that the user provied a valid class for 'x'   
+ valid.types <- c("default", "FrenchPolynesia")    
+ if (length(which(!is.na(match(type, valid.types )))) <= 0)  
+     stop("Invalid argument: 'type' must be in c('default', 'FrenchPolynesia')")
 
+ ####################
  months <- format(x, "%m")
-
- winter <- which( months %in% c("12", "01", "02") )
- spring <- which( months %in% c("03", "04", "05") )
- summer <- which( months %in% c("06", "07", "08") )
- autumm <- which( months %in% c("09", "10", "11") )
+ 
+ if (type=="default") {
+   winter <- which( months %in% c("12", "01", "02") )
+   spring <- which( months %in% c("03", "04", "05") )
+   summer <- which( months %in% c("06", "07", "08") )
+   autumm <- which( months %in% c("09", "10", "11") ) 
+ } else if (type=="FrenchPolynesia") {
+   winter <- which( months %in% c("12", "01", "02", "03") )
+   spring <- which( months %in% c("04", "05") )
+   summer <- which( months %in% c("06", "07", "08") )
+   autumm <- which( months %in% c("09", "10") ) 
+ }
 
  # Creation of the output, with the same length of the 'x' input
  seasons <- rep(NA, length(x))
 
  if (out.fmt == "seasons") {
+ 
     seasons[winter] <- "winter"
     seasons[spring] <- "spring"
     seasons[summer] <- "summer"
     seasons[autumm] <- "autumm"
+    
  } else { # out.fmt == "months"
-    seasons[winter] <- "DJF"
-    seasons[spring] <- "MAM"
-    seasons[summer] <- "JJA"
-    seasons[autumm] <- "SON"
+ 
+    if (type=="default") {
+      seasons[winter] <- "DJF"
+      seasons[spring] <- "MAM"
+      seasons[summer] <- "JJA"
+      seasons[autumm] <- "SON"
+    } else  if (type=="FrenchPolynesia") {
+       seasons[winter] <- "DJFM"
+       seasons[spring] <- "AM"
+       seasons[summer] <- "JJA"
+       seasons[autumm] <- "SON"
+      } # IF end
+   
  } # IF end
 
  return(seasons)
