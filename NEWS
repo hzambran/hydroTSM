@@ -39,7 +39,7 @@ NEWS/ChangeLog for hydroTSM
 	o 'monthlyfunction' : -) new 'monthlyfunction.zoo', ~ 8 times faster than before (for data.frames, when out.type="data.frame")
 			      -) it works now with matrix objects as well.
 	                      -) it works now with xts objects as well.
-	o 'seasonalfunction': -) new 'seasonalfunction.zoo', ~ 8 times faster than before (for data.frames, when out.type="data.frame")
+	o 'seasonalfunction': -) new 'seasonalfunction.zoo', ~ 30 times faster than before (for data.frames, when out.type="data.frame")
 			      -) it works with matrix objects as well.
 	                      -) it works with xts objects as well.
 	o 'annualfunction'  : -) it works with matrix objects as well.
