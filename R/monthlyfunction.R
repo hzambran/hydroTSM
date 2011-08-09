@@ -62,7 +62,7 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      # Giving meaningful names to the output
      if ( (is.matrix(x)) | (is.data.frame(x)) ) {
        totals <- t(totals) # For having the months' names as column names
-     } #else names(totals) <- month.abb[month.index]
+     } #IF end
 
      return(totals)
 
@@ -141,8 +141,8 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
-  x       <- as.zoo(x)
-  time(x) <- dates
+  # Transforming 'x' into a zoo object
+  x <- zoo(x, dates)
   
   ##############################################################################
   if (out.type == "data.frame") {

@@ -2,6 +2,7 @@
 \Rdversion{1.1}
 \alias{daily2monthly}
 \alias{daily2monthly.default}
+\alias{daily2monthly.zoo}
 \alias{daily2monthly.data.frame}
 \alias{daily2monthly.matrix}
 
@@ -17,6 +18,8 @@ daily2monthly(x, ...)
 
 \method{daily2monthly}{default}(x, FUN, na.rm = TRUE, ...)
 
+\method{daily2monthly}{zoo}(x, FUN, na.rm = TRUE, ...)
+
 \method{daily2monthly}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
         out.type = "data.frame", out.fmt="numeric", verbose = TRUE, ...)
 
@@ -26,8 +29,8 @@ daily2monthly(x, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-zoo, data.frame or matrix object, with daily/monthly/annual time series. \cr
-Measurements at several gauging stations can be stored in a data.frame of matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
+zoo, xts, data.frame or matrix object, with daily/monthly time series. \cr
+Measurements at several gauging stations can be stored in a data.frame or matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
 }
   \item{FUN}{
 Function that have to be applied for transforming from daily to annual time step. (e.g., for precipitation \code{FUN=sum} and for temperature and streamflow ts, \code{FUN=mean}). \cr
@@ -89,7 +92,7 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{daily2annual}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
+\code{\link{daily2annual}}, \code{\link{monthlyfunction}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
 }
 \examples{
 ## Loading the SanMartino precipitation data

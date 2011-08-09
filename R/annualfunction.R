@@ -37,7 +37,7 @@ annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      # If the user did not provide a title for the plots, this is created automatically
      if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
 
-     # Monthly index for 'x'
+     # Annual index for 'x'
      dates  <- time(x)
      y      <- as.numeric(format( dates, "%Y" ))
      years  <- factor( y, levels=unique(y) )

@@ -9,5 +9,7 @@ S3method(monthlyfunction, zoo)
 S3method(dm2seasonal, zoo)
 S3method(seasonalfunction, zoo)
 S3method(annualfunction, zoo)
+S3method(daily2monthly, zoo)
+S3method(daily2annual, zoo)
 
 

@@ -15,27 +15,48 @@
 
 daily2monthly <-function(x, ...) UseMethod("daily2monthly")
 
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: XX-XXX-2008                 #
+# Updates: 09-Aug-2011                 #
+########################################
 daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
 
-  # Checking that the user provied a valid class for 'x'   
-  valid.class <- c("xts", "zoo")    
-  if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
-      stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
+     # Checking that the user provied a valid class for 'x'   
+     valid.class <- c("xts", "zoo")    
+     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+        stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
+
+     # Requiring the Zoo Library (Z’s ordered observations)
+     require(zoo)
+
+     daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
+
+} # 'daily2monthly.default' end
+
+
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 09-Aug-2011                 #
+# Updates: 09-Aug-2011                 #
+########################################
+daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 
   # Checking the user provide a valid value for 'FUN'
-  if (missing(FUN)) {
-     stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values") }
-
-  # Requiring the Zoo Library (Z’s ordered observations)
-  require(zoo)
+  if (missing(FUN))
+     stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values")
 
   # Checking the user provide a valid value for the sampling frequency of 'x'
-  if (sfreq(x) != "daily") {
-      stop(paste("Invalid argument: 'x' is not a daily ts, it is a ", sfreq(x), " ts", sep="") ) }
+  if (sfreq(x) != "daily")
+      stop(paste("Invalid argument: 'x' is not a daily ts, it is a ", sfreq(x), " ts", sep="") )
+      
+  # Monthly index for 'x'
+  dates  <- time(x)
+  months <- zoo::as.Date( as.yearmon( time(x) ) )
 
   # Generating a Monthly time series of Total Monthly Precipitation (Monthly sum of daily values)
-  tmp <-aggregate( x, by=zoo::as.Date( as.yearmon( time(x) ) ), FUN, na.rm= na.rm )
-
+  tmp <-aggregate( x, by=months, FUN, na.rm= na.rm )
+  
   # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN
   nan.index <- which(is.nan(tmp))
@@ -45,13 +66,23 @@ daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
   # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
   inf.index <- which(is.infinite(tmp))
   if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
+  
+  # Giving meaningful names to the output
+  #if ( (is.matrix(x)) | (is.data.frame(x)) ) {
+     #tmp <- t(tmp) # For having the months' names as column names
+  #} #IF end
 
   return(tmp)
 
-} # 'daily2monthly.default' end
+} # 'daily2monthly.zoo' end
 
 
 
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: XX-XXX-2008                 #
+# Updates: 09-Aug-2011                 #
+########################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
 #             If 'dates' is a number, it indicates the index of the column in
@@ -78,14 +109,14 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
 				     out.type="data.frame",
 				     out.fmt="numeric",
 				     verbose=TRUE,...) {
+  
+  # Checking that the user provied a valid argument for 'out.type'
+  if (is.na(match( out.type, c("data.frame", "db") ) ) )
+      stop("Invalid argument: 'out.type' must be in c('data.frame', 'db')")
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
       stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values")
-
-    # Checking that the user provied a valid argument for 'out.type'
-  if (is.na(match( out.type, c("data.frame", "db") ) ) )
-      stop("Invalid argument: 'out.type' must be in c('data.frame', 'db')")
 
   # Checking that the user provied a valid argument for 'out.fmt'
   if (is.na(match( out.fmt, c("numeric", "zoo") ) ) )
@@ -116,83 +147,57 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
   # time series corresponding to the 'st.name' station
   if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
+     
+  # Transforming 'x' into a zoo object
+  x <- zoo(x, dates)
+  
+  ##############################################################################
+  if (out.type == "data.frame") {
+  
+    z <- daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
+    
+    if (out.fmt == "numeric") {
+       snames      <- colnames(z)
+       months.lab  <- format(time(z), "%b-%Y")
+       z           <- coredata(z)
+       colnames(z) <- snames
+       rownames(z) <- months.lab        
+    } # IF end
+    
+  } else if (out.type == "db") {  
+  
+          if (verbose) message("[Starting the computations...]" )
 
-  # Amount of stations in 'x'
-  nstations <- ncol(x)
+          # Amount of stations in 'x'
+          nstations <- ncol(x)
 
-  # ID of all the stations in 'x'
-  snames <- colnames(x)
+          # ID of all the stations in 'x'
+          snames <- colnames(x)
 
-  # Computing the Starting and Ending Year of the analysis
-  Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
-  Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
+          # Computing the Starting and Ending Year of the analysis
+          Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
+          Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
 
-  # Amount of Years belonging to the desired period
-  nyears <- Ending.Year - Starting.Year + 1
+          # Amount of Years belonging to the desired period
+          nyears <- Ending.Year - Starting.Year + 1
 
-  # Computing the amount of months with data within the desired period
-  ndays   <- length(dates) # number of days in the period
-  tmp     <- vector2zoo(rep(0,ndays), dates)
-  tmp     <- daily2monthly.default(x= tmp, FUN=FUN, na.rm=na.rm)
-  nmonths <- length(tmp)
+          # Computing the amount of months with data within the desired period
+          ndays   <- length(dates) # number of days in the period
+          tmp     <- vector2zoo(rep(0,ndays), dates)
+          tmp     <- daily2monthly.default(x= tmp, FUN=FUN, na.rm=na.rm)
+          nmonths <- length(tmp)
 
-  # Requiring the Zoo Library (Z’s ordered observations)
-  require(zoo)
+          # Creating a vector with the names of the field that will be used for storing the results
+          field.names <- c("StationID", "Year", "Month", "Value" )
 
-  if (verbose) message("[Starting the computations...]" )
-
-
-  if (out.type=="data.frame") {
-
-        # Creating a vector with the names of the field that will be used for storing the results
-        field.names <- snames
-
-        # Creating the data.frame that will store the computed averages for each subcatchment
-        z <- as.data.frame(matrix(data = NA, nrow = nmonths, ncol = nstations,
-                           byrow = TRUE, dimnames = NULL) )
-
-	colnames(z) <- field.names
-        #rownames(z) <- format(as.Date(mip(from=range(dates)[1], to=range(dates)[2])), "%m-%Y")
-        rownames(z) <- format(time(tmp), "%m-%Y")
-
-        y = x
-
-        for (j in 1:nstations) {
-
-            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
-                                      " : ",format(j, width=3, justify="left"), "/",
-                                      nstations, " => ",
-                                      format(round(100*j/nstations,2), width=6, justify="left"),
-                                      "%", sep="") )
-
-            # Transforming the column of 'x' into a zoo object,
-    	    # using the dates provided by the user
-    	    tmp <- vector2zoo(x=y[,j], dates=dates, date.fmt=date.fmt)
-
-    	    # Computing the monthly values
-    	    m <- daily2monthly.default(x= tmp, FUN=FUN, na.rm=na.rm)
-
-    	    if (out.fmt == "numeric") {
-    		        z[,j] <- as.numeric(m)
-            } else if (out.fmt == "zoo") {
-    		              z[,j] <- m
-              } # IF end
-
-        } # FOR end
-
-  } else  if (out.type=="db") {
-
-        # Creating a vector with the names of the field that will be used for storing the results
-        field.names <- c("StationID", "Year", "Month", "Value" )
-
-        # Creating the data.frame that will store the computed averages for each subcatchment
-        z <- as.data.frame(matrix(data = NA, nrow = nmonths*nstations, ncol = 4,
+          # Creating the data.frame that will store the computed averages for each subcatchment
+          z <- as.data.frame(matrix(data = NA, nrow = nmonths*nstations, ncol = 4,
                             byrow = TRUE, dimnames = NULL) )
-        colnames(z) <- field.names
+          colnames(z) <- field.names
 
-        y = x
+          y = x
 
-        for (j in 1:nstations) {
+          for (j in 1:nstations) {
 
             if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
                                       " : ",format(j, width=3, justify="left"), "/",
@@ -200,15 +205,11 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
                                       format(round(100*j/nstations,2), width=6, justify="left"),
                                       "%", sep="") )
 
-        # Transforming the column of 'x' into a zoo object,
-		    # using the dates provided by the user
-		    tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
+	    # Computing the monthly values
+	    m <- daily2monthly.zoo(x= x[,j], FUN=FUN, na.rm=na.rm)
 
-		    # Computing the monthly values
-		    m <- daily2monthly.default(x= tmp, FUN=FUN, na.rm=na.rm)
-
-		    if (out.fmt == "numeric") {
-    		        m <- as.numeric(m)
+	    if (out.fmt == "numeric") {
+    	        m <- as.numeric(m)
             } # IF end
 
 	# Putting the annual/monthly values in the output data.frame
@@ -222,13 +223,19 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
         z[row.ini:row.fin, 4] <- m
 
         } # FOR end
-  }
+        
+  } # IF end
 
   return( z )
 
  } #'daily2monthly.data.frame' END
 
 
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: XX-XXX-2008                 #
+# Updates: 09-Aug-2011                 #
+########################################
 daily2monthly.matrix  <- function(x, FUN, na.rm=TRUE,
                                   dates, date.fmt="%Y-%m-%d",
 				  out.type="data.frame",
