@@ -42,7 +42,8 @@ NEWS/ChangeLog for hydroTSM
 	o 'seasonalfunction': -) new 'seasonalfunction.zoo', ~ 30 times faster than before (for data.frames, when out.type="data.frame")
 			      -) it works with matrix objects as well.
 	                      -) it works with xts objects as well.
-	o 'annualfunction'  : -) it works with matrix objects as well.
+	o 'annualfunction'  : -) new 'annualfunction.zoo', much faster than before for data.frames.
+			      -) it works with matrix objects as well.
 	                      -) it works with xts objects as well.	
 	o 'fdc' and 'fdcu'  : -) new argument 'xat', for setting the position of the 'x' axis labels when 'log="x"'
 	o Some 'as.Date' calls were changed to 'zoo:ad.Date', in order to work properly with zoo >= 1.7-2

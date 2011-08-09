@@ -8,5 +8,6 @@ exportPattern("^[^\\.]")
 S3method(monthlyfunction, zoo)
 S3method(dm2seasonal, zoo)
 S3method(seasonalfunction, zoo)
+S3method(annualfunction, zoo)
 
 

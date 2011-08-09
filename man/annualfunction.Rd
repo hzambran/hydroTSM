@@ -2,6 +2,7 @@
 \Rdversion{1.1}
 \alias{annualfunction}
 \alias{annualfunction.default}
+\alias{annualfunction.zoo}
 \alias{annualfunction.data.frame}
 \alias{annualfunction.matrix}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -16,6 +17,8 @@ annualfunction(x, FUN, na.rm = TRUE, ...)
 
 \method{annualfunction}{default}(x, FUN, na.rm = TRUE, ...)
 
+\method{annualfunction}{zoo}(x, FUN, na.rm = TRUE, ...)
+
 \method{annualfunction}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
         verbose = TRUE, ...)
         
@@ -25,7 +28,7 @@ annualfunction(x, FUN, na.rm = TRUE, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-zoo, data.frame or matrix object, with daily/monthly/annual time series. \cr
+zoo, xts, data.frame or matrix object, with daily/monthly/annual time series. \cr
 Measurements at several gauging stations can be stored in a data.frame of matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
 }
   \item{FUN}{
@@ -78,7 +81,7 @@ Its result will depend on the sampling frequency of \code{x} and the type of fun
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{monthlyfunction}}, \code{\link{daily2annual}}, \code{\link{monthly2annual}}
+\code{\link{monthlyfunction}}, \code{\link{daily2annual}}, \code{\link{monthly2annual}}, \code{\link{yip}}
 }
 \examples{
 ## Loading the SanMartino daily precipitation data (1921-1990)
@@ -101,6 +104,31 @@ a <- daily2annual(x, FUN=sum, na.rm=TRUE)
 
 # Mean annual value
 mean(a)
+
+##############################
+##############################
+## Loading the monthly time series of precipitation within the Ebro River basin.
+data(EbroPPtsMonthly)
+x <- EbroPPtsMonthly
+
+## Dates of 'x'
+dates <- as.Date(x[,1])
+
+
+## Computation of the average annual precipitation
+\dontrun{
+
+## Transforming 'x' into a zoo object
+z <- zoo( x[, 2:ncol(x)], dates)
+
+# Amount of years in 'x' (needed for computing the average)
+nyears <- yip(from=start(z), to=end(z), out.type="nmbr" )
+
+## Average annual precipitation, for the first 5 stations in 'x'
+annualfunction(z[ ,1:5], FUN=sum)/nyears
+
+}
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

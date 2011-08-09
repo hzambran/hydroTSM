@@ -130,15 +130,15 @@ x <- EbroPPtsMonthly
 ## Dates of 'x'
 dates <- as.Date(x[,1])
 
-# Amount of years in 'x' (needed for computing the average)
-nyears <- length( seq(from=dates[1], to=dates[length(dates)], by="years") )
-
-
 ## Monthly precipitation of all the stations in 'x'
 \dontrun{
 
 ## Sum of the monthly values in each station of 'x'
 z <- zoo( x[, 2:ncol(x)], dates)
+
+# Amount of years in 'x' (needed for computing the average)
+nyears <- yip(from=start(z), to=end(z), out.type="nmbr" )
+
 m <- monthlyfunction(z, FUN=sum)
 
 

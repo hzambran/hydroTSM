@@ -19,28 +19,63 @@ annualfunction.default <- function(x, FUN, na.rm=TRUE,...) {
      if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
          stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
-     # If the user did not provide a title for the plots, this is created automatically
-     if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
-
      # Requiring the Zoo Library
      require(zoo)
 
-     # 'FUN' is first applied to all the values of 'x' belonging to the same year
-     totals <- aggregate( x, by= format( time(x), "%Y" ), FUN=FUN, na.rm= na.rm )
-
-     #  'FUN' is applied to all the previously computed annual values to get the final result.
-     totals <- aggregate( totals, by= rep("value", length(totals)), FUN=FUN, na.rm= na.rm )
-
-     return(totals)
+     annualfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
 
 } # 'annualfunction.default' end
 
 
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 09-Aug-2011                 #
+# Updates: 09-Aug-2011                 #
+########################################
+annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
+
+     # If the user did not provide a title for the plots, this is created automatically
+     if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
+
+     # Monthly index for 'x'
+     dates  <- time(x)
+     y      <- as.numeric(format( dates, "%Y" ))
+     years  <- factor( y, levels=unique(y) )
+
+     # 'FUN' is first applied to all the values of 'x' belonging to the same year
+     totals <- aggregate( x, by= years, FUN=FUN, na.rm= na.rm )
+     
+     #  'FUN' is applied to all the previously computed annual values to get the final result.
+     if ( (is.matrix(x)) | (is.data.frame(x)) ) {
+       totals <- apply(totals, MARGIN=2, FUN=FUN, an.rm=na.rm)
+     } else totals <- aggregate(totals, by = rep("value", length(totals)), FUN = FUN, na.rm = na.rm)
+     
+     # Replacing the NaNs by 'NA.
+     # NaN's are obtained when using the FUN=mean with complete NA values
+     nan.index          <- which(is.nan(totals))
+     if ( length(nan.index) > 0 )  totals[ nan.index] <- NA
+     
+     # Replacing all the Inf and -Inf by NA's
+     # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
+     inf.index <- which(is.infinite(totals))
+     if ( length(inf.index) > 0 ) totals[inf.index] <- NA
+
+     # Giving meaningful names to the output
+     if ( (is.matrix(x)) | (is.data.frame(x)) ) {
+       totals <- t(totals) # For having the months' names as column names
+     } # IF end
+
+     return(totals)
+
+} # 'annualfunction.zoo' end
+
+
 ############################################################################
-# annualfunction: Generic function for computing monthly totals/mean values  #
-#               for a zoo object or data.frame                             #
+# annualfunction: Generic function for computing monthly totals/mean values#
+#                 for a zoo object or data.frame                           #
 ############################################################################
-#                  May 15th, 2009; Sep 01st 2009                           #
+# Started: 2009-May-15                                                     #
+# Updates: 2009-Sep-01st ; 2011-Aug-09                                     #
 ############################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the 
 #             dates correponding to the 'sname' station
@@ -66,80 +101,60 @@ annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
                                       dates, date.fmt="%Y-%m-%d",
                                       verbose=TRUE,...) {
 	  
-  # If the user did not provide a title for the plots, this is created automatically
-  if (missing(FUN)) stop("Missing argument: 'FUN' must be provided") 
-	  
-  # Checking that the user provied a valid argument for 'dates'       
+  # Checking that the user provied a valid argument for 'FUN'
+   if (missing(FUN))
+         stop("Missing argument: 'FUN' must be provided")
+
+  # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {
-      stop("Missing argument: 'dates' must be provided") 
-  } else  
-    {    
-       # Checking that the user provied a valid argument for 'dates'  
-       if (is.na(match(class(dates), c("numeric", "factor", "Date")))) 
+      stop("Missing argument: 'dates' must be provided")
+  } else
+    {
+       # Checking that the user provied a valid argument for 'dates'
+       if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
            stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
-           
-        # Verification that the number of days in 'dates' be equal to the number 
+
+        # Verification that the number of days in 'dates' be equal to the number
         # of elements in 'x'
-        if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) ) 
-        stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'") 
+        if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+        stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
     } # ELSE end
-        
+
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
-  if ( class(dates) == "numeric" ) {    
+  if ( class(dates) == "numeric" ) {
     tmp   <- dates
     dates <- as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
-  }  # IF end 
-     
-  # Amount of stations in 'x'
-  nstations <- ncol(x)
+  }  # IF end
 
-  # ID of all the stations in 'x'
-  snames <- colnames(x)  
+  # If 'dates' is a factor, it have to be converted into 'Date' class,
+  # using the date format  specified by 'date.fmt'
+  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
   
-  # Computing the Starting and Ending Year of the analysis
-  Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
-  Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
-  
-  # Amount of Years belonging to the desired period
-  nyears <- Ending.Year - Starting.Year + 1
-  
-  # Amount of months belonging to the desired period
-  nmonths <- 12*nyears
-  
-  # Requiring the Zoo Library
-  require(zoo)
-  
-  if (verbose) message("[Starting the computations...]")
+  # If 'dates' is already of Date class, the following line verifies that
+  # the number of days in 'dates' be equal to the number of element in the
+  # time series corresponding to the 'st.name' station
+  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+     stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
-  # Creating the data.frame that will store the computed averages for each station
-  z <- NA*numeric(nstations)
-                        
-  names(z) <- snames
-      
-  z[1:nstations] <- sapply(1:nstations, function(j, y) {
-        
-      if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
-                                " : ",format(j, width=3, justify="left"), "/", 
-                                nstations, " => ", 
-                                format(round(100*j/nstations,2), width=6, justify="left"), 
-                                "%", sep="") )
-                            
-      # Transforming the column of 'x' into a zoo object, 
-      # using the dates provided by the user
-      tmp <- vector2zoo(x=y[,j], dates=dates, date.fmt=date.fmt)
-            
-      # Computing the annual values
-      z[j] <- annualfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
-                         
-  }, y = x) # sapply END
+  x       <- as.zoo(x)
+  time(x) <- dates
   
-  return(z)
+  ##############################################################################
+  annualfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
+
   
 } #'annualfunction.data.frame' END
 
 
+############################################################################
+# annualfunction: Generic function for computing monthly totals/mean values#
+#                 for a zoo object or data.frame                           #
+############################################################################
+# Started: 2009-May-15                                                     #
+# Updates: 2009-Sep-01st ; 2011-Aug-09                                     #
+############################################################################
 annualfunction.matrix <- function(x, FUN, na.rm=TRUE,
                                   dates, date.fmt="%Y-%m-%d",
                                   verbose=TRUE,...) {

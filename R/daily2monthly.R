@@ -36,12 +36,15 @@ daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
   # Generating a Monthly time series of Total Monthly Precipitation (Monthly sum of daily values)
   tmp <-aggregate( x, by=zoo::as.Date( as.yearmon( time(x) ) ), FUN, na.rm= na.rm )
 
-  # Getting the position of all the years in which there were no values
+  # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN
   nan.index <- which(is.nan(tmp))
-
-  # Changing all the NaN's by NA's
   if ( length(nan.index) > 0 ) { tmp[nan.index] <- NA }
+  
+  # Replacing all the Inf and -Inf by NA's
+  # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
+  inf.index <- which(is.infinite(tmp))
+  if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
 
   return(tmp)
 
