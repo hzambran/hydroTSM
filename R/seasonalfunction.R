@@ -26,8 +26,10 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
      # Requiring the Zoo Library (Z’s ordered observations)
      require(zoo)
+     
+     seasons <- c("DJF", "MAM", "JJA", "SON")
 
-     seasonalfunction.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
+     seasonalfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
 
 } # 'seasonalfunction.default' end
 
@@ -40,42 +42,42 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 
      # Checking that the user provied a valid argument for 'FUN'
-     if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
-
-     # Checking the user provide a valid value for 'x'
-     if (is.na(match(sfreq(x), c("daily", "monthly")))) {
-	 stop(paste("Invalid argument: 'x' is not a daily or monthly ts, it is a ", sfreq(x), " ts", sep="") ) }
-
-     seasons <- c("DJF", "MAM", "JJA", "SON")
+     if (missing(FUN))  stop("Missing argument: 'FUN' must be provided")
      
-     nseasons <- length(seasons)
+     # Checking the user provide a valid value for 'x'
+     if (is.na(match(sfreq(x), c("daily", "monthly"))))
+	stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") )
 
-     # Creating the output variable
-     z <- NA*numeric(nseasons)
+     # Time index of 'x'
+     dates   <- time(x)
+     seasons <- factor( time2season( dates ), levels=c("DJF", "MAM", "JJA", "SON") )
+     
+     # 'as.numeric' is necessary for being able to change the names to the output
+     s <- aggregate(x, by= seasons, FUN=FUN, na.rm= na.rm )
 
-     z <- sapply(1:nseasons, function(j) {
-
-	s <- dm2seasonal(x, season=seasons[j], FUN=FUN, na.rm=na.rm)
-
-        # 'as.numeric' is necessary for being able to change the names to the output
-	z[j] <- as.numeric( aggregate( s, by= rep(seasons[j], length(s)), FUN=FUN, na.rm= na.rm ) )
-
-	 }) # sapply END
-
-     ## Replacing the NaNs by 'NA.
-     ## NaN's are obtained when using theFUN=mean with complete NA values
-     nan.index <- which(is.nan(z))
-     if (length(nan.index) > 0  ) z[nan.index] <- NA
-
-     ## Replacing all the Inf and -Inf by NA's
-     # Getting the position of all the years in which there were no values
+     # Replacing the NaNs by 'NA.
+     # NaN's are obtained when using the FUN=mean with complete NA values
+     nan.index          <- which(is.nan(s))
+     if ( length(nan.index) > 0 )  s[ nan.index] <- NA
+     
+     # Replacing all the Inf and -Inf by NA's
      # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
-     inf.index <- which(is.infinite(z))
-     if ( length(inf.index) > 0 ) { z[inf.index] <- NA }
+     inf.index <- which(is.infinite(s))
+     if ( length(inf.index) > 0 ) s[inf.index] <- NA
+     
+     # numeric index with the months really present in 'x' (when shorther than 1 year)
+     #season.index <- as.numeric( time(s) )    
 
-     names(z) <- seasons
+     # Giving meaningful names to the output
+     if ( (is.matrix(x)) | (is.data.frame(x)) ) {
+       # Transformation needed in order to change the default names of the result
+       s <- coredata(s)
+     
+       s <- t(s) # For having the months' names as column names
+       #colnames(s) <- month.abb[season.index]
+     } # IF end
 
-     return(z)
+     return(s)
 
 } # 'seasonalfunction.zoo' end
 

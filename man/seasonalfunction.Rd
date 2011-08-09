@@ -2,6 +2,7 @@
 \Rdversion{1.1}
 \alias{seasonalfunction}
 \alias{seasonalfunction.default}
+\alias{seasonalfunction.zoo}
 \alias{seasonalfunction.data.frame}
 \alias{seasonalfunction.matrix}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -16,7 +17,12 @@ seasonalfunction(x, ...)
 
 \method{seasonalfunction}{default}(x, FUN, na.rm = TRUE, ...)
 
+\method{seasonalfunction}{zoo}(x, FUN, na.rm = TRUE, ...)
+
 \method{seasonalfunction}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+                          out.type = "data.frame", verbose = TRUE, ...)
+                          
+\method{seasonalfunction}{matrix}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
                           out.type = "data.frame", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -93,14 +99,11 @@ The \var{FUN} value for the winter season (DJF) is computed considering the cons
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
-## Daily to Annual
-a <- daily2annual(x, FUN=sum, na.rm=TRUE)
-
 # Amount of years
-nyears <- length(seq(from=as.Date("1921-01-01"), to=as.Date("1990-12-31"), by="years"))
+nyears <- yip(from=start(x), to=end(x), out.type="nmbr")
 
 ## Mean annual precipitation.
-# It is necessary to divide by the amount of years to obtain the mean  annual value, 
+# It is necessary to divide by the amount of years to obtain the mean annual value, 
 # otherwise it will give the total precipitation for all the 70 years
 seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
 

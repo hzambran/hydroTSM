@@ -17,15 +17,18 @@ monthlyfunction(x, ...)
 
 \method{monthlyfunction}{default}(x, FUN, na.rm = TRUE, ...)
 
-\method{monthlyfunction}{zoo}(x, FUN, na.rm=TRUE, out.type="data.frame", verbose=TRUE,...)
+\method{monthlyfunction}{zoo}(x, FUN, na.rm=TRUE,...)
 
 \method{monthlyfunction}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+             out.type = "data.frame", verbose = TRUE, ...)
+             
+\method{monthlyfunction}{matrix}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
              out.type = "data.frame", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-zoo, data.frame or matrix object, with daily or monthly time series. \cr
+zoo, xts, data.frame or matrix object, with daily or monthly time series. \cr
 Measurements at several gauging stations can be stored in a data.frame of matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
 }
   \item{FUN}{

@@ -41,11 +41,13 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      if (is.na(match(sfreq(x), c("daily", "monthly"))))
 	stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") )
 
-     # Time index of 'x'
-     dates <- time(x)
+     # Monthly index for 'x'
+     dates  <- time(x)
+     m      <- as.numeric(format( dates, "%m" ))
+     months <- factor( month.abb[m], levels=unique(month.abb[m]) )
      
      # 'as.numeric' is necessary for being able to change the names to the output
-     totals <- aggregate(x, by= format( dates, "%m" ), FUN=FUN, na.rm= na.rm )
+     totals <- aggregate(x, by= months, FUN=FUN, na.rm= na.rm )
 
      # Replacing the NaNs by 'NA.
      # NaN's are obtained when using the FUN=mean with complete NA values
@@ -56,25 +58,23 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
      inf.index <- which(is.infinite(totals))
      if ( length(inf.index) > 0 ) totals[inf.index] <- NA
-     
-     # numeric index with the months really present in 'x' (when shorther than 1 year)
-     month.index <- as.numeric( time(totals) )
-     
-     # Transformation needed in order to change the default names of the result
-     totals <- coredata(totals)
 
      # Giving meaningful names to the output
      if ( (is.matrix(x)) | (is.data.frame(x)) ) {
        totals <- t(totals) # For having the months' names as column names
-       colnames(totals) <- month.abb[month.index]
-     } else names(totals) <- month.abb[month.index]
+     } #else names(totals) <- month.abb[month.index]
 
      return(totals)
 
 } # 'monthlyfunction.zoo' end
  
  
- 
+
+########################################
+# Author : Mauricio Zambrano-Bigiarini #
+# Started: 25-Jul-2011                 #
+# Updates: 08-Aug-2011                 #
+######################################## 
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
 #             If 'dates' is a number, it indicates the index of the column in
@@ -95,11 +95,6 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 #                              The third column stores the ID of the station,
 #                              The fourth column contains the monthly value corresponding to the year specified in the second column
 # 'verbose'      : logical; if TRUE, progress messages are printed
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 25-Jul-2011                 #
-# Updates: 08-Aug-2011                 #
-########################################
 monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
                                        dates, date.fmt="%Y-%m-%d",
                                        out.type="data.frame",
@@ -208,11 +203,12 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
             z[row.ini:row.fin, 4] <- tmp
 
         } # FOR end
+        
         colnames(z) <- field.names
+        
+        return( z )
       
     } # ELSE end
-
-  return( z )
 
  } #'monthlyfunction.data.frame' END
  
