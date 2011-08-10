@@ -38,12 +38,13 @@ character, indicating the weather season to be used for selecting the data. Vali
 -) \kbd{JJA} : June, July, August            \cr
 -) \kbd{SON} : September, October, November  \cr
 -) \kbd{DJFM}: December, January, February, March  \cr                   
--) \kbd{AM}  : April, May                   \cr  
+-) \kbd{AM}  : April, May                    \cr   
+-) \kbd{JJAS}: June, July, August, September \cr            
+-) \kbd{ON}  : October, November
 }
   \item{FUN}{
 Function that will be applied to ALL the values of \code{x} belonging to the given weather season (e.g., \code{FUN} can be some of \code{mean}, \code{max}, \code{min}, \code{sd}). \cr
-\bold{The FUN value for the winter season (DJF or DJFM) is computed considering the consecutive months of December, January and February/March}. See 'Warning' section.
-  
+\bold{The FUN value for the winter season (DJF or DJFM) is computed considering the consecutive months of December, January and February/March}. See 'Note' section.
 }
   \item{na.rm}{
 Logical. Should missing values be removed? \cr

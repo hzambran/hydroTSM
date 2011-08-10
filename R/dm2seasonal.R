@@ -53,8 +53,8 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
       stop("Missing argument: 'season' must be provided")
   } else { # If 'season' is provided
     
-      seasons.default         <- c("DJF",  "MAM", "JJA", "SON")
-      seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJA", "SON")
+      seasons.default         <- c("DJF",  "MAM", "JJA",  "SON")
+      seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJAS", "ON")
           
       # Checking that the user provied a valid class for 'season'   
       valid.seasons <- valid.seasons <- union(seasons.default, seasons.FrenchPolynesia)
@@ -163,8 +163,8 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
       stop("Missing argument: 'season' must be provided")
   } else { # If 'season' is provided
     
-      seasons.default         <- c("DJF",  "MAM", "JJA", "SON")
-      seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJA", "SON")
+      seasons.default         <- c("DJF",  "MAM", "JJA",  "SON")
+      seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJAS", "ON")
           
       # Checking that the user provied a valid class for 'season'   
       valid.seasons <- valid.seasons <- union(seasons.default, seasons.FrenchPolynesia)
