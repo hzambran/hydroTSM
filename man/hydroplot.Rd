@@ -135,8 +135,8 @@ Character indicating the ending date for the values to be extracted. It must be 
   \item{stype}{
  OPTIONAL, only used when \code{pfreq=seasonal}. \cr
 character, indicating which weather seasons will be used for computing the output. Possible values are: \cr
--) \kbd{default}          =>  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov  \cr
--) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov 
+-) \kbd{default}          =>  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;       "autumn"= Sep, Oct, Nov  \cr
+-) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug, Sep;  "autumn"= Oct, Nov 
 }
   \item{h}{
 OPTIONAL, only used when \code{pfreq=seasonal}, for plotting horizontal lines in each seasonal plot. \cr

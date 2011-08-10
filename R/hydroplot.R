@@ -416,7 +416,7 @@
       if (stype=="default") { 
         seasons.lab <- c("DJF",  "MAM", "JJA", "SON")
       } else if (stype=="FrenchPolynesia") { 
-          seasons.lab <- c("DJFM", "AM",  "JJA", "SON")
+          seasons.lab <- c("DJFM", "AM",  "JJAS", "ON")
         } # ELSE end 
        
       # Computing the seasonal values
