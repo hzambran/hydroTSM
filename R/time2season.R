@@ -6,7 +6,8 @@
 #               summer = JJA: June, July, August                            #
 #               autumm = SON: September, October, November                  #
 #############################################################################
-#                       March 18th, 2009                                    #
+# Started: 18-Mar-2009                                                      #
+# Updates: 09-Aug-2011                                                      #
 #############################################################################
 
 # 'x'       : vector with the dates that have to be transformed. class(x) must be "Date"
@@ -42,8 +43,8 @@ time2season <- function(x, out.fmt="months", type="default") {
  } else if (type=="FrenchPolynesia") {
    winter <- which( months %in% c("12", "01", "02", "03") )
    spring <- which( months %in% c("04", "05") )
-   summer <- which( months %in% c("06", "07", "08") )
-   autumm <- which( months %in% c("09", "10", "11") ) 
+   summer <- which( months %in% c("06", "07", "08", "09") )
+   autumm <- which( months %in% c("10", "11") ) 
  } # ELSE end
 
  # Creation of the output, with the same length of the 'x' input
@@ -66,8 +67,8 @@ time2season <- function(x, out.fmt="months", type="default") {
     } else  if (type=="FrenchPolynesia") {
        seasons[winter] <- "DJFM"
        seasons[spring] <- "AM"
-       seasons[summer] <- "JJA"
-       seasons[autumm] <- "SON"
+       seasons[summer] <- "JJAS"
+       seasons[autumm] <- "ON"
       } # IF end
    
  } # IF end

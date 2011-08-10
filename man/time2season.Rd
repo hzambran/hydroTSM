@@ -16,9 +16,9 @@ When \code{type=default}
 
 When \code{type=FrenchPolynesia}
 -) winter = DJFM: December, January, February, March  \cr              
--) spring = AM  : April, May                   \cr             
--) summer = JJA : June, July, August           \cr            
--) autumn = SON : September, October, November \cr
+-) spring = AM  : April, May                          \cr             
+-) summer = JJAS: June, July, August, September       \cr            
+-) autumn = ON  : October, November
 }
 \usage{
 time2season(x, out.fmt = "months", type="default")
@@ -31,12 +31,12 @@ vector with the dates that have to be transformed. class(x) must be Date
   \item{out.fmt}{
 character, indicating the format of the output seasons. Possible values are: \cr
 -) \kbd{seasons} =>  c("winter", "spring",  "summer", autumn")  \cr
--) \kbd{months}  =>  c("DJF", "MAM",  "JJA", SON") or c("DJFM", "AM",  "JJA", SON")
+-) \kbd{months}  =>  c("DJF", "MAM",  "JJA", SON") or c("DJFM", "AM",  "JJAS", ON")
 }
   \item{type}{
 character, indicating which weather seasons will be used for computing the output. Possible values are: \cr
--) \kbd{default}          =>  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov  \cr
--) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov 
+-) \kbd{default}          =>  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;       "autumn"= Sep, Oct, Nov  \cr
+-) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug, Sep;  "autumn"= Oct, Nov 
 }
 }
 %%\details{
