@@ -1,11 +1,13 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 
-0.2-3	(under development)
+0.3-0	(under development)
 	o TODO: replace 'drawxaxis' by 'drawTimeAxis' in all the package
 	o TODO: check line 60 in 'drawxaxis', for argument gt=1. ( suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, gt=1)) )
-	o NAMESPACE created, which leads to reduced dependency of the packages  e1071, gstat, automap, sp.
-	o hydroTSM now depends on xts >= 0.8-1 (=> zoo >= 1.7-2), in order to make use of improved plotting capabilities for ts objects.
+	o NAMESPACE created, which leads to reduced dependency of the packages  e1071, gstat, automap, sp; while maptools was moved to 'Suggests'
+	o hydroTSM now depends on xts >= 0.8-2 (=> zoo >= 1.7-2), in order to make use of improved plotting capabilities for ts objects.
+	  The first release of the xts 0.8-X series (which was set as the default building block for plotting time series) was the 0.8-2, 
+	  which appeared on CRAN on August 10th, 2011
 	o 'maptools' package is now "suggested" instead of a dependence. It is only used for reading shapefiles in the 
 	  'hydrokrige' and 'mspplot' functions.
 	o 'drawxaxis'       : -) it was re-written, in order to take advantage of some features of the 'xts' 
@@ -47,12 +49,12 @@ NEWS/ChangeLog for hydroTSM
 	o 'time2season'     : -) new argument 'type', for allowing seasons different from 
 	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)
 	o 'extractzoo'      : -) argument 'trgt' now allows weather seasons typical from 
-	                         French Polynesia: c("DJFM", "AM", "JJA", "SON") (thanks to Lydie Sichoix !)
+	                         French Polynesia: c("DJFM", "AM", "JJAS", "ON") (thanks to Lydie Sichoix !)
 	o 'dm2seasonal'     : -) new argument 'out.fmt', for better compatibility with zoo and xts objects.
 	                      -) it works with matrix objects as well.
 	                      -) it works with xts objects as well.
 	                      -) argument 'season' now allows weather seasons typical from 
-	                         French Polynesia: c("DJFM", "AM", "JJA", "SON") (thanks to Lydie Sichoix !)
+	                         French Polynesia: c("DJFM", "AM", "JJAS", "ON") (thanks to Lydie Sichoix !)
 	o 'seasonalfunction': -) new 'seasonalfunction.zoo', ~ 30 times faster than before (for data.frames, when out.type="data.frame")
 			      -) it works with matrix objects as well.
 	                      -) it works with xts objects as well.
