@@ -447,8 +447,8 @@
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
-        drawxaxis(winter, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
-                  cex.lab=cex.lab, cex.axis=cex.axis, ...)
+        drawTimeAxis(winter, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[1], col="red", lty=2)
                 
         # spring
@@ -456,8 +456,8 @@
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
-        drawxaxis(spring, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
-                  cex.lab=cex.lab, cex.axis=cex.axis, ...)
+        drawTimeAxis(spring, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[2], col="red", lty=2)
                 
         # summer
@@ -465,8 +465,8 @@
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
-        drawxaxis(summer, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
-                  cex.lab=cex.lab, cex.axis=cex.axis, ...)
+        drawTimeAxis(summer, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[3], col="red", lty=2)
       
         # autumm
@@ -474,20 +474,28 @@
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
-        drawxaxis(autumm, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
-                  cex.lab=cex.lab, cex.axis=cex.axis, ...)
+        drawTimeAxis(autumm, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[4], col="red", lty=2)
       
       #################################
       # Plotting seasonal boxplots    #
       #################################
-        boxplot(coredata(winter), col= "lightblue", ylab = ylab, main = paste("Winter (", seasons.lab[1], ")", sep=""))
+        boxplot(coredata(winter), col= "lightblue", ylab = ylab, 
+                main = paste("Winter (", seasons.lab[1], ")", sep=""),
+                pars=list(cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis))
         abline(h=h[1], col="red", lty=2) 
-        boxplot(coredata(spring), col= "lightblue", ylab = ylab, main = paste("Spring (", seasons.lab[2], ")", sep=""))
+        boxplot(coredata(spring), col= "lightblue", ylab = ylab, 
+                main = paste("Spring (", seasons.lab[2], ")", sep=""),
+                pars=list(cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis))
         abline(h=h[2], col="red", lty=2) 
-        boxplot(coredata(summer), col= "lightblue", ylab = ylab, main = paste("Summer (", seasons.lab[3], ")", sep=""))
+        boxplot(coredata(summer), col= "lightblue", ylab = ylab, 
+                main = paste("Summer (", seasons.lab[3], ")", sep=""),
+                pars=list(cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis))
         abline(h=h[3], col="red", lty=2) 
-        boxplot(coredata(autumm), col= "lightblue", ylab = ylab, main = paste("Autumn (", seasons.lab[4], ")", sep=""))   
+        boxplot(coredata(autumm), col= "lightblue", ylab = ylab, 
+                main = paste("Autumn (", seasons.lab[4], ")", sep=""),
+                pars=list(cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis))   
         abline(h=h[4], col="red", lty=2)  
                                 
 } # .hydroplotseasonal END
@@ -645,6 +653,18 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
            ptype <- "ts+boxplot"
          } # IF end
        } # IF end
+       
+        if ( lab.tstep != "years" ) {
+           message("[Note: 'pfreq=seasonal' => 'lab.tstep' has been changed to 'years']")
+           lab.tstep <- "years"
+        } # IF end 
+        
+        if ( !is.null(lab.fmt) ) {       
+          if ( lab.fmt != "%Y" ) {
+             message("[Note: 'pfreq=seasonal' => 'lab.fmt' has been changed to '%Y']")
+             lab.fmt <- "%Y"
+          } # IF end
+        } else lab.fmt <- "%Y"
        
        .hydroplotseasonal(x=x, FUN=FUN, na.rm=na.rm, tick.tstep= tick.tstep, 
                           lab.tstep= lab.tstep, lab.fmt=lab.fmt, var.unit=var.unit, 
