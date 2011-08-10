@@ -94,7 +94,7 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{annualfunction}}, \code{\link{vector2zoo}}, \code{\link{as.Date}}, \code{\link{daily2monthly}}, \code{\link{monthly2annual}}
+\code{\link{daily2monthly}}, \code{\link{monthly2annual}}, \code{\link{hydroplot}}, \code{\link{annualfunction}}, \code{\link{vector2zoo}}, \code{\link{as.Date}}
 }
 \examples{
 ## Loading the SanMartino precipitation data
