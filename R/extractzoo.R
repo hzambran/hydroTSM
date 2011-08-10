@@ -2,7 +2,9 @@
 # extractzoo: Extracts from a zoo object, all the values belonging to a #
 #             given month, year or weather season                       #
 #########################################################################
-#           April 16th, 2009;  May 15th, 2009; Ago 30th, 2009           #
+# Author : Mauricio Zambrano-Bigiarini                                  #
+# Started: 16-Apr-2009                                                  #
+# Updates: 15-May-2009; 30-Ago-2009 ; 10-Aug-2011                       #
 #########################################################################
 
 # 'x'    : variable of type 'zoo'
@@ -45,8 +47,8 @@ extractzoo <- function(x, trgt, ...) {
     # if 'trgt' is a weather season
     else if (class(trgt)=="character") {
     
-          seasons.default         <- c("DJF",  "MAM", "JJA", "SON")
-          seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJA", "SON")
+          seasons.default         <- c("DJF",  "MAM", "JJA",  "SON")
+          seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJAS", "ON")
           
           # Checking that the user provied a valid class for 'trgt'   
           valid.seasons <- valid.seasons <- union(seasons.default, seasons.FrenchPolynesia)
