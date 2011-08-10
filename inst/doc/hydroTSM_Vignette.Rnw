@@ -4,7 +4,7 @@
 %\pdfbookmark[0]{Titlepage}{title} % Sets a PDF bookmark for the title page
 \title{Tutorial for Introductory Analysis of \\
        Daily Precipitation Data with hydroTSM}
-\date{Oct 2010, Apr 2011}
+\date{Oct 2010, Apr 2011, Aug 2011}
 
 %\VignetteIndexEntry{Tutorial for introductory analysis of daily precipitation data with hydroTSM}
 %\VignetteKeyword{hydrology}
@@ -202,38 +202,21 @@ seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
 
 \item Plotting the time evolution of the seasonal precipitation values
 <<fig=TRUE, pdf=TRUE, eps=FALSE>>=
-par(mfcol = c(2, 2))
-plot(DJF, type="o", cex=0.4, col="blue", xlab="Time", 
-     ylab="Precipitation, [mm]", ylim=c(0, 1000), 
-     main="Winter (DJF) Precipitation" )
-plot(MAM, type="o", cex=0.4, col="blue", xlab="Time", 
-     ylab="Precipitation, [mm]", ylim=c(0, 1000),
-     main="Spring (MAM) Precipitation")
-plot(JJA, type="o", cex=0.4, col="blue", xlab="Time", 
-     ylab="Precipitation, [mm]", ylim=c(0, 1000),
-     main="Summer (JJA) Precipitation" )
-plot(SON, type="o", cex=0.4, col="blue", xlab="Time", 
-     ylab="Precipitation, [mm]", ylim=c(0, 1000),
-     main="Autumn (SON) Precipitation")
-@
-
-
-\item Boxplots of the seasonal precipitation values of each year
-<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
-par(mfcol = c(2, 2))
-
-boxplot( coredata(DJF), col="lightblue", ylab="Precipitation, [mm]", 
-         main="Winter (DJF) Precipitation")
-boxplot( coredata(MAM), col="lightblue", ylab="Precipitation, [mm]", 
-         main="Spring (MAM) Precipitation")
-boxplot( coredata(JJA), col="lightblue", ylab="Precipitation, [mm]", 
-         main="Summer (JJA) Precipitation")
-boxplot( coredata(SON), col="lightblue", ylab="Precipitation, [mm]", 
-         main="Autumn (SON) Precipitation")
+hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 @
 
 
 \end{enumerate}
+
+%##################################
+This tutorial was built using: 
+
+<<echo=FALSE>>=
+sessionInfo()$platform
+sessionInfo()$R.version$version.string 
+paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
+@
+
 
 
 \end{document}

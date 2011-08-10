@@ -15,14 +15,16 @@ Generic function for applying any R function to a zoo object, in order to obtain
 \usage{
 seasonalfunction(x, ...)
 
-\method{seasonalfunction}{default}(x, FUN, na.rm = TRUE, ...)
+\method{seasonalfunction}{default}(x, FUN, na.rm = TRUE, type="default", ...)
 
-\method{seasonalfunction}{zoo}(x, FUN, na.rm = TRUE, ...)
+\method{seasonalfunction}{zoo}(x, FUN, na.rm = TRUE, type="default", ...)
 
-\method{seasonalfunction}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+\method{seasonalfunction}{data.frame}(x, FUN, na.rm = TRUE, type="default",
+                          dates, date.fmt = "\%Y-\%m-\%d", 
                           out.type = "data.frame", verbose = TRUE, ...)
                           
-\method{seasonalfunction}{matrix}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+\method{seasonalfunction}{matrix}(x, FUN, na.rm = TRUE, type="default",
+                          dates, date.fmt = "\%Y-\%m-\%d", 
                           out.type = "data.frame", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -33,12 +35,16 @@ Measurements at several gauging stations can be stored in a data.frame of matrix
 }
   \item{FUN}{
 Function that will be applied to ALL the values in \code{x} belonging to each one of the 4 weather seasons (e.g., \code{FUN} can be some of \code{mean}, \code{max}, \code{min}, \code{sd}). \cr
-\bold{The FUN value for the winter season (DJF) is computed considering the consecutive months of December, January and February}. See 'Warning' section.
 }
   \item{na.rm}{
 Logical. Should missing values be removed before the computations? \cr
 -) \kbd{TRUE} : the monthly values  are computed considering only those values in \code{x} different from NA  (\bold{very important when \code{FUN=sum}}) \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a month, the FUN and monthly values are NA    
+}
+  \item{type}{
+character, indicating which weather seasons will be used for computing the output. Possible values are: \cr
+-) \kbd{default}          =>  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov  \cr
+-) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov 
 }
   \item{dates}{
 numeric, factor, Date indicating how to obtain the dates. \cr
@@ -120,6 +126,23 @@ sum( extractzoo(x, trgt="JJA") ) / nyears
 
 # Mean autumn (SON) value
 sum( extractzoo(x, trgt="SON") ) / nyears
+
+\dontshow{
+############
+############
+## Loading the monthly time series of precipitation within the Ebro River basin.
+data(EbroPPtsMonthly)
+x <- EbroPPtsMonthly
+
+## Winter (DJF) mean values of precipitation for the first 3 stations 
+## in 'EbroPPtsMonthly' (its first column stores the dates)
+seasonalfunction(x[,1:4], FUN=mean, dates=1)
+
+## The same previous example, but using a zoo object
+dates <- as.Date(x[,1]) # dates of the zoo object
+z     <- zoo(x[ ,2:ncol(x)], dates) # zoo creation
+seasonalfunction(z, FUN=mean)
+}
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

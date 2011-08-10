@@ -51,10 +51,25 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
   # Checking that the user provied a valid argument for 'season'
   if ( missing(season) ) {
       stop("Missing argument: 'season' must be provided")
-  } else # If 'season' is provided
-      # Checking a valid value for 'season'
-      if (is.na(match(season, c("DJF", "MAM", "JJA", "SON") ) ) )
-         stop("Invalid argument: 'season' must be in c('DJF', 'MAM', 'JJA', 'SON')")
+  } else { # If 'season' is provided
+    
+      seasons.default         <- c("DJF",  "MAM", "JJA", "SON")
+      seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJA", "SON")
+          
+      # Checking that the user provied a valid class for 'season'   
+      valid.seasons <- valid.seasons <- union(seasons.default, seasons.FrenchPolynesia)
+             
+      if (length(which(!is.na(match(season, valid.seasons )))) <= 0)  
+         stop( paste("Invalid argument: 'season' must be in 'c(", paste(valid.seasons, collapse=", "), ")'",sep="") ) 
+            
+      # Finding out if 'season' belongs to 'seasons.default' or to ' seasons.FrenchPolynesia'.
+      if ( season %in% seasons.default ) {
+        season.type <- "default"
+      } else if ( season %in% seasons.FrenchPolynesia ) {
+          season.type <- "FrenchPolynesia"
+        } # ELSE end
+            
+    } # ELSE end
 
   # Checking that the user provied a valid argument for 'FUN'
   if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
@@ -67,29 +82,13 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
   if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
     stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
 
-  dates <- time(x)
-
-  # Computing the Starting and Ending Year of the analysis
-  Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
-  Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
-
-  # Amount of Years belonging to the desired season
-  nyears <- Ending.Year - Starting.Year + 1
-
-  # Requiring the Zoo Library
-  require(zoo)
-
-  # If 'x' is a daily ts, the Monthly values are computed
-  #if ( sfreq(x) == "Daily")  {
-  #   x <- daily2monthly(x, FUN, na.rm ) }
-
   # Getting the Monthly values beloonging ONLY to the desired weather season
   s <- extractzoo(x= x, trgt=season)
 
   # Moving forward all the December values, in order that
   # December of 1991 be used together with Jan/92 and Feb/92,
   # instead of with Jan/91 and Feb/91
-  if (season == "DJF") {
+  if ( (season == "DJF") | (season == "DJFM") ) {
   
 	syears            <- as.numeric(format( time(s), "%Y" ))
 	dec.index         <- which(format(time(s), "%m") == 12)
@@ -104,8 +103,7 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 	  s.a <- s.a[1:(nrow(s.a)-1), ]
 	} else s.a <- s.a[1:(length(s.a)-1)]
 			
-  } else  s.a <- aggregate( s, by= format( time(s), "%Y" ), FUN=FUN, na.rm= na.rm )
-	
+  } else  s.a <- aggregate( s, by= format( time(s), "%Y" ), FUN=FUN, na.rm= na.rm )	
 
   # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN
@@ -163,10 +161,25 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
   # Checking that the user provied a valid argument for 'season'
   if ( missing(season) ) {
       stop("Missing argument: 'season' must be provided")
-  } else # If 'season' is provided
-      # Checking a valid value for 'season'
-      if (is.na(match(season, c("DJF", "MAM", "JJA", "SON") ) ) )
-         stop("Invalid argument: 'season' must be in c('DJF', 'MAM', 'JJA', 'SON')")
+  } else { # If 'season' is provided
+    
+      seasons.default         <- c("DJF",  "MAM", "JJA", "SON")
+      seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJA", "SON")
+          
+      # Checking that the user provied a valid class for 'season'   
+      valid.seasons <- valid.seasons <- union(seasons.default, seasons.FrenchPolynesia)
+             
+      if (length(which(!is.na(match(season, valid.seasons )))) <= 0)  
+         stop( paste("Invalid argument: 'season' must be in 'c(", paste(valid.seasons, collapse=", "), ")'",sep="") ) 
+            
+      # Finding out if 'season' belongs to 'seasons.default' or to ' seasons.FrenchPolynesia'.
+      if ( season %in% seasons.default ) {
+        season.type <- "default"
+      } else if ( season %in% seasons.FrenchPolynesia ) {
+          season.type <- "FrenchPolynesia"
+        } # ELSE end
+            
+    } # ELSE end
 
   # Checking that the user provied a valid argument for 'FUN'
   if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
@@ -174,10 +187,6 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
   # Checking 'out.fmt'
   if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
     stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
-    
-  # Checking a valid value for 'season'
-  if (is.na(match(season, c("DJF", "MAM", "JJA", "SON") ) ) )
-     stop("Invalid argument: 'season' must be in c('DJF', 'MAM', 'JJA', 'SON')")
 
   # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {
@@ -205,8 +214,8 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
   if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
-  x       <- as.zoo(x)
-  time(x) <- dates  
+  # Transforming 'x' into zoo
+  x <- zoo(x, dates)  
      
   ##############################################################################
   if (out.type == "data.frame") {

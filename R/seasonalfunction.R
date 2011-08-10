@@ -18,7 +18,7 @@ seasonalfunction <- function(x, ...) UseMethod("seasonalfunction")
 # Started: 11-Sep-2009                 #
 # Updates: 08-Aug-2011                 #
 ########################################
-seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
+seasonalfunction.default <- function(x, FUN, na.rm=TRUE, type="default",...) {
 
      # Checking that 'x' is a zoo object
      if ( !(class(x) %in% c("zoo", "xts") ) )
@@ -26,10 +26,8 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
      # Requiring the Zoo Library (Z’s ordered observations)
      require(zoo)
-     
-     seasons <- c("DJF", "MAM", "JJA", "SON")
 
-     seasonalfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
+     seasonalfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, type=type, ...)
 
 } # 'seasonalfunction.default' end
 
@@ -39,7 +37,7 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 # Started: 08-Aug-2011                 #
 # Updates: 08-Aug-2011                 #
 ########################################
-seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
+seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE, type="default", ...) {
 
      # Checking that the user provied a valid argument for 'FUN'
      if (missing(FUN))  stop("Missing argument: 'FUN' must be provided")
@@ -47,10 +45,20 @@ seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      # Checking the user provide a valid value for 'x'
      if (is.na(match(sfreq(x), c("daily", "monthly"))))
 	stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") )
+	
+     # Checking that the user provied a valid value for 'type'   
+     valid.types <- c("default", "FrenchPolynesia")    
+     if (length(which(!is.na(match(type, valid.types )))) <= 0)  
+       stop("Invalid argument: 'type' must be in c('default', 'FrenchPolynesia')")
 
      # Time index of 'x'
+     if (type=="default") { 
+       seasons.lab <- c("DJF",  "MAM", "JJA", "SON")
+     } else if (type=="FrenchPolynesia") { 
+         seasons.lab <- c("DJFM", "AM",  "JJA", "SON")
+       } # ELSE end       
      dates   <- time(x)
-     seasons <- factor( time2season( dates ), levels=c("DJF", "MAM", "JJA", "SON") )
+     seasons <- factor( time2season( dates, type=type ), levels=seasons.lab )
      
      # 'as.numeric' is necessary for being able to change the names to the output
      s <- aggregate(x, by= seasons, FUN=FUN, na.rm= na.rm )
@@ -65,16 +73,12 @@ seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      inf.index <- which(is.infinite(s))
      if ( length(inf.index) > 0 ) s[inf.index] <- NA
      
-     # numeric index with the months really present in 'x' (when shorther than 1 year)
-     #season.index <- as.numeric( time(s) )    
-
      # Giving meaningful names to the output
      if ( (is.matrix(x)) | (is.data.frame(x)) ) {
        # Transformation needed in order to change the default names of the result
        s <- coredata(s)
      
        s <- t(s) # For having the months' names as column names
-       #colnames(s) <- month.abb[season.index]
      } # IF end
 
      return(s)
@@ -108,7 +112,7 @@ seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 #                              The third column will contain the seasonal
 #                                value corresponding to that year and that station.
 # 'verbose'      : logical; if TRUE, progress messages are printed
-seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
+seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE, type="default",
                                         dates, date.fmt="%Y-%m-%d",
                                         out.type="data.frame",
                                         verbose=TRUE,...) {
@@ -120,6 +124,18 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   # Checking that the user provied a valid argument for 'FUN'
    if (missing(FUN))
        stop("Missing argument: 'FUN' must be provided")
+       
+  # Checking that the user provied a valid value for 'type'   
+  valid.types <- c("default", "FrenchPolynesia")    
+  if (length(which(!is.na(match(type, valid.types )))) <= 0)  
+     stop("Invalid argument: 'type' must be in c('default', 'FrenchPolynesia')")
+  
+  # Defining 'seasons.lab'
+  if (type=="default") { 
+          seasons.lab <- c("DJF",  "MAM", "JJA", "SON")
+  } else if (type=="FrenchPolynesia") { 
+       seasons.lab <- c("DJFM", "AM",  "JJA", "SON")
+    } # ELSE end 
 
   # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {
@@ -147,60 +163,44 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
   if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
-
-  # Amount of stations in 'x'
-  nstations <- ncol(x)
-
-  # ID of all the stations in 'x'
-  snames <- colnames(x)
-
-  # Computing the Starting and Ending Year of the analysis
-  Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
-  Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
-
-  # Amount of Years belonging to the desired period
-  nyears <- Ending.Year - Starting.Year + 1
-
-  # Amount of months belonging to the desired period
-  nmonths <- 12*nyears
-
-  # Requiring the Zoo Library (Z’s ordered observations)
-  require(zoo)
-
-  if (verbose) message("[Starting the computations...]")
-
-  seasons <- c("DJF", "MAM", "JJA", "SON")
-
+  
+  # If 'dates' is already of Date class, the following line verifies that
+  # the number of days in 'dates' be equal to the number of element in the
+  # time series corresponding to the 'st.name' station
+  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+     stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
+  
+  # Transforming 'x' into zoo
+  x <- zoo(x, dates)
+     
+  ##############################################################################
   if (out.type == "data.frame") {
-
-	# Vector with the names of the field that will be used for storing the results
-	field.names <- seasons
-
-	# Creating the data.frame that will store the computed averages for each station
-	z <- as.data.frame(matrix(data = NA, nrow = nstations, ncol = 4,
-			   byrow = TRUE, dimnames = NULL) )
-
-	z <- sapply(1:nstations, function(j,y) {
-
-		if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
-					    " : ",format(j, width=3, justify="left"), "/",
-					    nstations, " => ",
-					    format(round(100*j/nstations,2), width=6, justify="left"),
-					    "%", sep="") )
-
-		# Transforming the column of 'x' into a zoo object,
-		# using the dates provided by the user
-		tmp <- vector2zoo(x=y[,j], dates=dates, date.fmt=date.fmt)
-
-		# Computing the annual values
-		z[j,] <- seasonalfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
-
-	}, y = x) # sapply END
-
-    z <- t(z) # I don't know WHY !!
+  
+    z      <- seasonalfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, type=type, ...)
+    
+    snames      <- colnames(x)
     rownames(z) <- snames
-
+    colnames(z) <- seasons.lab
+    
   } else if (out.type == "db") {
+
+        if (verbose) message("[Starting the computations...]")
+        
+        # Amount of stations in 'x'
+        nstations <- ncol(x)
+
+        # ID of all the stations in 'x'
+        snames <- colnames(x)
+
+        # Computing the Starting and Ending Year of the analysis
+        Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
+        Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
+
+        # Amount of Years belonging to the desired period
+        nyears <- Ending.Year - Starting.Year + 1
+
+        # Amount of months belonging to the desired period
+        nmonths <- 12*nyears 
 
         # Creating a vector with the names of the field that will be used for storing the results
         field.names <- c("StationID", "Season", "Value" )
@@ -211,18 +211,14 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 
         for (j in 1:nstations) {
 
-            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
+            if (verbose) message( paste("[ Station: ", format(snames[j], width=10, justify="left"),
                                       " : ", format(j, width=3, justify="left"), "/",
                                       nstations, " => ",
                                       format(round(100*j/nstations,2), width=6, justify="left"),
-                                      "%", sep="") )
+                                      "% ]", sep="") )
 
-            # Transforming the column of 'x' into a zoo object,
-            # using the dates provided by the user
-	    tmp <- vector2zoo(x=x[,j], dates=dates, date.fmt=date.fmt)
-
-	    # Computing the annual values
-	    tmp <- seasonalfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
+            # Computing the annual values
+	    tmp <- seasonalfunction.default(x= tmp, FUN=FUN, na.rm=na.rm, type=type)
 
 	    # Putting the annual/monthly values in the output data.frame
             # The first column of 'x' corresponds to the Year
@@ -230,7 +226,7 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
             row.fin <-  j*4
 
             z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeted 4 times
-            z[row.ini:row.fin, 2] <- seasons
+            z[row.ini:row.fin, 2] <- seasons.lab
             z[row.ini:row.fin, 3] <- tmp
 
         } # FOR end
@@ -250,14 +246,14 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 # Started: 11-Sep-2009                 #
 # Updates: 08-Aug-2011                 #
 ########################################
- seasonalfunction.matrix <- function(x, FUN, na.rm=TRUE,
+ seasonalfunction.matrix <- function(x, FUN, na.rm=TRUE, type="default",
                                      dates, date.fmt="%Y-%m-%d",
                                      out.type="data.frame",
                                      verbose=TRUE,...) {
                                      
    x <- as.data.frame(x)
    #NextMethod("daily2annual")
-   seasonalfunction.data.frame(x=x, FUN=FUN, na.rm=na.rm,
+   seasonalfunction.data.frame(x=x, FUN=FUN, na.rm=na.rm, type=type,
                                dates=dates, date.fmt=date.fmt,
                                out.type=out.type,
                                verbose=verbose,...)

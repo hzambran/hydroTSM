@@ -26,7 +26,7 @@ time2season <- function(x, out.fmt="months", type="default") {
  if (is.na(match(out.fmt, c("seasons", "months") ) ) )
      stop("Invalid argument: 'out.fmt' must be in c('seasons', 'months')")
      
- # Checking that the user provied a valid class for 'x'   
+ # Checking that the user provied a valid value for 'type'   
  valid.types <- c("default", "FrenchPolynesia")    
  if (length(which(!is.na(match(type, valid.types )))) <= 0)  
      stop("Invalid argument: 'type' must be in c('default', 'FrenchPolynesia')")
@@ -43,8 +43,8 @@ time2season <- function(x, out.fmt="months", type="default") {
    winter <- which( months %in% c("12", "01", "02", "03") )
    spring <- which( months %in% c("04", "05") )
    summer <- which( months %in% c("06", "07", "08") )
-   autumm <- which( months %in% c("09", "10") ) 
- }
+   autumm <- which( months %in% c("09", "10", "11") ) 
+ } # ELSE end
 
  # Creation of the output, with the same length of the 'x' input
  seasons <- rep(NA, length(x))

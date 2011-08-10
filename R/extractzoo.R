@@ -44,13 +44,25 @@ extractzoo <- function(x, trgt, ...) {
 
     # if 'trgt' is a weather season
     else if (class(trgt)=="character") {
+    
+          seasons.default         <- c("DJF",  "MAM", "JJA", "SON")
+          seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJA", "SON")
+          
+          # Checking that the user provied a valid class for 'trgt'   
+          valid.seasons <- valid.seasons <- union(seasons.default, seasons.FrenchPolynesia)
+             
+          if (length(which(!is.na(match(trgt, valid.seasons )))) <= 0)  
+            stop( paste("Invalid argument: 'trgt' must be in 'c(", paste(valid.seasons, collapse=", "), ")'",sep="") ) 
+            
+          # Finding out if 'tr' belongs to 'seasons.default' or to ' seasons.FrenchPolynesia'.
+          if ( trgt %in% seasons.default ) {
+            season.type <- "default"
+          } else if ( trgt %in% seasons.FrenchPolynesia ) {
+              season.type <- "FrenchPolynesia"
+            } # ELSE end
 
-	  # Checking a valid value for 'trgt'
-         if (is.na(match(trgt, c("DJF", "MAM", "JJA", "SON") ) ) )
-           stop("Invalid argument: 'trgt' must be in c('DJF', 'MAM', 'JJA', 'SON')")
-
-	  # Gets the season each element of 'x' belongs to
-          seasons <- time2season(time(x), out.fmt="months")
+	  # Gets the season each element of 'x' belongs to 'seasons.default' or to 'seasons.FrenchPolynesia'
+          seasons <- time2season(time(x), out.fmt="months", type=season.type)
 
           # Selects only those elements of 'x' belonging to the desired season
           index <- which(seasons == trgt)

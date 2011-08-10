@@ -33,13 +33,17 @@ Measurements at several gauging stations can be stored in a data.frame of matrix
 }
   \item{season}{
 character, indicating the weather season to be used for selecting the data. Valid values are: \cr
--) \kbd{DJF}: December, January, February   \cr
--) \kbd{MAM}: March, April, May             \cr
--) \kbd{JJA}: June, July, August            \cr
--) \kbd{SON}: September, October, November
+-) \kbd{DJF} : December, January, February   \cr
+-) \kbd{MAM} : March, April, May             \cr
+-) \kbd{JJA} : June, July, August            \cr
+-) \kbd{SON} : September, October, November  \cr
+-) \kbd{DJFM}: December, January, February, March  \cr                   
+-) \kbd{AM}  : April, May                   \cr  
 }
   \item{FUN}{
-Function that will be applied to ALL the values of \code{x} belonging to the given weather season  
+Function that will be applied to ALL the values of \code{x} belonging to the given weather season (e.g., \code{FUN} can be some of \code{mean}, \code{max}, \code{min}, \code{sd}). \cr
+\bold{The FUN value for the winter season (DJF or DJFM) is computed considering the consecutive months of December, January and February/March}. See 'Warning' section.
+  
 }
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
@@ -93,7 +97,7 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 For any year, the \code{FUN} value for the winter season (DJF), is computed considering only January and February, and the value of December is used for computing the winter value of the next year.
 }
 \seealso{
-\code{\link{seasonalfunction}}, \code{\link{time2season}}, \code{\link{daily2monthly}}, \code{\link{daily2annual}}, \code{\link{monthly2annual}}
+\code{\link{seasonalfunction}}, \code{\link{time2season}}, \code{\link{extractzoo}}, \code{\link{daily2monthly}}, \code{\link{daily2annual}}, \code{\link{monthly2annual}}
 }
 \examples{
 ## Loading the SanMartino precipitation data
@@ -103,18 +107,23 @@ x <- SanMartinoPPts
 ## Winter (DJF) mean values of precipitation for each year of 'x'
 dm2seasonal(x, FUN=mean, season="DJF")
 
+\dontshow{
+############
 ############
 ## Loading the monthly time series of precipitation within the Ebro River basin.
 data(EbroPPtsMonthly)
+x <- EbroPPtsMonthly
 
 ## Winter (DJF) mean values of precipitation for the first 3 stations 
 ## in 'EbroPPtsMonthly' (its first column stores the dates)
-dm2seasonal(EbroPPtsMonthly[,1:4], FUN=mean, season="DJF", dates=1)
+dm2seasonal(x[,1:4], FUN=mean, season="DJF", dates=1)
 
 ## The same previous example, but using a zoo object
-dates <- as.Date(EbroPPtsMonthly[,1]) # dates of the zoo object
-z     <- zoo(EbroPPtsMonthly[ ,2:ncol(EbroPPtsMonthly)], dates) # zoo creation
+dates <- as.Date(x[,1]) # dates of the zoo object
+z     <- zoo(x[ ,2:ncol(x)], dates) # zoo creation
 dm2seasonal(z, FUN=mean, season="DJF")
+}
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

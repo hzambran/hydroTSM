@@ -5,7 +5,7 @@ NEWS/ChangeLog for hydroTSM
 	o TODO: replace 'drawxaxis' by 'drawTimeAxis' in all the package
 	o TODO: check line 60 in 'drawxaxis', for argument gt=1. ( suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, gt=1)) )
 	o NAMESPACE created, which leads to reduced dependency of the packages  e1071, gstat, automap, sp.
-	o hydroTSM now depends on xts >= 0.8-1 (=> zoo >= 1.7-0), in order to make use of improved plotting capabilities for ts objects.
+	o hydroTSM now depends on xts >= 0.8-1 (=> zoo >= 1.7-2), in order to make use of improved plotting capabilities for ts objects.
 	o 'maptools' package is now "suggested" instead of a dependence. It is only used for reading shapefiles in the 
 	  'hydrokrige' and 'mspplot' functions.
 	o 'drawxaxis'       : -) it was re-written, in order to take advantage of some features of the 'xts' 
@@ -27,19 +27,15 @@ NEWS/ChangeLog for hydroTSM
 	 		      -) new arguments: 'from', 'to', for plotting a slice of the original time series
 	 		      -) thanks to Tom Elliott for pointing out my attention to this function again !.
 	 		      -) new argument: 'h', for plotting horizontal lines in seasonal plots
+	 		      -) new argument 'stype', for allowing weather seasons different from 
+	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)	
 	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
 	o 'sfreq'           : -) it works now with xts objects
 	o 'vector2zoo'      : -) added error checking for detecting if the length of the numeric vector and the dates are equal.
 	o 'dwi'             : -) fixed documentation of the 'out.unit' argument.
-	o 'dm2seasonal'     : -) new argument 'out.fmt', for better compatibility with zoo and xts objects.
-	                      -) it works with matrix objects as well.
-	                      -) it works with xts objects as well.
 	o 'monthlyfunction' : -) new 'monthlyfunction.zoo', ~ 8 times faster than before (for data.frames, when out.type="data.frame")
 			      -) it works now with matrix objects as well.
 	                      -) it works now with xts objects as well.
-	o 'seasonalfunction': -) new 'seasonalfunction.zoo', ~ 30 times faster than before (for data.frames, when out.type="data.frame")
-			      -) it works with matrix objects as well.
-	                      -) it works with xts objects as well.
 	o 'annualfunction'  : -) new 'annualfunction.zoo', much faster than before for data.frames.
 			      -) it works with matrix objects as well.
 	                      -) it works with xts objects as well.
@@ -48,6 +44,20 @@ NEWS/ChangeLog for hydroTSM
 	o 'daily2annual'    : -) new 'daily2monthly.zoo', much faster than before (for data.frames, when out.type="data.frame")
 			      -) it works with xts objects as well.			                           	
 	o 'fdc' and 'fdcu'  : -) new argument 'xat', for setting the position of the 'x' axis labels when 'log="x"'
+	o 'time2season'     : -) new argument 'type', for allowing seasons different from 
+	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)
+	o 'extractzoo'      : -) argument 'trgt' now allows weather seasons typical from 
+	                         French Polynesia: c("DJFM", "AM", "JJA", "SON") (thanks to Lydie Sichoix !)
+	o 'dm2seasonal'     : -) new argument 'out.fmt', for better compatibility with zoo and xts objects.
+	                      -) it works with matrix objects as well.
+	                      -) it works with xts objects as well.
+	                      -) argument 'season' now allows weather seasons typical from 
+	                         French Polynesia: c("DJFM", "AM", "JJA", "SON") (thanks to Lydie Sichoix !)
+	o 'seasonalfunction': -) new 'seasonalfunction.zoo', ~ 30 times faster than before (for data.frames, when out.type="data.frame")
+			      -) it works with matrix objects as well.
+	                      -) it works with xts objects as well.
+	                      -) new argument 'type', for allowing weather seasons different from 
+	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)	
 	o Some 'as.Date' calls were changed to 'zoo:ad.Date', in order to work properly with zoo >= 1.7-2
 	
 

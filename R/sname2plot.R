@@ -25,7 +25,9 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        cex.axis=1.3,
                        col=c("blue", "lightblue", "lightblue"),
                        dates, date.fmt = "%Y-%m-%d",
-                       from, to, h=NULL
+                       from, to, 
+                       stype="default", 
+                       h=NULL
                        ) {
 
   # Checking the user provides 'sname'
@@ -82,7 +84,12 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
   # time series corresponding to the 'sname' station
   if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates
-     )' must be equal to 'nrow(x)'")     
+     )' must be equal to 'nrow(x)'")  
+     
+  # Checking that the user provied a valid value for 'stype'   
+  valid.types <- c("default", "FrenchPolynesia")    
+  if (length(which(!is.na(match(stype, valid.types )))) <= 0)  
+     stop("Invalid argument: 'stype' must be in c('default', 'FrenchPolynesia')")      
 
   # 'ylab' value
   if ( missing(ylab) ) { 
@@ -147,7 +154,7 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
               var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
               win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
               lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
-              cex.axis=cex.axis, col=col)
+              cex.axis=cex.axis, col=col, stype=stype, h=h)
 
   } else stop( paste("The station name", sname, "does not exist in 'x'", sep=" ") )
 

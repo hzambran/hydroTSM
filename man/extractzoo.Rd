@@ -21,10 +21,12 @@ numeric or character indicating the elements to extract from \code{x}. Valid val
 1) integer from 1 to 12: \code{trgt} is considered as a month (1=JAN, 2=FEB,...., 12=DEC), and all the values in \code{x} belonging to the month specified by \code{trgt} will be extracted. \cr
 2) integer > 12: \code{trgt} is considered as a year, and all the values in \code{x} belonging to the year specified by \code{trgt} will be extracted \cr
 3) character: \code{trgt} is considered as a weather season, and all the values in \code{x} belonging to the season specified by \code{trgt} will be extracted. Valid values are: \cr
-   -) \kbd{DJF}: December, January, February       \cr                   
-   -) \kbd{MAM}: March, April, May                 \cr                     
-   -) \kbd{JJA}: June, July, August                \cr                      
-   -) \kbd{SON}: September, October, November    
+   -) \kbd{DJF} : December, January, February  \cr                   
+   -) \kbd{MAM} : March, April, May            \cr                     
+   -) \kbd{JJA} : June, July, August           \cr                      
+   -) \kbd{SON} : September, October, November \cr
+   -) \kbd{DJFM}: December, January, February, March  \cr                   
+   -) \kbd{AM}  : April, May                   \cr  
 }
   \item{\dots}{
 further arguments passed to or from other methods

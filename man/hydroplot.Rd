@@ -17,14 +17,14 @@ hydroplot(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",
           win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
           col=c("blue", "lightblue", "lightblue"), 
-          from, to, date.fmt= "\%Y-\%m-\%d", h=NULL, ...)
+          from, to, date.fmt= "\%Y-\%m-\%d", stype="default", h=NULL, ...)
 
 sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
            var.type, var.unit="units",main=NULL, xlab="Time", ylab=NULL,
            win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto",
            lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
            col=c("blue", "lightblue", "lightblue"), 
-           dates, date.fmt = "\%Y-\%m-\%d", from, to, h=NULL)
+           dates, date.fmt = "\%Y-\%m-\%d", from, to, stype="default", h=NULL )
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -132,6 +132,12 @@ Character indicating the starting date for the values to be extracted. It must b
 OPTIONAL, used for extracting a subset of values. \cr
 Character indicating the ending date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
 }
+  \item{stype}{
+ OPTIONAL, only used when \code{pfreq=seasonal}. \cr
+character, indicating which weather seasons will be used for computing the output. Possible values are: \cr
+-) \kbd{default}          =>  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov  \cr
+-) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug;  "autumn"= Sep, Oct, Nov 
+}
   \item{h}{
 OPTIONAL, only used when \code{pfreq=seasonal}, for plotting horizontal lines in each seasonal plot. \cr
 numeric, with 1 or 4 elements, with the value used for plotting an horizontal line in each seasonal plot, in the following order: winter (DJF), spring (MAM), summer (JJA), autumn (SON).
@@ -141,8 +147,8 @@ further arguments passed to the \code{plot.zoo} and \code{axis} functions or fro
 }
 }
 \details{
-Plots of the daily/monthly/annual time series given as input. \cr
-Depending on the value of \code{pfreq}, daily, monthly and/or annual time series plots, boxplots and histograms are produced. \cr
+Plots of the daily/monthly/annual/seasonal values of the time series given as input. \cr
+Depending on the value of \code{pfreq}, daily, monthly, annual and/or seasonal time series plots, boxplots and histograms are produced. \cr
 Depending on the value of \code{ptype}, time series plots, boxplots and/or histograms are produced.
 }
 %%\value{
@@ -181,6 +187,9 @@ hydroplot(OcaEnOnaQts, pfreq="o")
 ## only the year 1962 of the original time series
 hydroplot(OcaEnOnaQts, pfreq="o", from="1962-01-01", to="1962-12-31")
 
+## seasonal plots
+hydroplot(OcaEnOnaQts, pfreq="seasonal", FUN=mean, stype="default")
+
 #############
 ## Loading the monthly time series of precipitation within the Ebro River basin.
 data(EbroPPtsMonthly)
@@ -190,7 +199,7 @@ data(EbroPPtsMonthly)
 sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", dates=1, pfreq="ma")
 
 ## Plotting seasonal precipitation at station "P9001"
-sname2plot(EbroPPtsMonthly, sname="P9001", FUN=sum, dates=1, pfreq="seasonal")
+sname2plot(EbroPPtsMonthly, sname="P9001", FUN=sum, dates=1, pfreq="seasonal", stype="default")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

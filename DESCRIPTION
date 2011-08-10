@@ -1,15 +1,16 @@
 Package: hydroTSM
 Type: Package
 Title: Time series management, analysis and interpolation for hydrological modelling
-Version: 0.2-2-15
+Version: 0.2-2-16
 Date: 2011-08-09
 Author: Mauricio Zambrano-Bigiarini
 Maintainer: Mauricio Zambrano-Bigiarini <mauricio.zambrano@ing.unitn.it>
 Description: S3 functions for management, analysis, interpolation and plot of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks. So far, it only works with daily / monthly / seasonal / annual time series. The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimize each function as much as possible, functionality has had priority over speed). Bugs / comments / questions / collaboration of any kind are very welcomed, and in particular, datasets that can be included in this package for academic purposes.
 License: GPL (>=2)
-Depends: R (>= 2.10.0), zoo (>= 1.7-0), xts (>= 0.8-1)
+Depends: R (>= 2.10.0), zoo (>= 1.7-2), xts (>= 0.8-1)
 Imports: e1071, gstat, automap, sp
 Suggests: rgdal, maptools, lattice
+Enhances: zoo
 URL: http://www.rforge.net/hydroTSM/, http://cran.r-project.org/web/packages/hydroTSM/
 BugReports: https://www.rforge.net/bugzilla/describecomponents.cgi?product=hydroTSM
 Keywords: hydrology, hydrological modelling, hydrologic modeling, time series

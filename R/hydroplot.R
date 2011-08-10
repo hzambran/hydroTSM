@@ -375,7 +375,7 @@
 		               tick.tstep= "auto", lab.tstep= "auto", lab.fmt=NULL,
                                var.unit="units", main=NULL, xlab="Time", ylab=NULL, 
                                cex.main=1.3, cex.lab=1.3, cex.axis=1.3, col="blue", 
-                               lwd=1, lty=1, h=NULL, ...) {
+                               lwd=1, lty=1, stype="default", h=NULL, ...) {
       
       # checking the class of 'x'      
       if (is.na(match(class(x), c("zoo", "xts"))))
@@ -394,6 +394,11 @@
       if (is.na(match(lab.tstep, valid.tstep ) ) )
          stop("Invalid argument: 'lab.tstep' must be in c('auto', 'years', 'quarters',
               'months', 'weeks', 'days', 'hours', 'minutes', 'seconds')")
+              
+      # Checking that the user provied a valid value for 'stype'   
+      valid.types <- c("default", "FrenchPolynesia")    
+      if (length(which(!is.na(match(stype, valid.types )))) <= 0)  
+        stop("Invalid argument: 'stype' must be in c('default', 'FrenchPolynesia')")
 
       # Requiring the Zoo Library (Zoo's ordered observations)
       require(xts)
@@ -407,21 +412,24 @@
             stop("Invalid argument: monthly time series need -at least- 1 12 values !")
         } else  stop("Invalid argument: seasonal plots can not be drawn for annual time series !")    
       
-      # If 'x' is not 'xts' it is transformed into one
-      if ( !(is.xts(x)) ) x <- as.xts(x)
-      
-      
+      # Labels for the seasons
+      if (stype=="default") { 
+        seasons.lab <- c("DJF",  "MAM", "JJA", "SON")
+      } else if (stype=="FrenchPolynesia") { 
+          seasons.lab <- c("DJFM", "AM",  "JJA", "SON")
+        } # ELSE end 
+       
       # Computing the seasonal values
-      DJF <- dm2seasonal(x, season="DJF", FUN=FUN, out.fmt="%Y-%m-%d")
-      MAM <- dm2seasonal(x, season="MAM", FUN=FUN, out.fmt="%Y-%m-%d")
-      JJA <- dm2seasonal(x, season="JJA", FUN=FUN, out.fmt="%Y-%m-%d")
-      SON <- dm2seasonal(x, season="SON", FUN=FUN, out.fmt="%Y-%m-%d")
+      winter <- dm2seasonal(x, season=as.character(seasons.lab[1]), FUN=FUN, out.fmt="%Y-%m-%d")
+      spring <- dm2seasonal(x, season=seasons.lab[2], FUN=FUN, out.fmt="%Y-%m-%d")
+      summer <- dm2seasonal(x, season=seasons.lab[3], FUN=FUN, out.fmt="%Y-%m-%d")
+      autumm <- dm2seasonal(x, season=seasons.lab[4], FUN=FUN, out.fmt="%Y-%m-%d")
 
       # Transforming the seasonal values into xts objects
-      DJF <- as.xts(DJF)
-      MAM <- as.xts(MAM)
-      JJA <- as.xts(JJA)
-      SON <- as.xts(SON)
+      winter <- as.xts(winter)
+      spring <- as.xts(spring)
+      summer <- as.xts(summer)
+      autumm <- as.xts(autumm)
 
 
       #################################
@@ -434,52 +442,52 @@
       
         if (length(h)==1) h <- rep(h,4)
         
-        # DJF
-        plot.xts(DJF, axes=FALSE, type="o", main="Winter (DJF)", xlab=xlab, ylab=ylab, 
+        # winter
+        plot.xts(winter, axes=FALSE, type="o", main=paste("Winter (", seasons.lab[1], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
-        drawxaxis(DJF, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+        drawxaxis(winter, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[1], col="red", lty=2)
                 
-        # MAM
-        plot.xts(MAM, axes=FALSE, type="o", main="Spring (MAM)", xlab=xlab, ylab=ylab, 
+        # spring
+        plot.xts(spring, axes=FALSE, type="o", main=paste("Spring (", seasons.lab[2], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
-        drawxaxis(MAM, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+        drawxaxis(spring, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[2], col="red", lty=2)
                 
-        # JJA
-        plot.xts(JJA, axes=FALSE, type="o", main="Summer (JJA)", xlab=xlab, ylab=ylab, 
+        # summer
+        plot.xts(summer, axes=FALSE, type="o", main=paste("Summer (", seasons.lab[3], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
-        drawxaxis(JJA, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+        drawxaxis(summer, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[3], col="red", lty=2)
       
-        # SON
-        plot.xts(SON, axes=FALSE, type="o", main="Autumn (SON)", xlab=xlab, ylab=ylab, 
+        # autumm
+        plot.xts(autumm, axes=FALSE, type="o", main=paste("Autumn (", seasons.lab[4], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
-        drawxaxis(SON, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+        drawxaxis(autumm, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[4], col="red", lty=2)
       
       #################################
       # Plotting seasonal boxplots    #
       #################################
-        boxplot(coredata(DJF), col= "lightblue", ylab = ylab, main = "Winter (DJF)")
+        boxplot(coredata(winter), col= "lightblue", ylab = ylab, main = paste("Winter (", seasons.lab[1], ")", sep=""))
         abline(h=h[1], col="red", lty=2) 
-        boxplot(coredata(MAM), col= "lightblue", ylab = ylab, main = "Spring (MAM)")
+        boxplot(coredata(spring), col= "lightblue", ylab = ylab, main = paste("Spring (", seasons.lab[2], ")", sep=""))
         abline(h=h[2], col="red", lty=2) 
-        boxplot(coredata(JJA), col= "lightblue", ylab = ylab, main = "Summer (JJA)")
+        boxplot(coredata(summer), col= "lightblue", ylab = ylab, main = paste("Summer (", seasons.lab[3], ")", sep=""))
         abline(h=h[3], col="red", lty=2) 
-        boxplot(coredata(SON), col= "lightblue", ylab = ylab, main = "Autumn (SON)")   
+        boxplot(coredata(autumm), col= "lightblue", ylab = ylab, main = paste("Autumn (", seasons.lab[4], ")", sep=""))   
         abline(h=h[4], col="red", lty=2)  
                                 
 } # .hydroplotseasonal END
@@ -521,7 +529,8 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                       from, 
                       to,
                       date.fmt= "%Y-%m-%d",
-                      h=NULL,
+                      stype="default",
+                      h=NULL,                      
                       ...) {
 
      # Checking that the user provied a valid class for 'x'   
@@ -580,6 +589,11 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                       } #ELSE end
      } # IF end
      
+     # Checking that the user provied a valid value for 'stype'   
+     valid.types <- c("default", "FrenchPolynesia")    
+     if (length(which(!is.na(match(stype, valid.types )))) <= 0)  
+        stop("Invalid argument: 'stype' must be in c('default', 'FrenchPolynesia')")
+     
      ##########################################   
      ## In case 'from' and 'to' are provided  ##
      dates <- time(x)
@@ -635,7 +649,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
        .hydroplotseasonal(x=x, FUN=FUN, na.rm=na.rm, tick.tstep= tick.tstep, 
                           lab.tstep= lab.tstep, lab.fmt=lab.fmt, var.unit=var.unit, 
                           main=main, xlab=xlab, ylab=ylab, cex.main=cex.main, 
-                          cex.lab=cex.lab, cex.axis=cex.axis, col=col, h=h,...)
+                          cex.lab=cex.lab, cex.axis=cex.axis, col=col, stype=stype, h=h, ...)
                                
      } else {
      
