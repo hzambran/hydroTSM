@@ -4,10 +4,12 @@ NEWS/ChangeLog for hydroTSM
 0.3-0	(under development)
 	o TODO: replace 'drawxaxis' by 'drawTimeAxis' in all the package
 	o TODO: check line 60 in 'drawxaxis', for argument gt=1. ( suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, gt=1)) )
-	o NAMESPACE created, which leads to reduced dependency of the packages  e1071, gstat, automap, sp; while maptools was moved to 'Suggests'
-	o hydroTSM now depends on xts >= 0.8-2 (=> zoo >= 1.7-2), in order to make use of improved plotting capabilities for ts objects.
-	  The first release of the xts 0.8-X series (which was set as the default building block for plotting time series) was the 0.8-2, 
-	  which appeared on CRAN on August 10th, 2011
+	o NAMESPACE created, which leads to reduced dependency of the packages  e1071, gstat, automap, sp; 
+	  while maptools was moved to 'Suggests'
+	o hydroTSM now depends on xts >= 0.8-2 (=> zoo >= 1.7-2), in order to make use of improved 
+	  plotting capabilities for ts objects.
+	  The first release of the xts after the 0.8-0 (which was set as the default building block for plotting time series) 
+	  was the 0.8-2, and appeared on CRAN on August 10th, 2011
 	o 'maptools' package is now "suggested" instead of a dependence. It is only used for reading shapefiles in the 
 	  'hydrokrige' and 'mspplot' functions.
 	o 'drawxaxis'       : -) it was re-written, in order to take advantage of some features of the 'xts' 
@@ -33,7 +35,7 @@ NEWS/ChangeLog for hydroTSM
 	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)	
 	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
 	o 'sfreq'           : -) it works now with xts objects
-	o 'vector2zoo'      : -) added error checking for detecting if the length of the numeric vector and the dates are equal.
+	o 'vector2zoo'      : -) added error checking for length of the numeric vector and the dates.
 	o 'dwi'             : -) fixed documentation of the 'out.unit' argument.
 	o 'monthlyfunction' : -) new 'monthlyfunction.zoo', ~ 8 times faster than before (for data.frames, when out.type="data.frame")
 			      -) it works now with matrix objects as well.
