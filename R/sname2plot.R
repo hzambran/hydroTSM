@@ -6,7 +6,7 @@
 ########################################################################
 # Author : Mauricio Zambrano-Bigiarini                                 # 
 # Started: 17-Dic-2008                                                 #
-# Updates: 19-Apr-2011                                                 #
+# Updates: 19-Apr-2011 ; 09-Aug-2011                                   #
 ########################################################################
 sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        ptype="ts+boxplot+hist",
