@@ -654,10 +654,12 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
          } # IF end
        } # IF end
        
-        if ( lab.tstep != "years" ) {
-           message("[Note: 'pfreq=seasonal' => 'lab.tstep' has been changed to 'years']")
-           lab.tstep <- "years"
-        } # IF end 
+        if ( lab.tstep != "auto" ) {
+          if ( lab.tstep != "years" ) {
+             message("[Note: 'pfreq=seasonal' => 'lab.tstep' has been changed to 'years']")
+             lab.tstep <- "years"
+          } # IF end 
+        } else lab.tstep <- "years"
         
         if ( !is.null(lab.fmt) ) {       
           if ( lab.fmt != "%Y" ) {
