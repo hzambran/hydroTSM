@@ -9,7 +9,7 @@ Hydrological time series plotting and extraction.
 \description{
 \code{hydroplot}: When \code{x} is a zoo object it plots (a maximum of) 9 graphs (lines plot, boxplots and/or histograms) of the daily, monthly, annual and/or seasonal time series. \cr
 
-\code{sname2plot}: When \code{x} is a data frame whose columns contain the time series of several gauging stations, it takes the name of one gauging station and plots the graphs described before.
+\code{sname2plot}: When \code{x} is a data frame whose columns contain the time series of several gauging stations, it takes the name of one gauging station and plots the graphs described above.
 }
 \usage{
 hydroplot(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
