@@ -6,7 +6,7 @@
 ########################################################################
 # Author : Mauricio Zambrano-Bigiarini                                 # 
 # Started: 17-Dic-2008                                                 #
-# Updates: 19-Apr-2011 ; 09-Aug-2011                                   #
+# Updates: 19-Apr-2011 ; 10-Aug-2011                                   #
 ########################################################################
 sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        ptype="ts+boxplot+hist",
@@ -14,8 +14,8 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        var.type,                      
                        var.unit="units",
                        main=NULL, xlab="Time", ylab=NULL,
-                       win.len1=365*1,
-                       win.len2=365*3,                      
+                       win.len1=0,
+                       win.len2=0,                      
                        tick.tstep="auto",
                        lab.tstep="auto",
                        lab.fmt=NULL,

@@ -32,7 +32,11 @@ NEWS/ChangeLog for hydroTSM
 	 		      -) thanks to Tom Elliott for pointing out my attention to this function again !.
 	 		      -) new argument: 'h', for plotting horizontal lines in seasonal plots
 	 		      -) new argument 'stype', for allowing weather seasons different from 
-	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)	
+	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)
+	                      -) default value for the 'win.len1' argument was changed from 351*1 to 0, in order to avoid the 
+	                         plotting of the 1-year moving average (by default)
+	                      -) default value for the 'win.len2' argument was changed from 351*3 to 0, in order to avoid the 
+	                         plotting of the 3-years moving average (by default)
 	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
 	o 'sfreq'           : -) it works now with xts objects
 	o 'vector2zoo'      : -) added error checking for length of the numeric vector and the dates.

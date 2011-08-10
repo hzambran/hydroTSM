@@ -14,14 +14,14 @@ Hydrological time series plotting and extraction.
 \usage{
 hydroplot(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
           var.type, var.unit="units", main=NULL, xlab="Time", ylab,
-          win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto", 
+          win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
           col=c("blue", "lightblue", "lightblue"), 
           from, to, date.fmt= "\%Y-\%m-\%d", stype="default", h=NULL, ...)
 
 sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
            var.type, var.unit="units",main=NULL, xlab="Time", ylab=NULL,
-           win.len1=365*1, win.len2=365*3, tick.tstep="auto", lab.tstep="auto",
+           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto",
            lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
            col=c("blue", "lightblue", "lightblue"), 
            dates, date.fmt = "\%Y-\%m-\%d", from, to, stype="default", h=NULL )

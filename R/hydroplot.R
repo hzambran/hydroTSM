@@ -3,7 +3,7 @@
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         # 
 # Started: 2008                                                                #
-# Updates: 17-Apr-2011                                                         #
+# Updates: 17-Apr-2011 ; 10-Aug-2011                                           #
 ################################################################################
 # It requires the function'drawxaxis' that is stored in the 'lib_Plot.R' library
 # 'x'		 : daily time series of type 'zoo'
@@ -27,7 +27,7 @@
 # 'lab.tstep' : string indicating the time step that have to be used for
 #               putting the labels ont he time axis.
 
-.hydroplotts <- function(x, x.monthly, x.annual, win.len1=361*1, win.len2=365*3,
+.hydroplotts <- function(x, x.monthly, x.annual, win.len1=0, win.len2=0,
 			 pfreq="dma", tick.tstep= "auto", lab.tstep= "auto", lab.fmt=NULL,
                          var.type, var.unit="units", main=NULL, xlab="Time", ylab=NULL, 
                          cex.main=1.3, cex.lab=1.3, cex.axis=1.3, col="blue", 
@@ -100,16 +100,20 @@
       } # IF end
 
       # Generating a Moving Average of the Monthly time series, with a window width 'win.len1'
-      win.len <- round(win.len1/365,1)*12
-      if (length(x.monthly) >= win.len) {
-        m.ma1 <- TRUE
-        monthly.ma1 <- ma.zoo( x.monthly, win.len )  }
+      if (win.len1 > 0 ) { # If 'win.len1==0', the moving average is not computed
+        win.len <- round(win.len1/365,1)*12
+        if (length(x.monthly) >= win.len) {
+          m.ma1 <- TRUE
+          monthly.ma1 <- ma.zoo( x.monthly, win.len )  }
+      } # IF end
 
       # Generating a Moving Average of the Monthly time series, with a window width 'win.len2'
-      win.len <- round(win.len2/365,1)*12
-      if (length(x.monthly) >= win.len) {
-        m.ma2 <- TRUE
-        monthly.ma2 <- ma.zoo( x.monthly, win.len ) }        
+      if (win.len2 > 0 ) {  # If 'win.len2==0', the moving average is not computed
+        win.len <- round(win.len2/365,1)*12
+        if (length(x.monthly) >= win.len) {
+          m.ma2 <- TRUE
+          monthly.ma2 <- ma.zoo( x.monthly, win.len ) }        
+      } # IF end
       
       # If 'x' is not 'xts' it is transformed into one
       if ( !(is.xts(x)) ) x <- as.xts(x)
@@ -150,9 +154,23 @@
             # Plotting the 2nd Moving Average of the Daily time series. If win.len2=365*3 => "Moving Average of 3 Years"
             lines(daily.ma2, type="o", lty=3, lwd=1, col="red", cex = .5) }
           # Drawing a legend. y.intersp=0.5, is for the vertical spacin in the legend
-          legend("topleft", c("Daily series", paste("MA(", round(win.len1/365,2), " years)", sep=""),
-                 paste("MA(", round(win.len2/365,2), " years)", sep="") ), 
-                 bty="n", cex =0.9, col= c(col,"green","red"), lwd= c(lwd,1,1), lty=c(lty,2,3) ) #bty="n" => no box around the legend
+          leg.text <- "Daily series"
+          leg.lwd  <- lwd
+          leg.lty  <- lty
+          leg.col  <- col
+          if (d.ma1) {
+            leg.text <- c(leg.text, paste("MA(", round(win.len1/365,2), " years)", sep="") )
+            leg.lwd  <- c(leg.lwd, 1)
+            leg.lty  <- c(leg.lty, 2)
+            leg.col  <- c(leg.col, "green")
+          } # IF end
+          if (d.ma2) {
+            leg.text <- c(leg.text, paste("MA(", round(win.len2/365,2), " years)", sep="") )
+            leg.lwd  <- c(leg.lwd, 1)
+            leg.lty  <- c(leg.lty, 3)
+            leg.col  <- c(leg.col, "red")
+          } # IF end
+          legend("topleft", leg.text, bty="n", cex =0.9, col= leg.col, lwd= leg.lwd, lty=leg.lty ) #bty="n" => no box around the legend
       } # IF end
 
 
@@ -177,10 +195,24 @@
         if (m.ma2) {
         # Plotting the 2nd Moving Average of the Daily time series. If win.len2=365*3 => "Moving Average of 3 Years"
         lines(monthly.ma2, type="o", lty=3, lwd=1, col="red", cex = .5) }
-        # Drawing a legend
-        legend("topleft", c("Monthly series", paste("MA(", round(win.len1/365,1), " years)", sep=""),
-             paste("MA(", round(win.len2/365,1), " years)", sep="") ), 
-             bty="n", cex =0.9, col = c(col,"green","red"), lwd= c(lwd,1,1), lty=c(lty,2,3) ) #bty="n" => no box around the legend
+        # Drawing a legend        
+        leg.text <- "Monthly series"
+        leg.lwd  <- lwd
+        leg.lty  <- lty
+        leg.col  <- col
+        if (m.ma1) {
+          leg.text <- c(leg.text, paste("MA(", round(win.len1/365,1), " years)", sep="") )
+          leg.lwd  <- c(leg.lwd, 1)
+          leg.lty  <- c(leg.lty, 2)
+          leg.col  <- c(leg.col, "green")
+        } # IF end
+        if (m.ma2) {
+          leg.text <- c(leg.text, paste("MA(", round(win.len2/365,1), " years)", sep="") )
+          leg.lwd  <- c(leg.lwd, 1)
+          leg.lty  <- c(leg.lty, 3)
+          leg.col  <- c(leg.col, "red")
+        } # IF end
+        legend("topleft", leg.text, bty="n", cex =0.9, col= leg.col, lwd= leg.lwd, lty=leg.lty ) #bty="n" => no box around the legend
       } # IF end
 
       # Plotting the Annual, if needed
@@ -524,8 +556,8 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
                       var.type,                      
                       var.unit="units",
                       main=NULL, xlab="Time", ylab,
-                      win.len1=365*1,
-                      win.len2=365*3,                      
+                      win.len1=0,
+                      win.len2=0,                      
                       tick.tstep="auto",
                       lab.tstep="auto",
                       lab.fmt=NULL,
