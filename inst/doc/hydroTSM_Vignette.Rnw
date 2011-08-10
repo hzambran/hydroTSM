@@ -30,18 +30,18 @@ install.packages("hydroTSM")
 
 \begin{enumerate}
 
-\item Loading the \textit{hydroTSM} library, which contains the data and the functions used in this analysis
+\item Loading the \textit{hydroTSM} library, which contains data and functions used in this analysis.
 <<>>=
 library(hydroTSM)
 @
 
-\item Loading daily streamflows at the station San Martino di Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to 31/Dec/1990.
+\item Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to 31/Dec/1990.
 
 <<>>=
 data(SanMartinoPPts)
 @
 
-\item Selecting only a 3-years time-slice for the analysis
+\item Selecting only a 6-years time-slice for the analysis
 
 <<>>=
 x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
@@ -153,7 +153,7 @@ annualfunction(x, FUN=sum, na.rm=TRUE) / nyears
 
 
 \begin{enumerate}
-\item Median of the monthly values at station 'x'. Not needed, just for looking at these values in the boxplots
+\item Median of the monthly values at station 'x'. Not needed, just for looking at these values in the boxplot.
 
 <<>>=
 monthlyfunction(m, FUN=median, na.rm=TRUE)
@@ -209,7 +209,7 @@ hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 \end{enumerate}
 
 %##################################
-This tutorial was built using: 
+This tutorial was built under: 
 
 <<echo=FALSE>>=
 sessionInfo()$platform
