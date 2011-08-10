@@ -55,7 +55,7 @@ seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE, type="default", ...) {
      if (type=="default") { 
        seasons.lab <- c("DJF",  "MAM", "JJA", "SON")
      } else if (type=="FrenchPolynesia") { 
-         seasons.lab <- c("DJFM", "AM",  "JJA", "SON")
+         seasons.lab <- c("DJFM", "AM",  "JJAS", "ON")
        } # ELSE end       
      dates   <- time(x)
      seasons <- factor( time2season( dates, type=type ), levels=seasons.lab )
@@ -134,7 +134,7 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE, type="default",
   if (type=="default") { 
           seasons.lab <- c("DJF",  "MAM", "JJA", "SON")
   } else if (type=="FrenchPolynesia") { 
-       seasons.lab <- c("DJFM", "AM",  "JJA", "SON")
+       seasons.lab <- c("DJFM", "AM",  "JJAS", "ON")
     } # ELSE end 
 
   # Checking that the user provied a valid argument for 'dates'
