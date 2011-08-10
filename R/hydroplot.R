@@ -369,7 +369,7 @@
 #########################################################################
 # Author : Mauricio Zambrano-Bigiarini                                  # 
 # Started: 19-Jun-2011                                                  #
-# Updates:                                                              #
+# Updates: 10-Aug-2011                                                  #
 #########################################################################
 .hydroplotseasonal <- function(x, FUN, na.rm=TRUE,
 		               tick.tstep= "auto", lab.tstep= "auto", lab.fmt=NULL,
@@ -498,7 +498,7 @@
 #########################################################################
 # Author : Mauricio Zambrano-Bigiarini                                  # 
 # Started: 2008                                                         #
-# Updates: 19-Apr-2011 ; 19-Jun-2011                                    #
+# Updates: 19-Apr-2011 ; 19-Jun-2011  ; 10-Aug-2011                     #
 #########################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
