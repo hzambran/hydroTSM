@@ -7,6 +7,10 @@ dwi <-function(x, ...) UseMethod("dwi")
 ###################################################
 #            Zoo Days with Information            #
 ###################################################
+# Author : Mauricio Zambrano-Bigiarini            #
+# Started: XX-XXX-2009                            #
+# Updates: 22-Aug-2011                            #
+###################################################
 # This function generates a table indicating the number of days
 # with information (<>NA's) within a zoo object,
 # aggregated by: Year, Month or Month by Year
@@ -23,90 +27,89 @@ dwi <-function(x, ...) UseMethod("dwi")
 #            will be read. It HAs to be in the format indicated by 'date.fmt'
 # date.fmt : Character indicating the date format in which you provide 'from' and 'to', e.g. "%d-%m-%Y"
 
-dwi.default <- function(x, out.unit="years", from=range(time(x))[1],
-                        to=range(time(x))[2], date.fmt="%Y-%m-%d", tstep="days", ...) {
+dwi.default <- function(x, out.unit="years", from = start(x), to = end(x), 
+                        date.fmt="%Y-%m-%d", tstep="days", ...) {
 
-    # Checking that 'class(x)==zoo'
-    if (is.na(match(class(x), c("zoo") ) ) )
-     stop("Invalid argument: 'x' must be of class 'zoo'")
+    # Checking that the user provied a valid class for 'x'   
+     valid.class <- c("xts", "zoo")    
+     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+        stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
+
+     # Requiring the Zoo Library (Z’s ordered observations)
+     require(zoo)
+
+     dwi.zoo(x=x, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
+
+ } # 'dwi.default' end
+ 
+ 
+###################################################
+#            Zoo Days with Information            #
+###################################################
+# Author : Mauricio Zambrano-Bigiarini            #
+# Started: XX-XXX-2009                            #
+# Updates: 22-Aug-2011                            #
+################################################### 
+dwi.zoo <- function(x, out.unit="years", from = start(x), to = end(x), 
+                    date.fmt="%Y-%m-%d", tstep="days", ...) {
 
     # Checking the validity of the 'out.unit' argument
-    if ( is.na( match(out.unit, c("years", "months", "mpy") ) ) ) {
-         stop("Invalid argument value: 'out.unit' must be in c('years', 'months', 'mpy')" ) }
-
-    # Sequence of dates within the time period between 'from' and 'to'
-    DateSeq <- seq( from=as.Date(from, format=date.fmt),
-                    to=as.Date(to, format=date.fmt), by=tstep )
+    if ( is.na( match(out.unit, c("years", "months", "mpy") ) ) )
+         stop("Invalid argument value: 'out.unit' must be in c('years', 'months', 'mpy')" )
+         
+    # Checking 'from' and 'to'
+    if (to < from) stop("Invalid argument: 'from > to')" )
 
     # Selecting only those data that are within the time period between 'from' and 'to'
-    x.sel <- x[ as.Date( time(x), format=date.fmt) %in% DateSeq]
-    # Also is possible to use: x.sel <- window(x, start=as.Date(from, format=date.fmt), end=as.Date(to, format=date.fmt) )
-
+    x.sel <- window(x, start=as.Date(from, format=date.fmt), end=as.Date(to, format=date.fmt) )
+    
     # Computing the Starting and Ending Year of the analysis
     Starting.Year <- as.numeric(format(as.Date(from, format=date.fmt), "%Y"))
     Ending.Year   <- as.numeric(format(as.Date(to, format=date.fmt), "%Y"))
 
     # Amount of Years belonging to the desired period
     nyears <- Ending.Year - Starting.Year + 1
+    
+    # function for computing the days with info in a zoo object
+    .dwi <- function(m, x) { 
+      x           <- extractzoo(x, trgt= m)   
+      nona.index  <- which(!is.na(x))
+      return(length( nona.index ))    
+    } # '.dwi' END
 
-    if (out.unit == "months")   {
-
-         a <- numeric(12)
-
-         a[1:12] <- sapply(1:12, function(j,y) {
-                              tmp         <- extractzoo(y, trgt= j)
-                              nona.index  <- which(!is.na(tmp))
-                              a[j] <- length( nona.index )
-                              }, y = x.sel)
+    if (out.unit == "months")   {         
+         a <- sapply(1:12, .dwi, x.sel)
          names(a) <- month.abb
-         return(a)
-
      } # IF end
 
     else if (out.unit == "years") {
-
-         a <- numeric(nyears)
-
-         a[1:nyears] <- sapply(Starting.Year:Ending.Year, function(j,y) {
-                               tmp         <- extractzoo(y, trgt= j)
-                               nona.index  <- which(!is.na(tmp))
-                               a[j] <- length( nona.index )
-                               }, y = x.sel)
-
+         a <- sapply(Starting.Year:Ending.Year, .dwi, x.sel)
          names(a) <- as.character(Starting.Year:Ending.Year)
-
-         return(a)
-
      } # ELSE IF end
 
      else if (out.unit == "mpy") {
 
          a <- matrix(data=NA,nrow=nyears, ncol=12)
 
-         a <- sapply(Starting.Year:Ending.Year, function(i,y) {
+         #a <- sapply(Starting.Year:Ending.Year, function(i,y) {
+         for (i in Starting.Year:Ending.Year) {
 
-                               tmp         <- extractzoo(y, trgt= i)
-
-                               a[i-Starting.Year+1,1:12] <- sapply(1:12, function(j,y) {
-                                             tmp2        <- extractzoo(y, trgt= j)
-                                             nona.index  <- which(!is.na(tmp2))
-
-                                             a[i-Starting.Year+1,j] <- length( nona.index )
-                                         }, y = tmp)
-                        }, y = x.sel)
-
-         a <- t(a)
+             tmp         <- extractzoo(x.sel, trgt= i)
+                                         
+             a[i-Starting.Year+1,1:12] <-  sapply(1:12, .dwi, tmp)
+         
+         } # FOR end
 
          #Change the names of the columns of the matrix
          colnames(a) <- month.abb
          #Change the names of the rows of the matrix
          rownames(a) <- as.character(Starting.Year:Ending.Year)
 
-         return(a)
-
     }  # ELSE IF end
+    
+    return(a)
 
- } # 'dwi.default' end
+ } # 'dwi.zoo' end
 
 
 #########################################################################
@@ -180,6 +183,66 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
   if (missing(to)) { to <- dates[length(dates)]
   } else if ( is.na( match(class(to), c("Date", "character") ) ) ) {
             stop("Invalid argument value: 'class(to)' must be in c('Date', 'character')" ) }
+            
+  # Transforming 'x' into a zoo object
+  x <- zoo(x, dates)
+
+  z <- dwi.zoo(x=x, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
+
+  colnames(z) <- snames
+
+  return(z)
+
+} # 'dwi.data.frame' END
+
+
+dwi.matrix <- function(x, out.unit="years", from, to,
+                           date.fmt="%Y-%m-%d", tstep="days", dates=1, verbose=TRUE,...) {
+
+  # Checking the validity of the 'out.unit' argument
+  if ( is.na( match(out.unit, c("years", "months") ) ) ) {
+         stop("Invalid argument value: For data.frames, 'out.unit' must be in c('years', 'months')" ) }
+
+  # Checking that the user provied a valid argument for 'dates'
+  if (missing(dates)) {
+      stop("Missing argument: 'dates' must be provided")
+  } else
+    {
+     # Checking that the user provied a valid argument for 'dates'
+     if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
+         stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
+
+     # Verification that the number of days in 'dates' be equal to
+     # the number of elements in 'x'
+     if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+          stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
+    } # ELSE end
+
+  # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
+  # The column with dates is then substracted form 'x' for easening the further computations
+  if ( class(dates) == "numeric" ) {
+    tmp   <- dates
+    dates <- as.Date(x[, dates], format= date.fmt)
+    x     <- x[-tmp]
+  }  else
+      # If 'dates' is a factor, it have to be converted into 'Date' class,
+      # using the date format  specified by 'date.fmt'
+      if ( class(dates) == "factor" ) {
+	    dates <- as.Date(dates, format= date.fmt)
+	  } # IF end
+
+  # Checking the validity of the 'from' argument
+  if (missing(from)) { from <- dates[1]
+  } else if ( is.na( match(class(from), c("Date", "character") ) ) ) {
+            stop("Invalid argument value: 'class(from)' must be in c('Date', 'character')" ) }
+
+  # Checking the validity of the 'to' argument
+  if (missing(to)) { to <- dates[length(dates)]
+  } else if ( is.na( match(class(to), c("Date", "character") ) ) ) {
+            stop("Invalid argument value: 'class(to)' must be in c('Date', 'character')" ) }
+            
+  # Transforming 'x' into a zoo object
+  x <- zoo(x, dates)
 
   # Sequence of dates within the time period between 'from' and 'to'
   DateSeq <- seq( from=as.Date(from, format=date.fmt),
@@ -228,4 +291,5 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
 
   return(z)
 
-} # 'dwi.data.frame' END
+} # 'dwi.matrix' END
+

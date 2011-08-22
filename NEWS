@@ -40,7 +40,6 @@ NEWS/ChangeLog for hydroTSM
 	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
 	o 'sfreq'           : -) it works now with xts objects
 	o 'vector2zoo'      : -) added error checking for length of the numeric vector and the dates.
-	o 'dwi'             : -) fixed documentation of the 'out.unit' argument.
 	o 'monthlyfunction' : -) new 'monthlyfunction.zoo', ~ 8 times faster than before (for data.frames, when out.type="data.frame")
 			      -) it works now with matrix objects as well.
 	                      -) it works now with xts objects as well.
@@ -65,7 +64,10 @@ NEWS/ChangeLog for hydroTSM
 			      -) it works with matrix objects as well.
 	                      -) it works with xts objects as well.
 	                      -) new argument 'type', for allowing weather seasons different from 
-	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)	
+	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)
+	o 'dwi'             : -) new 'dwi.zoo', much faster than before
+			      -) it works with xts objects as well.
+			      -) fixed documentation of the 'out.unit' argument.
 	o Some 'as.Date' calls were changed to 'zoo:ad.Date', in order to work properly with zoo >= 1.7-2
 	
 

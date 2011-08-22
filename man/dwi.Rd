@@ -1,8 +1,9 @@
 \name{dwi}
 \Rdversion{1.1}
-\alias{dwi.data.frame}
-\alias{dwi.default}
 \alias{dwi}
+\alias{dwi.default}
+\alias{dwi.zoo}
+\alias{dwi.data.frame}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Days with Information
@@ -13,7 +14,10 @@ This function generates a table indicating the number of days with information (
 \usage{
 dwi(x, ...)
 
-\method{dwi}{default}(x, out.unit = "years", from = range(time(x))[1], to = range(time(x))[2], 
+\method{dwi}{default}(x, out.unit = "years", from = start(x), to = end(x), 
+     date.fmt = "\%Y-\%m-\%d", tstep="days", ...)
+     
+\method{dwi}{zoo}(x, out.unit = "years", from = start(x), to = end(x), 
      date.fmt = "\%Y-\%m-\%d", tstep="days", ...)
 
 \method{dwi}{data.frame}(x, out.unit = "years", from, to, date.fmt = "\%Y-\%m-\%d", tstep="days", 
