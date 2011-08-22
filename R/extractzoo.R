@@ -7,6 +7,8 @@
 # Updates: 15-May-2009; 30-Ago-2009 ; 10-Aug-2011                       #
 #########################################################################
 
+extractzoo <-function(x, ...) UseMethod("extractzoo")
+
 # 'x'    : variable of type 'zoo'
 # 'trgt' : numeric or character indicating elements to extract from 'x'
 #          Valid values are:
@@ -24,7 +26,33 @@
 #              -) "JJA": June, July, August
 #              -) "SON": September, October, November
 
-extractzoo <- function(x, trgt, ...) {
+
+#########################################################################
+# Author : Mauricio Zambrano-Bigiarini                                  #
+# Started: 16-Apr-2009                                                  #
+# Updates: 15-May-2009; 30-Ago-2009 ; 10-Aug-2011                       #
+#########################################################################
+extractzoo.default <- function(x, trgt, ...) {
+
+  # Checking that the user provied a valid class for 'x'   
+     valid.class <- c("xts", "zoo")    
+     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+        stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
+
+     # Requiring the Zoo Library (Z’s ordered observations)
+     require(zoo)
+
+     extractzoo.zoo(x=x, trgt=trgt, ...)
+
+} # 'extractzoo.default' END
+
+
+#########################################################################
+# Author : Mauricio Zambrano-Bigiarini                                  #
+# Started: 22-Aug-2011                                                  #
+# Updates:                                                              #
+#########################################################################
+extractzoo.zoo <- function(x, trgt, ...) {
 
   # Checking that the user provied a valid argument for 'trgt'
   if ( is.na( match( class(trgt), c("integer", "numeric", "character") ) ) )
@@ -38,9 +66,8 @@ extractzoo <- function(x, trgt, ...) {
         stop("Invalid argument: 'trgt' must be integer")
 
 	if (trgt %in% 1:12) {
-	   index <- which( as.numeric(format(time(x), "%m")) == trgt )
-	} else index <- which( as.numeric(format(time(x), "%Y")) == trgt )
-
+	   index <- which( as.numeric(format.Date(time(x), "%m")) == trgt )
+	} else index <- which( as.numeric(format.Date(time(x), "%Y")) == trgt )
 
   } # if END
 
@@ -73,4 +100,4 @@ extractzoo <- function(x, trgt, ...) {
 
   return(x[index])
 
-} # 'extractzoo' END
+} # 'extractzoo.zoo' END

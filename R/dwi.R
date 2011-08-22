@@ -26,6 +26,8 @@ dwi <-function(x, ...) UseMethod("dwi")
 # to       : Character indicating the starting date for the values stored in all the files that
 #            will be read. It HAs to be in the format indicated by 'date.fmt'
 # date.fmt : Character indicating the date format in which you provide 'from' and 'to', e.g. "%d-%m-%Y"
+# 'tstep'  : since hydroTSM 0.3-0 it is not required any more, because it is not used any longer.
+#            It is kept for backwards compatibility purposes only.
 
 dwi.default <- function(x, out.unit="years", from = start(x), to = end(x), 
                         date.fmt="%Y-%m-%d", tstep="days", ...) {
@@ -42,59 +44,74 @@ dwi.default <- function(x, out.unit="years", from = start(x), to = end(x),
 
  } # 'dwi.default' end
  
+
  
-###################################################
-#            Zoo Days with Information            #
-###################################################
-# Author : Mauricio Zambrano-Bigiarini            #
-# Started: XX-XXX-2009                            #
-# Updates: 22-Aug-2011                            #
-################################################### 
-dwi.zoo <- function(x, out.unit="years", from = start(x), to = end(x), 
+ 
+ #######################################################
+#            Zoo Days with Information                #
+#######################################################
+# this function works only with vectorial zoo objects #
+# Author : Mauricio Zambrano-Bigiarini                #
+# Started: 22-Aug-2009                                #
+# Updates: 22-Aug-2011                                #
+####################################################### 
+dwi.zoo <- function(x, out.unit="years", from= range(time(x))[1], to= range(time(x))[2], 
                     date.fmt="%Y-%m-%d", tstep="days", ...) {
-
-    # Checking the validity of the 'out.unit' argument
+                    
+  # Checking the validity of the 'out.unit' argument
+  if ( is.matrix(x) | is.data.frame(x) ) {  
+    if ( is.na( match(out.unit, c("years", "months") ) ) )
+       stop("Invalid argument value: 'out.unit' must be in c('years', 'months')" )
+  } else {
     if ( is.na( match(out.unit, c("years", "months", "mpy") ) ) )
-         stop("Invalid argument value: 'out.unit' must be in c('years', 'months', 'mpy')" )
+       stop("Invalid argument value: 'out.unit' must be in c('years', 'months', 'mpy')" )
+    } # ELSE end
          
-    # Checking 'from' and 'to'
-    if (to < from) stop("Invalid argument: 'from > to')" )
-
-    # Selecting only those data that are within the time period between 'from' and 'to'
-    x.sel <- window(x, start=as.Date(from, format=date.fmt), end=as.Date(to, format=date.fmt) )
+  # Checking 'from' and 'to'
+  if (to < from) stop("Invalid argument: 'from > to')" )    
     
-    # Computing the Starting and Ending Year of the analysis
-    Starting.Year <- as.numeric(format(as.Date(from, format=date.fmt), "%Y"))
-    Ending.Year   <- as.numeric(format(as.Date(to, format=date.fmt), "%Y"))
+  from <- zoo::as.Date(from, format=date.fmt)
+  to   <- zoo::as.Date(to, format=date.fmt)
 
-    # Amount of Years belonging to the desired period
-    nyears <- Ending.Year - Starting.Year + 1
+  # Selecting only those data that are within the time period between 'from' and 'to'
+  x.sel <- window(x, start=from, end=to )
     
-    # function for computing the days with info in a zoo object
-    .dwi <- function(m, x) { 
-      x           <- extractzoo(x, trgt= m)   
-      nona.index  <- which(!is.na(x))
-      return(length( nona.index ))    
-    } # '.dwi' END
+  .dwi <- function(x) { 
+    nona.index  <- which(!is.na(x))
+    return(length( nona.index ))    
+  } # '.dwi' END
+  
+  dates  <- time(x)
 
-    if (out.unit == "months")   {         
-         a <- sapply(1:12, .dwi, x.sel)
-         names(a) <- month.abb
-     } # IF end
+  if (out.unit == "months")   {         
+     # Monthly index for 'x'     
+     m      <- as.numeric(format( dates, "%m" ))
+     months <- factor( month.abb[m], levels=unique(month.abb[m]) )
+     
+     # 'as.numeric' is necessary for being able to change the names to the output
+     a <- aggregate(x, by= months, FUN=.dwi)
+  } else if (out.unit == "years") {
+         # Annual index for 'x'
+         y      <- as.numeric(format( dates, "%Y" ))
+         years  <- factor( y, levels=unique(y) )
 
-    else if (out.unit == "years") {
-         a <- sapply(Starting.Year:Ending.Year, .dwi, x.sel)
-         names(a) <- as.character(Starting.Year:Ending.Year)
-     } # ELSE IF end
+         # 'FUN' is first applied to all the values of 'x' belonging to the same year
+         a <- aggregate( x, by= years, FUN=.dwi)         
+     } else if (out.unit == "mpy") {
+     
+         # Computing the Starting and Ending Year of the analysis
+         Starting.Year <- as.numeric(format(as.Date(from, format=date.fmt), "%Y"))
+         Ending.Year   <- as.numeric(format(as.Date(to, format=date.fmt), "%Y"))
 
-     else if (out.unit == "mpy") {
+         # Amount of Years belonging to the desired period
+         nyears <- Ending.Year - Starting.Year + 1
 
-         a <- matrix(data=NA,nrow=nyears, ncol=12)
+         a <- matrix(data=NA, nrow=nyears, ncol=12)
 
          #a <- sapply(Starting.Year:Ending.Year, function(i,y) {
-         for (i in Starting.Year:Ending.Year) {
+         for (i in Starting.Year:Ending.Year) {trgt
 
-             tmp         <- extractzoo(x.sel, trgt= i)
+             tmp                       <- extractzoo(x.sel, trgt= i)
                                          
              a[i-Starting.Year+1,1:12] <-  sapply(1:12, .dwi, tmp)
          
@@ -138,6 +155,8 @@ dwi.zoo <- function(x, out.unit="years", from = start(x), to = end(x),
 #                 the number of days in 'dates' be equal to the number of element in the
 #                 time series corresponding to the 'st.name' station
 # 'verbose'  : logical; if TRUE, progress messages are printed
+# 'tstep'  : since hydroTSM 0.3-0 it is not required any more, because it is not used any longer.
+#            It is kept for backwards compatibility purposes only.
 
 dwi.data.frame <- function(x, out.unit="years", from, to,
                            date.fmt="%Y-%m-%d", tstep="days", dates=1, verbose=TRUE,...) {
@@ -165,13 +184,13 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {
     tmp   <- dates
-    dates <- as.Date(x[, dates], format= date.fmt)
+    dates <- zoo::as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
   }  else
       # If 'dates' is a factor, it have to be converted into 'Date' class,
       # using the date format  specified by 'date.fmt'
       if ( class(dates) == "factor" ) {
-	    dates <- as.Date(dates, format= date.fmt)
+	    dates <- zoo::as.Date(dates, format= date.fmt)
 	  } # IF end
 
   # Checking the validity of the 'from' argument
@@ -185,11 +204,12 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
             stop("Invalid argument value: 'class(to)' must be in c('Date', 'character')" ) }
             
   # Transforming 'x' into a zoo object
-  x <- zoo(x, dates)
+  x <- zoo(x, dates)  
 
-  z <- dwi.zoo(x=x, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
+  #z <- dwi.zoo(x=x, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
+  z <- apply(x, MARGIN=2, dwi.zoo, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
 
-  colnames(z) <- snames
+  colnames(z) <- colnames(x)
 
   return(z)
 
@@ -200,8 +220,8 @@ dwi.matrix <- function(x, out.unit="years", from, to,
                            date.fmt="%Y-%m-%d", tstep="days", dates=1, verbose=TRUE,...) {
 
   # Checking the validity of the 'out.unit' argument
-  if ( is.na( match(out.unit, c("years", "months") ) ) ) {
-         stop("Invalid argument value: For data.frames, 'out.unit' must be in c('years', 'months')" ) }
+  if ( is.na( match(out.unit, c("years", "months") ) ) ) 
+         stop("Invalid argument value: For data.frames, 'out.unit' must be in c('years', 'months')" ) 
 
   # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {
