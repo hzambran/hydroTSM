@@ -70,6 +70,7 @@ NEWS/ChangeLog for hydroTSM
 			      -) fixed documentation of the 'out.unit' argument.
 			      -) argument 'tstep' is not required any more, because it is not used any longer.
 			         It is kept for backwards compatibility purposes only.
+        o 'extractzoo'      : -) new 'extractzoo.zoo'
 	o Some 'as.Date' calls were changed to 'zoo:ad.Date', in order to work properly with zoo >= 1.7-2
 	
 
