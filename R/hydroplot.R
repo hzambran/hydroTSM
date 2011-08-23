@@ -5,7 +5,7 @@
 # Started: 2008                                                                #
 # Updates: 17-Apr-2011 ; 10-Aug-2011                                           #
 ################################################################################
-# It requires the function'drawxaxis' that is stored in the 'lib_Plot.R' library
+# It requires the function'drawTimeAxis' that is stored in the 'lib_Plot.R' library
 # 'x'		 : daily time series of type 'zoo'
 # 'x.monthly : monthly time series of type 'zoo'
 # 'x.annual' : annual time series of type 'zoo'
@@ -127,7 +127,7 @@
                    lty=lty, lwd=lwd, ...)
           axis(2, cex.lab=1.3, cex.axis=1.3)
           # Draws monthly ticks in the X axis, but labels only in years
-          drawxaxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+          drawTimeAxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
       } # IF end
 
@@ -144,7 +144,7 @@
                    lty=lty, lwd=lwd, ...)
           axis(2, cex.lab=cex.lab, cex.axis=cex.axis)
           # Draws monthly ticks in the X axis, but labels only in years
-          drawxaxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+          drawTimeAxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
 
           if (d.ma1) {
@@ -187,7 +187,7 @@
 
 
         # Draws monthly ticks in the X axis, but labels only in years
-        drawxaxis(x.monthly, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
+        drawTimeAxis(x.monthly, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
         if (m.ma1) {
         # Plotting the 1st Moving Average of the Daily time series. If win.len1=365*1 => "Annual Moving Average"
@@ -226,7 +226,7 @@
                    lty=lty, lwd=lwd, ...)
           axis(2, cex.lab=cex.lab, cex.axis=cex.axis)
           # Draws monthly ticks in the X axis, but labels only in years
-          drawxaxis(x.annual, tick.tstep="years", lab.tstep="years", lab.fmt="%Y",
+          drawTimeAxis(x.annual, tick.tstep="years", lab.tstep="years", lab.fmt="%Y",
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
       } # IF end
 
