@@ -39,6 +39,7 @@ NEWS/ChangeLog for hydroTSM
 	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
 	o 'sfreq'           : -) it works now with xts objects
 	o 'vector2zoo'      : -) added error checking for length of the numeric vector and the dates.
+	o 'hydrokrige'      : -) updated documentation and new example of interpolation over a user-defined raster map.
 	o 'monthlyfunction' : -) new 'monthlyfunction.zoo', ~ 8 times faster than before (for data.frames, when out.type="data.frame")
 			      -) it works now with matrix objects as well.
 	                      -) it works now with xts objects as well.
