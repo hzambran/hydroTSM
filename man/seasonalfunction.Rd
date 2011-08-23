@@ -98,7 +98,7 @@ The \var{FUN} value for the winter season (DJF) is computed considering the cons
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{dm2seasonal}}, \code{\link{time2season}}, \code{\link{monthlyfunction}}, \code{\link{annualfunction}}, \code{\link{extractzoo}} 
+\code{\link{dm2seasonal}}, \code{\link{time2season}}, \code{\link{monthlyfunction}}, \code{\link{annualfunction}}, \code{\link{extract}} 
 }
 \examples{
 ## Loading the SanMartino precipitation data

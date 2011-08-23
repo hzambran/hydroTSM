@@ -1,5 +1,5 @@
 #########################################################################
-# extractzoo: Extracts from a zoo object, all the values belonging to a #
+# extract: Extracts from a zoo object, all the values belonging to a    #
 #             given month, year or weather season                       #
 #########################################################################
 # Author : Mauricio Zambrano-Bigiarini                                  #
@@ -7,7 +7,10 @@
 # Updates: 15-May-2009; 30-Ago-2009 ; 10-Aug-2011                       #
 #########################################################################
 
-extractzoo <-function(x, ...) UseMethod("extractzoo")
+extract <-function(x, ...) UseMethod("extract")
+
+# This function was called 'extractzoo' up to hydroTSM 0.2-2
+extractzoo <-function(x, ...) UseMethod("extract")
 
 # 'x'    : variable of type 'zoo'
 # 'trgt' : numeric or character indicating elements to extract from 'x'
@@ -32,7 +35,7 @@ extractzoo <-function(x, ...) UseMethod("extractzoo")
 # Started: 16-Apr-2009                                                  #
 # Updates: 15-May-2009; 30-Ago-2009 ; 10-Aug-2011                       #
 #########################################################################
-extractzoo.default <- function(x, trgt, ...) {
+extract.default <- function(x, trgt, ...) {
 
   # Checking that the user provied a valid class for 'x'   
      valid.class <- c("xts", "zoo")    
@@ -42,9 +45,9 @@ extractzoo.default <- function(x, trgt, ...) {
      # Requiring the Zoo Library (Z’s ordered observations)
      require(zoo)
 
-     extractzoo.zoo(x=x, trgt=trgt, ...)
+     extract.zoo(x=x, trgt=trgt, ...)
 
-} # 'extractzoo.default' END
+} # 'extract.default' END
 
 
 #########################################################################
@@ -52,7 +55,7 @@ extractzoo.default <- function(x, trgt, ...) {
 # Started: 22-Aug-2011                                                  #
 # Updates:                                                              #
 #########################################################################
-extractzoo.zoo <- function(x, trgt, ...) {
+extract.zoo <- function(x, trgt, ...) {
 
   # Checking that the user provied a valid argument for 'trgt'
   if ( is.na( match( class(trgt), c("integer", "numeric", "character") ) ) )
@@ -100,4 +103,4 @@ extractzoo.zoo <- function(x, trgt, ...) {
 
   return(x[index])
 
-} # 'extractzoo.zoo' END
+} # 'extract.zoo' END

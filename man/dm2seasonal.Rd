@@ -98,7 +98,7 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 For any year, the \code{FUN} value for the winter season (DJF), is computed considering only January and February, and the value of December is used for computing the winter value of the next year.
 }
 \seealso{
-, \code{\link{hydroplot}}, \code{\link{seasonalfunction}}, \code{\link{time2season}}, \code{\link{extractzoo}}, \code{\link{daily2monthly}}, \code{\link{daily2annual}}, \code{\link{monthly2annual}}
+, \code{\link{hydroplot}}, \code{\link{seasonalfunction}}, \code{\link{time2season}}, \code{\link{extract}}, \code{\link{daily2monthly}}, \code{\link{daily2annual}}, \code{\link{monthly2annual}}
 }
 \examples{
 ## Loading the SanMartino precipitation data

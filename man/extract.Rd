@@ -1,8 +1,9 @@
-\name{extractzoo}
+\name{extract}
 \Rdversion{1.1}
+\alias{extract}
+\alias{extract.default}
+\alias{extract.zoo}
 \alias{extractzoo}
-\alias{extractzoo.default}
-\alias{extractzoo.zoo}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Extract from Zoo
@@ -11,11 +12,11 @@ Extract from Zoo
 Extracts from a zoo object all the values belonging to a given month, year or weather season.
 }
 \usage{
-extractzoo(x, ...)
+extract(x, ...)
 
-\method{extractzoo}{default}(x, trgt, ...)
+\method{extract}{default}(x, trgt, ...)
      
-\method{extractzoo}{zoo}(x, trgt, ...)
+\method{extract}{zoo}(x, trgt, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -67,13 +68,13 @@ data(SanMartinoPPts)
 x <- SanMartinoPPts
 
 ## Extracting all the values belonging to February (FEB=2)
-extractzoo(x, trgt=2)
+extract(x, trgt=2)
 
 ## Extracting all the values belonging to the year 1970
-extractzoo(x, trgt=1970)
+extract(x, trgt=1970)
 
 ## Extracting all the values belonging to the autumn
-extractzoo(x, trgt="SON")
+extract(x, trgt="SON")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -58,7 +58,7 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{dm2seasonal}}, \code{\link{seasonalfunction}}, \code{\link{extractzoo}}, \code{\link{dip}}, \code{\link{mip}}
+\code{\link{dm2seasonal}}, \code{\link{seasonalfunction}}, \code{\link{extract}}, \code{\link{dip}}, \code{\link{mip}}
 }
 \examples{
 ## Sequence of daily dates between "1961-01-01" and "1961-12-31"
