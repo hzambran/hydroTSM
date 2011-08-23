@@ -1,9 +1,11 @@
-#################################################################
+####################################################################
 # matrixplot: Plots a color matrix representing the amount of days #
-#          with information in a set of gauging stations        #
-#################################################################
-#        May 21th, 2009; Sep 22th, 2009, Sep 24th, 2010         #
-#################################################################
+#          with information in a set of gauging stations           #
+####################################################################
+# Author : Mauricio Zambrano-Bigiarini                             #
+# Started: 21-May-2009;                                            #
+# Updates: 22-Sep-2009, 24-Sep-2010 ; 23-Aug-2011                  #
+####################################################################
 # Adapted (and thank you very much) from:
 # http://www2.warwick.ac.uk/fac/sci/moac/currentstudents/peter_cock/r/matrix_contour/
 
@@ -19,10 +21,14 @@
 # 'main'      :  Main title for the plot
 
 matrixplot <- function(x, ColorRamp="Days", ncolors=70, main="", ...) {
-
-  # Checking that 'class(x)==Date'
-  if (is.na(match(class(x), c("matrix", "data.frame") ) ) )
-     stop("Invalid argument: 'x' must be of class 'matrix' or 'data.frame'")
+     
+  # If 'x' is a zoo, it trys to coherce into a matrix
+  if (class(x) == "zoo") x <- zoo::coredata(x)
+  
+  # Checking that the user provied a valid class for 'x'   
+  valid.class <- c("matrix", "data.frame")    
+  if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
+     stop("Invalid argument: 'class(x)' must be in c('matrix', 'data.frame')")
 
   # If 'x' is a data.frame, it trys to coherce into a matrix
   if (class(x) == "data.frame") x <- as.matrix(x)

@@ -4,6 +4,7 @@
 \alias{dwi.default}
 \alias{dwi.zoo}
 \alias{dwi.data.frame}
+\alias{dwi.matrix}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Days with Information
@@ -21,6 +22,9 @@ dwi(x, ...)
      date.fmt = "\%Y-\%m-\%d", tstep="days", ...)
 
 \method{dwi}{data.frame}(x, out.unit = "years", from, to, date.fmt = "\%Y-\%m-\%d", tstep="days", 
+     dates = 1, verbose = TRUE, ...)
+     
+\method{dwi}{matrix}(x, out.unit = "years", from, to, date.fmt = "\%Y-\%m-\%d", tstep="days", 
      dates = 1, verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
