@@ -106,25 +106,40 @@ dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x),
      } else if (out.unit == "mpy") {
      
          # Computing the Starting and Ending Year of the analysis
-         Starting.Year <- as.numeric(format(as.Date(from, format=date.fmt), "%Y"))
-         Ending.Year   <- as.numeric(format(as.Date(to, format=date.fmt), "%Y"))
+         Starting.Year <- as.numeric(format(from, "%Y"))
+         Ending.Year   <- as.numeric(format(to, "%Y"))
 
          # Amount of Years belonging to the desired period
          nyears <- Ending.Year - Starting.Year + 1
+         
+         # Dummy variable to know how many different months are present in 'x'. 
+         # Only needed when x is shorter than a year
+         m          <- as.numeric(format( dates, "%m" ))
+         months     <- factor( month.abb[m], levels=unique(month.abb[m]) )
+         tmp        <- aggregate(x, by= months, FUN=.dwi)
+         nmonths    <- length(tmp)
+         monthnames <- index(tmp)
 
-         a <- matrix(data=NA, nrow=nyears, ncol=12)
+         a <- matrix(data=NA, nrow=nyears, ncol=nmonths)
 
          #a <- sapply(Starting.Year:Ending.Year, function(i,y) {
          for (i in Starting.Year:Ending.Year) {
 
              tmp                       <- extractzoo(x.sel, trgt= i)
                                          
-             a[i-Starting.Year+1,1:12] <-  sapply(1:12, .dwi2, tmp)
+             #a[i-Starting.Year+1,1:12] <-  sapply(1:12, FUN=.dwi2, x=tmp)
+             dates  <- time(tmp)
+             m      <- as.numeric(format( dates, "%m" ))
+             months <- factor( month.abb[m], levels=unique(month.abb[m]) )
+     
+             # 'as.numeric' is necessary for being able to change the names to the output
+             a[i-Starting.Year+1,1:nmonths] <-  aggregate(tmp, by= months, FUN=.dwi)
          
          } # FOR end
 
          #Change the names of the columns of the matrix
-         colnames(a) <- month.abb
+         #colnames(a) <- month.abb
+         colnames(a) <- monthnames
          #Change the names of the rows of the matrix
          rownames(a) <- as.character(Starting.Year:Ending.Year)
 
