@@ -55,7 +55,7 @@ dwi.default <- function(x, out.unit="years", from = start(x), to = end(x),
 # Started: 22-Aug-2009                                #
 # Updates: 22-Aug-2011                                #
 ####################################################### 
-dwi.zoo <- function(x, out.unit="years", from= range(time(x))[1], to= range(time(x))[2], 
+dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x), 
                     date.fmt="%Y-%m-%d", tstep="days", ...) {
                     
   # Checking the validity of the 'out.unit' argument
