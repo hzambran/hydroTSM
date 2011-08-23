@@ -82,7 +82,7 @@ dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x),
   } # '.dwi' END
   
   .dwi2 <- function(trgt, x) { 
-    tmp <- extractzoo(x, trgt=trgt)
+    tmp <- extract(x, trgt=trgt)
     nona.index  <- which(!is.na(tmp))
     return(length( nona.index ))    
   } # '.dwi' END
@@ -125,7 +125,7 @@ dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x),
          #a <- sapply(Starting.Year:Ending.Year, function(i,y) {
          for (i in Starting.Year:Ending.Year) {
 
-             tmp                       <- extractzoo(x.sel, trgt= i)
+             tmp                       <- extract(x.sel, trgt= i)
                                          
              #a[i-Starting.Year+1,1:12] <-  sapply(1:12, FUN=.dwi2, x=tmp)
              dates  <- time(tmp)

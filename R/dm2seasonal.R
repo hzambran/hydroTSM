@@ -83,7 +83,7 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
     stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
 
   # Getting the Monthly values beloonging ONLY to the desired weather season
-  s <- extractzoo(x= x, trgt=season)
+  s <- extract(x= x, trgt=season)
 
   # Moving forward all the December values, in order that
   # December of 1991 be used together with Jan/92 and Feb/92,

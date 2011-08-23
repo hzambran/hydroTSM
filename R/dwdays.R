@@ -1,7 +1,7 @@
 ########################################################################
 # dwdays:  average amount of dry/wet days per each month               #
 ########################################################################
-#	                   Date: 24-Jan-2010                               #
+#	               Date: 24-Jan-2010                               #
 ########################################################################
 # Given a daily time series of precipitation, this function computes the average amount
 # of dry/wet days (pcp > thr or pcp < thr for wet and dry days, respectively) on each month
@@ -45,7 +45,7 @@ dwdays.default <- function(x, thr=0, type="wet", na.rm=TRUE, ... ) {
 
   for (m in 1:12) {
     #Extracts all the days of 'x' belonging to the month 'm'
-    pcp.m <- extractzoo(x, m)
+    pcp.m <- extract(x, m)
 
     if (type=="wet") {
       wdays[m] <- length(which(pcp.m > thr )) / nyears
