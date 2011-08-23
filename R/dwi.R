@@ -81,6 +81,12 @@ dwi.zoo <- function(x, out.unit="years", from= range(time(x))[1], to= range(time
     return(length( nona.index ))    
   } # '.dwi' END
   
+  .dwi2 <- function(trgt, x) { 
+    tmp <- extractzoo(x, trgt=trgt)
+    nona.index  <- which(!is.na(tmp))
+    return(length( nona.index ))    
+  } # '.dwi' END
+  
   dates  <- time(x)
 
   if (out.unit == "months")   {         
@@ -109,11 +115,11 @@ dwi.zoo <- function(x, out.unit="years", from= range(time(x))[1], to= range(time
          a <- matrix(data=NA, nrow=nyears, ncol=12)
 
          #a <- sapply(Starting.Year:Ending.Year, function(i,y) {
-         for (i in Starting.Year:Ending.Year) {trgt
+         for (i in Starting.Year:Ending.Year) {
 
              tmp                       <- extractzoo(x.sel, trgt= i)
                                          
-             a[i-Starting.Year+1,1:12] <-  sapply(1:12, .dwi, tmp)
+             a[i-Starting.Year+1,1:12] <-  sapply(1:12, .dwi2, tmp)
          
          } # FOR end
 
@@ -191,7 +197,12 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
       # using the date format  specified by 'date.fmt'
       if ( class(dates) == "factor" ) {
 	    dates <- zoo::as.Date(dates, format= date.fmt)
-	  } # IF end
+	  } else
+	    # If 'dates' is already of Date class, the following line verifies that
+            # the number of days in 'dates' be equal to the number of element in the
+            # time series corresponding to the 'st.name' station
+            if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+              stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # Checking the validity of the 'from' argument
   if (missing(from)) { from <- dates[1]
@@ -205,111 +216,21 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
             
   # Transforming 'x' into a zoo object
   x <- zoo(x, dates)  
+  
+  ##############################################################################
 
-  #z <- dwi.zoo(x=x, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
-  z <- apply(x, MARGIN=2, dwi.zoo, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
-
-  colnames(z) <- colnames(x)
-
-  return(z)
+  dwi.zoo(x=x, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
 
 } # 'dwi.data.frame' END
 
 
-dwi.matrix <- function(x, out.unit="years", from, to,
-                           date.fmt="%Y-%m-%d", tstep="days", dates=1, verbose=TRUE,...) {
+dwi.matrix <- function(x, out.unit="years", from, to, 
+                       date.fmt="%Y-%m-%d", tstep="days", dates=1, verbose=TRUE,...) {
 
-  # Checking the validity of the 'out.unit' argument
-  if ( is.na( match(out.unit, c("years", "months") ) ) ) 
-         stop("Invalid argument value: For data.frames, 'out.unit' must be in c('years', 'months')" ) 
-
-  # Checking that the user provied a valid argument for 'dates'
-  if (missing(dates)) {
-      stop("Missing argument: 'dates' must be provided")
-  } else
-    {
-     # Checking that the user provied a valid argument for 'dates'
-     if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-         stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
-
-     # Verification that the number of days in 'dates' be equal to
-     # the number of elements in 'x'
-     if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-          stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
-    } # ELSE end
-
-  # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
-  # The column with dates is then substracted form 'x' for easening the further computations
-  if ( class(dates) == "numeric" ) {
-    tmp   <- dates
-    dates <- as.Date(x[, dates], format= date.fmt)
-    x     <- x[-tmp]
-  }  else
-      # If 'dates' is a factor, it have to be converted into 'Date' class,
-      # using the date format  specified by 'date.fmt'
-      if ( class(dates) == "factor" ) {
-	    dates <- as.Date(dates, format= date.fmt)
-	  } # IF end
-
-  # Checking the validity of the 'from' argument
-  if (missing(from)) { from <- dates[1]
-  } else if ( is.na( match(class(from), c("Date", "character") ) ) ) {
-            stop("Invalid argument value: 'class(from)' must be in c('Date', 'character')" ) }
-
-  # Checking the validity of the 'to' argument
-  if (missing(to)) { to <- dates[length(dates)]
-  } else if ( is.na( match(class(to), c("Date", "character") ) ) ) {
-            stop("Invalid argument value: 'class(to)' must be in c('Date', 'character')" ) }
-            
-  # Transforming 'x' into a zoo object
-  x <- zoo(x, dates)
-
-  # Sequence of dates within the time period between 'from' and 'to'
-  DateSeq <- seq( from=as.Date(from, format=date.fmt),
-                  to=as.Date(to, format=date.fmt), by=tstep )
-
-  # Selecting only those data that are within the time period between 'from' and 'to'
-  x.sel <- x[dates %in% DateSeq, ]
-  # Also is possible to use: x.sel <- window(x, start=as.Date(from, format=date.fmt), end=as.Date(to, format=date.fmt) )
-
-  # Computing the Starting and Ending Year of the analysis
-  Starting.Year <- as.numeric(format(as.Date(from, format=date.fmt), "%Y"))
-  Ending.Year   <- as.numeric(format(as.Date(to, format=date.fmt), "%Y"))
-
-  # Amount of Years belonging to the desired period
-  nyears <- Ending.Year - Starting.Year + 1
-
-  # Amount of stations in 'x.sel'
-  nstations <- ncol(x.sel)
-
-  # NAme of the stations in 'x'
-  snames <- colnames(x)
-
-  if (out.unit == "years") {
-    z <- matrix(data=NA, nrow= nstations, ncol=nyears)
-  } else if (out.unit == "months") {
-    z <- matrix(data=NA, nrow=nstations, ncol=12)
-    }  # ELSE end
-
-
-  z <- sapply(1:ncol(x.sel), function(j, y) {
-              #y[j] <- length( subset(y[,j], !is.na(y[,j]) ) )
-
-              if (verbose) message( paste("Station: ", format(snames[j], width=6, justify="left"),
-				          " : ", format(j, width=3, justify="left"), "/",
-					  nstations, " => ",
-					  format(round(100*j/nstations,2), width=6, justify="left"),
-					  "%", sep="") )
-
-              tmp  <- vector2zoo(x=y[,j], dates=dates, date.fmt=date.fmt)
-
-              z[j,] <- dwi.default(x=tmp, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt)
-
-              }, y = x.sel)
-
-  colnames(z) <- snames
-
-  return(z)
+ x <- as.data.frame(x)
+ #NextMethod("daily2annual")
+ dwi.data.frame(x=x, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, 
+                tstep=tstep, dates=dates, verbose=verbose,...)
 
 } # 'dwi.matrix' END
 
