@@ -1,8 +1,10 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 
-0.3-0	(under development)
+0.3-1	(under/future development)
 	o TODO: check line 60 in 'drawxaxis', for argument gt=1. ( suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, gt=1)) )
+	
+0.3-0	01-Sep-2011 (Expected...)
 	o NAMESPACE created, which leads to reduced dependency of the packages  e1071, gstat, automap, sp; 
 	  while maptools was moved to 'Suggests'
 	o hydroTSM now depends on xts >= 0.8-2 (=> zoo >= 1.7-2), in order to make use of improved 
