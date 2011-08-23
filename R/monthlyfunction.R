@@ -129,17 +129,17 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
     tmp   <- dates
     dates <- as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
-  }  # IF end
-
-  # If 'dates' is a factor, it have to be converted into 'Date' class,
-  # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
-  
-  # If 'dates' is already of Date class, the following line verifies that
-  # the number of days in 'dates' be equal to the number of element in the
-  # time series corresponding to the 'st.name' station
-  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-     stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
+  }  else
+      # If 'dates' is a factor, it have to be converted into 'Date' class,
+      # using the date format  specified by 'date.fmt'
+      if ( class(dates) == "factor" ) {
+	    dates <- zoo::as.Date(dates, format= date.fmt)
+	  } else
+	    # If 'dates' is already of Date class, the following line verifies that
+            # the number of days in 'dates' be equal to the number of element in the
+            # time series corresponding to the 'st.name' station
+            if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+              stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # Transforming 'x' into a zoo object
   x <- zoo(x, dates)
