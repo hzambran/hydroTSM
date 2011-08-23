@@ -1,6 +1,8 @@
 \name{extractzoo}
 \Rdversion{1.1}
 \alias{extractzoo}
+\alias{extractzoo.default}
+\alias{extractzoo.zoo}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Extract from Zoo
@@ -9,7 +11,11 @@ Extract from Zoo
 Extracts from a zoo object all the values belonging to a given month, year or weather season.
 }
 \usage{
-extractzoo(x, trgt, ...)
+extractzoo(x, ...)
+
+\method{extractzoo}{default}(x, trgt, ...)
+     
+\method{extractzoo}{zoo}(x, trgt, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
