@@ -53,7 +53,7 @@ ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric
 }
   \item{tstep}{
 Time step used for storing the values in \code{x}. Valid values are: \kbd{days}, \kbd{months}, \kbd{years}.
-Since the version 0.3-0 of hydroTSM this argument is not required any more, because it is not used any longer.
+Since the version 0.3-0 of hydroTSM, this argument is not required any more, because it is not used any longer.
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates for each column of \code{x}\cr
