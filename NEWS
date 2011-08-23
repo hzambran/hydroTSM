@@ -4,15 +4,13 @@ NEWS/ChangeLog for hydroTSM
 0.3-1	(under/future development)
 	o TODO: check line 60 in 'drawxaxis', for argument gt=1. ( suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, gt=1)) )
 	
-0.3-0	01-Sep-2011 (Expected...)
-	o NAMESPACE created, which leads to reduced dependency of the packages  e1071, gstat, automap, sp; 
-	  while maptools was moved to 'Suggests'
-	o hydroTSM now depends on xts >= 0.8-2 (=> zoo >= 1.7-2), in order to make use of improved 
-	  plotting capabilities for ts objects.
-	  The first release of the xts after the 0.8-0 (which was set as the default building block for plotting time series) 
-	  was the 0.8-2, and appeared on CRAN on August 10th, 2011
+0.3-0	01-Sep-2011 (expected...)
+	o hydroTSM now depends on xts >= 0.8-2 (=> zoo >= 1.7-2), in order to make use of improved plotting capabilities for ts objects.
+	  The first release of 'xts' after the 0.8-0 (which was set as the default building block for plotting time series in hydroTSM) 
+	  was the 0.8-2, and appeared on CRAN on August 9th, 2011	
+	o NAMESPACE created, which leads to reduced dependency of packages e1071, gstat, automap, sp
 	o 'maptools' package is now "suggested" instead of a dependence. It is only used for reading shapefiles in the 
-	  'hydrokrige' and 'mspplot' functions.
+	  'hydrokrige' and 'mspplot' functions.	
 	o 'drawxaxis'       : -) it was re-written, in order to take advantage of some features of the 'xts' 
 			         package (now added as a dependence), and now it should work with sub-daily 
 			         time series.
