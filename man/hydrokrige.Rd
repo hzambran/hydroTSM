@@ -320,8 +320,8 @@ x.ok <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis,
 }
 
 ##################################################
-## 3)  Ordinary Kriging interpolation and plot, in catchments defined by a raster map
-## the raster map may be any \link[sp]{SpatialGridDataFrame-class} object, read with 
+## 3)  Ordinary Kriging interpolation and plot, in an area defined by a raster map.
+## The raster map may be any \link[sp]{SpatialGridDataFrame-class} object, read with 
 ## the \code{\link[rgdal]{readGDAL}} function of the \pkg{rgdal} package or similar. 
 ## Probably you will need to resize your window
 
