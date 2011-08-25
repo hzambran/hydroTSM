@@ -1,6 +1,8 @@
 \name{izoo2rzoo}
 \Rdversion{1.1}
 \alias{izoo2rzoo}
+\alias{izoo2rzoo.default}
+\alias{izoo2rzoo.zoo}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
  Irregular Zoo -> Regular Zoo
@@ -9,8 +11,12 @@
 It takes an irregular (with missing dates) zoo object and convert it into a regularly spaced object within the time period defined by \code{from} and \code{to}, by filling the missing values with 'NA'. 
 }
 \usage{
-izoo2rzoo(x, from = range(time(x))[1], to = range(time(x))[2], 
-          date.fmt = "\%Y-\%m-\%d", tstep = "days")
+izoo2rzoo(x, ...)
+
+\method{izoo2rzoo}{default}(x, from= start(x), to= end(x), date.fmt= "\%Y-\%m-\%d", tstep= "days", ...)
+     
+\method{izoo2rzoo}{zoo}(x, from= start(x), to= end(x), date.fmt= "\%Y-\%m-\%d", tstep= "days", ...)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,6 +34,9 @@ character indicating the format in which the dates are stored in \code{from} and
 }
   \item{tstep}{
 character, indicating the time step used for sampling \code{x}, e.g., \kbd{days}, \kbd{months}, \kbd{years}.
+}
+  \item{\dots}{
+further arguments passed to or from other methods
 }
 }
 \details{
