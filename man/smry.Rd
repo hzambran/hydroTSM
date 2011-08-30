@@ -2,6 +2,7 @@
 \Rdversion{1.1}
 \alias{smry}
 \alias{smry.default}
+\alias{smry.zoo}
 \alias{smry.matrix}
 \alias{smry.data.frame}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -15,6 +16,8 @@ Extended summary function for numeric objects, with 13 summary statistics.
 smry(x, ...)
 
 \method{smry}{default}(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)
+
+\method{smry}{zoo}(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)
 
 \method{smry}{matrix}(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)
 

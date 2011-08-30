@@ -76,7 +76,10 @@ NEWS/ChangeLog for hydroTSM
 			         It is kept for backwards compatibility purposes only.
         o 'matrixplot       : -) it works with zoo objects as well (zoo matrixes/data.frames)
         o 'izoo2rzoo'       : -) new 'izoo2rzoo.zoo'
-                              -) it works with xts objects as well. 					      
+                              -) it works with xts objects as well. 
+        o 'smry'            : -) new 'smry.zoo'	
+                              -) much faster than before for matrixes and data.frames 	                            
+                              -) it works with xts objects as well. 			      
 	o Some 'as.Date' calls were changed to 'zoo:ad.Date', in order to work properly with zoo >= 1.7-2
 	
 

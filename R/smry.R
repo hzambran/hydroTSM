@@ -4,15 +4,18 @@
 #       For numerical variables.                                   #
 #       Skewness and Kurtosis are computed with the e1071 package  #
 ####################################################################
-#	Date: 14-Jun-2008; 11-Sep-2009                                 #
+# Author: Mauricio Zambrano-Bigiarini                              #
+####################################################################
+# Started: 14-Jun-2008;                                            #
+# Updates: 11-Sep-2009 ; 30-Aug-2011                               #
 ####################################################################
 smry <-function(x, ...) UseMethod("smry")
 
 
 smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)  {
 
-    if ( class(x) %in% c("ts", "zoo") ) {
-        x <- as.numeric(x)
+    if ( class(x) %in% c("zoo", "xts") ) {
+        x <- zoo::coredata(x)
     } # IF end
 
 
@@ -48,8 +51,8 @@ smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), 
             z[5,1] <- s[5] # q3
             z[6,1] <- s[6] # max
 
-            z[7,1] <- IQR(x, na.rm = na.rm)	                             # Interquantile Range IQR = Q(0.75) – Q(0.25)
-            z[8,1] <- sd(x, na.rm = na.rm)	                             # Standard Deviation
+            z[7,1] <- IQR(x, na.rm = na.rm)	                         # Interquantile Range IQR = Q(0.75) – Q(0.25)
+            z[8,1] <- sd(x, na.rm = na.rm)	                         # Standard Deviation
             z[9,1] <- sd(x, na.rm = na.rm) / abs(mean(x, na.rm = na.rm)) # Coefficient of variation ( coef. of variation = sd / |mean| )
 
             #require(e1071) # for the following 2 functions
@@ -89,33 +92,31 @@ smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), 
 } # 'smry.default' end
 
 
+####################################################################
+# Author: Mauricio Zambrano-Bigiarini                              #
+####################################################################
+# Started: 14-Jun-2008;                                            #
+# Updates: 11-Sep-2009 ; 30-Aug-2011                               #
+####################################################################
 smry.data.frame <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)  {
 
-    # Creating a copy of the original observed values
-	z <- as.data.frame( matrix(NA, nrow=13, ncol=ncol(x)) )
-
-	z[,1:ncol(z)] <- sapply(1:ncol(x), function(j,y) {
-
-		# Putting the monthly values in the output data.frame
-		# The first column of 'x' corresponds to the Year
-		z[,j] <- smry.default(x= y[,j], na.rm=na.rm, digits=digits)
-
-	}, y = x) # sapply END
-
-
+    z <- apply(x, MARGIN=2, FUN=smry.default, na.rm=na.rm, digits=digits, ...)
+    
     rownames(z) <- c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.",
                      "Max.", "IQR", "sd", "cv", "Skewness", "Kurtosis",
                      "NA's", "n")
-
-    colnames(z) <- colnames(x)
-
     return(z)
 
 } # 'smry.data.frame' end
 
 
 
-
+####################################################################
+# Author: Mauricio Zambrano-Bigiarini                              #
+####################################################################
+# Started: 14-Jun-2008;                                            #
+# Updates: 11-Sep-2009                                             #
+####################################################################
 smry.matrix <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)  {
 
     x <- as.data.frame(x)
@@ -123,3 +124,35 @@ smry.matrix <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), .
     #NextMethod("smry", x, na.rm=TRUE, digits=digits,...)
 
 } # 'smry.data.frame' end
+
+
+####################################################################
+# Author: Mauricio Zambrano-Bigiarini                              #
+####################################################################
+# Started: 30-Aug-2011                                             #
+# Updates:                                                         #
+####################################################################
+smry.zoo <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)  {
+
+    dates <- time(x)  
+    z     <- zoo::coredata(x)
+    
+    # Giving meaningful names to the output
+    if ( (is.matrix(x)) | (is.data.frame(x)) ) {
+        zname <- colnames(z)
+        z     <- apply(z, MARGIN=2, FUN=smry.default, na.rm=na.rm, digits=digits, ...)      
+    } else {
+        zname <- deparse(substitute(x))
+        z     <- smry.default(z, na.rm=na.rm, digits=digits,...) 
+      } # ELSE end    
+    
+    z  <- data.frame(Index=c(summary(dates), rep(NA,7)), Data=z)
+    
+    # Giving meaningful names to columns and rows in 'z'
+    colnames(z) <- c("Index", zname) 
+    rownames(z) <- c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.",
+                     "Max.", "IQR", "sd", "cv", "Skewness", "Kurtosis",
+                     "NA's", "n")
+    return(z)
+
+} # 'smry.zoo' end
