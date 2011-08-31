@@ -76,7 +76,7 @@ smry(x)
 @
 
 
-\item Using the \textit{hydroplot} function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting from 01-Jan-1987 are plotted.
+\item Using the \textit{hydroplot} function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
 
 \begin{center}
 <<fig=TRUE, pdf=TRUE, eps=FALSE, width=10, height=8>>=
@@ -201,7 +201,7 @@ seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
 
 
 \item Plotting the time evolution of the seasonal precipitation values
-<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
+<<fig=TRUE, pdf=TRUE, eps=FALSE, width=12, height=10>>=
 hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 @
 
