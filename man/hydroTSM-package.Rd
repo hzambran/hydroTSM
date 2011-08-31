@@ -15,12 +15,12 @@ Bugs / comments / questions / collaboration of any kind are very welcomed, and i
 \tabular{ll}{
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
-Version: \tab 0.2-2\cr
-Date: \tab 2011-03-17\cr
+Version: \tab 0.3-0\cr
+Date: \tab 2011-09-01\cr
 License: \tab GPL \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Tue Nov 30 16:59:37 CET 2010; MZB \cr
-Built: \tab R version 2.12.0 (2010-10-15); i486-pc-linux-gnu \cr
+Packaged: \tab Thu Sep 01 16:59:37 CET 2010; MZB \cr
+BuiltUnder: \tab R version 2.13.1 (2011-07-08); i686-pc-linux-gnu (32-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
 }
@@ -35,6 +35,9 @@ Maintainer: Mauricio Zambrano-Bigiarini <mauricio.zambrano@ing.unitn.it>
 
 \keyword{ package }
 \seealso{
+
+\url{http://www.rforge.net/hydroGOF/}. \cr
+
 \url{http://cran.r-project.org/web/packages/hydroGOF/}. \cr
 
 \url{http://rwiki.sciviews.org/doku.php?id=guides:tutorials:hydrological_data_analysis}
