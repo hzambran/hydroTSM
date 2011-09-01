@@ -1,9 +1,5 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-
-
-0.3-1	(under/future development)
-	o TODO: check line 60 in 'drawxaxis', for argument gt=1. ( suppressWarnings(axTicksByTime(x, ticks.on=lab.tstep, gt=1)) )
 	
 	
 0.3-0	01-Sep-2011
