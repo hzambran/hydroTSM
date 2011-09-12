@@ -206,9 +206,12 @@ mspplot <- function(x,
          if (stations.plot) {
 	     x.gis <- stations.gis
 	     #require(sp)
-	     sp::coordinates(x.gis) <- ~ x + y
+	     #sp::coordinates(x.gis) <- ~ x + y # This assignement is not supported in R < 2.13.X
+	     coordinates(x.gis) <- ~ x + y 
+	     
 	     # Projecting the coordinates of the meteorological stations into the right system
-	     sp::proj4string(x.gis) = p4s
+	     #sp::proj4string(x.gis) = p4s # This assignement is not supported in R < 2.13.X
+	     proj4string(x.gis) <- p4s 
 	     stations.l2 = list("sp.points", SpatialPoints(x.gis, proj4string = p4s), col="black", first=FALSE);
 
 	     # 6.6) Legend with the Minimum, Maximum and Mean interpolated values
