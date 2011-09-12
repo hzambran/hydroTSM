@@ -1,6 +1,10 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
+
 	
+0.3-1	13-Sep-2011
+        o hydroTSM 0.3-X is now compatible with R 2.12.X.
+          'sp::coordinates' & 'sp::proj4string' were replaced by 'coordinates' & 'proj4string', respectively. Thanks to Uwe Ligges.
 	
 0.3-0	01-Sep-2011
 
