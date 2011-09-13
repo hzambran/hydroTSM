@@ -15,7 +15,7 @@ The focus of this package has been put in providing a collection of tools useful
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
 Version: \tab 0.3-1\cr
-Date: \tab 2011-09-13\cr
+Date: \tab 2011-09-14\cr
 License: \tab GPL \cr
 LazyLoad: \tab yes\cr
 Packaged: \tab Tue Sep 13 00:21:07 CEST 2011; MZB \cr
