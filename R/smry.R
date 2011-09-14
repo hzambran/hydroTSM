@@ -7,7 +7,7 @@
 # Author: Mauricio Zambrano-Bigiarini                              #
 ####################################################################
 # Started: 14-Jun-2008;                                            #
-# Updates: 11-Sep-2009 ; 30-Aug-2011  ; 14-Sep-2011                #
+# Updates: 11-Sep-2009 ; 30-Aug-2011  ; 14-Sep-2011 ; 15-Sep-2011  #
 ####################################################################
 smry <-function(x, ...) UseMethod("smry")
 
@@ -18,6 +18,8 @@ smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), 
         x <- zoo::coredata(x)
     } # IF end
 
+    xname <- deparse(substitute(x))
+    
     # Creating the resulting object
     z <- as.data.frame(matrix(NA, ncol=1, nrow=13))  
 
@@ -27,8 +29,7 @@ smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), 
     nna <- sum(nas)
 
     if (na.rm) {
-          if (nna > 0) {
-            x  <- x[!nas] }
+          if (nna > 0) x  <- x[!nas]
     } # IF end
         
     s    <- summary(x, ..., digits=digits)
@@ -60,7 +61,7 @@ smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), 
                       "Max.", "IQR", "sd", "cv", "Skewness", "Kurtosis",
                       "NA's", "n")
 
-    names(z) <- deparse(substitute(x))
+    names(z) <- xname
     return(z)
 
 } # 'smry.default' end
