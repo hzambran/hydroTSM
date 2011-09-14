@@ -3,6 +3,7 @@
 \alias{smry}
 \alias{smry.default}
 \alias{smry.zoo}
+\alias{smry.Date}
 \alias{smry.matrix}
 \alias{smry.data.frame}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -18,6 +19,8 @@ smry(x, ...)
 \method{smry}{default}(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)
 
 \method{smry}{zoo}(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)
+
+\method{smry}{Date}(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)
 
 \method{smry}{matrix}(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)
 
