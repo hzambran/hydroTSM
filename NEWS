@@ -1,6 +1,10 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 
+0.3-3	Under development
+        o 'fdc.matrix'     : axis numbers and labels are now drawn only once.
+          'fdc.data.frame' 
+        
 0.3-2	15-Sep-2011
         o 'smry' : bugfix in 'smry.zoo' (when some values were NA)
         	

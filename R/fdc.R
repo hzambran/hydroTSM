@@ -1,7 +1,8 @@
 ######################################################
 # fdc: Flow Duration Curve, computation and plot     #
 ######################################################
-#                   June 04, 2009                    #
+# Author : Mauricio Zambrano-Bigiarini               #
+# Started: June 04, 2009                             #
 # Updates: 25-Feb-2011                               #
 ######################################################
 
@@ -156,7 +157,9 @@ fdc.default <- function (x,
 # fdc.matrix: (ONLY) Plot of Multiple Flow Duration Curves,          #
 #                  for comparison                                    #
 ######################################################################
-#                   June 04, 2009                                    #
+# Author : Mauricio Zambrano-Bigiarini                               #
+# Started: June 04, 2009                                             #
+# Updates: 15-Sep-2011                                               #
 ######################################################################
 
 fdc.matrix <- function (x,
@@ -203,23 +206,23 @@ fdc.matrix <- function (x,
 
   # Computing and plotting the Flow duration Curve for the first column
   fdc(x=x[,1], plot=plot, log=log, pch=pch[1], col=col[1], lty=lty[1],
-      cex=cex, main=main, xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, 
+      cex=cex, cex.axis=cex.axis, cex.lab=cex.lab, main=main, 
+      xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, 
       verbose=verbose, thr.shw=FALSE, new=TRUE, ...)
 
   # Plotting the Flow Duration Curves
   sapply(2:n, function(j) {
 
-        if (verbose) message( paste("Column: ", format(j, width=10, justify="left"),
+        if (verbose) message( paste("[Column: ", format(j, width=10, justify="left"),
                                 " : ", format(j, width=3, justify="left"), "/",
                                 n, " => ",
                                 format(round(100*j/n,2), width=6, justify="left"),
-                                "%", sep="") )
+                                "% ]", sep="") )
 
 	    # Computing and plotting the Flow duration Curve for the other columns
-            fdc(x=x[,j], plot=plot, log=log, pch=pch[j], col=col[j], lty=lty[j],
-                cex=cex, cex.axis=cex.axis, cex.lab=cex.lab, main=main, 
-                xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, xat=xat, verbose=verbose,
-                thr.shw=FALSE, new=FALSE, ...)
+            yval <- fdc(x=x[,j], plot=FALSE, verbose=verbose)
+            points(yval, x[,j], cex=cex, pch=pch[j], col=col[j], lty=lty[j])
+            
         } )
 
   if (plot) {
@@ -233,6 +236,14 @@ fdc.matrix <- function (x,
 } # 'fdc.matrix' END
 
 
+######################################################################
+# fdc.data.frame: (ONLY) Plot of Multiple Flow Duration Curves,      #
+#                  for comparison                                    #
+######################################################################
+# Author : Mauricio Zambrano-Bigiarini                               #
+# Started: June 04, 2009                                             #
+# Updates:                                                           #
+######################################################################
 fdc.data.frame <- function(x,
                            lQ.thr=0.7,
                            hQ.thr=0.2,
