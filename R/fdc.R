@@ -159,7 +159,7 @@ fdc.default <- function (x,
 ######################################################################
 # Author : Mauricio Zambrano-Bigiarini                               #
 # Started: June 04, 2009                                             #
-# Updates: 15-Sep-2011                                               #
+# Updates: 16-Sep-2011                                               #
 ######################################################################
 
 fdc.matrix <- function (x,
@@ -188,8 +188,7 @@ fdc.matrix <- function (x,
 
   n <- ncol(x)
 
-  if (missing(ylim)) 
-     ylim <- range(x)
+  if (missing(ylim)) ylim <- range(x, na.rm=TRUE)
 
   if (thr.shw==TRUE) {
     message("[Note: 'thr.shw' was set to FALSE to avoid confusing legends...]")
@@ -198,11 +197,11 @@ fdc.matrix <- function (x,
 
   j <- 1 # starting column for the analysis
 
-  if (verbose) message( paste("Column: ", format(j, width=10, justify="left"),
+  if (verbose) message( paste("[Column: ", format(j, width=10, justify="left"),
                             " : ", format(j, width=3, justify="left"), "/",
                             n, " => ",
                             format(round(100*j/n,2), width=6, justify="left"),
-                            "%", sep="") )
+                            "% ]", sep="") )
 
   # Computing and plotting the Flow duration Curve for the first column
   fdc(x=x[,1], plot=plot, log=log, pch=pch[1], col=col[1], lty=lty[1],
