@@ -241,7 +241,7 @@ fdc.matrix <- function (x,
 ######################################################################
 # Author : Mauricio Zambrano-Bigiarini                               #
 # Started: June 04, 2009                                             #
-# Updates:                                                           #
+# Updates: 03-Nov-2011                                               #
 ######################################################################
 fdc.data.frame <- function(x,
                            lQ.thr=0.7,
@@ -268,28 +268,40 @@ fdc.data.frame <- function(x,
                            ...) {
 
    x <- as.matrix(x)
+   
+   if (missing(ylim)) ylim <- range(x, na.rm=TRUE)
 
-   NextMethod("fdc", x,
-               lQ.thr=lQ.thr,
-               hQ.thr=hQ.thr,
-               plot=plot,
-               log=log,
-               main=main,
-               xlab=xlab,
-               ylab=ylab,
-               ylim=ylim,
-               yat=yat,   
-               xat=xat,
-               col=col,
-               pch=pch,
-               lty=lty,
-               cex=cex,
-               cex.axis=cex.axis,
-               cex.lab=cex.axis,
-               verbose=verbose,
-               leg.txt= leg.txt,
-               thr.shw=thr.shw,
-               new=new,               
-               ...)
+   fdc.matrix(x,
+              lQ.thr=lQ.thr,
+              hQ.thr=hQ.thr,
+              plot=plot,
+              log=log,
+              main=main,
+              xlab=xlab,
+              ylab=ylab,
+              ylim=ylim,
+              yat=yat,   
+              xat=xat,
+              col=col,
+              pch=pch,
+              lty=lty,
+              cex=cex,
+              cex.axis=cex.axis,
+              cex.lab=cex.axis,
+              verbose=verbose,
+              leg.txt= leg.txt,
+              thr.shw=thr.shw,
+              new=new,               
+              ...)
 
 } # 'fdc.data.frame' END
+
+
+######################################################################
+# fdc.zoo: (ONLY) Plot of Multiple Flow Duration Curves,             #
+#                  for comparison                                    #
+######################################################################
+# Author : Mauricio Zambrano-Bigiarini                               #
+# Started: 03-Nov-2011                                               #
+# Updates:                                                           #
+######################################################################
