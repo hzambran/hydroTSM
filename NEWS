@@ -2,8 +2,10 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 
 0.3-3	Under development
-        o 'fdc.matrix'     : -) axis numbers and labels are now drawn only once.
-          'fdc.data.frame'   -) when missing 'ylim', it is now correctly computed when some series has missing values.
+        o new 'fdc.zoo', which works with vectors, matrixes and/or data frames
+        o 'fdc.matrix'     : -) the flow duration curve of each column is now returned as an output (although not in an efficient way, yet)
+          'fdc.data.frame'   -) axis numbers and labels are now drawn only once.
+                             -) when missing 'ylim', it is now correctly computed when some series have missing values.
         
 0.3-2	15-Sep-2011
         o 'smry' : bugfix in 'smry.zoo' (when some values were NA)

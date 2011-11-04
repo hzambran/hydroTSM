@@ -14,5 +14,6 @@ S3method(daily2annual, zoo)
 S3method(dwi, zoo)
 S3method(extract, zoo)
 S3method(smry, zoo)
+S3method(fdc, zoo)
 
 

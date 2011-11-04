@@ -24,7 +24,7 @@ fdc.default <- function (x,
                          main="Flow Duration Curve",
                          xlab="% Time flow equalled or exceeded",
                          ylab="Q, [m3/s]",
-                         ylim,
+                         ylim=NULL,
                          yat=c(0.01, 0.1, 1), 
                          xat=c(0.01, 0.025, 0.05),
                          #yaxp=c(range(x),2),
@@ -90,17 +90,13 @@ fdc.default <- function (x,
 
 	 if (plot) {
 
-          if ( missing(ylim) ) {
-            ylim <- range(x, na.rm=TRUE)
-          } # IF end
+          if ( is.null(ylim) ) ylim <- range(x, na.rm=TRUE)
 
           # If a new plot has to be created
           if (new) {
                plot(dc, x,  xaxt = "n", yaxt = "n", type="o", pch=pch, col=col, lty=lty,
                     cex=cex, cex.axis= cex.axis, cex.lab=cex.lab, main=main, xlab=xlab, ylab=ylab, ylim=ylim, log=log, ...)
-          } else {
-             lines(dc, x,  xaxt = "n", type="o", pch=pch, col=col, lty=lty, cex=cex)
-            } # ELSE end
+          } else lines(dc, x,  xaxt = "n", type="o", pch=pch, col=col, lty=lty, cex=cex)
 
           # Drawing the ticks and labels corresponding to the Y axis 
           ylabels <- pretty(ylim)
@@ -120,19 +116,14 @@ fdc.default <- function (x,
           Axis(side = 1, at = xlabels, cex.axis=cex.axis, labels = paste(100*xlabels,"%", sep="") )               
 
           # If the user provided a value for 'lQ.thr', a vertical line is drawn
-          if ( !is.na(lQ.thr) ) {
-            abline(v=lQ.thr, col="grey", lty=3, lwd=2)
-          } # IF end
+          if ( !is.na(lQ.thr) ) abline(v=lQ.thr, col="grey", lty=3, lwd=2)
 
           # If the user provided a value for 'hQ.thr', a vertical line is drawn
-          if ( !is.na(hQ.thr) ) {
-            abline(v=hQ.thr, col="grey", lty=3, lwd=2)
-          } # IF end
+          if ( !is.na(hQ.thr) ) abline(v=hQ.thr, col="grey", lty=3, lwd=2)
 
           # Drawing a legend. bty="n" => no border
-          if ( !missing(leg.txt) ) {
+          if ( !is.null(leg.txt) )
            legend("topright", legend=leg.txt, cex=cex*1.5, col=col, lty=lty, pch=pch, bty="n")
-          } # IF end
 
           if (thr.shw) {
               # Finding the flow values corresponding to the 'lQ.thr' and 'hQ.thr' pbb of excedence
@@ -153,14 +144,14 @@ fdc.default <- function (x,
 } # 'fdc.default' END
 
 
-######################################################################
-# fdc.matrix: (ONLY) Plot of Multiple Flow Duration Curves,          #
-#                  for comparison                                    #
-######################################################################
-# Author : Mauricio Zambrano-Bigiarini                               #
-# Started: June 04, 2009                                             #
-# Updates: 16-Sep-2011                                               #
-######################################################################
+#########################################################################
+# fdc.matrix: Computation and/or Plot of Multiple Flow Duration Curves, #
+#             mainly for comparison                                     #
+#########################################################################
+# Author : Mauricio Zambrano-Bigiarini                                  #
+# Started: 04-Jun-2009                                                  #
+# Updates: 16-Sep-2011 ; 03-Nov-2011                                    #
+#########################################################################
 
 fdc.matrix <- function (x,
                         lQ.thr=0.7,
@@ -170,7 +161,7 @@ fdc.matrix <- function (x,
                         main= "Flow Duration Curve",
                         xlab="% Time flow equalled or exceeded",
 			ylab="Q, [m3/s]",
-                        ylim,
+                        ylim=NULL,
                         yat=c(0.01, 0.1, 1), 
                         xat=c(0.01, 0.025, 0.05),
                         col=palette("default")[1:ncol(x)],
@@ -180,69 +171,78 @@ fdc.matrix <- function (x,
                         cex=0.4,
                         cex.axis=1.2,
                         cex.lab=1.2,
-                        leg.txt= colnames(x),
+                        leg.txt=NULL,
                         verbose=TRUE,
                         thr.shw=TRUE,
                         new=TRUE,
                         ...) {
 
-  n <- ncol(x)
-
-  if (missing(ylim)) ylim <- range(x, na.rm=TRUE)
-
-  if (thr.shw==TRUE) {
-    message("[Note: 'thr.shw' was set to FALSE to avoid confusing legends...]")
-    thr.shw <- FALSE
-  } # IF end
-
-  j <- 1 # starting column for the analysis
-
-  if (verbose) message( paste("[Column: ", format(j, width=10, justify="left"),
-                            " : ", format(j, width=3, justify="left"), "/",
-                            n, " => ",
-                            format(round(100*j/n,2), width=6, justify="left"),
-                            "% ]", sep="") )
-
-  # Computing and plotting the Flow duration Curve for the first column
-  fdc(x=x[,1], plot=plot, log=log, pch=pch[1], col=col[1], lty=lty[1],
-      cex=cex, cex.axis=cex.axis, cex.lab=cex.lab, main=main, 
-      xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, 
-      verbose=verbose, thr.shw=FALSE, new=TRUE, ...)
-
-  # Plotting the Flow Duration Curves
-  sapply(2:n, function(j) {
-
-        if (verbose) message( paste("[Column: ", format(j, width=10, justify="left"),
-                                " : ", format(j, width=3, justify="left"), "/",
-                                n, " => ",
-                                format(round(100*j/n,2), width=6, justify="left"),
-                                "% ]", sep="") )
-
-	    # Computing and plotting the Flow duration Curve for the other columns
-            yval <- fdc(x=x[,j], plot=FALSE, verbose=verbose)
-            points(yval, x[,j], cex=cex, pch=pch[j], col=col[j], lty=lty[j])
-            
-        } )
-
+  if (is.null(ylim)) ylim <- range(x, na.rm=TRUE)
+  
+  out <- apply(x, FUN=fdc.default, MARGIN=2, plot=FALSE)
+  
   if (plot) {
-      # Drawing a legend. bty="n" => no border
-      if ( is.null(colnames(x)) ) {
-        leg.txt <- paste("Q", 1:ncol(x), sep="")
-      } # IF end
-      legend("topright", legend=leg.txt, cex=cex*2.2, col=col, lty=lty, pch=pch, bty="n")
+
+    if (thr.shw==TRUE) {
+      message("[Note: 'thr.shw' was set to FALSE to avoid confusing legends...]")
+      thr.shw <- FALSE
+    } # IF end
+    
+    n <- ncol(x)
+
+    j <- 1 # starting column for the analysis
+
+    if (verbose) message( paste("[Column: ", format(j, width=10, justify="left"),
+                              " : ", format(j, width=3, justify="left"), "/",
+                              n, " => ",
+                              format(round(100*j/n,2), width=6, justify="left"),
+                              "% ]", sep="") )
+
+    # Computing and plotting the Flow Duration Curve for the first column
+    fdc(x=x[,1], plot=plot, log=log, pch=pch[1], col=col[1], lty=lty[1],
+        cex=cex, cex.axis=cex.axis, cex.lab=cex.lab, main=main, 
+        xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, 
+        verbose=verbose, thr.shw=FALSE, new=TRUE, ...)
+
+    # Plotting the Flow Duration Curves
+    sapply(2:n, function(j) {
+
+          if (verbose) message( paste("[Column: ", format(j, width=10, justify="left"),
+                                  " : ", format(j, width=3, justify="left"), "/",
+                                  n, " => ",
+                                  format(round(100*j/n,2), width=6, justify="left"),
+                                  "% ]", sep="") )
+
+	      # Computing and plotting the Flow duration Curve for the other columns
+	      tmp <- sort(x[,j])
+              yval <- fdc(x=tmp, plot=FALSE, verbose=verbose)
+              points(yval, tmp, cex=cex, pch=pch[j], col=col[j], lty=lty[j], type="b")
+            
+          } )
+
+    # Drawing a legend. bty="n" => no border
+    if ( is.null(leg.txt) ) {
+      if (!is.null(colnames(x))) {
+        leg.txt <- colnames(x)
+      } else leg.txt <- paste("Q", 1:ncol(x), sep="")  
+    }
+    legend("topright", legend=leg.txt, cex=cex*2.2, col=col, lty=lty, pch=pch, bty="n")
+  
   } # IF end
 
+  return(out)
+  
 } # 'fdc.matrix' END
 
 
-######################################################################
-# fdc.data.frame: (ONLY) Plot of Multiple Flow Duration Curves,      #
-#                  for comparison                                    #
-######################################################################
-# Author : Mauricio Zambrano-Bigiarini                               #
-# Started: June 04, 2009                                             #
-# Updates: 03-Nov-2011                                               #
-######################################################################
+#############################################################################
+# fdc.data.frame: Computation and/or Plot of Multiple Flow Duration Curves, #
+#                 mainly for comparison                                     #
+#############################################################################
+# Author : Mauricio Zambrano-Bigiarini                                      #
+# Started: 04-Jun-2009                                                      #
+# Updates: 03-Nov-2011                                                      #
+#############################################################################
 fdc.data.frame <- function(x,
                            lQ.thr=0.7,
                            hQ.thr=0.2,
@@ -261,7 +261,7 @@ fdc.data.frame <- function(x,
                            cex=0.4,
                            cex.axis=1.2,
                            cex.lab=1.2,
-                           leg.txt= colnames(x),
+                           leg.txt=NULL,
                            verbose=TRUE,
                            thr.shw=TRUE,
                            new=TRUE,
@@ -297,11 +297,85 @@ fdc.data.frame <- function(x,
 } # 'fdc.data.frame' END
 
 
-######################################################################
-# fdc.zoo: (ONLY) Plot of Multiple Flow Duration Curves,             #
-#                  for comparison                                    #
-######################################################################
-# Author : Mauricio Zambrano-Bigiarini                               #
-# Started: 03-Nov-2011                                               #
-# Updates:                                                           #
-######################################################################
+#########################################################################
+# fdc.matrix: Computation and/or Plot of Multiple Flow Duration Curves, #
+#             mainly for comparison                                     #
+#########################################################################
+# Author : Mauricio Zambrano-Bigiarini                                  #
+# Started: 03-Nov-2011                                                  #
+# Updates:                                                              #
+#########################################################################
+fdc.zoo <- function (x,
+                     lQ.thr=0.7,
+                     hQ.thr=0.2,
+                     plot=TRUE,
+                     log="y",
+                     main= "Flow Duration Curve",
+                     xlab="% Time flow equalled or exceeded",
+	             ylab="Q, [m3/s]",
+                     ylim=NULL,
+                     yat=c(0.01, 0.1, 1), 
+                     xat=c(0.01, 0.025, 0.05),
+                     col=palette("default")[1:NCOL(x)],
+                     pch=1:NCOL(x),
+                     lwd=rep(1, NCOL(x)),
+                     lty=1:NCOL(x),
+                     cex=0.4,
+                     cex.axis=1.2,
+                     cex.lab=1.2,
+                     leg.txt=NULL,
+                     verbose=TRUE,
+                     thr.shw=TRUE,
+                     new=TRUE,
+                     ...) {
+
+  x <- coredata(x)
+  if ( is.matrix(x) | is.data.frame(x) ) {  
+    fdc.matrix(x,
+               lQ.thr=lQ.thr,
+               hQ.thr=hQ.thr,
+               plot=plot,
+               log=log,
+               main=main,
+               xlab=xlab,
+               ylab=ylab,
+               ylim=ylim,
+               yat=yat,   
+               xat=xat,
+               col=col,
+               pch=pch,
+               lty=lty,
+               cex=cex,
+               cex.axis=cex.axis,
+               cex.lab=cex.axis,
+               verbose=verbose,
+               leg.txt= leg.txt,
+               thr.shw=thr.shw,
+               new=new,               
+               ...)
+  } else fdc.default(x,
+                     lQ.thr=lQ.thr,
+                     hQ.thr=hQ.thr,
+                     plot=plot,
+                     log=log,
+                     main=main,
+                     xlab=xlab,
+                     ylab=ylab,
+                     ylim=ylim,
+                     yat=yat,   
+                     xat=xat,
+                     col=col,
+                     pch=pch,
+                     lty=lty,
+                     cex=cex,
+                     cex.axis=cex.axis,
+                     cex.lab=cex.axis,
+                     verbose=verbose,
+                     leg.txt= leg.txt,
+                     thr.shw=thr.shw,
+                     new=new,               
+                     ...)
+  
+  
+} # 'fdc.zoo' END
+
