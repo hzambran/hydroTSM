@@ -216,7 +216,7 @@ fdc.matrix <- function (x,
 	      # Computing and plotting the Flow duration Curve for the other columns
 	      tmp <- sort(x[,j])
               yval <- fdc(x=tmp, plot=FALSE, verbose=verbose)
-              points(yval, tmp, cex=cex, pch=pch[j], col=col[j], lty=lty[j], type="b")
+              points(yval, tmp, cex=cex, pch=pch[j], col=col[j], lty=lty[j], type="o")
             
           } )
 
