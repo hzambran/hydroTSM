@@ -1,3 +1,8 @@
+# File fdc.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; http://cran.r-project.org/web/packages/hydroTSM/index.html
+# Copyright 2007-2011 Mauricio Zambrano-Bigairini
+# Distributed under GPL 2 or later
+
 ######################################################
 # fdc: Flow Duration Curve, computation and plot     #
 ######################################################
