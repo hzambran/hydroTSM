@@ -1,6 +1,9 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 
+0.3-4	02-May-2012
+        o 'fdc': new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend
+        
 0.3-3	07-Nov-2011
         o new 'fdc.zoo', which works with vectors, matrixes and/or data frames
         o 'fdc.matrix'     : -) the flow duration curve of each column is now returned as an output (although not in an efficient way, yet)

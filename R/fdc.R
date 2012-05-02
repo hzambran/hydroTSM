@@ -1,15 +1,17 @@
 # File fdc.R
-# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; http://cran.r-project.org/web/packages/hydroTSM/index.html
-# Copyright 2007-2011 Mauricio Zambrano-Bigairini
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2007-2011 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
-######################################################
-# fdc: Flow Duration Curve, computation and plot     #
-######################################################
-# Author : Mauricio Zambrano-Bigiarini               #
-# Started: June 04, 2009                             #
-# Updates: 25-Feb-2011 ; 04-Nov-2011                 #
-######################################################
+################################################################################
+# fdc: Flow Duration Curve, computation and plot                               #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: June 04, 2009                                                       #
+# Updates: 25-Feb-2011 ; 04-Nov-2011                                           #
+#          02-May-2012                                                         #
+################################################################################
 
 # Plot the flow Duration Curve in the original time units of 'x' and
 # also gives the probability of exceedence of each element
@@ -41,6 +43,8 @@ fdc.default <- function (x,
                          cex.axis=1.2,
                          cex.lab=1.2,
                          leg.txt=NULL,
+                         leg.cex=1,
+                         leg.pos="topright",
                          verbose= TRUE,
                          thr.shw=TRUE,
                          new=TRUE,
@@ -134,7 +138,7 @@ fdc.default <- function (x,
 
           # Drawing a legend. bty="n" => no border
           if ( !is.null(leg.txt) )
-           legend("topright", legend=leg.txt, cex=cex*1.5, col=col, lty=lty, pch=pch, bty="n")
+           legend(x=leg.pos, legend=leg.txt, cex=leg.cex, col=col, lty=lty, pch=pch, bty="n") # cex=cex*1.5,
 
           if (thr.shw) {
               # Finding the flow values corresponding to the 'lQ.thr' and 'hQ.thr' pbb of excedence
@@ -143,7 +147,7 @@ fdc.default <- function (x,
 
               legend("bottomleft", c(paste("Qhigh.thr=", round(x.hQ, 2), sep=""),
                                      paste("Qlow.thr=", round(x.lQ, 2), sep="") ),
-                     cex=0.7, bty="n") #bty="n" => no box around the legend
+                     cex=0.8, bty="n") #bty="n" => no box around the legend
           } # IF end
      } # IF end
 
@@ -155,14 +159,15 @@ fdc.default <- function (x,
 } # 'fdc.default' END
 
 
-#########################################################################
-# fdc.matrix: Computation and/or Plot of Multiple Flow Duration Curves, #
-#             mainly for comparison                                     #
-#########################################################################
-# Author : Mauricio Zambrano-Bigiarini                                  #
-# Started: 04-Jun-2009                                                  #
-# Updates: 16-Sep-2011 ; 03-Nov-2011                                    #
-#########################################################################
+################################################################################
+# fdc.matrix: Computation and/or Plot of Multiple Flow Duration Curves,        #
+#             mainly for comparison                                            #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: 04-Jun-2009                                                         #
+# Updates: 16-Sep-2011 ; 03-Nov-2011                                           #
+#          02-May-2012                                                         #
+################################################################################
 
 fdc.matrix <- function (x,
                         lQ.thr=0.7,
@@ -183,6 +188,8 @@ fdc.matrix <- function (x,
                         cex.axis=1.2,
                         cex.lab=1.2,
                         leg.txt=NULL,
+                        leg.cex=1,
+                        leg.pos="topright",
                         verbose=TRUE,
                         thr.shw=TRUE,
                         new=TRUE,
@@ -244,7 +251,7 @@ fdc.matrix <- function (x,
         leg.txt <- colnames(x)
       } else leg.txt <- paste("Q", 1:ncol(x), sep="")  
     }
-    legend("topright", legend=leg.txt, cex=cex*2.2, col=col, lty=lty, pch=pch, bty="n")
+    legend(x=leg.pos, legend=leg.txt, cex=leg.cex, col=col, lty=lty, pch=pch, bty="n") # cex=cex*2.2,
   
   } # IF end
 
@@ -253,14 +260,15 @@ fdc.matrix <- function (x,
 } # 'fdc.matrix' END
 
 
-#############################################################################
-# fdc.data.frame: Computation and/or Plot of Multiple Flow Duration Curves, #
-#                 mainly for comparison                                     #
-#############################################################################
-# Author : Mauricio Zambrano-Bigiarini                                      #
-# Started: 04-Jun-2009                                                      #
-# Updates: 03-Nov-2011                                                      #
-#############################################################################
+################################################################################
+# fdc.data.frame: Computation and/or Plot of Multiple Flow Duration Curves,    #
+#                 mainly for comparison                                        #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: 04-Jun-2009                                                         #
+# Updates: 03-Nov-2011                                                         #
+#          02-May-2012                                                         #
+################################################################################
 fdc.data.frame <- function(x,
                            lQ.thr=0.7,
                            hQ.thr=0.2,
@@ -280,6 +288,8 @@ fdc.data.frame <- function(x,
                            cex.axis=1.2,
                            cex.lab=1.2,
                            leg.txt=NULL,
+                           leg.cex=1,
+                           leg.pos="topright",
                            verbose=TRUE,
                            thr.shw=TRUE,
                            new=TRUE,
@@ -307,7 +317,9 @@ fdc.data.frame <- function(x,
               cex.axis=cex.axis,
               cex.lab=cex.axis,
               verbose=verbose,
-              leg.txt= leg.txt,
+              leg.txt=leg.txt,
+              leg.cex=leg.cex,
+              leg.pos=leg.pos,
               thr.shw=thr.shw,
               new=new,               
               ...)
@@ -315,14 +327,14 @@ fdc.data.frame <- function(x,
 } # 'fdc.data.frame' END
 
 
-#########################################################################
-# fdc.matrix: Computation and/or Plot of Multiple Flow Duration Curves, #
-#             mainly for comparison                                     #
-#########################################################################
-# Author : Mauricio Zambrano-Bigiarini                                  #
-# Started: 03-Nov-2011                                                  #
-# Updates:                                                              #
-#########################################################################
+################################################################################
+# fdc.matrix: Computation and/or Plot of Multiple Flow Duration Curves,        #
+#             mainly for comparison                                            #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: 03-Nov-2011                                                         #
+# Updates: 02-May-2012                                                         #
+################################################################################
 fdc.zoo <- function (x,
                      lQ.thr=0.7,
                      hQ.thr=0.2,
@@ -342,6 +354,8 @@ fdc.zoo <- function (x,
                      cex.axis=1.2,
                      cex.lab=1.2,
                      leg.txt=NULL,
+                     leg.cex=1,
+                     leg.pos="topright",
                      verbose=TRUE,
                      thr.shw=TRUE,
                      new=TRUE,
@@ -368,6 +382,8 @@ fdc.zoo <- function (x,
                cex.lab=cex.axis,
                verbose=verbose,
                leg.txt= leg.txt,
+               leg.cex=leg.cex,
+               leg.pos=leg.pos,
                thr.shw=thr.shw,
                new=new,               
                ...)
@@ -389,7 +405,9 @@ fdc.zoo <- function (x,
                      cex.axis=cex.axis,
                      cex.lab=cex.axis,
                      verbose=verbose,
-                     leg.txt= leg.txt,
+                     leg.txt=leg.txt,
+                     leg.cex=leg.cex,                     
+                     leg.pos=leg.pos,
                      thr.shw=thr.shw,
                      new=new,               
                      ...)
