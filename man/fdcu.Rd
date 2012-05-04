@@ -1,3 +1,9 @@
+%% File fdcu.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{fdcu}
 \Rdversion{1.1}
 \alias{fdcu.data.frame}
@@ -16,9 +22,10 @@ fdcu(x, lband, uband, ...)
 
 \method{fdcu}{default}(x, lband, uband, sim, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
-     ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), col=c("black", "red"), 
-     pch=c(1, 15), lwd=c(1, 0.8), lty=c(1, 3), cex=0.2, cex.axis=1.2, cex.lab=1.2,
-     leg.txt= c("Qobs", "Qsim", "95PPU"), verbose= TRUE, thr.shw=TRUE, border=NA, 
+     ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
+     col=c("black", "red"), pch=c(1, 15), lwd=c(1, 0.8), lty=c(1, 3), cex=0.2, 
+     cex.axis=1.2, cex.lab=1.2, leg.txt= c("Qobs", "Qsim", "95PPU"), 
+     leg.cex=1, leg.pos="auto", verbose= TRUE, thr.shw=TRUE, border=NA, 
      bands.col="lightcyan", bands.density=NULL, bands.angle=45, new=TRUE, ...)
 
 \method{fdcu}{matrix}(x, lband, uband, sim, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
@@ -30,9 +37,10 @@ fdcu(x, lband, uband, ...)
      lwd=matrix(rep(c(1, 0.8), ncol(x)), byrow=TRUE, ncol=2),
      lty=matrix(rep(c(1, 3), ncol(x)), byrow=TRUE, ncol=2),                        
      cex=rep(0.1, ncol(x)), cex.axis=1.2, cex.lab=1.2, 
-     leg.txt=c("OBS", colnames(x), "95PPU"),  verbose= TRUE,  thr.shw=TRUE, 
-     border=rep(NA, ncol(x)), bands.col=rep("lightcyan", ncol(x)), 
-     bands.density=rep(NULL, ncol(x)), bands.angle=rep(45, ncol(x)), new=TRUE, ...)
+     leg.txt=c("OBS", colnames(x), "95PPU"),  leg.cex=1, leg.pos="auto", 
+     verbose= TRUE,  thr.shw=TRUE, border=rep(NA, ncol(x)), 
+     bands.col=rep("lightcyan", ncol(x)), bands.density=rep(NULL, ncol(x)), 
+     bands.angle=rep(45, ncol(x)), new=TRUE, ...)
 
 \method{fdcu}{data.frame}(x, lband, uband, sim, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
@@ -43,9 +51,10 @@ fdcu(x, lband, uband, ...)
      lwd=matrix(rep(c(1, 0.8), ncol(x)), byrow=TRUE, ncol=2),
      lty=matrix(rep(c(1, 3), ncol(x)), byrow=TRUE, ncol=2),                        
      cex=rep(0.1, ncol(x)), cex.axis=1.2, cex.lab=1.2,
-     leg.txt=c("OBS", colnames(x), "95PPU"), verbose= TRUE, thr.shw=TRUE, 
-     border=rep(NA, ncol(x)), bands.col=rep("lightcyan", ncol(x)), 
-     bands.density=rep(NULL, ncol(x)), bands.angle=rep(45, ncol(x)), new=TRUE, ...)
+     leg.txt=c("OBS", colnames(x), "95PPU"), leg.cex=1, leg.pos="auto", 
+     verbose= TRUE, thr.shw=TRUE, border=rep(NA, ncol(x)), 
+     bands.col=rep("lightcyan", ncol(x)), bands.density=rep(NULL, ncol(x)), 
+     bands.angle=rep(45, ncol(x)), new=TRUE, ...)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -124,11 +133,19 @@ Magnification to be used for x and y labels relative to the current setting of '
   \item{leg.txt}{
 vector with the names that have to be used for each column of \code{x}.
 }
+  \item{leg.cex}{
+numeric, indicating the character expansion factor for the legend, *relative* to current \code{par("cex")}. Default value = 1
+}
+  \item{leg.pos}{
+keyword to be used to position the legend. One of the list \sQuote{"bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"}. This places the legend on the inside of the plot frame at the given location. See \code{\link[graphics]{legend}}. \cr
+When \code{leg.pos="auto"}, the legend provided by \code{leg.txt} is located on the \sQuote{bottomleft} when \code{log="y"} and on the \sQuote{topright} otherwise
+}
   \item{verbose}{
 logical; if TRUE, progress messages are printed 
 }
   \item{thr.shw}{
-logical, indicating if the stremflow values corresponding to the user-defined thresholds \code{lQ.thr} and \code{hQ.thr} have to be shown in the plot.
+logical, indicating if the streamflow values corresponding to the user-defined thresholds \code{lQ.thr} and \code{hQ.thr} have to be shown in the plot. \cr
+When \code{leg.pos="auto"}, the legend with the threshold values is located on the \sQuote{topright} when \code{log="y"} and on the \sQuote{bottomleft} otherwise
 }
   \item{border}{
 See \code{\link[graphics]{polygon}}. The color to draw the border of the polygon with the uncertainty bounds. The default, 'NA', means to omit borders. 

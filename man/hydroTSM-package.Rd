@@ -14,12 +14,12 @@ The focus of this package has been put in providing a collection of tools useful
 \tabular{ll}{
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
-Version: \tab 0.3-3\cr
-Date: \tab 2011-11-07\cr
+Version: \tab 0.3-4\cr
+Date: \tab 2012-05-03\cr
 License: \tab GPL \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Mon Nov  7 14:35:35 CET 2011; MZB \cr
-BuiltUnder: \tab R version 2.13.1 (2011-07-08); i686-pc-linux-gnu (32-bit) \cr
+Packaged: \tab Thu May  3 09:17:48 CEST 2012; MZB \cr
+BuiltUnder: \tab R version 2.15.0 (2012-03-30); x86_64-redhat-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
 }
@@ -36,8 +36,9 @@ Maintainer: Mauricio Zambrano-Bigiarini <mauricio.zambrano@ing.unitn.it>
 \seealso{
 
 \url{http://www.rforge.net/hydroGOF/}. \cr
-
 \url{http://cran.r-project.org/web/packages/hydroGOF/}. \cr
+
+\url{http://www.rforge.net/hydroPSO/}. \cr
 
 \url{http://rwiki.sciviews.org/doku.php?id=guides:tutorials:hydrological_data_analysis}
 }
@@ -62,7 +63,7 @@ sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", dates=1, pf
 #######
 ## Ex4) IDW interpolation and plot
 
-## Loading the spatial data corresponding to the measurements given by 'EbroPPtsMonthly'
+## Loading the spatial data corresponding to 'EbroPPtsMonthly'
 data(EbroPPgis)
 
 ## Loading the shapefile (polygon) with the subcatchments

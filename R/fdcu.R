@@ -1,12 +1,20 @@
-######################################################
-# fdcu: Flow Duration Curve with Uncertainty Bounds  #
-######################################################
-#  Started    :  January 29th, 2010                  #
-# Last updated:  February 04th, 2010                 #
-######################################################
+# File fdcu.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
 
-# Plot the flow Duration Curve in the original time units of 'x' and
-# also gives the probability of exceedence of each element
+################################################################################
+# fdcu: Flow Duration Curve with Uncertainty Bounds                            #
+################################################################################
+# Purpose: Plot the flow Duration Curve in the original time units of 'x' and  #
+#          also gives the probability of exceedence of each element            #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: January 29th, 2010                                                  #
+# Updates: February 04th, 2010                                                 #
+#          03-May-2012                                                         #
+################################################################################
 
 # 'x'            : 'numeric', 'matrix' or 'data.frame' whose columns contains the values of the time series of observed streamflows for which the flow duration curve will be computed.
 # 'lband'        : 'numeric', 'matrix' or 'data.frame' whose columns contains the values of the time series with the lower uncertainty bound of 'x'.
@@ -67,6 +75,8 @@ fdcu.default <- function (x,
                           cex.axis=1.2,
                           cex.lab=1.2,
                           leg.txt= c("Qobs", "Qsim", "95PPU"),
+                          leg.cex=1,
+                          leg.pos="auto",
                           verbose= TRUE,
                           thr.shw=TRUE,
                           border=NA,
@@ -207,16 +217,17 @@ fdcu.default <- function (x,
          if (!is.null(leg.txt)) {
 
              # Drawing a legend. bty="n" => no border
-             ifelse (log=="y", leg.pos <- "bottomleft", leg.pos <- "topright")
+             if (leg.pos=="auto")
+               ifelse (log=="y", leg.pos.x <- "bottomleft", leg.pos.x <- "topright")
 
              if (!missing(sim)) { #Legend with the OBS + simulations + 95PPU
-              legend(leg.pos, legend=leg.txt,  #inset=0.03,
-                     bty="n", cex =0.9, col=c(col[1], col[2], bands.col), 
+              legend(x=leg.pos.x, legend=leg.txt,  #inset=0.03,
+                     bty="n", cex =leg.cex, col=c(col[1], col[2], bands.col), 
                      lwd=c(lwd[1], lwd[2], 0), lty=c(lty[1], lty[2], 0), 
                      pch=c(NA,NA,15), pt.cex=3)
              } else { #Legend only with the OBS + 95PPU
-              legend(leg.pos, legend=c(leg.txt[1], leg.txt[3]),  #inset=0.03,
-                     bty="n", cex =0.9, col=c(col[1], bands.col), lwd=c(lwd[1], 0), 
+              legend(x=leg.pos.x, legend=c(leg.txt[1], leg.txt[3]),  #inset=0.03,
+                     bty="n", cex =leg.cex, col=c(col[1], bands.col), lwd=c(lwd[1], 0), 
                      lty=c(lty[1], 0), pch=c(NA,15), pt.cex=3)
              }# IF end
 
@@ -233,17 +244,19 @@ fdcu.default <- function (x,
          } # IF end
 
          # If the user want to see the Q values corresponding to 'lQ.thr' and 'hQ.thr'
-         if (thr.shw) {
+         if (thr.shw) {              
             # Drawing a legend. bty="n" => no border
-             ifelse (log=="y", leg.pos <- "topright", leg.pos <- "bottomleft")
+            if (leg.pos=="auto")
+              ifelse (log=="y", leg.pos.x <- "topright", leg.pos.x <- "bottomleft")
 
             # Finding the flow values corresponding to the 'lQ.thr' and 'hQ.thr' pbb of excedence
             x.lQ <- x.sort[Qposition(fdc.x, lQ.thr)]
             x.hQ <- x.sort[Qposition(fdc.x, hQ.thr)]
 
-            legend(leg.pos, c(paste("Qhigh.thr=", round(x.hQ, 2), sep=""),
-                              paste("Qlow.thr=", round(x.lQ, 2), sep="") ),
-                   cex=0.7, bty="n" ) #bty="n" => no box around the legend
+            legend(x=leg.pos.x, 
+                   legend=c(paste("Qhigh.thr=", round(x.hQ, 2), sep=""),
+                            paste("Qlow.thr=", round(x.lQ, 2), sep="") ),
+                   bty="n", cex=leg.cex ) #bty="n" => no box around the legend
          } # IF end
 
      } # IF 'plot' end
@@ -288,6 +301,8 @@ fdcu.matrix <- function (x,
                          cex.axis=1.2,
                          cex.lab=1.2,
                          leg.txt=c("OBS", colnames(x), "95PPU"),
+                         leg.cex=1,
+                         leg.pos="auto",
                          verbose= TRUE,
                          thr.shw=TRUE,
                          border=rep(NA, ncol(x)),
@@ -313,7 +328,7 @@ fdcu.matrix <- function (x,
       fdcu(x=x[,1], lband=lband[,1], uband=uband[,1], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
            plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[1,], pch=pch[1,],
            lwd=lwd[1,], lty=lty[1,], cex=cex[1], cex.axis=cex.axis, cex.lab=cex.lab, 
-           verbose, leg.txt=NULL, thr.shw=thr.shw, border=border[1],
+           verbose, leg.txt=NULL, leg.cex=leg.cex, leg.pos=leg.pos, thr.shw=thr.shw, border=border[1],
            bands.col= bands.col[1], bands.density=bands.density[1], bands.angle=bands.angle[1], new=TRUE, ...)
   } else {
 
@@ -321,7 +336,7 @@ fdcu.matrix <- function (x,
     fdcu(x=x[,1], lband=lband[,1], uband=uband[,1], sim=sim[,1], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
            plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[1,], pch=pch[1,],
            lwd=lwd[1,], lty=lty[1,], cex=cex[1], cex.axis=cex.axis, cex.lab=cex.lab,
-           verbose, leg.txt=NULL, thr.shw=thr.shw, border=border[1],
+           verbose, leg.txt=NULL, leg.cex=leg.cex, leg.pos=leg.pos, thr.shw=thr.shw, border=border[1],
            bands.col= bands.col[1], bands.density=bands.density[1], bands.angle=bands.angle[1], new=TRUE, ...)
     }
 
@@ -339,13 +354,13 @@ fdcu.matrix <- function (x,
               fdcu(x=x[,j], lband=lband[,j], uband=uband[,j], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
                    plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[j,], pch=pch[j,],
                    lwd=lwd[j,], lty=lty[j,], cex=cex[j], cex.axis=cex.axis, cex.lab=cex.lab, 
-                   verbose, leg.txt=NULL, thr.shw=FALSE, border=border[j],
+                   verbose, leg.txt=NULL, leg.cex=leg.cex, leg.pos=leg.pos, thr.shw=FALSE, border=border[j],
                    bands.col= bands.col[j], bands.density=bands.density[j], bands.angle=bands.angle[j], new=FALSE, ...)
             } else {
               fdcu(x=x[,j], lband=lband[,j], uband=uband[,j], sim=sim[,j], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
                    plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[j,], pch=pch[j,],
                    lwd=lwd[j,], lty=lty[j,], cex=cex[j], cex.axis=cex.axis, cex.lab=cex.lab, 
-                   verbose, leg.txt=NULL, thr.shw=FALSE, border=border[j],
+                   verbose, leg.txt=NULL, leg.cex=leg.cex, leg.pos=leg.pos, thr.shw=FALSE, border=border[j],
                    bands.col= bands.col[j], bands.density=bands.density[j], bands.angle=bands.angle[j], new=FALSE, ...)
               } # ELSE end
     } )
@@ -390,18 +405,19 @@ fdcu.matrix <- function (x,
         par(font=2)
 
         # Drawing a legend. bty="n" => no border
-        ifelse (log=="y", leg.pos <- "bottomleft", leg.pos <- "topright")
+        if (leg.pos=="auto")
+          ifelse (log=="y", leg.pos.x <- "bottomleft", leg.pos.x <- "topright")
 
         if (!missing(sim)) { #Legend with the OBS + SIMs + 95PPU
-          legend(leg.pos, legend=leg.txt,  inset=0.01,
-                 bty="n", col=c(col[1,1], col[,2], bands.col), lwd=c(3*lwd[1,1],
-                 3*lwd[,2], 0), lty=c(lty[1,1], lty[,2], 0),
-                 pch=c(rep(NA, (ncol(x)+1)), 15), pt.cex=2.5, cex=0.7)
+          legend(x=leg.pos.x, legend=leg.txt,  inset=0.01,
+                 bty="n", cex=leg.cex, col=c(col[1,1], col[,2], bands.col), 
+                 lwd=c(3*lwd[1,1], 3*lwd[,2], 0), lty=c(lty[1,1], lty[,2], 0),
+                 pch=c(rep(NA, (ncol(x)+1)), 15), pt.cex=2.5)
 
         } else { #Legend only with the OBS + 95PPU
-         legend(leg.pos, legend=c(leg.txt[1], leg.txt[3]),  inset=0.01,
-                bty="n", col=c(col[1,1], bands.col), lwd=c(3*lwd[1,1], 0),
-                lty=c(lty[1,1],0), pch=c(NA,15), pt.cex=2.5, cex=0.7)
+         legend(x=leg.pos.x, legend=c(leg.txt[1], leg.txt[3]),  inset=0.01,
+                bty="n", cex=leg.cex, col=c(col[1,1], bands.col), 
+                lwd=c(3*lwd[1,1], 0),  lty=c(lty[1,1],0), pch=c(NA,15), pt.cex=2.5)
         }# IF end
 
     } # IF end
@@ -433,6 +449,8 @@ fdcu.data.frame <- function(x,
                          cex.axis=1.2,
                          cex.lab=1.2,
                          leg.txt=c("OBS", colnames(x), "95PPU"),
+                         leg.cex=1,
+                         leg.pos="auto",
                          verbose= TRUE,
                          thr.shw=TRUE,
                          border=rep(NA, ncol(x)),
@@ -465,6 +483,8 @@ fdcu.data.frame <- function(x,
                 cex.axis=cex.axis, 
                 cex.lab=cex.lab,
                 leg.txt=leg.txt,
+                leg.cex=leg.cex, 
+                leg.pos=leg.pos,
                 verbose= verbose,
                 border=border,
                 bands.col=bands.col,
