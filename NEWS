@@ -97,26 +97,6 @@ NEWS/ChangeLog for hydroTSM
                               -) much faster than before for matrixes and data.frames 	                            
                               -) it works with xts objects as well. 			      
 	o Some 'as.Date' calls were changed to 'zoo:ad.Date', in order to work properly with zoo >= 1.7-2
-	
-
-0.2-2	14-Apr-2011
-	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels  when 'log="y"' (thanks to Santosh Aryal !)
-	o All the 'print' calls used to display information messages were replaced by a call to 'message'.
-	o SVN started to be used for package development in Rforge (thanks to Simon Urbanek for his great support)
-	o Vignette added ('Introductory Analysis of Daily Precipitation Data with hydroTSM')
-	o Updated dependence on R >= 2.10.0
-	
-
-0.2-1	30-Nov-2010
-
-	o R functions were split up into individual files.
-	o 'dip', 'mip', 'yip': added error checking for 'out.type'
-	o 'drawxaxis': new argument: lab.fmt, for specifying the format of the axis' labels
-	o 'hydroplot', 'sname2plot': removed argument 'sname', and new arguments: 'lab.fmt', 'xlab', 'ylab', 'col', 
-	  'cex', 'cex.main', 'cex.axis', 
-	  'cex.lab', 'lty', 'lwd', '...'
-	o 'sname2ts': new arguments: 'from', 'to', 'date.fmt'
-	o 'fdc', 'fdcu': new arguments: 'cex.axis', 'cex.lab'
 
 
 
@@ -124,6 +104,8 @@ NEWS/ChangeLog for hydroTSM
 # Previous Releases (see old file 'WhatsNew.txt)' #
 ###################################################
 
+0.2-2	14-Apr-2011
+0.2-1	30-Nov-2010
 0.2-0	10-Oct-2010
 0.1.7	05-Mar-2009 (It was never released, because it finally becomes v0.2-0)
 0.1.6	30-Nov-2009
