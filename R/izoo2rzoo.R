@@ -8,10 +8,7 @@
 #         Irregular Zoo -> Regular Zoo                                         #
 ################################################################################ 
 # Author : Mauricio Zambrano-Bigiarini                                         #
-################################################################################ 
-# Started: XX-XX-2009                                                          #
-# Updates: 23-Aug-2011                                                         #
-################################################################################ 
+################################################################################  
 
 # This function takes a time series of (very likely) irregular (with
 # missing dates) daily time series and then transforms it into a variable
@@ -55,7 +52,7 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 ################################################################################ 
 # Started: XX-XX-2009                                                          #
 # Updates: 23-Aug-2011                                                         #
-#          07-May-2001
+#          07-May-2012                                                         #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
@@ -79,8 +76,11 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
 
   # Creating a daily-regular time series with the read Precipitatoin values and 
   # NA's in those days without information
-  #x.merged <- merge(x.sel, na.zoo)
   x.merged <- merge(na.zoo, x.sel)
+  
+  # Giving the same column names than the original 'x'
+  if ( is.matrix(x) | is.data.frame(x) )
+    colnames(x.merged) <- colnames(x)
 
   # Returning as result only the column containing the Regular Time Series with NA's in the empy days
   return( x.merged[,-1] )

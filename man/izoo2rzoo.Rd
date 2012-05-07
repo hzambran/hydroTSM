@@ -83,6 +83,12 @@ y <- izoo2rzoo(x, from=dates[1], to=dates[length(dates)])
 ## Creating a regular sequence from February 1st to the end of March,
 ## assigning 'NA' to the days in which 'x' do not have a value.
 y <- izoo2rzoo(x, from="1964-02-01", to="1964-03-31")
+
+## Working with a zoo matrix:
+Y <- cbind(x,x)
+
+rY <- izoo2rzoo(Y, from="1964-02-25", to="1964-03-05")
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
