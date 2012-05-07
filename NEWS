@@ -1,6 +1,13 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 
+0.3-5	XX-May-2012
+        o 'dwi.zoo'       : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' applied 
+                            to a matrix or data.frame.
+                            This error appeared after an update of the zoo package, and did not imply any error in the computation, 
+                            only in the display of the years/months
+        o 'izoo2rzoo.zoo' : now works properly with matrix and data.frame objects 
+        
 0.3-4	03-May-2012
         o 'fdc' : new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend
         o 'fdcu': new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend

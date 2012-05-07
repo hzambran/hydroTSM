@@ -1,16 +1,23 @@
-#####################################################
-# Generic Days With Information function            #
-#####################################################
+# File dwi.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2012 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################ 
+# Generic Days With Information function                                       #
+################################################################################ 
 dwi <-function(x, ...) UseMethod("dwi")
 
 
-###################################################
-#            Zoo Days with Information            #
-###################################################
-# Author : Mauricio Zambrano-Bigiarini            #
-# Started: XX-XXX-2009                            #
-# Updates: 22-Aug-2011                            #
-###################################################
+################################################################################ 
+#            Zoo Days with Information                                         #
+################################################################################ 
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################ 
+# Started: XX-XXX-2009                                                         #
+# Updates: 22-Aug-2011                                                         #
+################################################################################ 
 # This function generates a table indicating the number of days
 # with information (<>NA's) within a zoo object,
 # aggregated by: Year, Month or Month by Year
@@ -47,14 +54,15 @@ dwi.default <- function(x, out.unit="years", from = start(x), to = end(x),
 
  
  
- #######################################################
-#            Zoo Days with Information                #
-#######################################################
-# this function works only with vectorial zoo objects #
-# Author : Mauricio Zambrano-Bigiarini                #
-# Started: 22-Aug-2009                                #
-# Updates: 22-Aug-2011                                #
-####################################################### 
+################################################################################ 
+#    dwi.zoo:  Zoo Days with Information                                       #
+################################################################################ 
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################ 
+# Started: 22-Aug-2009                                                         #
+# Updates: 22-Aug-2011                                                         #
+#          07-May-2012                                                         #
+################################################################################ 
 dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x), 
                     date.fmt="%Y-%m-%d", tstep="days", ...) {
                     
@@ -96,13 +104,23 @@ dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x),
      
      # 'as.numeric' is necessary for being able to change the names to the output
      a <- aggregate(x, by= months, FUN=.dwi)
+     
+     # changing the row names of the matrix/data.frame
+     if ( is.data.frame(a) | is.matrix(a) )
+       rownames(a) <- unique(months)
+           
   } else if (out.unit == "years") {
          # Annual index for 'x'
          y      <- as.numeric(format( dates, "%Y" ))
          years  <- factor( y, levels=unique(y) )
 
          # 'FUN' is first applied to all the values of 'x' belonging to the same year
-         a <- aggregate( x, by= years, FUN=.dwi)         
+         a <- aggregate( x, by= years, FUN=.dwi)    
+         
+         # changing the row names of the matrix/data.frame
+         if ( is.data.frame(a) | is.matrix(a) )
+           rownames(a) <- unique(years)
+           
      } else if (out.unit == "mpy") {
      
          # Computing the Starting and Ending Year of the analysis
@@ -150,11 +168,11 @@ dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x),
  } # 'dwi.zoo' end
 
 
-#########################################################################
-# dwi.data.frame: days with info in each station stored in a data frame #
-#########################################################################
-#                             March 21th, 2009                          #
-#########################################################################
+################################################################################ 
+# dwi.data.frame: days with info in each station stored in a data frame        #
+################################################################################ 
+#                             March 21th, 2009                                 #
+################################################################################ 
 # This function generates a table indicating the number of days
 # with information (<>NA's) within a data.frame
 
@@ -233,12 +251,12 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
   x <- zoo(x, dates)  
   
   ##############################################################################
-
   dwi.zoo(x=x, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
 
 } # 'dwi.data.frame' END
 
 
+################################################################################ 
 dwi.matrix <- function(x, out.unit="years", from, to, 
                        date.fmt="%Y-%m-%d", tstep="days", dates=1, verbose=TRUE,...) {
 
