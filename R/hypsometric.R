@@ -1,10 +1,19 @@
-#####################################################
-# Computes: Hypometric curve corresponding to a DEM #
-#####################################################
-#   Requires: 'rgdal'                               #
-#####################################################
-#	Date: 12-Sep-2009, Jul 2010                     #
-#####################################################
+# File hypsometric.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2011 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+# Computes: Hypometric curve corresponding to a DEM                            #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: 12-Sep-2009                                                         #
+# Updates: Jul 2010                                                            #
+#          21-May-2012                                                         #
+################################################################################
+# Requires: 'sp', 'rgdal'                                                      #
+################################################################################
 # Taken from: http://osgeo-org.1803224.n2.nabble.com/hypsometric-integral-from-ecdf-curve-td2231345.html
 
 # 'x'   : 'SpatialGridDataFrame' object with the elevations of the catchment
@@ -15,16 +24,35 @@
 #require(rgdal)
 #dem <- readGDAL(x)
 #hypsometric(dem)
-hypsometric <- function(x, main="Hypsometric Curve",
+hypsometric <- function(x, 
+                        band=1,
+                        main="Hypsometric Curve",
                         xlab="Relative Area above Elevation, (a/A)",
-						ylab="Relative Elevation, (h/H)", col="blue",...) {
+                        ylab="Relative Elevation, (h/H)", 
+                        col="blue",...) {
+                        
+  if (!require(sp))
+    stop("Missing package: in order to use this function, you need the 'sp' package on your system")
 
   if (class(x) != "SpatialGridDataFrame")
     stop("Invalid argument: 'class(x)' must be 'SpatialGridDataFrame'")
+    
+  # Checking band argument
+  band.error <- FALSE
+  if (is.numeric(band) | is.integer(band) ) {
+    if ( (band < 1) | (band > length(colnames(dem@data))) )
+      band.error <- TRUE      
+  } else if (is.character(band) )
+    if ( !(band %in% colnames(dem@data) ) )
+      band.error <- TRUE    
+  if (band.error) stop("Invalid argument: 'band' does not exist in 'x' !")
+    
+  # Getting the elevatin data from the DEM
+  mydem <- x@data[band]
 
   # Minimum and Maximum elevations in 'dem'
-  z.min <- min(x@data, na.rm=TRUE)
-  z.max <- max(x@data, na.rm=TRUE)
+  z.min <- min(mydem, na.rm=TRUE)
+  z.max <- max(mydem, na.rm=TRUE)
 
   # Horizontal dimension of the cells of 'x'
   x.dim <- x@grid@cellsize[1]
@@ -32,11 +60,12 @@ hypsometric <- function(x, main="Hypsometric Curve",
   y.dim <- x@grid@cellsize[2]
 
   # Maximum area of the 'dem', in [m2]
-  max.area <- length(which(!is.na(x@data$band1))) * x.dim * y.dim
+  max.area <- length(which(!is.na(mydem))) * x.dim * y.dim
 
   # res$t: elevation values, plus a first value that I don't know what it is
   # res$y: accumulated area BELOW a given elevation value.
-  res <- plot.stepfun(ecdf(as.matrix(x)), lwd=0, cex.points=0)
+  #res <- plot.stepfun(ecdf(as.matrix(x)), lwd=0, cex.points=0)
+  res <- plot.stepfun(ecdf(as.matrix(mydem)), lwd=0, cex.points=0)
 
   # Mean elevation in 'dem'
   z.mean.index <- which(round(res$y,3)==0.5)[1]

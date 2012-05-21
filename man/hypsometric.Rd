@@ -1,3 +1,9 @@
+%% File hypsometric.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2009-2011 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{hypsometric}
 \Rdversion{1.1}
 \alias{hypsometric}
@@ -9,7 +15,7 @@ Hypsometric Curve
 Computes and plots the hypsometric curve corresponding to the data provided by a digital elevation model (DEM)
 }
 \usage{
-hypsometric(x, main="Hypsometric Curve",
+hypsometric(x, band=1, main="Hypsometric Curve",
             xlab="Relative Area above Elevation, (a/A)",
             ylab="Relative Elevation, (h/H)", col="blue",...)
 
@@ -18,6 +24,9 @@ hypsometric(x, main="Hypsometric Curve",
 \arguments{
   \item{x}{
 \link[sp]{SpatialGridDataFrame-class} object with the elevations of the catchment. Possibly, a raster file already read with the \code{\link[rgdal]{readGDAL}} function of the \pkg{rgdal} package.
+}
+  \item{band}{
+integer or character indicating the band in \code{x} that stores the elevation data.
 }
   \item{main}{
 See \code{\link[graphics]{plot}}. An overall title for the plot: see \code{\link[graphics]{title}}.
@@ -60,7 +69,7 @@ Strahler (1952, 1964) further asserted that different types of landform have dif
 \cite{Willgoose, G. and Hancock, G. 1998. Revisiting the hypsometric curve as an indicator of form and process in transport-limited catchment, Earth Surface Processes and Landforms 23, pp. 611-623}
 }
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}, with contribution of Jan Schwanbeck.
 }
 %%\note{
 %%
@@ -84,6 +93,12 @@ spplot(dem, scales=list(draw=TRUE, y=list(rot=90)))
 
 # Computing and plotting the hypsometric curve
 hypsometric(dem)
+
+# If the raster file has more than 1 band, and the elevation data are in a 
+# band different from 1:
+dem$ELEVATION <- EbroDEM1000m$band1 # dummy example
+hypsometric(dem, band= 2)
+hypsometric(dem, band= "ELEVATION") # same as before, but user-friendly
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

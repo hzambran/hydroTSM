@@ -7,6 +7,8 @@ NEWS/ChangeLog for hydroTSM
                             This error appeared after an update of the zoo package, and did not imply any error in the computation, 
                             only in the display of the years/months
         o 'izoo2rzoo.zoo' : now works properly with matrix and data.frame objects 
+        o 'hypsometric'   : now is able to deal with raster objects with more than 1 band 
+                            (thanks to Jan Schwanbeck for reporting and proposing a solution) 
         
 0.3-4	03-May-2012
         o 'fdc' : new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend
