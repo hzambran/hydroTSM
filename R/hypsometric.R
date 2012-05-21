@@ -30,9 +30,6 @@ hypsometric <- function(x,
                         xlab="Relative Area above Elevation, (a/A)",
                         ylab="Relative Elevation, (h/H)", 
                         col="blue",...) {
-                        
-  if (!require(sp))
-    stop("Missing package: in order to use this function, you need the 'sp' package on your system")
 
   if (class(x) != "SpatialGridDataFrame")
     stop("Invalid argument: 'class(x)' must be 'SpatialGridDataFrame'")
@@ -40,7 +37,7 @@ hypsometric <- function(x,
   # Checking band argument
   band.error <- FALSE
   if (is.numeric(band) | is.integer(band) ) {
-    if ( (band < 1) | (band > length(colnames(dem@data))) )
+    if ( (band < 1) | (band > length(colnames(x@data))) )
       band.error <- TRUE      
   } else if (is.character(band) )
     if ( !(band %in% colnames(dem@data) ) )
