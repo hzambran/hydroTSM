@@ -40,7 +40,7 @@ hypsometric <- function(x,
     if ( (band < 1) | (band > length(colnames(x@data))) )
       band.error <- TRUE      
   } else if (is.character(band) )
-    if ( !(band %in% colnames(dem@data) ) )
+    if ( !(band %in% colnames(x@data) ) )
       band.error <- TRUE    
   if (band.error) stop("Invalid argument: 'band' does not exist in 'x' !")
     
