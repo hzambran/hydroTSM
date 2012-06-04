@@ -1,7 +1,7 @@
 Package: hydroTSM
 Type: Package
 Title: Time series management, analysis and interpolation for hydrological modelling
-Version: 0.3-4-2
+Version: 0.3-4-3
 Date: 2011-06-04
 Author: Mauricio Zambrano-Bigiarini [aut, cre]
 Author@R: c(person("Mauricio", "Zambrano-Bigiarini", email = "mauricio.zambrano@ing.unitn.it", role=c("aut", "cre") ) )
