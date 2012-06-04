@@ -2,13 +2,15 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 
 0.3-5	XX-May-2012
-        o 'dwi.zoo'       : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' applied 
-                            to a matrix or data.frame.
-                            This error appeared after an update of the zoo package, and did not imply any error in the computation, 
-                            only in the display of the years/months
-        o 'izoo2rzoo.zoo' : now works properly with matrix and data.frame objects 
-        o 'hypsometric'   : now is able to deal with raster objects with more than 1 band 
-                            (thanks to Jan Schwanbeck for reporting the issue and proposing a solution) 
+        o 'dwi.zoo'                  : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' applied 
+                                       to a matrix or data.frame.
+                                       This error appeared after an update of the zoo package, and did not imply any error in the computation, 
+                                       only in the display of the years/months
+        o 'izoo2rzoo.zoo'            : now works properly with matrix and data.frame objects 
+        o 'hypsometric'              : now is able to deal with raster objects with more than 1 band 
+                                       (thanks to Jan Schwanbeck for reporting the issue and proposing a solution) 
+        o 'daily2monthly.data.frame' : -) calls to 'as.Date' were changed to 'zoo::as.Date', in order to work properly with zoo >= 1.7-2
+                                       -) wrong labelling of months was fixed (only occurred when out.type="db")
         
 0.3-4	03-May-2012
         o 'fdc' : new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend
@@ -105,7 +107,7 @@ NEWS/ChangeLog for hydroTSM
         o 'smry'            : -) new 'smry.zoo'	
                               -) much faster than before for matrixes and data.frames 	                            
                               -) it works with xts objects as well. 			      
-	o Some 'as.Date' calls were changed to 'zoo:ad.Date', in order to work properly with zoo >= 1.7-2
+	o Some 'as.Date' calls were changed to 'zoo::as.Date', in order to work properly with zoo >= 1.7-2
 
 
 

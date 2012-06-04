@@ -1,3 +1,9 @@
+# File daily2monthly.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
 #####################################
 #          daily2monthly            #
 #####################################
@@ -66,11 +72,6 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
   # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
   inf.index <- which(is.infinite(tmp))
   if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
-  
-  # Giving meaningful names to the output
-  #if ( (is.matrix(x)) | (is.data.frame(x)) ) {
-     #tmp <- t(tmp) # For having the months' names as column names
-  #} #IF end
 
   return(tmp)
 
@@ -82,6 +83,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 # Author : Mauricio Zambrano-Bigiarini #
 # Started: XX-XXX-2008                 #
 # Updates: 09-Aug-2011                 #
+#          04-Jun-2012                 #
 ########################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -134,13 +136,13 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {
     tmp   <- dates
-    dates <- as.Date(x[, dates], format= date.fmt)
+    dates <- zoo::as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
   }  # IF end
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
+  if ( class(dates) == "factor" ) dates <- zoo::as.Date(dates, format= date.fmt)
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
@@ -177,7 +179,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
           # Computing the Starting and Ending Year of the analysis
           Starting.Year <- as.numeric(format(range(dates)[1], "%Y"))
           Ending.Year   <- as.numeric(format(range(dates)[2], "%Y"))
-
+          
           # Amount of Years belonging to the desired period
           nyears <- Ending.Year - Starting.Year + 1
 
@@ -199,18 +201,17 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
 
           for (j in 1:nstations) {
 
-            if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
-                                      " : ",format(j, width=3, justify="left"), "/",
-                                      nstations, " => ",
-                                      format(round(100*j/nstations,2), width=6, justify="left"),
-                                      "%", sep="") )
+            if (verbose) message( "Station: ", format(snames[j], width=10, justify="left"),
+                                  " : ",format(j, width=3, justify="left"), "/",
+                                  nstations, " => ",
+                                  format(round(100*j/nstations,2), width=6, justify="left"),
+                                  "%" )
 
 	    # Computing the monthly values
-	    m <- daily2monthly.zoo(x= x[,j], FUN=FUN, na.rm=na.rm)
-
-	    if (out.fmt == "numeric") {
-    	        m <- as.numeric(m)
-            } # IF end
+	    m     <- daily2monthly.zoo(x= x[,j], FUN=FUN, na.rm=na.rm)
+            dates <- time(m)
+            
+	    if (out.fmt == "numeric") m <- coredata(m)
 
 	# Putting the annual/monthly values in the output data.frame
         # The first column of 'x' corresponds to the Year
@@ -218,8 +219,8 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
         row.fin <-  j*nmonths
 
         z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeated 'nmonths' times
-        z[row.ini:row.fin, 2] <- format(as.Date(time(m)), "%Y")
-        z[row.ini:row.fin, 3] <- format(as.Date(time(m)), "%b")
+        z[row.ini:row.fin, 2] <- format(zoo::as.Date(dates), "%Y")
+        z[row.ini:row.fin, 3] <- format(zoo::as.Date(dates), "%b")
         z[row.ini:row.fin, 4] <- m
 
         } # FOR end

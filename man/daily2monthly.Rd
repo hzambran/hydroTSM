@@ -1,3 +1,9 @@
+%%File daily2monthly.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{daily2monthly}
 \Rdversion{1.1}
 \alias{daily2monthly}
@@ -60,7 +66,8 @@ Character that defines the desired type of output. Valid values are:  \cr
                  The fourth column (Value) stores the numerical values corresponding to the values specified in the three previous columns. \cr
 }
   \item{out.fmt}{
-character, for selecting if the result will be a numeric or zoo object. Valid values are: \kbd{numeric}, \kbd{zoo}.
+OPTIONAL. Only used when \code{x} is a matrix or data.frame object /cr
+character, for selecting if the result will be a matrix/data.frame or a zoo object. Valid values are: \kbd{numeric}, \kbd{zoo}.
 }
   \item{verbose}{
 logical; if TRUE, progress messages are printed 
