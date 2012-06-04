@@ -78,9 +78,10 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
          inf.index <- which(is.infinite(tmp))
          if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
 	 
-	 # If the user does not want a complete data format for the output annual series:
-	 if (out.fmt == "%Y")
+	 # date format for the output annual series:
+	 if (out.fmt == "%Y") {
 	    time(tmp) <- format(time(tmp), "%Y")
+	 } else  time(tmp) <- zoo::as.Date(paste( time(tmp), "-01-01", sep=""))
 
 	 return(tmp)
 

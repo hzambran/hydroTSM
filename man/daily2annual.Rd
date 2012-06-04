@@ -121,7 +121,10 @@ monthly2annual(m, FUN=sum, na.rm=TRUE)
 data(EbroPPtsMonthly)
 
 # computing the annual values for the first 10 gauging station in 'EbroPPtsMonthly'
-a <- monthly2annual(EbroPPtsMonthly[,1:11], FUN=sum, dates=1, out.fmt="%Y")
+a <- monthly2annual(EbroPPtsMonthly[,1:11], FUN=sum, dates=1)
+
+# same as before, but with a nicer format of years
+a <- monthly2annual(EbroPPtsMonthly[,1:11], FUN=sum, dates=1, out.fmt="\%Y")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

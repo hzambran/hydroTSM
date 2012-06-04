@@ -9,12 +9,14 @@ NEWS/ChangeLog for hydroTSM
         o 'izoo2rzoo.zoo'            : now works properly with matrix and data.frame objects 
         o 'hypsometric'              : now is able to deal with raster objects with more than 1 band 
                                        (thanks to Jan Schwanbeck for reporting the issue and proposing a solution) 
-        o 'daily2monthly.data.frame' : -) calls to 'as.Date' were changed to 'zoo::as.Date', in order to work properly with zoo >= 1.7-2
+        o 'daily2monthly.data.frame' : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
                                        -) wrong labelling of months was fixed (only occurred when out.type="db")
-        o 'daily2annual.data.frame'  : -) calls to 'as.Date' were changed to 'zoo::as.Date', in order to work properly with zoo >= 1.7-2
-        o 'daily2annual.zoo'         : -) calls to 'as.Date' were changed to 'zoo::as.Date', in order to work properly with zoo >= 1.7-2
+        o 'daily2annual.data.frame'  : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
+        o 'daily2annual.zoo'         : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
         o 'sfreq'                    : -) now gives the correct sampling frequency for zoo objects that are matrix/data.frame
                                        -) now only works with zoo objects (before it also accepted ts objects)
+        
+        o 'hydroplot'                : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
                                        
         
 0.3-4	03-May-2012

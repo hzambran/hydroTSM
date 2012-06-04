@@ -1,3 +1,9 @@
+# File hydroplot.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
 ################################################################################
 # .hydroplotts Daily, Monthly and Annual Time Series                           #
 ################################################################################
@@ -214,6 +220,9 @@
         } # IF end
         legend("topleft", leg.text, bty="n", cex =0.9, col= leg.col, lwd= leg.lwd, lty=leg.lty ) #bty="n" => no box around the legend
       } # IF end
+
+
+      print(x.annual)
 
       # Plotting the Annual, if needed
       if ( pfreq %in% c("dma", "ma") ) {
@@ -539,6 +548,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                  # 
 # Started: 2008                                                         #
 # Updates: 19-Apr-2011 ; 19-Jun-2011  ; 10-Aug-2011                     #
+#          04-Jun-2012
 #########################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -643,7 +653,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
         from     <- dates[1]
         from.pos <- 1
      } else {
-         from <- as.Date(from, format=date.fmt)
+         from <- zoo::as.Date(from, format=date.fmt)
          if ( length( which(dates == from) ) > 0 ) {
            from.pos <- which( dates == from )
           } else stop("Invalid argument: 'from' is not in 'dates' ")
@@ -654,7 +664,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
         to.pos <- length(dates)
         to     <- dates[to.pos]     
      } else {
-         to <- as.Date(to, format=date.fmt)
+         to <- zoo::as.Date(to, format=date.fmt)
          if ( length( which(dates == to) ) > 0 ) {
            to.pos <- which( dates == to )
          } else stop("Invalid argument: 'to' is not in 'dates' ")
