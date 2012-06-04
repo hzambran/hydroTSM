@@ -1,3 +1,9 @@
+# File daily2annual.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
 #####################################
 #          daily2annual             #
 #####################################
@@ -38,8 +44,9 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 # Author : Mauricio Zambrano-Bigiarini #
 # Started: 09-Aug-2011                 #
 # Updates: 09-Aug-2011                 #
+#          04-Jun-2012                 #
 ########################################
-daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
+daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 
 	 # Checking that the user provide a valid value for 'FUN'
 	 if (missing(FUN)) 
@@ -70,10 +77,10 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
          # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
          inf.index <- which(is.infinite(tmp))
          if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
-        
-	 # If the user wants a complete data format for the output annual series:
-	 if (out.fmt == "%Y-%m-%d")
-	    time(tmp) <- as.Date(paste( time(tmp), "-01-01", sep=""))
+	 
+	 # If the user does not want a complete data format for the output annual series:
+	 if (out.fmt == "%Y")
+	    time(tmp) <- format(time(tmp), "%Y")
 
 	 return(tmp)
 
@@ -84,6 +91,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 # Author : Mauricio Zambrano-Bigiarini #
 # Started: XX-XXX-2008                 #
 # Updates: 09-Aug-2011                 #
+#          04-Jun-2012                 #
 ########################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -130,13 +138,13 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {
     tmp   <- dates
-    dates <- as.Date(x[, dates], format= date.fmt)
+    dates <- zoo::as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
   }  # IF end
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
+  if ( class(dates) == "factor" ) dates <- zoo::as.Date(dates, format= date.fmt)
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
@@ -154,7 +162,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
     
   } else if (out.type == "db") { 
 
-       if (verbose) message("[Starting the computations...]")
+       if (verbose) message("[Starting computations...]")
        
        # Amount of stations in 'x'
        nstations <- ncol(x)
@@ -176,7 +184,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
        nyears   <- length(tmp) #number of years in the period
 
        # Generating a string vector with the years effectively within 'x'
-       if (out.fmt == "%Y") {
+       if (out.fmt != "%Y") {
           chryears <- time(tmp)
        } else chryears <- format(time(tmp), "%Y")
  
@@ -192,11 +200,11 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
 
        for (j in 1:nstations) {
 
-           if (verbose) message( paste("Station: ", format(snames[j], width=10, justify="left"),
-                                      " : ",format(j, width=3, justify="left"), "/",
-                                      nstations, " => ",
-                                      format(round(100*j/nstations,2), width=6, justify="left"),
-                                      "%", sep="") )
+           if (verbose) message( "Station: ", format(snames[j], width=10, justify="left"),
+                                 " : ",format(j, width=3, justify="left"), "/",
+                                 nstations, " => ",
+                                 format(round(100*j/nstations,2), width=6, justify="left"),
+                                 "%" )
 
           # Computing the annual values
           a <- daily2annual.zoo(x= x[,j], FUN=FUN, na.rm=na.rm, out.fmt="%Y-%m-%d")
@@ -207,7 +215,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
           row.fin <-  j*nyears
 
           z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeted 'nmonths' times
-          z[row.ini:row.fin, 2] <- format(as.Date(time(a)), "%Y")
+          z[row.ini:row.fin, 2] <- format(zoo::as.Date(time(a)), "%Y")
           z[row.ini:row.fin, 3] <- a
 
       } # FOR end

@@ -1,3 +1,9 @@
+%% File daily2annual.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{daily2annual}
 \Rdversion{1.1}
 \alias{daily2annual}
@@ -23,7 +29,7 @@ daily2annual(x, ...)
 
 \method{daily2annual}{default}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", ...)
 
-\method{daily2annual}{zoo}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", ...)
+\method{daily2annual}{zoo}(x, FUN, na.rm = TRUE, out.fmt = "\%Y-\%m-\%d", ...)
 
 \method{daily2annual}{data.frame}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", dates, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
@@ -115,7 +121,7 @@ monthly2annual(m, FUN=sum, na.rm=TRUE)
 data(EbroPPtsMonthly)
 
 # computing the annual values for the first 10 gauging station in 'EbroPPtsMonthly'
-a <- monthly2annual(EbroPPtsMonthly[,1:11], FUN=sum, dates=1)
+a <- monthly2annual(EbroPPtsMonthly[,1:11], FUN=sum, dates=1, out.fmt="%Y")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
