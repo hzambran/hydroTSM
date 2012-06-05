@@ -221,9 +221,6 @@
         legend("topleft", leg.text, bty="n", cex =0.9, col= leg.col, lwd= leg.lwd, lty=leg.lty ) #bty="n" => no box around the legend
       } # IF end
 
-
-      print(x.annual)
-
       # Plotting the Annual, if needed
       if ( pfreq %in% c("dma", "ma") ) {
           # Generating the title of the Annual Time Series plot

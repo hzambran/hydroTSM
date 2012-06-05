@@ -168,7 +168,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
     
   } else if (out.type == "db") {  
   
-          if (verbose) message("[Starting the computations...]" )
+          if (verbose) message("[Starting computations...]" )
 
           # Amount of stations in 'x'
           nstations <- ncol(x)
