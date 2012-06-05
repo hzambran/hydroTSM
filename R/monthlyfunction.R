@@ -1,3 +1,9 @@
+# File monthlyfunction.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
 ########################################################################
 # monthlyfunction: Generic function for applying any R function to     #
 #                  ALL the values in 'x' belonging to a given month    #
@@ -31,6 +37,7 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 # Author : Mauricio Zambrano-Bigiarini #
 # Started: 25-Jul-2011                 #
 # Updates: 08-Aug-2011                 #
+#          05-Jun-2012                 #
 ########################################
 monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 
@@ -62,6 +69,7 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      # Giving meaningful names to the output
      if ( (is.matrix(x)) | (is.data.frame(x)) ) {
        totals <- t(totals) # For having the months' names as column names
+       colnames(totals) <- levels(months)
      } #IF end
 
      return(totals)
@@ -127,7 +135,7 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {
     tmp   <- dates
-    dates <- as.Date(x[, dates], format= date.fmt)
+    dates <- zoo::as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
   }  else
       # If 'dates' is a factor, it have to be converted into 'Date' class,
@@ -183,11 +191,11 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
         
         for (j in 1:nstations) {
 
-            if (verbose) message( paste("[ Station: ", format(snames[j], width=10, justify="left"),
-                                        " : ", format(j, width=3, justify="left"), "/",
-                                        nstations, " => ",
-                                        format(round(100*j/nstations,2), width=6, justify="left"),
-                                        "% ]", sep="") )
+            if (verbose) message( "[ Station: ", format(snames[j], width=10, justify="left"),
+                                  " : ", format(j, width=3, justify="left"), "/",
+                                  nstations, " => ",
+                                  format(round(100*j/nstations,2), width=6, justify="left"),
+                                  "% ]" )
 
 	    # Computing the annual values
 	    tmp <- monthlyfunction.default(x= x[,j], FUN=FUN, na.rm=na.rm, ...)

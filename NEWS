@@ -18,6 +18,9 @@ NEWS/ChangeLog for hydroTSM
                                        -) now only works with zoo objects (before it also accepted ts objects)
         
         o 'hydroplot'                : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
+        o 'monthlyfunction'          : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2 
+                                          (only for data.frame/matrix objects)
+                                       -) fixed bug in the labelling of columns of the output object (only for data.frame/matrix objects)
                                        
         
 0.3-4	03-May-2012
