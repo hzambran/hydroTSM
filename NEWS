@@ -13,6 +13,7 @@ NEWS/ChangeLog for hydroTSM
                                        -) wrong labelling of months was fixed (only occurred when out.type="db")
         o 'daily2annual.data.frame'  : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
         o 'daily2annual.zoo'         : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
+                                       -) default value for 'out.fmt' was changed from "%Y" to "%Y-%m-%d" (this is the default for zoo objects)
         o 'sfreq'                    : -) now gives the correct sampling frequency for zoo objects that are matrix/data.frame
                                        -) now only works with zoo objects (before it also accepted ts objects)
         
