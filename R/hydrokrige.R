@@ -1,9 +1,18 @@
-########################################################################
-# hydrokrige: (Block) IDW, OK, KED Interpolation over catchments,      #
-#             with optional plot                                       #
-########################################################################
-#     April 22-25th, 2009; September 2009, December 2009, April 2010   #
-########################################################################
+# File hydrokrige.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2011 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+# hydrokrige: (Block) IDW, OK, KED Interpolation over catchments,              #
+#             with optional plot                                               #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# April 22-25th, 2009; September 2009, December 2009, April 2010               #
+# 04-Jul-2012                                                                  #   
+################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
 
@@ -586,10 +595,8 @@ hydrokrige.default <- function(x.ts, x.gis,
     #################################################
     # IF all the block interpolated values were EQUAL
     if (idw.min == idw.max) {
-
-	   idw.min <- idw.min - 0.01
-	   idw.max <- idw.max + 0.01
-
+       idw.min <- idw.min - abs(idw.min)/10
+       idw.max <- idw.max + abs(idw.max)/10
     } # ELSE if
 
  } # IF end
@@ -677,16 +684,14 @@ hydrokrige.default <- function(x.ts, x.gis,
       #################################################
       # IF all the block interpolated values were EQUAL
       if (idw.blk.min == idw.blk.max) {
-
-	     idw.blk.min <- idw.blk.min - 0.01
-	     idw.blk.max <- idw.blk.max + 0.01
-
+         idw.blk.min <- idw.blk.min - abs(idw.blk.min)/10
+         idw.blk.max <- idw.blk.max + abs(idw.blk.max)/10
       } # ELSE if
 
-     #################################################
-     # Adding the block interpolations to the results
-     if (type == "block") { result <- x.idw.block
-     } else  { result <- list(Cells=result, Block=x.idw.block) }
+      #################################################
+      # Adding the block interpolations to the results
+      if (type == "block") { result <- x.idw.block
+      } else result <- list(Cells=result, Block=x.idw.block)
 
 
     } # IF end
@@ -830,13 +835,15 @@ hydrokrige.default <- function(x.ts, x.gis,
             if ( ( abs(idw.min) >= 0 ) & ( abs(idw.max) <= 1 ) ) {
               idw.min  <- sign(idw.min)*round( abs(idw.min), 3)
               idw.max  <- sign(idw.max)*round( abs(idw.max), 3)
-
-            } else {
-
-                idw.min  <- sign(idw.min)*floor( abs(idw.min) )
-                idw.max  <- sign(idw.max)*ceiling( abs(idw.max) )
-
+            } else {                
+                idw.min  <- floor(idw.min)
+                idw.max  <- ceiling(idw.max)  
               } # ELSE end
+              
+            if (idw.max==idw.min) {
+              idw.min <- idw.min - abs(idw.min)/10
+              idw.max <- idw.max + abs(idw.max)/10
+            } # IF end
           } # IF end
 
           if ( type %in% c("block", "both") ) {
@@ -844,13 +851,17 @@ hydrokrige.default <- function(x.ts, x.gis,
               idw.blk.min  <- sign(idw.blk.min)*round( abs(idw.blk.min), 3)
               idw.blk.max  <- sign(idw.blk.max)*round( abs(idw.blk.max), 3)
             } else {
-                idw.blk.min  <- sign(idw.blk.min)*floor( abs(idw.blk.min) )
-                idw.blk.max  <- sign(idw.blk.max)*ceiling( abs(idw.blk.max) )
+                idw.blk.min  <- floor(idw.blk.min)
+                idw.blk.max  <- ceiling(idw.blk.max)
               } # ELSE end
+            if (idw.blk.max==idw.blk.min) {
+              idw.blk.min <- idw.blk.min - abs(idw.blk.min)/10
+              idw.blk.max <- idw.blk.max + abs(idw.blk.max)/10
+            } # IF end
           } # IF end
-
-	        if ( type %in% c("cells", "both") ) { at.idw       <- seq(idw.min, idw.max, length.out=col.nintv) }
-	        if ( type %in% c("block", "both") ) { at.idw.block <- seq(idw.blk.min, idw.blk.max, length.out=col.nintv) }
+          
+	  if ( type %in% c("cells", "both") ) at.idw       <- seq(idw.min, idw.max, length.out=col.nintv)
+	  if ( type %in% c("block", "both") ) at.idw.block <- seq(idw.blk.min, idw.blk.max, length.out=col.nintv)	   
 
         } else # col.at == "R"
     		    { message("[I'm sorry, but 'col.at' = 'R' is not implemented yet. Using 'col.at' = 'auto']")
