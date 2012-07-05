@@ -11,7 +11,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # April 22-25th, 2009; September 2009, December 2009, April 2010               #
-# 04-Jul-2012                                                                  #   
+# 04-Jul-2012 ; 05-Jul-2012                                                    #   
 ################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
@@ -283,7 +283,7 @@ hydrokrige.default <- function(x.ts, x.gis,
       #names                <- colnames(x.ts)
       x.ts[1:length(x.ts)] <- allNA.action
       #colnames(x.ts)       <- names
-      if (verbose) message( paste("[Warning: All the values in x.ts are NA. They were changed to '", allNA.action, "'. ]", sep="") )
+      if (verbose) message( "[Warning: All the values in x.ts are NA. They were changed to '", allNA.action, "'. ]" )
      }
 
  } # IF end
@@ -302,7 +302,7 @@ hydrokrige.default <- function(x.ts, x.gis,
        # Reading the SubCATCHMENTS of the CATCHMENT
        #require(maptools) #it is necessary for usign the function "readShapePoly"
 
-       if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
+       if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]")
 
        # Reading the Shapefile with the subcatchments
        SubCatchments.shp <- maptools:::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
@@ -310,7 +310,7 @@ hydrokrige.default <- function(x.ts, x.gis,
        # Number of Subcatchmnets
        nSub <- nrow(SubCatchments.shp@data)
 
-       if (verbose) message(paste("[Subcatchments found:", nSub, "]", sep=" ") )
+       if (verbose) message("[Subcatchments found:", nSub, "]")
 
 
      } else  { #  If the user already provided 'subcatchments' as an 'SpatialPolygonsDataFrame' object
@@ -345,7 +345,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
         if ( !identical( CRS(sp::proj4string(SubCatchments.shp)), p4s ) )  {
 
-	    if (verbose) message(paste("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
+	    if (verbose) message("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']" )
             proj4string(SubCatchments.shp) <- p4s
         } # IF end
 
@@ -360,7 +360,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 	    # Verifying the compatibility between  'predictors' and 'subcatchments'
             if ( !identical( proj4string(SubCatchments.shp), proj4string(predictors) ) )  {
 
-		if (verbose) message(paste("[Warning: 'subcatchments' and 'predictors' has different CRS. The projection of the shapefile was changed to the one given by 'predicotrs': '", proj4string(predictors), "']", sep="") )
+		if (verbose) message("[Warning: 'subcatchments' and 'predictors' has different CRS. The projection of the shapefile was changed to the one given by 'predicotrs': '", proj4string(predictors), "']")
                 proj4string(SubCatchments.shp) <- CRS(proj4string(predictors))
 		p4s                            <- CRS(proj4string(predictors))
 
@@ -373,7 +373,7 @@ hydrokrige.default <- function(x.ts, x.gis,
             if ( !missing(subcatchments) ) {
                  if ( !is.na(proj4string(SubCatchments.shp) ) ) { #is projected gives NA when the shp is not projected
 
-                    if (verbose) message(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'subcatchments': '", proj4string(SubCatchments.shp), "']", sep="") )
+                    if (verbose) message("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'subcatchments': '", proj4string(SubCatchments.shp), "']")
                     p4s <- CRS(proj4string(SubCatchments.shp))
 
                 } # IF end
@@ -384,7 +384,7 @@ hydrokrige.default <- function(x.ts, x.gis,
             if ( !missing(predictors) ) {
                  if ( !is.na(proj4string(predictors) ) )  {
 
-                    if (verbose) message(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'predictors': '", proj4string(SubCatchments.shp), "']", sep="") )
+                    if (verbose) message("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'predictors': '", proj4string(SubCatchments.shp), "']")
                     p4s <- CRS(proj4string(predictors))
 
                 } # IF end
@@ -412,7 +412,7 @@ hydrokrige.default <- function(x.ts, x.gis,
     predictors <- spsample(SubCatchments.shp, type=grid.type, cellsize=cell.size, offset = c(0.5, 0.5))
 
     # Making possible that the grid can be used in the interpolations:
-	  # and transforming from 'SpatialPoints' to 'SpatialPixels' the class of 'predictors'
+    # and transforming from 'SpatialPoints' to 'SpatialPixels' the class of 'predictors'
     gridded(predictors) <- TRUE
 
  }  # IF end
@@ -426,7 +426,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
      if ( !identical( CRS(proj4string(predictors)), p4s ) )  {
 
-	if (verbose) message(paste("[Warning: 'p4s' and 'predictors' have different CRS. The projection of 'predictors' was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
+	if (verbose) message("[Warning: 'p4s' and 'predictors' have different CRS. The projection of 'predictors' was changed to the one given by 'p4s': '", p4s@projargs, "']")
 	proj4string(predictors) <- p4s
 
      } # ELSE end
@@ -442,8 +442,8 @@ hydrokrige.default <- function(x.ts, x.gis,
 
 
  # If 'predictors' was provided, its values are copied to 'x.work'
- # if 'predictors' is a 'SpatialGridDataFrame', mean that it has been
- #  read from a raster file and it has attributes that can be used
+ # if 'predictors' is a 'SpatialGridDataFrame', it means that it has been
+ #    read from a raster file and it has attributes that can be used
  if ( !missing(predictors)  ) {
 
    if (class(predictors)=="SpatialGridDataFrame" ) {
@@ -492,7 +492,6 @@ hydrokrige.default <- function(x.ts, x.gis,
  #if ( type %in% c("cells", "both") ) {
  if ( type %in% c("cells", "both", "block") ) {   #until clarifying how the krige function aggregate the values into the subcatchments
 
-
     if (verbose) message("[Starting grid interpolations...]")
 
     # If ALL the measured values are EQUAL, the following error ir rised
@@ -507,15 +506,13 @@ hydrokrige.default <- function(x.ts, x.gis,
 	constant_field <- TRUE
 
         constant_value <- unique(x.work$value)
-
+        
         # This is just to make a different value, in order to allow the interpolations
         x.work$value[1] <- x.work$value[1] + 1
 
     } else {
-
-	    # Flag that indicates if all the measurements are equal
-	    constant_field <- FALSE
-
+        # Flag that indicates if all the measurements are equal
+	constant_field <- FALSE
       } # ELSE end
 
 
@@ -540,7 +537,7 @@ hydrokrige.default <- function(x.ts, x.gis,
            if (verbose) {
                #formula is decomposed in its 3 elements
                f <- strsplit(as.character(formula), " ")
-               message(paste("[Krige formula :", f[2], f[1], f[3], "]", sep=" "))
+               message("[Krige formula :", f[2], f[1], f[3], "]")
            } # IF end
 
            # REquiring automap library
@@ -548,28 +545,29 @@ hydrokrige.default <- function(x.ts, x.gis,
 
            # If ALL the values in x.work are equal, only 1 variogam family is attempted
            if (constant_field) {
-               x.autokrige.cells <- automap::autoKrige(formula, input_data=x.work, new_data=predictors, model = c("Sph"), nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
+               x.idw <- gstat::idw(value~1, locations=x.work, newdata=predictors, nmin=nmin, nmax=nmax, maxdist=maxdist, ...)
+               idw.min  <- idw.max  <- constant_value
            } else {
                x.autokrige.cells <- automap::autoKrige(formula, input_data=x.work, new_data=predictors, nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
+               
+               #Assigning the outputs of autokrige
+               x.idw <- x.autokrige.cells$krige_output
+
+               # min and max values for colors
+               idw.min  <-min(x.idw@data["var1.pred"], na.rm=TRUE)
+               idw.max  <-max(x.idw@data["var1.pred"], na.rm=TRUE)
              } #LSE end
-
-           #Assigning the outputs of autokrige
-           x.idw <- x.autokrige.cells$krige_output
-
-           # min and max values for colors
-           idw.min  <-min(x.idw@data["var1.pred"], na.rm=TRUE)
-           idw.max  <-max(x.idw@data["var1.pred"], na.rm=TRUE)
 
      } # ELSE end
      #}
 
     if (constant_field) {
-
+    
       # Putting NA in 'var1.var'
       x.idw@data["var1.var"]  <- NA
 
       # When 'krige' is called, an additional field  '"var1.stdev"' is present , from R 2.10 (more or less)
-      if (hasArg(formula) ) { x.idw@data["var1.stdev"]  <- NA }
+      if (hasArg(formula) ) x.idw@data["var1.stdev"]  <- NA 
 
       # If the user didn't provide the raster map (class "SpatialGridDataFrame"),
       # all the cells in 'predictors' will receive the constant value
@@ -665,8 +663,7 @@ hydrokrige.default <- function(x.ts, x.gis,
         if (  class(predictors) == "SpatialGridDataFrame" ) {
            tmp.block <- overlay( as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), SubCatchments.shp, fn = mean)
         } else tmp.block <-  overlay(x.idw["var1.pred"], SubCatchments.shp, fn = mean)
-
-
+        
         #if (length(x.idw.block@data[["var1.pred"]]) == length( tmp.block[,1]) ) {
         #  x.idw.block@data[["var1.pred"]] <- tmp.block[,1]
         #} else stop("Error: The size of -at least- one Subcatchment is smaller than 'cellsize'")
@@ -840,10 +837,17 @@ hydrokrige.default <- function(x.ts, x.gis,
                 idw.max  <- ceiling(idw.max)  
               } # ELSE end
               
-            if (idw.max==idw.min) {
-              idw.min <- idw.min - abs(idw.min)/10
-              idw.max <- idw.max + abs(idw.max)/10
+            if (idw.max==idw.min) {              
+              col.nintv <- 4
+              if (idw.max !=0 ) {
+                idw.min <- idw.min - abs(idw.min)/10
+                idw.max <- idw.max + abs(idw.max)/10
+              } else {
+                  idw.min <- -0.1
+                  idw.max <-  0.1
+                }
             } # IF end
+            
           } # IF end
 
           if ( type %in% c("block", "both") ) {
@@ -855,8 +859,14 @@ hydrokrige.default <- function(x.ts, x.gis,
                 idw.blk.max  <- ceiling(idw.blk.max)
               } # ELSE end
             if (idw.blk.max==idw.blk.min) {
-              idw.blk.min <- idw.blk.min - abs(idw.blk.min)/10
-              idw.blk.max <- idw.blk.max + abs(idw.blk.max)/10
+              col.nintv <- 4
+              if (idw.blk.max!=0) {
+                idw.blk.min <- idw.blk.min - abs(idw.blk.min)/10
+                idw.blk.max <- idw.blk.max + abs(idw.blk.max)/10
+              } else {
+                  idw.blk.min <- -0.1
+                  idw.blk.max <- 0.1                  
+                }
             } # IF end
           } # IF end
           
