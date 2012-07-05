@@ -628,7 +628,7 @@ hydrokrige.default <- function(x.ts, x.gis,
         x.idw.block <- SubCatchments.shp
 
         #if (!is.null(IDvar)) x.idw.block@data[[IDvar]] <- NULL
-
+        
         if (  class(predictors) == "SpatialGridDataFrame" ) {
            tmp.block <- overlay( as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), SubCatchments.shp, fn = mean)
         } else tmp.block <-  overlay(x.idw["var1.pred"], SubCatchments.shp, fn = mean)
@@ -636,7 +636,7 @@ hydrokrige.default <- function(x.ts, x.gis,
         #if ( length(x.idw.block@data[["var1.pred"]]) == length( tmp.block[,1]) ) {
         #  x.idw.block@data[["var1.pred"]] <- tmp.block[,1]
         #}  else stop("Error: The size of -at least- one Subcatchment is smaller than 'cellsize'")
-
+        
         if ( nrow(x.idw.block@data) == length( tmp.block[,1]) ) {
           x.idw.block@data[["var1.pred"]] <- tmp.block[,1]
         }  else stop("Error: The size of -at least- one Subcatchment is smaller than 'cellsize'")

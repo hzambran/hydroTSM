@@ -190,8 +190,8 @@ logical; if TRUE, progress messages are printed
 }
   \item{allNA.action}{
 Action to be executed when all the values in \code{x.ts} are NA. Valid values are: \cr
--) \kbd{error}: it will produce an error message. Default option \cr
--) \code{numeric}: a single numeric value that will replace all the NA values in \code{x.ts}, giving place to a map with a constant value. \bold{At your own risk !}
+-) \kbd{"error"}: it will produce an error message. Default option \cr
+-) a single numeric value that will replace all the NA values in \code{x.ts}, giving place to a map with a constant value. \bold{At your own risk !}
 }
   \item{dates}{
 numeric, factor, or character object indicating how to obtain the ID (usually dates) that will be used to identify the interpolation carried out for each row of \code{x.ts}. \cr
