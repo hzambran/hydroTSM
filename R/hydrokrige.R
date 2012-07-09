@@ -11,7 +11,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # April 22-25th, 2009; September 2009, December 2009, April 2010               #
-# 04-Jul-2012 ; 05-Jul-2012                                                    #   
+# 04-Jul-2012 ; 05-Jul-2012 ; 09-Jul-2012                                      #   
 ################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
@@ -545,8 +545,8 @@ hydrokrige.default <- function(x.ts, x.gis,
 
            # If ALL the values in x.work are equal, only 1 variogam family is attempted
            if (constant_field) {
-               x.idw <- gstat::idw(value~1, locations=x.work, newdata=predictors, nmin=nmin, nmax=nmax, maxdist=maxdist, ...)
-               idw.min  <- idw.max  <- constant_value
+               x.idw   <- gstat::idw(value~1, locations=x.work, newdata=predictors, nmin=nmin, nmax=nmax, maxdist=maxdist)
+               idw.min <- idw.max  <- constant_value
            } else {
                x.autokrige.cells <- automap::autoKrige(formula, input_data=x.work, new_data=predictors, nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
                
@@ -1410,6 +1410,9 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
      ##########################
 
      for (d in 1:ndates )   {
+     
+         message("                                 ")
+         message("[ Date: ", dates[d], " ]")
 
 	 # Selecting the row in 'x.ts.catch' corresponding to the desired date among all the dates
 	 ts.row.index <- which( x.ts[, dates.col] == dates[d] )
@@ -1438,7 +1441,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 				 scalebar.plot= scalebar.plot, sb.offset= sb.offset, sb.scale= sb.scale,
 				 verbose=verbose, allNA.action=allNA.action)
 
-	 if (verbose) message( paste("Finished Date : ", dates[d], "  :  ", d, "/", ndates, "      =>      ", round(100*d/ndates,2), "%", sep="") )
+	 if (verbose) message( "[ Finished Date : ", dates[d], "  :  ", d, "/", ndates, "      =>      ", round(100*d/ndates,2), "% ]" )
 
 	 a[ts.row.index, 2:(nSub+1)] <- round(x.idw@data$var1.pred, 3)
 
