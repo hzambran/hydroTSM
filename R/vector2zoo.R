@@ -1,40 +1,48 @@
-########################################################################
-#  'vector2zoo': Transforms a numerical vector 'x' with a corresponding#
-#             'Date' vector (any format) into a 'zoo' object           #
-#                       17-Dic-2008, 01-Oct-2009, 06-Oct-2010 ;        #
-#                       05-May-2011                                    #
-########################################################################
-#  Transform a numericl vectorial  and  its corresponding dates into
-#  a 'zoo' variable, for being used by other procedures of this library
+# File vector2zoo.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2011 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+# vector2zoo: Transforms a numeric vector 'x' with a corresponding             #
+#             'Date' vector (any format) into a 'zoo' object                   #
+################################################################################
+# Author    : Mauricio Zambrano-Bigiarini                                      #
+################################################################################
+# Started   : 17-Dec-2008                                                      #
+# Updates   : 01-Oct-2009                                                      #
+#             06-Oct-2010                                                      #
+#             05-May-2011                                                      #
+#             15-Oct-2012
+################################################################################
+#  Transform a numeric vector and its corresponding dates into a 'zoo' object
 
 # 'x':      : numeric vector
 # 'dates'   : vector with a complete series of dates, in the same order of 'ts'
 # 'date.fmt': format in which the dates are stored in 'dates'
-
-# example:
-# > x <- read.csv2("Ebro-Daily_TS_by_station-PP-Thr70-349stations-HistoricalPeriod.csv")
-# > d <- vector2zoo(x[,2], dates=as.Date(x[,1]) )
-# > summary(d)
 vector2zoo <- function(x, dates, date.fmt="%Y-%m-%d") {
 
   # Requiring the Zoo Library
   require(zoo)
 
-  if (is.na(match(class(dates), c("Date", "character", "factor"))))
-        stop("Invalid argument: 'class(dates)' must be in c('Date', 'character', 'factor')")
-
-  if (is.na(match(class(dates), c("Date"))))
-      dates <- as.Date(dates, format= date.fmt)
+  if (is.na(match(class(dates)[1], c("Date", "POSIXct", "character", "factor"))))
+      stop("Invalid argument: 'class(dates)' must be in c('Date', 'POSIXct, 'character', 'factor')")
       
   if (length(x) != length(dates)) 
-     stop(paste("Invalid argument: length(x) != length(dates) (", length(x), "!=", length(dates), ")", sep="") )
+     stop("Invalid argument: length(x) != length(dates) (", length(x), "!=", length(dates), ")")
 
-  # Transforming into a 'zoo' type the values in the time series
-  b <- as.zoo(x)
+  # If 'dates' is a factor or character, it have to be converted into 'Date' class, 
+  # using the date format  specified by 'date.fmt'
+  if ( class(dates)[1] %in% c("factor", "character") ) {
+     ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
+            grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |
+            grepl("%p", date.fmt, fixed=TRUE) | grepl("%X", date.fmt, fixed=TRUE),
+            subdaily <- TRUE, subdaily <- FALSE )
+     ifelse(subdaily, dates <- as.POSIXct(dates, format= date.fmt), 
+                      dates <- as.Date(dates, format= date.fmt) )  
+  } # IF end 
 
-  # Setting as the date of the 'zoo' object the dates provided by 'dates'
-  time(b) <- as.Date(dates, format= date.fmt)
-
-  return( b )
+  return( zoo(x, dates) )
 
 }  # 'vector2zoo' END

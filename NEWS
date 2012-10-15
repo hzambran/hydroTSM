@@ -2,7 +2,9 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 
 0.3-6	XX-Jul-2012
-        o 'hydrokrige'               : fixed interpolation error raised for some constant value maps.
+        o 'vector2zoo' : -) now it handles sub-daily values 
+                         -) 'dates' argument accepts 'POSIXct' objects
+        o 'hydrokrige' : fixed interpolation error raised for some constant value maps.
 
 0.3-5	04-Jul-2012
         o 'dwi.zoo'                  : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' applied 
