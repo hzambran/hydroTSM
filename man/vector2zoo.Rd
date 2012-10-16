@@ -20,7 +20,7 @@ numeric vector
 character, factor, Date or POSIXct object with the dates corresponding to each element of \code{x}. Valid object class for \code{dates} are: \code{character, factor, Date, POSIXct}
 }
   \item{date.fmt}{
-character indicating the format in which the dates are stored in \var{dates}, e.g. \kbd{\%Y-\%m-\%d}. See \code{format} in \code{\link[base]{as.Date}}. \cr
+character indicating the format in which the dates are stored in \var{dates}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}}. \cr
 ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="character"}.
 }
 }

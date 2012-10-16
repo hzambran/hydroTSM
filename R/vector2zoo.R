@@ -14,7 +14,7 @@
 # Updates   : 01-Oct-2009                                                      #
 #             06-Oct-2010                                                      #
 #             05-May-2011                                                      #
-#             15-Oct-2012
+#             15-Oct-2012 ; 16-Oct-2012                                        #                    
 ################################################################################
 #  Transform a numeric vector and its corresponding dates into a 'zoo' object
 
@@ -26,8 +26,8 @@ vector2zoo <- function(x, dates, date.fmt="%Y-%m-%d") {
   # Requiring the Zoo Library
   require(zoo)
 
-  if (is.na(match(class(dates)[1], c("Date", "POSIXct", "character", "factor"))))
-      stop("Invalid argument: 'class(dates)' must be in c('Date', 'POSIXct, 'character', 'factor')")
+  if (is.na(match(class(dates)[1], c("Date", "POSIXct", "POSIXlt", "character", "factor"))))
+      stop("Invalid argument: 'class(dates)' must be in c('Date', 'POSIXct', 'POSIXlt', 'character', 'factor')")
       
   if (length(x) != length(dates)) 
      stop("Invalid argument: length(x) != length(dates) (", length(x), "!=", length(dates), ")")
@@ -38,9 +38,9 @@ vector2zoo <- function(x, dates, date.fmt="%Y-%m-%d") {
      ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
             grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |
             grepl("%p", date.fmt, fixed=TRUE) | grepl("%X", date.fmt, fixed=TRUE),
-            subdaily <- TRUE, subdaily <- FALSE )
-     ifelse(subdaily, dates <- as.POSIXct(dates, format= date.fmt), 
-                      dates <- as.Date(dates, format= date.fmt) )  
+            subdaily.date.fmt <- TRUE, subdaily.date.fmt <- FALSE )
+     ifelse(subdaily.date.fmt, dates <- as.POSIXct(dates, format= date.fmt), 
+                               dates <- as.Date(dates, format= date.fmt) )  
   } # IF end 
 
   return( zoo(x, dates) )

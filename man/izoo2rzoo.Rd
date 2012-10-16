@@ -8,7 +8,7 @@
  Irregular Zoo -> Regular Zoo
 }
 \description{
-It takes an irregular (with missing dates) zoo object and convert it into a regularly spaced object within the time period defined by \code{from} and \code{to}, by filling the missing values with 'NA'. 
+It takes an irregular zoo object (with missing values for some dates) and converts it into a regularly spaced zoo object within the time period defined by \code{from} and \code{to}, by filling the missing dates with \sQuote{NA}
 }
 \usage{
 izoo2rzoo(x, ...)
@@ -21,19 +21,22 @@ izoo2rzoo(x, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-time series of zoo class (very likely read with some user-defined procedure, and with some missing values for particular days/months/years)
+irregular zoo object (vector or matrix) representing a time series (very likely read with some user-defined procedure, and with some missing values for particular days/months/years)
 }
   \item{from}{
-Character indicating the starting date for creating the sequence. It has to be in the format indicated by \code{date.fmt}. The default value corresponds to the date of the first element of \code{x}.
+Character indicating the starting date for creating the regularly spaced zoo object. The default value corresponds to the date of the first element of \code{x} \cr
+It has to be in the format indicated by \code{date.fmt}. 
 }
   \item{to}{
-Character indicating the ending date for creating the sequence. It has to be in the format indicated by \code{date.fmt}. The default value corresponds to the date of the last element of \code{x}.
+Character indicating the ending date for creating the regularly spaced zoo object. The default value corresponds to the date of the last element of \code{x} \cr
+It has to be in the format indicated by \code{date.fmt}.
 }
   \item{date.fmt}{
-character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}}. 
+character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}} 
 }
   \item{tstep}{
-character, indicating the time step used for sampling \code{x}, e.g., \kbd{days}, \kbd{months}, \kbd{years}.
+character, indicating the time step used for creating the time sequence going from \code{from} to \code{to} that will be used as \code{time(x)} \cr
+Valid values are (but not limited to) \kbd{days}, \kbd{months}, \kbd{years}, \kbd{hours}
 }
   \item{\dots}{
 further arguments passed to or from other methods
@@ -42,13 +45,13 @@ further arguments passed to or from other methods
 \details{
 If the full time period of \code{x} is a subset of the time period defined by \code{from} and \code{to}, the time period of the resulting zoo is the one defined by \code{from} and \code{to}, assigning 'NA' to all the dates in which \code{x} do not have a value.
 }
-%%\value{
-%%  ~Describe the value returned
+\value{
+a regularly spaced zoo object, with values given by \code{x} and time stamps going from \code{from} to \code{to} at intervals defined by \code{tsteps}
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
-%%}
+}
 %%\references{
 %% ~put references to the literature/web site here ~
 %%}
@@ -64,6 +67,7 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 \seealso{
 \code{\link{vector2zoo}}
 }
+
 \examples{
 ##
 ## Example 1: Adding NA for February 29th to an existing zoo object
@@ -74,7 +78,7 @@ dates <- c("1964-02-25", "1964-02-26", "1964-02-27", "1964-02-28", "1964-03-01",
            "1964-03-02", "1964-03-03", "1964-03-04", "1964-03-05")
 
 # From 'character' to 'Date' class
-#dates <- as.Date(dates)
+dates <- as.Date(dates)
 
 ## From 'numeric' to 'zoo' class
 x <- zoo(x, dates) # Feb 29th is still missing
@@ -93,7 +97,7 @@ y <- izoo2rzoo(x, from="1964-02-01", to="1964-03-31")
 
 
 ##
-## Example 3: Working with a zoo matrix:
+## Example 3: Working with a zoo matrix
 Y <- cbind(x,x)
 
 # Adding a missing value (NA in this case) for Feb 29th in all the columns of Y
@@ -101,7 +105,7 @@ rY <- izoo2rzoo(Y, from="1964-02-25", to="1964-03-05")
 
 
 ##
-## Example 4: Working with hourly data, from 01:00 to 10:00 on December 12th 2000
+## Example 4: Working with hourly data, from 01:00 to 10:00 on 12th December 2000
 dates  <- ISOdatetime(2000, 12, 12, 1:10, 0, 0)
 values <- 1:10
 x      <- zoo(values, dates)
