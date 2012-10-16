@@ -11,6 +11,7 @@
 # Started: June 04, 2009                                                       #
 # Updates: 25-Feb-2011 ; 04-Nov-2011                                           #
 #          02-May-2012                                                         #
+#          16-Oct-2012                                                         #
 ################################################################################
 
 # Plot the flow Duration Curve in the original time units of 'x' and
@@ -57,13 +58,9 @@ fdc.default <- function (x,
        return(Q.index)
      } # end
 
-     if (log == "y") {
-       x.zero.index <- which(x==0)
-       if (length(x.zero.index) > 0 ) {
-        x <- x[-x.zero.index]
-        if (verbose) message("[Warning: all 'x' equal to zero will not be plotted]")
-       } # IF end
-     } # IF end
+     # Detecting zero values
+     x.zero.index <- which(x==0)
+     nzeros <- length(x.zero.index)
 
      # If 'x' is of class 'ts' or 'zoo'
      #if ( !is.na( match( class(x), c("ts", "zoo") ) ) )
@@ -98,6 +95,13 @@ fdc.default <- function (x,
      # dc <- 1 - Fn(x) + 1/n
 
      if (plot) {
+  
+          if (log == "y") {
+            if (nzeros > 0) {
+              x <- x[-x.zero.index]
+              if (verbose) message("[Note: all 'x' equal to zero (", nzeros, ") will not be plotted ]")
+            } # IF end
+          } # IF end
 
           if ( is.null(ylim) ) ylim <- range(x, na.rm=TRUE)
              
@@ -217,11 +221,11 @@ fdc.matrix <- function (x,
     n <- ncol(x)
     j <- 1 # starting column for the analysis
 
-    if (verbose) message( paste("[Column: ", format(j, width=10, justify="left"),
-                              " : ", format(j, width=3, justify="left"), "/",
-                              n, " => ",
-                              format(round(100*j/n,2), width=6, justify="left"),
-                              "% ]", sep="") )
+    if (verbose) message("[Column: ", format(j, width=10, justify="left"),
+                          " : ", format(j, width=3, justify="left"), "/",
+                          n, " => ",
+                          format(round(100*j/n,2), width=6, justify="left"),
+                          "% ]" )
 
     # Computing and plotting the Flow Duration Curve for the first column
     fdc(x=x[,1], plot=plot, log=log, pch=pch[1], col=col[1], lty=lty[1],
@@ -232,11 +236,11 @@ fdc.matrix <- function (x,
     # Plotting the Flow Duration Curves for all the columns but the first one
     sapply(2:n, function(j) {
 
-          if (verbose) message( paste("[Column: ", format(j, width=10, justify="left"),
-                                  " : ", format(j, width=3, justify="left"), "/",
-                                  n, " => ",
-                                  format(round(100*j/n,2), width=6, justify="left"),
-                                  "% ]", sep="") )
+          if (verbose) message("[Column: ", format(j, width=10, justify="left"),
+                                " : ", format(j, width=3, justify="left"), "/",
+                                n, " => ",
+                                format(round(100*j/n,2), width=6, justify="left"),
+                                "% ]")
 
          # Computing and plotting the Flow duration Curve for the other columns
          tmp <- sort(x[,j])
