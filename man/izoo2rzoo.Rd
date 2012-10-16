@@ -30,7 +30,7 @@ Character indicating the starting date for creating the sequence. It has to be i
 Character indicating the ending date for creating the sequence. It has to be in the format indicated by \code{date.fmt}. The default value corresponds to the date of the last element of \code{x}.
 }
   \item{date.fmt}{
-character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \code{format} in \code{\link[base]{as.Date}}. 
+character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}}. 
 }
   \item{tstep}{
 character, indicating the time step used for sampling \code{x}, e.g., \kbd{days}, \kbd{months}, \kbd{years}.
@@ -65,29 +65,52 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 \code{\link{vector2zoo}}
 }
 \examples{
-x <- 1:9
+##
+## Example 1: Adding NA for February 29th to an existing zoo object
 
-## February 29th is missing:
+# dummy values and dates (February 29th is not present !)
+x <- 1:9
 dates <- c("1964-02-25", "1964-02-26", "1964-02-27", "1964-02-28", "1964-03-01", 
            "1964-03-02", "1964-03-03", "1964-03-04", "1964-03-05")
 
-## From 'character' to 'Date' class
-dates <- as.Date(dates)
+# From 'character' to 'Date' class
+#dates <- as.Date(dates)
 
 ## From 'numeric' to 'zoo' class
-x <- vector2zoo(x, dates) #Feb 29th is still missing
+x <- zoo(x, dates) # Feb 29th is still missing
 
-## Feb 29th is added to 'y' with a missing value
-y <- izoo2rzoo(x, from=dates[1], to=dates[length(dates)])
+## Adding a missing value (NA in this case) for Feb 29th
+y <- izoo2rzoo(x)
 
-## Creating a regular sequence from February 1st to the end of March,
-## assigning 'NA' to the days in which 'x' do not have a value.
+## checking the new length
+length(y) # 1 element more than the original 'x' (Feb 29th)
+
+
+##
+## Example 2: Extending the original 'x' object from February 1st to the end of 
+#  March, assigning 'NA' to the days in which 'x' do not have a value.
 y <- izoo2rzoo(x, from="1964-02-01", to="1964-03-31")
 
-## Working with a zoo matrix:
+
+##
+## Example 3: Working with a zoo matrix:
 Y <- cbind(x,x)
 
+# Adding a missing value (NA in this case) for Feb 29th in all the columns of Y
 rY <- izoo2rzoo(Y, from="1964-02-25", to="1964-03-05")
+
+
+##
+## Example 4: Working with hourly data, from 01:00 to 10:00 on December 12th 2000
+dates  <- ISOdatetime(2000, 12, 12, 1:10, 0, 0)
+values <- 1:10
+x      <- zoo(values, dates)
+
+# removing values from 02:00 to 05:00 (not present at all in 'x', not even NA !)
+x <- x[-c(2:5)]
+
+#  Adding missing values (NA in this case) from 02:00 to 05:00
+y <-  izoo2rzoo(x, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", tstep="hours")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
