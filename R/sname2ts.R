@@ -127,7 +127,7 @@ sname2ts <- function(x, sname, dates, date.fmt="%Y-%m-%d", var.type,
      from     <- dates[1]
      from.pos <- 1
   } else {
-      from <- as.Date(from, format=date.fmt)
+      from <- zoo::as.Date(from, format=date.fmt)
       if ( length( which(dates == from) ) > 0 ) {
         from.pos <- which( dates == from )
        } else stop("Invalid argument: 'from' is not in 'dates' ")
@@ -138,7 +138,7 @@ sname2ts <- function(x, sname, dates, date.fmt="%Y-%m-%d", var.type,
      to.pos <- length(dates)
      to     <- dates[to.pos]     
   } else {
-      to <- as.Date(to, format=date.fmt)
+      to <- zoo::as.Date(to, format=date.fmt)
       if ( length( which(dates == to) ) > 0 ) {
         to.pos <- which( dates == to )
       } else stop("Invalid argument: 'to' is not in 'dates' ")
