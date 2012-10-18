@@ -1,11 +1,14 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 
-0.3-6	XX-Oct-2012 (under-development)
+0.3-6	18-Oct-2012
         o 'vector2zoo' : -) now it handles sub-daily values 
                          -) 'dates' argument accepts 'POSIXct' & 'POSIXlt' objects
         o 'izoo2rzoo'  : -) now it handles sub-daily values 
                          -) 'dates' argument accepts 'POSIXct' & 'POSIXlt' objects
+        o 'sfreq'      : was transformed into a wrapper to the 'xts::periodicity' function, in order to allow identification of more
+                         sampling frequencies: 'minute', 'hourly', 'daily', 'weekly', 'monthly', 'quarterly' and 'annual' (instead of 
+                         'yearly' as used in xts)
         o 'fdc'        : zero discharge value(s) are now removed ONLY when 'log="y"' AND 'plot=TRUE' (both default values of the function).
                          Up to hydroTSM 0.3-5, zero values were removed when 'log="y"' (default value of the function), even if 'plot=FALSE' 
                          (thanks to Giovanni Forzieri !)
@@ -14,6 +17,7 @@ NEWS/ChangeLog for hydroTSM
         o 'sname2plot' : now it works with date.fmt="%Y%m%d" (e.g. 20000101), which were previously interpreted as numbers and not as dates, 
                          leading to an error
         o 'hydrokrige' : fixed interpolation error raised for some constant value maps
+        o DESCRIPTION  : 'Author@R' field was replaced by 'Authors@R'          
 
 0.3-5	04-Jul-2012
         o 'dwi.zoo'                  : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' applied 
@@ -43,7 +47,7 @@ NEWS/ChangeLog for hydroTSM
         o 'fdcu': new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend
         
 0.3-3	07-Nov-2011
-        o new 'fdc.zoo', which works with vectors, matrixes and/or data frames
+        o new 'fdc.zoo', which works with vectors, matrices and/or data frames
         o 'fdc.matrix'     : -) the flow duration curve of each column is now returned as an output (although not in an efficient way, yet)
           'fdc.data.frame'   -) axis numbers and labels are now drawn only once.
                              -) when missing 'ylim', it is now correctly computed when some series have missing values.
@@ -127,11 +131,11 @@ NEWS/ChangeLog for hydroTSM
 			      -) fixed documentation of the 'out.unit' argument.
 			      -) argument 'tstep' is not required any more, because it is not used any longer.
 			         It is kept for backwards compatibility purposes only.
-        o 'matrixplot       : -) it works with zoo objects as well (zoo matrixes/data.frames)
+        o 'matrixplot       : -) it works with zoo objects as well (zoo matrices/data.frames)
         o 'izoo2rzoo'       : -) new 'izoo2rzoo.zoo'
                               -) it works with xts objects as well. 
         o 'smry'            : -) new 'smry.zoo'	
-                              -) much faster than before for matrixes and data.frames 	                            
+                              -) much faster than before for matrices and data.frames 	                            
                               -) it works with xts objects as well. 			      
 	o Some 'as.Date' calls were changed to 'zoo::as.Date', in order to work properly with zoo >= 1.7-2
 
