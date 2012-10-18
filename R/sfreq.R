@@ -29,6 +29,6 @@ sfreq <- function(x, min.year=1800) {
    
    if (out == "yearly") out <- "annual"
 
-  return(sfreq)
+  return(out)
 
 } # 'sfreq' END
