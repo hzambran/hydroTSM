@@ -1,13 +1,21 @@
-########################################################################
-#  'sname2plot': Given a data.frame whose columns contains the ts      #
-#             (without missing dates) of several gauging stations, it  #
-#             takes the name of one gauging station and plots 9 graphs #
-#             (see 'hydroplot' description)                            #
-########################################################################
-# Author : Mauricio Zambrano-Bigiarini                                 # 
-# Started: 17-Dic-2008                                                 #
-# Updates: 19-Apr-2011 ; 10-Aug-2011                                   #
-########################################################################
+# File sname2plot.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2011 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+#  'sname2plot': Given a data.frame whose columns contains the ts              #
+#             (without missing dates) of several gauging stations, it          #
+#             takes the name of one gauging station and plots 9 graphs         #
+#             (see 'hydroplot' description)                                    #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         # 
+################################################################################
+# Started: 17-Dic-2008                                                         #
+# Updates: 19-Apr-2011 ; 10-Aug-2011                                           #
+#          18-Oct-2012                                                         #
+################################################################################
 sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        ptype="ts+boxplot+hist",
 		       pfreq="dma",                      
@@ -73,11 +81,11 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
         stop("'ptype' valid values are: 'ts', 'ts+boxplot', 'ts+hist', 'ts+boxplot+hist'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
-  if ( class(dates) == "numeric" ) dates <- as.Date(x[, dates], format= date.fmt)
+  if ( class(dates) == "numeric" ) dates <- zoo::as.Date(x[, dates], format= date.fmt)
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
+  if ( class(dates) == "factor" ) dates <- zoo::as.Date(dates, format= date.fmt)
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
@@ -103,7 +111,7 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
      from     <- dates[1]
      from.pos <- 1
   } else {
-      from <- as.Date(from, format=date.fmt)
+      from <- zoo::as.Date(from, format=date.fmt)
       if ( length( which(dates == from) ) > 0 ) {
         from.pos <- which( dates == from )
        } else stop("Invalid argument: 'from' is not in 'dates' ")
@@ -114,7 +122,7 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
      to.pos <- length(dates)
      to     <- dates[to.pos]     
   } else {
-      to <- as.Date(to, format=date.fmt)
+      to <- zoo::as.Date(to, format=date.fmt)
       if ( length( which(dates == to) ) > 0 ) {
         to.pos <- which( dates == to )
       } else stop("Invalid argument: 'to' is not in 'dates' ")
