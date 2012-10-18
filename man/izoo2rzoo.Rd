@@ -8,7 +8,7 @@
  Irregular Zoo -> Regular Zoo
 }
 \description{
-It takes an irregular zoo object (with missing values for some dates) and converts it into a regularly spaced zoo object within the time period defined by \code{from} and \code{to}, by filling the missing dates with \sQuote{NA}
+It takes an irregular zoo object (with non-existing values for some dates) and converts it into a regularly spaced zoo object within the time period defined by \code{from} and \code{to}, by filling the missing dates with \sQuote{NA}
 }
 \usage{
 izoo2rzoo(x, ...)

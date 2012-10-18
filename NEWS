@@ -41,7 +41,6 @@ NEWS/ChangeLog for hydroTSM
                                        -) fixed bug in the labelling of columns of the output object (only for data.frame/matrix objects)
         o 'hydrokrige'               : -) fixed visualisation error "Error using packet 1. 'breaks' are not unique".
                                        
-        
 0.3-4	03-May-2012
         o 'fdc' : new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend
         o 'fdcu': new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend
