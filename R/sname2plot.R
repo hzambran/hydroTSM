@@ -6,9 +6,9 @@
 
 ################################################################################
 #  'sname2plot': Given a data.frame whose columns contains the ts              #
-#             (without missing dates) of several gauging stations, it          #
-#             takes the name of one gauging station and plots 9 graphs         #
-#             (see 'hydroplot' description)                                    #
+#                (without missing dates) of several gauging stations, it       #
+#                takes the name of one gauging station and plots 9 graphs      #
+#                (see 'hydroplot' description)                                 #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         # 
 ################################################################################
@@ -81,7 +81,7 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
         stop("'ptype' valid values are: 'ts', 'ts+boxplot', 'ts+hist', 'ts+boxplot+hist'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
-  if ( class(dates) == "numeric" ) dates <- zoo::as.Date(x[, dates], format= date.fmt)
+  if ( class(dates) == "numeric" ) dates <- zoo::as.Date(as.character(x[, dates]), format= date.fmt)
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
