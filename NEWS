@@ -6,12 +6,14 @@ NEWS/ChangeLog for hydroTSM
                          -) 'dates' argument accepts 'POSIXct' & 'POSIXlt' objects
         o 'izoo2rzoo'  : -) now it handles sub-daily values 
                          -) 'dates' argument accepts 'POSIXct' & 'POSIXlt' objects
-        o 'hydrokrige' : fixed interpolation error raised for some constant value maps.
         o 'fdc'        : zero discharge value(s) are now removed ONLY when 'log="y"' AND 'plot=TRUE' (both default values of the function).
                          Up to hydroTSM 0.3-5, zero values were removed when 'log="y"' (default value of the function), even if 'plot=FALSE' 
                          (thanks to Giovanni Forzieri !)
         o 'sname2ts'   : now it works with date.fmt="%Y%m%d" (e.g. 20000101), which were previously interpreted as numbers and not as dates, 
                          leading to an error (thanks to Vishnu Pandey !)
+        o 'sname2plot' : now it works with date.fmt="%Y%m%d" (e.g. 20000101), which were previously interpreted as numbers and not as dates, 
+                         leading to an error
+        o 'hydrokrige' : fixed interpolation error raised for some constant value maps
 
 0.3-5	04-Jul-2012
         o 'dwi.zoo'                  : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' applied 
