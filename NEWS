@@ -10,6 +10,8 @@ NEWS/ChangeLog for hydroTSM
         o 'fdc'        : zero discharge value(s) are now removed ONLY when 'log="y"' AND 'plot=TRUE' (both default values of the function).
                          Up to hydroTSM 0.3-5, zero values were removed when 'log="y"' (default value of the function), even if 'plot=FALSE' 
                          (thanks to Giovanni Forzieri !)
+        o 'sname2ts'   : now it works with date.fmt="%Y%m%d" (e.g. 20000101), which were previously interpreted as numbers and not dates, 
+                         leading to an error (thanks to Vishnu Pandey !)
 
 0.3-5	04-Jul-2012
         o 'dwi.zoo'                  : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' applied 
