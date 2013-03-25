@@ -2,8 +2,8 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 
 0.3-7	under-development
-        o new dataset: 'KarameaAtGorge', with hourly streamflows for the Karamea River(New Zeland), provided by the National Institute of Water and Atmospheric Research 
-          (http://www.niwa.co.nz/), thanks to the gentle collaboration of Shailesh Singh.
+        o new dataset: 'KarameaAtGorgeQts', with hourly streamflows for the Karamea River(New Zeland), provided by the National Institute of 
+          Water and Atmospheric Research (http://www.niwa.co.nz/), thanks to the gentle collaboration of Shailesh Singh.
 
 0.3-6	18-Oct-2012
         o 'vector2zoo' : -) now it handles sub-daily values 
