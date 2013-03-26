@@ -23,59 +23,43 @@ subdaily2daily <-function(x, ...) UseMethod("subdaily2daily")
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 25-Mar-2013                                                         #
-# Updates:                                                                     #
+# Updates: 26-Mar-2013                                                         #
 ################################################################################
-daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
+subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
 
      # Checking that the user provied a valid class for 'x'   
      valid.class <- c("xts")    
      if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
         stop("Invalid argument: 'class(x)' must be 'xts' !!")
 
+     # Checking the user provide a valid value for 'FUN'
+     if (missing(FUN))
+       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
+
      # Requiring the xts Library (Z’s ordered observations)
      require(xts)
 
-     apply.daily(x=x, FUN=FUN, na.rm=na.rm)
+     # Daily aggregation
+     d <- apply.daily(x=x, FUN=FUN, na.rm=na.rm)
+
+     # Removing time attibute, but not the dates
+     d <- xts:::.drop.time(d)
+
+     # Replacing the NaNs by 'NA.
+     # mean(NA:NA, na.rm=TRUE) == NaN
+     nan.index <- which(is.nan(d))
+     if ( length(nan.index) > 0 ) d[nan.index] <- NA
+  
+     # Replacing all the Inf and -Inf by NA's
+     # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
+     inf.index <- which(is.infinite(d))
+     if ( length(inf.index) > 0 ) d[inf.index] <- NA 
+
+     if (ncol(d) == 1) d <- zoo::zoo(as.numeric(d), time(d))
+
+     return(d)
 
 } # 'subdaily2daily.default' end
-
-
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 09-Aug-2011                 #
-# Updates: 09-Aug-2011                 #
-########################################
-daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
-
-  # Checking the user provide a valid value for 'FUN'
-  if (missing(FUN))
-     stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values")
-
-  # Checking the user provide a valid value for the sampling frequency of 'x'
-  if (sfreq(x) != "daily")
-      stop(paste("Invalid argument: 'x' is not a daily ts, it is a ", sfreq(x), " ts", sep="") )
-      
-  # Monthly index for 'x'
-  dates  <- time(x)
-  months <- zoo::as.Date( as.yearmon( time(x) ) )
-
-  # Generating a Monthly time series of Total Monthly Precipitation (Monthly sum of daily values)
-  tmp <-aggregate( x, by=months, FUN, na.rm= na.rm )
-  
-  # Replacing the NaNs by 'NA.
-  # mean(NA:NA, na.rm=TRUE) == NaN
-  nan.index <- which(is.nan(tmp))
-  if ( length(nan.index) > 0 ) { tmp[nan.index] <- NA }
-  
-  # Replacing all the Inf and -Inf by NA's
-  # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
-  inf.index <- which(is.infinite(tmp))
-  if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
-
-  return(tmp)
-
-} # 'daily2monthly.zoo' end
-
 
 
 ########################################
