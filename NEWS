@@ -2,8 +2,8 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 
 0.3-7	under-development
-        o new dataset: 'KarameaAtGorgeQts', with hourly streamflows for the Karamea River(New Zeland), provided by the National Institute of 
-          Water and Atmospheric Research (http://www.niwa.co.nz/), thanks to the gentle collaboration of Shailesh Singh.
+        o new dataset: 'KarameaAtGorgeQts', with hourly streamflows for the Karamea River(New Zeland), provided by the National Institute 
+          of Water and Atmospheric Research (http://www.niwa.co.nz/), thanks to the gentle collaboration of Shailesh Singh.
 
 0.3-6	18-Oct-2012
         o 'vector2zoo' : -) now it handles sub-daily values 
@@ -24,10 +24,10 @@ NEWS/ChangeLog for hydroTSM
         o DESCRIPTION  : 'Author@R' field was replaced by 'Authors@R'          
 
 0.3-5	04-Jul-2012
-        o 'dwi.zoo'                  : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' applied 
-                                       to a matrix or data.frame.
-                                       This error appeared after an update of the zoo package, and did not imply any error in the computation, 
-                                       only in the display of the years/months
+        o 'dwi.zoo'                  : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' 
+                                       applied to a matrix or data.frame.
+                                       This error appeared after an update of the zoo package, and did not imply any error in the 
+                                       computation, only in the display of the years/months
         o 'izoo2rzoo.zoo'            : now works properly with matrix and data.frame objects 
         o 'hypsometric'              : now is able to deal with raster objects with more than 1 band 
                                        (thanks to Jan Schwanbeck for reporting the issue and proposing a solution) 
