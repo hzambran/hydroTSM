@@ -1,0 +1,118 @@
+%%File subdaily2daily.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
+\name{subdaily2daily}
+\Rdversion{1.1}
+\alias{subdaily2daily}
+\alias{subdaily2daily.default}
+%\alias{subdaily2daily.data.frame}
+%\alias{subdaily2daily.matrix}
+
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+Sub-daily -> Daily
+}
+\description{
+Generic function for transforming a Sub-DAILY time series into a DAILY one
+}
+\usage{
+subdaily2daily(x, ...)
+
+\method{subdaily2daily}{default}(x, FUN, na.rm = TRUE, ...)
+
+%\method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+%        out.type = "data.frame", out.fmt="numeric", verbose = TRUE, ...)
+
+%\method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+%        out.type = "data.frame", out.fmt="numeric", verbose = TRUE, ...)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{x}{
+xts, data.frame or matrix object, with sub-daily time series. \cr
+Measurements at several gauging stations can be stored in a data.frame or matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} should correspond to the ID of each station (starting by a letter).
+}
+  \item{FUN}{
+Function that have to be applied for transforming from sub-daily to daily time step. (e.g., for precipitation \code{FUN=sum} and for temperature and streamflow ts, \code{FUN=mean}). \cr
+}
+  \item{na.rm}{
+Logical. Should missing values be removed? \cr
+-) \kbd{TRUE} : the daily values  are computed considering only those values different from NA \cr
+-) \kbd{FALSE}: if there is AT LEAST one NA sub-daily value within a day, the corresponing daily value(s) will be NA as well
+}
+%  \item{dates}{
+%numeric, factor or Date object indicating how to obtain the dates for each gauging station \cr
+%If \code{dates} is a number, it indicates the index of the column in \var{x} that stores the dates \cr
+%If \code{dates} is a factor, it is converted into Date class, using the date format specified by \code{date.fmt}  \cr
+%If \code{dates} is already of Date class, the code verifies that the number of days on it be equal to the number of elements in \code{x}
+%}
+%  \item{date.fmt}{
+%character indicating the format in which the dates are stored in \var{dates}, e.g. \kbd{\%Y-\%m-\%d}. See \code{format} in \code{\link[base]{as.Date}}. \cr
+%ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
+%}
+%  \item{out.type}{
+%Character that defines the desired type of output. Valid values are:  \cr
+%-) \kbd{data.frame}: a data.frame, with as many columns as stations are included in \code{x}, and row names indicating the month and year for each value. \cr
+%-) \kbd{db}        : a data.frame, with 4 columns will be produced. \cr
+%                 The first column (StationID) stores the ID of the station, \cr
+%                 The second column (Year) stores the year \cr
+%                 The third column (Month) stores the Month  \cr
+%                 The fourth column (Value) stores the numerical values corresponding to the values specified in the three previous columns. \cr
+%}
+%  \item{out.fmt}{
+%OPTIONAL. Only used when \code{x} is a matrix or data.frame object /cr
+%character, for selecting if the result will be a matrix/data.frame or a zoo object. Valid values are: \kbd{numeric}, \kbd{zoo}.
+%}
+%  \item{verbose}{
+%logical; if TRUE, progress messages are printed 
+%}
+  \item{\dots}{
+further arguments passed to or from other methods.
+}
+}
+%%\details{
+%%  ~~ If necessary, more details than the description above ~~
+%%}
+%%\value{
+%%  ~Describe the value returned
+%%  If it is a LIST, use
+%%  \item{comp1 }{Description of 'comp1'}
+%%  \item{comp2 }{Description of 'comp2'}
+%% ...
+%%}
+%%\references{
+%% ~put references to the literature/web site here ~
+%%}
+\author{
+Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+}
+%%\note{
+%%  ~~further notes~~
+%%}
+
+%% ~Make other sections like Warning with \section{Warning }{....} ~
+
+\seealso{
+\code{\link{daily2monthly}}, \code{\link{daily2annual}}, \code{\link{dm2seasonal}}, \code{\link{monthlyfunction}}, \code{\link{seasonalfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
+}
+\examples{
+## Loading the time series of hourly streamflows for the station Karamea at Gorge
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
+
+# Plotting the hourly streamflow values
+plot(x)
+
+## sub-daily to Daily
+d <- subdaily2daily(x, FUN=sum, na.rm=TRUE)
+
+# Plotting the daily streamflow values
+plot(d)
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{manip}
+%%\keyword{ ~kwd2 }
