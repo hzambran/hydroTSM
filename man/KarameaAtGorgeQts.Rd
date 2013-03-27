@@ -2,7 +2,7 @@
 \docType{data}
 \alias{KarameaAtGorgeQts}
 \title{
-Karamea at Gorge, time series of hourly streamflows.
+Karamea at Gorge, time series of hourly streamflows
 }
 \description{
 Time series with hourly streamflows for the Karamea River(New Zeland) measured at the gauging station "Gorge", for the period 01/Jan/1980 to 31/Dec/1985.

@@ -1269,6 +1269,9 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 
     # Getting the ID of each subcatchment
     subcatch.IDs <- c(rownames(SubCatchments.shp@data))
+    
+    if (verbose) message("[ Subb IDs: ]")
+    if (verbose) message( paste(subcatch.IDs, collate=" ") )
 
     # Number of Subcatchmnets
     nSub <- nrow(SubCatchments.shp@data)
