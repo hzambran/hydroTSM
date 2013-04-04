@@ -445,9 +445,6 @@
       if ( length(season.names) != 4 )
          stop("Invalid argument: 'season.names' must have 4 elements !")
 
-      # Requiring the Zoo Library (Zoo's ordered observations)
-      #require(xts)
-
       # Checking the length of x
       if ( sfreq(x) == "daily" ) {
         if (length(x) < 365 )

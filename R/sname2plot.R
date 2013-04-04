@@ -1,7 +1,7 @@
 # File sname2plot.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2008-2011 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -15,6 +15,7 @@
 # Started: 17-Dic-2008                                                         #
 # Updates: 19-Apr-2011 ; 10-Aug-2011                                           #
 #          18-Oct-2012                                                         #
+#          04-Abr-2013                                                         #
 ################################################################################
 sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        ptype="ts+boxplot+hist",
@@ -35,15 +36,17 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        dates, date.fmt = "%Y-%m-%d",
                        from, to, 
                        stype="default", 
+                       season.names=c("Winter", "Spring", "Summer", "Autumn"),
                        h=NULL
                        ) {
 
   # Checking the user provides 'sname'
-  if (missing(sname)) { stop("Missing argument: 'sname' must be provided")
+  if (missing(sname)) { 
+    stop("Missing argument: 'sname' must be provided")
   } else
     # Checking the the station provided for the user exist within 'x'
     if ( !(sname %in% colnames(x) ) )
-      stop(paste("Invalid argument: ' The station '", sname, "' is not a column name in 'x'", sep="") )
+      stop("Invalid argument: ' The station '", sname, "' is not a column name in 'x'")
 
   # If monthly or annual values are required, 'FUN' or 'var.type' must be provided
   if (pfreq %in% c("dma", "ma", "dm")) {
@@ -72,7 +75,8 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
   } # IF end
 
   # Checking the user provides the dates
-  if (missing(dates)) { stop("Missing argument: 'dates' must be provided")
+  if (missing(dates)) { 
+    stop("Missing argument: 'dates' must be provided")
   } else
       if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
           stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
@@ -81,11 +85,11 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
         stop("'ptype' valid values are: 'ts', 'ts+boxplot', 'ts+hist', 'ts+boxplot+hist'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
-  if ( class(dates) == "numeric" ) dates <- zoo::as.Date(as.character(x[, dates]), format= date.fmt)
+  if ( class(dates) == "numeric" ) dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- zoo::as.Date(dates, format= date.fmt)
+  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
@@ -97,7 +101,11 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
   # Checking that the user provied a valid value for 'stype'   
   valid.types <- c("default", "FrenchPolynesia")    
   if (length(which(!is.na(match(stype, valid.types )))) <= 0)  
-     stop("Invalid argument: 'stype' must be in c('default', 'FrenchPolynesia')")      
+     stop("Invalid argument: 'stype' must be in c('default', 'FrenchPolynesia')")  
+
+  # Checking that the user provied a valid argument for 'season.names'
+  if ( length(season.names) != 4 )
+    stop("Invalid argument: 'season.names' must have 4 elements !")    
 
   # 'ylab' value
   if ( missing(ylab) ) { 
@@ -111,7 +119,7 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
      from     <- dates[1]
      from.pos <- 1
   } else {
-      from <- zoo::as.Date(from, format=date.fmt)
+      from <- as.Date(from, format=date.fmt) # zoo::as.Date
       if ( length( which(dates == from) ) > 0 ) {
         from.pos <- which( dates == from )
        } else stop("Invalid argument: 'from' is not in 'dates' ")
@@ -122,14 +130,14 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
      to.pos <- length(dates)
      to     <- dates[to.pos]     
   } else {
-      to <- zoo::as.Date(to, format=date.fmt)
+      to <- as.Date(to, format=date.fmt) # zoo::as.Date
       if ( length( which(dates == to) ) > 0 ) {
         to.pos <- which( dates == to )
       } else stop("Invalid argument: 'to' is not in 'dates' ")
     } # ELSE end
 
   # Checking that 'to' is larger than 'from'
-  if (to.pos < from.pos) stop("Invalid argument: 'to' have to be located in a row below the row corresponding to 'from'")
+  if (to.pos < from.pos) stop("Invalid argument: 'to' have to be grater than 'from'")
 
   ################
   # column index of the station identified by 'sname' within 'x'
@@ -162,8 +170,9 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
               var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
               win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
               lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
-              cex.axis=cex.axis, col=col, stype=stype, h=h)
+              cex.axis=cex.axis, col=col, stype=stype, season.names=season.names, h=h)
 
-  } else stop( paste("The station name", sname, "does not exist in 'x'", sep=" ") )
+  } else stop("The station name", sname, "does not exist in 'x'")
 
 }  # 'sname2plot' END
+
