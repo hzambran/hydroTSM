@@ -1,3 +1,9 @@
+% File hydroplot.Rd
+% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%                                 http://cran.r-project.org/web/packages/hydroTSM/
+% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+% Distributed under GPL 2 or later
+
 \name{hydroplot}
 \Rdversion{1.1}
 \alias{sname2plot}
@@ -17,14 +23,18 @@ hydroplot(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",
           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
           col=c("blue", "lightblue", "lightblue"), 
-          from, to, date.fmt= "\%Y-\%m-\%d", stype="default", h=NULL, ...)
+          from, to, date.fmt= "\%Y-\%m-\%d", 
+          stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
+          h=NULL, ...)
 
 sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
            var.type, var.unit="units",main=NULL, xlab="Time", ylab=NULL,
            win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto",
            lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
            col=c("blue", "lightblue", "lightblue"), 
-           dates, date.fmt = "\%Y-\%m-\%d", from, to, stype="default", h=NULL )
+           dates, date.fmt = "\%Y-\%m-\%d", from, to, 
+           stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
+           h=NULL )
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -55,7 +65,7 @@ Character indicating how many plots are desired by the user. Valid values are: \
 -) \kbd{dm}      : Daily and Monthly values are plotted  \cr
 -) \kbd{ma}      : Monthly and Annual values are plotted \cr
 -) \kbd{o}       : Only the original zoo object is plotted, and \code{ptype} is changed to \kbd{ts} \cr
--) \kbd{seasonal}: Line and bloxplots of seasonal time series (winter="DJF", spring="MAM", summer="JJA", autum="SON"). When \code{pfreq} is \kbd{seasonal}, \code{ptype} is set to  \kbd{ts+boxplot}
+-) \kbd{seasonal}: Line and bloxplots of seasonal time series (see \code{stype} and \code{season.names}). When \code{pfreq} is \kbd{seasonal}, \code{ptype} is set to  \kbd{ts+boxplot}
 }
   \item{var.type}{
 ONLY required when \code{FUN} is missing. \cr
@@ -135,8 +145,12 @@ Character indicating the ending date for the values to be extracted. It must be 
   \item{stype}{
  OPTIONAL, only used when \code{pfreq=seasonal}. \cr
 character, indicating which weather seasons will be used for computing the output. Possible values are: \cr
--) \kbd{default}          =>  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;       "autumn"= Sep, Oct, Nov  \cr
--) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug, Sep;  "autumn"= Oct, Nov 
+-) \kbd{default}          =>  "winter"= DJF  = Dec, Jan, Feb;      "spring"= MAM = Mar, Apr, May;  "summer"= JJA  = Jun, Jul, Aug;       "autumn"= SON = Sep, Oct, Nov  \cr
+-) \kbd{FrenchPolynesia}  =>  "winter"= DJFM = Dec, Jan, Feb, Mar; "spring"= AM  = Apr, May;       "summer"= JJAS = Jun, Jul, Aug, Sep;  "autumn"= ON  = Oct, Nov 
+}
+  \item{season.names}{
+ OPTIONAL, only used when \code{pfreq=seasonal}. \cr
+character of length 4 indicating the names of each one of the weather seasons defined by \code{stype}.These names are only used for plotting purposes
 }
   \item{h}{
 OPTIONAL, only used when \code{pfreq=seasonal}, for plotting horizontal lines in each seasonal plot. \cr
@@ -189,6 +203,10 @@ hydroplot(OcaEnOnaQts, pfreq="o", from="1962-01-01", to="1962-12-31")
 
 ## seasonal plots
 hydroplot(OcaEnOnaQts, pfreq="seasonal", FUN=mean, stype="default")
+
+## custom season names (let's assume to be in the Southern Hemisphere)
+hydroplot(OcaEnOnaQts, pfreq="seasonal", FUN=mean, 
+          stype="default", season.names=c("Summer","Autumn", "Winter","Spring"))
 
 #############
 ## Loading the monthly time series of precipitation within the Ebro River basin.

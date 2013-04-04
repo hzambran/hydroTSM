@@ -1,3 +1,4 @@
+importFrom("zoo", is.zoo, as.Date)
 importFrom("e1071", skewness, kurtosis)
 #importFrom("maptools", readShapePoly)
 importFrom("gstat", krige, idw)
