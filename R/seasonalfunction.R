@@ -32,11 +32,13 @@ seasonalfunction.default <- function(x, FUN, na.rm=TRUE, type="default",...) {
 } # 'seasonalfunction.default' end
 
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 08-Aug-2011                 #
-# Updates: 08-Aug-2011                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 08-Aug-2011                                                         #
+# Updates: 08-Aug-2011                                                         #
+#          03-Abr-2013                                                         #
+################################################################################
 seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE, type="default", ...) {
 
      # Checking that the user provied a valid argument for 'FUN'
@@ -61,6 +63,7 @@ seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE, type="default", ...) {
      seasons <- factor( time2season( dates, type=type ), levels=seasons.lab )
      
      # 'as.numeric' is necessary for being able to change the names to the output
+     # zoo::aggregate
      s <- aggregate(x, by= seasons, FUN=FUN, na.rm= na.rm )
 
      # Replacing the NaNs by 'NA.
@@ -75,10 +78,16 @@ seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE, type="default", ...) {
      
      # Giving meaningful names to the output
      if ( (is.matrix(x)) | (is.data.frame(x)) ) {
+       # Getting the name of the actual seasons in 's'
+       cnames <- time(s)
+
        # Transformation needed in order to change the default names of the result
        s <- coredata(s)
      
-       s <- t(s) # For having the months' names as column names
+       s <- t(s) # For having the season' names as column names
+
+       # Giving the name of the seasons
+       colnames(s) <- cnames
      } # IF end
 
      return(s)

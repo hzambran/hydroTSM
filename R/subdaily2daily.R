@@ -39,7 +39,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
      # Requiring the xts Library (Z’s ordered observations)
      require(xts)
 
-     # Daily aggregation
+     # Daily aggregation. xts::apply.daily
      d <- apply.daily(x=x, FUN=FUN, na.rm=na.rm)
 
      # Removing time attibute, but not the dates
