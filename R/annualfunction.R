@@ -27,11 +27,13 @@ annualfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 } # 'annualfunction.default' end
 
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 09-Aug-2011                 #
-# Updates: 09-Aug-2011                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 09-Aug-2011                                                         #
+# Updates: 09-Aug-2011                                                         #
+#          03-Abr-2013                                                         #
+################################################################################
 annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 
      # If the user did not provide a title for the plots, this is created automatically
@@ -47,7 +49,7 @@ annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      
      #  'FUN' is applied to all the previously computed annual values to get the final result.
      if ( (is.matrix(x)) | (is.data.frame(x)) ) {
-       totals <- apply(totals, MARGIN=2, FUN=FUN, an.rm=na.rm)
+       totals <- apply(totals, MARGIN=2, FUN=FUN, na.rm=na.rm) 
      } else totals <- aggregate(totals, by = rep("value", length(totals)), FUN = FUN, na.rm = na.rm)
      
      # Replacing the NaNs by 'NA.
@@ -62,7 +64,7 @@ annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 
      # Giving meaningful names to the output
      if ( (is.matrix(x)) | (is.data.frame(x)) ) {
-       totals <- t(totals) # For having the months' names as column names
+       totals <- t(totals) # For having the years as column names
      } # IF end
 
      return(totals)

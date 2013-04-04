@@ -5,6 +5,7 @@ NEWS/ChangeLog for hydroTSM
         o new dataset: 'KarameaAtGorgeQts', with hourly streamflows for the Karamea River(New Zeland), provided by the National Institute 
           of Water and Atmospheric Research (http://www.niwa.co.nz/), thanks to the gentle collaboration of Shailesh Singh.
         o 'seasonalfunction.zoo': season names are now correctly given (instead of just numbers) for zoo objects that are matrix/data.frame as well
+        o 'annualfunction.zoo'  : 'na.rm' argument is now used when the input zoo object is a matrix/data.frame (previously was not used?)
 
 0.3-6	18-Oct-2012
         o 'vector2zoo' : -) now it handles sub-daily values 
