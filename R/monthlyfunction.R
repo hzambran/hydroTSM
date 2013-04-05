@@ -1,16 +1,16 @@
 # File monthlyfunction.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
-########################################################################
-# monthlyfunction: Generic function for applying any R function to     #
-#                  ALL the values in 'x' belonging to a given month    #
-########################################################################
-# Started: May 15th, 2009;                                             #
-# Updates: 31-Aug-2009 ; 25-Jul-2011 ; 08-Aug-2011                     #
-########################################################################
+################################################################################
+# monthlyfunction: Generic function for applying any R function to             #
+#                  ALL the values in 'x' belonging to a given month            #
+################################################################################
+# Started: May 15th, 2009;                                                     #
+# Updates: 31-Aug-2009 ; 25-Jul-2011 ; 08-Aug-2011                             #
+################################################################################
 # 'x   '    : variable of type 'zoo' or 'data.frame', with daily or monthly frequency
 # 'FUN'      : Function that will be applied to ALL the values in 'x' belonging to each one of the 12 months of the year
 # 'na.rm'    : Logical. Should missing values be removed?
@@ -25,28 +25,27 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
      if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
         stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
-     # Requiring the Zoo Library (Z’s ordered observations)
-     require(zoo)
-
      monthlyfunction.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
 
 } # 'monthlyfunction.default' end
 
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 25-Jul-2011                 #
-# Updates: 08-Aug-2011                 #
-#          05-Jun-2012                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 25-Jul-2011                                                         #
+# Updates: 08-Aug-2011                                                         #
+#          05-Jun-2012                                                         #
+#          05-Apr-2013                                                         #
+################################################################################
 monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 
      # Checking that the user provied a valid argument for 'FUN'
      if (missing(FUN))  stop("Missing argument: 'FUN' must be provided")
      
      # Checking the user provide a valid value for 'x'
-     if (is.na(match(sfreq(x), c("daily", "monthly"))))
-	stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") )
+     if (sfreq(x) %in% c("quarterly", "annual"))
+	stop("Invalid argument: 'x' is not a sub-daily, daily, weekly or monthly ts. 'x' is a ", sfreq(x), " ts" )
 
      # Monthly index for 'x'
      dates  <- time(x)
@@ -54,7 +53,7 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      months <- factor( month.abb[m], levels=unique(month.abb[m]) )
      
      # 'as.numeric' is necessary for being able to change the names to the output
-     totals <- aggregate(x, by= months, FUN=FUN, na.rm= na.rm )
+     totals <- aggregate(x, by= months, FUN=FUN, na.rm= na.rm ) # zoo::aggregate
 
      # Replacing the NaNs by 'NA.
      # NaN's are obtained when using the FUN=mean with complete NA values
@@ -78,11 +77,12 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
  
  
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 25-Jul-2011                 #
-# Updates: 08-Aug-2011                 #
-######################################## 
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 25-Jul-2011                                                         #
+# Updates: 08-Aug-2011                                                         #
+################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
 #             If 'dates' is a number, it indicates the index of the column in
@@ -113,8 +113,7 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
       stop("Invalid argument: 'out.type' must be in c('data.frame', 'db'")
 
    # Checking that the user provied a valid argument for 'FUN'
-   if (missing(FUN))
-         stop("Missing argument: 'FUN' must be provided")
+   if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
 
   # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {
@@ -135,13 +134,13 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {
     tmp   <- dates
-    dates <- zoo::as.Date(x[, dates], format= date.fmt)
+    dates <- as.Date(x[, dates], format= date.fmt) # zoo::as.Date
     x     <- x[-tmp]
   }  else
       # If 'dates' is a factor, it have to be converted into 'Date' class,
       # using the date format  specified by 'date.fmt'
       if ( class(dates) == "factor" ) {
-	    dates <- zoo::as.Date(dates, format= date.fmt)
+	    dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
 	  } else
 	    # If 'dates' is already of Date class, the following line verifies that
             # the number of days in 'dates' be equal to the number of element in the
@@ -221,17 +220,18 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
  } #'monthlyfunction.data.frame' END
  
  
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 25-Jul-2011                 #
-# Updates: 08-Aug-2011                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 25-Jul-2011                                                         #
+# Updates: 08-Aug-2011                                                         #
+################################################################################
 monthlyfunction.matrix <- function(x, FUN, na.rm=TRUE,
                                    dates, date.fmt="%Y-%m-%d",
                                    out.type="data.frame",
                                    verbose=TRUE,...) {
  x <- as.data.frame(x)
- #NextMethod("daily2annual")
+ #NextMethod("monthlyfunction")
  monthlyfunction.data.frame(x=x, FUN=FUN, na.rm=na.rm,
                             dates=dates, date.fmt=date.fmt,
                             out.type=out.type,
