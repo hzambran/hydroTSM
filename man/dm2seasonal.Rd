@@ -5,15 +5,17 @@
 \alias{dm2seasonal.zoo}
 \alias{dm2seasonal.data.frame}
 \alias{dm2seasonal.matrix}
+\alias{subdaily2seasonal}
 
 \title{
-Daily/Monthly -> Seasonal Values
+Sub-daily/Daily/Weekly/Monthly -> Seasonal Values
 }
 \description{
-Generic function for computing a seasonal value for every year of a daily/monthly time series.
+Generic function for computing a seasonal value for every year of a sub-daily/daily/weekly/monthly time series
 }
 \usage{
 dm2seasonal(x, ...)
+subdaily2seasonal(x, ...)
 
 \method{dm2seasonal}{default}(x, season, FUN, na.rm = TRUE, out.fmt="\%Y", ...)
 
@@ -28,7 +30,7 @@ dm2seasonal(x, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-zoo, xts, data.frame or matrix object, with daily or monthly time series. \cr
+zoo, xts, data.frame or matrix object, with sub-daily, daily, weekly or monthly time series. \cr
 Measurements at several gauging stations can be stored in a data.frame of matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
 }
   \item{season}{
@@ -101,12 +103,23 @@ For any year, the \code{FUN} value for the winter season (DJF), is computed cons
 , \code{\link{hydroplot}}, \code{\link{seasonalfunction}}, \code{\link{time2season}}, \code{\link{extract}}, \code{\link{daily2monthly}}, \code{\link{daily2annual}}, \code{\link{monthly2annual}}
 }
 \examples{
-## Loading the SanMartino precipitation data
+############
+## Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
-## Winter (DJF) mean values of precipitation for each year of 'x'
+## Winter (DJF) values of precipitation for each year of 'x'
+dm2seasonal(x, FUN=sum, season="DJF")
+
+############
+## Loading the HOURLY discharge data for the Karamea at Gorge streamgauge station
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
+
+## Mean winter (DJF) values of streamflow for each year of 'x'
 dm2seasonal(x, FUN=mean, season="DJF")
+subdaily2seasonal(x, FUN=mean, season="DJF") # same as above
+
 
 \dontshow{
 ############
@@ -115,14 +128,14 @@ dm2seasonal(x, FUN=mean, season="DJF")
 data(EbroPPtsMonthly)
 x <- EbroPPtsMonthly
 
-## Winter (DJF) mean values of precipitation for the first 3 stations 
+## Winter (DJF) values of precipitation for the first 3 stations 
 ## in 'EbroPPtsMonthly' (its first column stores the dates)
-dm2seasonal(x[,1:4], FUN=mean, season="DJF", dates=1)
+dm2seasonal(x[,1:4], FUN=sum, season="DJF", dates=1)
 
 ## The same previous example, but using a zoo object
 dates <- as.Date(x[,1]) # dates of the zoo object
 z     <- zoo(x[ ,2:ncol(x)], dates) # zoo creation
-dm2seasonal(z, FUN=mean, season="DJF")
+dm2seasonal(z, FUN=sum, season="DJF")
 }
 
 }

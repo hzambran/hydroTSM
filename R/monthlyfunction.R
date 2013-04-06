@@ -20,12 +20,10 @@ monthlyfunction <- function(x, ...) UseMethod("monthlyfunction")
 
 monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
-     # Checking that the user provied a valid class for 'x'   
-     valid.class <- c("xts", "zoo")    
-     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
-        stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
+    # Checking that 'x' is a zoo object
+    if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
 
-     monthlyfunction.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
+    monthlyfunction.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
 
 } # 'monthlyfunction.default' end
 
@@ -41,7 +39,7 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 
      # Checking that the user provied a valid argument for 'FUN'
-     if (missing(FUN))  stop("Missing argument: 'FUN' must be provided")
+     if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
      
      # Checking the user provide a valid value for 'x'
      if (sfreq(x) %in% c("quarterly", "annual"))

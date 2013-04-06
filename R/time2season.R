@@ -1,14 +1,24 @@
-#############################################################################
-# time2season : This function transforms a vector of dates into a vector of #
-#               seasons (summer, winter, autumm, spring), considering that: #
-#               winter = DJF: December, January, February                   #
-#               spring = MAM: March, April, May                             #
-#               summer = JJA: June, July, August                            #
-#               autumm = SON: September, October, November                  #
-#############################################################################
-# Started: 18-Mar-2009                                                      #
-# Updates: 09-Aug-2011                                                      #
-#############################################################################
+# File time2season.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+# time2season : This function transforms a vector of dates or date-time into a # 
+#               vector of seasons (summer, winter, autumm, spring),            #
+#               considering that, by default:                                  #
+#               winter = DJF: December, January, February                      #
+#               spring = MAM: March, April, May                                #
+#               summer = JJA: June, July, August                               #
+#               autumm = SON: September, October, November                     #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 18-Mar-2009                                                         #
+# Updates: 09-Aug-2011                                                         #
+#          05-Apr-2013                                                         #
+################################################################################
 
 # 'x'       : vector with the dates that have to be transformed. class(x) must be "Date"
 # 'out.fmt' : format of the output seasons. Possible values are:
@@ -20,7 +30,7 @@
 time2season <- function(x, out.fmt="months", type="default") {
 
  # Checking that 'class(x)==Date'
- if (is.na(match(class(x), c("Date") ) ) )
+ if ( ( !( class(x) %in% c("Date", "POSIXct", "POSIXt") ) ) && TRUE )
      stop("Invalid argument: 'x' must be of class 'Date'")
 
  # Checking the class of out.fmt

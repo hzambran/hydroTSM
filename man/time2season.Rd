@@ -3,10 +3,10 @@
 \alias{time2season}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Time character -> Seasonal character
+Date/DateTime character -> Seasonal character
 }
 \description{
-This function transforms a character vector of dates into a character vector of seasons (summer, winter, autumn, spring), depending on the value of \code{type}:  \cr
+This function transforms a character vector of Dates or DateTimes into a character vector of seasons (summer, winter, autumn, spring), depending on the value of \code{type}:  \cr
 
 When \code{type=default}
 -) winter = DJF: December, January, February   \cr              
