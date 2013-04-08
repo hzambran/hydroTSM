@@ -1,9 +1,18 @@
-###########################################################################
-# annualfunction: Generic function for computing monthly totals/mean values  #
-#               for a zoo object or data.frame                             #
-############################################################################
-#                  May 15th, 2009; Sep 01st 2009                           #
-############################################################################
+# File annualfunction.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+# annualfunction: Generic function for computing monthly totals/mean values    #
+#                 for a zoo object or data.frame                               #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+#  May 15th, 2009; Sep 01st 2009 ;                                             # 
+#  06-Apr-2013                                                                 #
+################################################################################
 # 'x   '  :  daily, monthly or annual 'zoo' or 'data.frame' object
 # 'FUN'   :  Function that will be applied to ALL the values in 'x' belonging to each weather season of the year
 #             (e.g., Fun can be some of c('mean', 'max', 'min', 'sd'))
@@ -14,13 +23,8 @@ annualfunction <- function(x, FUN, na.rm=TRUE,...) UseMethod("annualfunction")
 
 annualfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 
-     # Checking that the user provied a valid class for 'x'   
-     valid.class <- c("xts", "zoo")    
-     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
-         stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
-
-     # Requiring the Zoo Library
-     require(zoo)
+     # Checking that 'x' is a zoo object
+    if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
 
      annualfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
 

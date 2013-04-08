@@ -8,6 +8,8 @@
 # monthlyfunction: Generic function for applying any R function to             #
 #                  ALL the values in 'x' belonging to a given month            #
 ################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
 # Started: May 15th, 2009;                                                     #
 # Updates: 31-Aug-2009 ; 25-Jul-2011 ; 08-Aug-2011                             #
 ################################################################################
