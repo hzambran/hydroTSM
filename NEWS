@@ -12,6 +12,7 @@ NEWS/ChangeLog for hydroTSM
                                      artificially introduced to the annual ts of each column when 'na.rm=FALSE') => generally a very small difference
         o 'hydroplot'           : new argument 'season.names', to customise the names of the weather seasons used for plotting 
         o 'sname2plot'          : new argument 'season.names', to customise the names of the weather seasons used for plotting 
+        o 'daily2monthly'       : now it handles sub-daily and weekly values         
         o 'monthlyfunction'     : now it handles sub-daily values 
         o 'dm2seasonal'         : -) now it handles sub-daily and weekly values 
                                   -) improved examples

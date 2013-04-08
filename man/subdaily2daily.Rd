@@ -96,7 +96,7 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{daily2monthly}}, \code{\link{daily2annual}}, \code{\link{dm2seasonal}}, \code{\link{monthlyfunction}}, \code{\link{seasonalfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
+\code{\link{daily2monthly}}, \code{\link{daily2annual}},  \code{\link{subdaily2seasonal}}, \code{\link{dm2seasonal}}, \code{\link{monthlyfunction}}, \code{\link{seasonalfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
 }
 \examples{
 ## Loading the time series of hourly streamflows for the station Karamea at Gorge

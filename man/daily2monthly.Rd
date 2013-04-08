@@ -1,26 +1,32 @@
 %%File daily2monthly.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
-\name{daily2monthly}
+\name{(sub)daily2monthly}
 \Rdversion{1.1}
 \alias{daily2monthly}
 \alias{daily2monthly.default}
 \alias{daily2monthly.zoo}
 \alias{daily2monthly.data.frame}
 \alias{daily2monthly.matrix}
+\alias{subdaily2monthly}
+%\alias{subdaily2monthly.default}
+%\alias{subdaily2monthly.zoo}
+%\alias{subdaily2monthly.data.frame}
+%\alias{subdaily2monthly.matrix}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Daily -> Monthly
+(Sub)Daily -> Monthly
 }
 \description{
-Generic function for transforming a DAILY regular time series into a MONTHLY one
+Generic function for transforming a DAILY (sub-daily or weekly) regular time series into a MONTHLY one
 }
 \usage{
 daily2monthly(x, ...)
+subdaily2monthly(x, ...)
 
 \method{daily2monthly}{default}(x, FUN, na.rm = TRUE, ...)
 
@@ -99,15 +105,24 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{daily2annual}}, \code{\link{monthlyfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
+\code{\link{daily2annual}}, \code{\link{subdaily2daily}}, \code{\link{monthlyfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
 }
 \examples{
-## Loading the SanMartino precipitation data
+######################
+## Ex1: Loading the SanMartino DAILY precipitation data
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
-## Daily to Monthly
+## Daily to monthly
 m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
+
+######################
+## Ex2: Loading the time series of HOURLY streamflows for the station Karamea at Gorge
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
+
+# Sub-daily to monthly ts
+subdaily2monthly(x, FUN=mean, na.rm=TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
