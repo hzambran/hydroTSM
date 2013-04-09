@@ -53,7 +53,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
      inf.index <- which(is.infinite(d))
      if ( length(inf.index) > 0 ) d[inf.index] <- NA 
 
-     if (ncol(d) == 1) d <- zoo(coredata(d), as.Date(format(time(d), "%Y-%m-%d"))
+     if (NCOL(d) == 1) d <- zoo(as.numeric(d), as.Date(format(time(d), "%Y-%m-%d") ) )
 
      return(d)
 

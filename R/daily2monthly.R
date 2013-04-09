@@ -72,7 +72,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
   inf.index <- which(is.infinite(tmp))
   if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
 
-  if (ncol(tmp) == 1) tmp <- zoo(as.numeric(tmp), time(tmp))
+  if (NCOL(tmp) == 1) tmp <- zoo(as.numeric(tmp), time(tmp))
 
   return(tmp)
 
