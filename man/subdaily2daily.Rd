@@ -8,8 +8,9 @@
 \Rdversion{1.1}
 \alias{subdaily2daily}
 \alias{subdaily2daily.default}
-%\alias{subdaily2daily.data.frame}
-%\alias{subdaily2daily.matrix}
+\alias{subdaily2daily.zoo}
+\alias{subdaily2daily.data.frame}
+\alias{subdaily2daily.matrix}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
@@ -23,11 +24,13 @@ subdaily2daily(x, ...)
 
 \method{subdaily2daily}{default}(x, FUN, na.rm = TRUE, ...)
 
-%\method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
-%        out.type = "data.frame", out.fmt="numeric", verbose = TRUE, ...)
+\method{subdaily2daily}{zoo}(x, FUN, na.rm = TRUE, ...)
 
-%\method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
-%        out.type = "data.frame", out.fmt="numeric", verbose = TRUE, ...)
+\method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, dates=1, 
+           date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", verbose= TRUE, ...)
+
+\method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, dates=1, 
+           date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", verbose= TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -43,32 +46,23 @@ Logical. Should missing values be removed? \cr
 -) \kbd{TRUE} : the daily values  are computed considering only those values different from NA \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA sub-daily value within a day, the corresponing daily value(s) will be NA as well
 }
-%  \item{dates}{
-%numeric, factor or Date object indicating how to obtain the dates for each gauging station \cr
-%If \code{dates} is a number, it indicates the index of the column in \var{x} that stores the dates \cr
-%If \code{dates} is a factor, it is converted into Date class, using the date format specified by \code{date.fmt}  \cr
-%If \code{dates} is already of Date class, the code verifies that the number of days on it be equal to the number of elements in \code{x}
-%}
-%  \item{date.fmt}{
-%character indicating the format in which the dates are stored in \var{dates}, e.g. \kbd{\%Y-\%m-\%d}. See \code{format} in \code{\link[base]{as.Date}}. \cr
-%ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
-%}
-%  \item{out.type}{
-%Character that defines the desired type of output. Valid values are:  \cr
-%-) \kbd{data.frame}: a data.frame, with as many columns as stations are included in \code{x}, and row names indicating the month and year for each value. \cr
-%-) \kbd{db}        : a data.frame, with 4 columns will be produced. \cr
-%                 The first column (StationID) stores the ID of the station, \cr
-%                 The second column (Year) stores the year \cr
-%                 The third column (Month) stores the Month  \cr
-%                 The fourth column (Value) stores the numerical values corresponding to the values specified in the three previous columns. \cr
-%}
-%  \item{out.fmt}{
-%OPTIONAL. Only used when \code{x} is a matrix or data.frame object /cr
-%character, for selecting if the result will be a matrix/data.frame or a zoo object. Valid values are: \kbd{numeric}, \kbd{zoo}.
-%}
-%  \item{verbose}{
-%logical; if TRUE, progress messages are printed 
-%}
+  \item{dates}{
+numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each gauging station \cr
+If \code{dates} is a number, it indicates the index of the column in \code{x} that stores the date and times \cr
+If \code{dates} is a factor, it is converted into POSIXct class, using the date format specified by \code{date.fmt}  \cr
+If \code{dates} is already of POSIXct or POSIXt class, the code verifies that the number of elements on it be equal to the number of elements in \code{x}
+}
+  \item{date.fmt}{
+character indicating the format in which the dates are stored in \code{dates}, By default \code{date.fmt=\%Y-\%m-\%d \%H:\%M:\%S}. See \code{format} in \code{\link[base]{as.Date}}. \cr
+ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
+}
+  \item{out.fmt}{
+OPTIONAL. Only used when \code{x} is a matrix or data.frame object /cr
+character, for selecting if the result will be a matrix/data.frame or a zoo object. Valid values are: \kbd{numeric}, \kbd{zoo} (default)
+}
+  \item{verbose}{
+logical; if TRUE, progress messages are printed 
+}
   \item{\dots}{
 further arguments passed to or from other methods.
 }
