@@ -26,7 +26,7 @@ daily2monthly <-function(x, ...) UseMethod("daily2monthly")
 ################################################################################
 # Started: XX-XXX-2008                                                         #
 # Updates: 09-Aug-2011                                                         #
-#          06-Apr-013                                                          #
+#          08-Apr-013                                                          #
 ################################################################################
 daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
 
@@ -43,17 +43,17 @@ daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
 ################################################################################
 # Started: 09-Aug-2011                                                         #
 # Updates: 09-Aug-2011                                                         #
-#          06-Apr-2013                                                         #
+#          08-Apr-2013                                                         #
 ################################################################################
 daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 
   # Checking the user provide a valid value for 'FUN'
   if (missing(FUN))
-     stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values")
+     stop("Missing argument value: 'FUN' must contain a valid function for aggregating the values")
 
   # Checking the user provide a valid value for 'x'
   if (sfreq(x) %in% c("monthly", "quarterly", "annual"))
-	stop("Invalid argument: 'x' is not a (sub)daily ts. 'x' is a ", sfreq(x), " ts" )
+    stop("Invalid argument: 'x' is not a (sub)daily ts. 'x' is a ", sfreq(x), " ts" )
       
   # Monthly index for 'x'
   dates  <- time(x)
@@ -65,7 +65,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
   # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN
   nan.index <- which(is.nan(tmp))
-  if ( length(nan.index) > 0 ) { tmp[nan.index] <- NA }
+  if ( length(nan.index) > 0 )  tmp[nan.index] <- NA 
   
   # Replacing all the Inf and -Inf by NA's
   # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
@@ -118,7 +118,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
-      stop("Missing argument value: 'FUN' must contain a valid function for aggregating the (sub)daily values !")
+      stop("Missing argument value: 'FUN' must contain a valid function for aggregating the values !")
 
   # Checking that the user provied a valid argument for 'out.fmt'
   if (is.na(match( out.fmt, c("numeric", "zoo") ) ) )

@@ -27,7 +27,7 @@ daily2annual <-function(x, ...) UseMethod("daily2annual")
 ################################################################################
 # Started: XX-XXX-2008                                                         #
 # Updates: 09-Aug-2011                                                         #
-#          06-Apr-2013                                                         #
+#          08-Apr-2013                                                         #
 ################################################################################
 daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 
@@ -45,7 +45,7 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 # Started: 09-Aug-2011                                                         #
 # Updates: 09-Aug-2011                                                         #
 #          04-Jun-2012                                                         #
-#          06-Apr-2013                                                         #
+#          08-Apr-2013                                                         #
 ################################################################################
 daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 
@@ -141,7 +141,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {
     tmp   <- dates
-    dates <- zoo::as.Date(x[, dates], format= date.fmt)
+    dates <- as.Date(x[, dates], format= date.fmt) # zoo::as.Date
     x     <- x[-tmp]
   }  # IF end
 

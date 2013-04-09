@@ -12,6 +12,7 @@
 ################################################################################
 # Started: May 15th, 2009;                                                     #
 # Updates: 31-Aug-2009 ; 25-Jul-2011 ; 08-Aug-2011                             #
+#          08-Apr-2013                                                         #
 ################################################################################
 # 'x   '    : variable of type 'zoo' or 'data.frame', with daily or monthly frequency
 # 'FUN'      : Function that will be applied to ALL the values in 'x' belonging to each one of the 12 months of the year
@@ -36,7 +37,7 @@ monthlyfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 # Started: 25-Jul-2011                                                         #
 # Updates: 08-Aug-2011                                                         #
 #          05-Jun-2012                                                         #
-#          05-Apr-2013                                                         #
+#          08-Apr-2013                                                         #
 ################################################################################
 monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 
