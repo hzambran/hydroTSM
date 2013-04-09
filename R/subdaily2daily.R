@@ -28,9 +28,7 @@ subdaily2daily <-function(x, ...) UseMethod("subdaily2daily")
 subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
 
      # Checking that the user provied a valid class for 'x'   
-     valid.class <- c("xts")    
-     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
-        stop("Invalid argument: 'class(x)' must be 'xts' !!")
+     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'xts' !!")
 
      # Checking the user provide a valid value for 'FUN'
      if (missing(FUN))
@@ -43,7 +41,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
      d <- apply.daily(x=x, FUN=FUN, na.rm=na.rm)
 
      # Removing time attibute, but not the dates
-     d <- xts:::.drop.time(d)
+     #d <- xts:::.drop.time(d)
 
      # Replacing the NaNs by 'NA.
      # mean(NA:NA, na.rm=TRUE) == NaN
@@ -55,7 +53,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
      inf.index <- which(is.infinite(d))
      if ( length(inf.index) > 0 ) d[inf.index] <- NA 
 
-     if (ncol(d) == 1) d <- zoo::zoo(as.numeric(d), time(d))
+     if (ncol(d) == 1) d <- zoo(coredata(d), as.Date(format(time(d), "%Y-%m-%d"))
 
      return(d)
 

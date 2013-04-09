@@ -53,7 +53,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 
   # Checking the user provide a valid value for 'x'
   if (sfreq(x) %in% c("monthly", "quarterly", "annual"))
-    stop("Invalid argument: 'x' is not a (sub)daily ts. 'x' is a ", sfreq(x), " ts" )
+    stop("Invalid argument: 'x' is not a (sub)daily/weekly ts. 'x' is a ", sfreq(x), " ts" )
       
   # Monthly index for 'x'
   dates  <- time(x)
@@ -71,6 +71,8 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
   # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
   inf.index <- which(is.infinite(tmp))
   if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
+
+  if (ncol(tmp) == 1) tmp <- zoo(as.numeric(tmp), time(tmp))
 
   return(tmp)
 

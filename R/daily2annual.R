@@ -84,6 +84,8 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
     time(tmp) <- format(time(tmp), "%Y")
   } else  time(tmp) <- as.Date(paste( time(tmp), "-01-01", sep="")) # zoo::as.Date
 
+  if (ncol(tmp) == 1) tmp <- zoo(as.numeric(tmp), time(tmp))
+
   return(tmp)
 
 } # 'daily2annual.zoo' end

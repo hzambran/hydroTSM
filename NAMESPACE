@@ -1,4 +1,4 @@
-importFrom("zoo", is.zoo, as.Date, zoo)
+importFrom("zoo", is.zoo, as.Date, as.zoo, zoo)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
 importFrom("e1071", skewness, kurtosis)
 #importFrom("maptools", readShapePoly)
