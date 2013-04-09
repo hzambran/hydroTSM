@@ -12,14 +12,14 @@
 \alias{daily2monthly.data.frame}
 \alias{daily2monthly.matrix}
 \alias{subdaily2monthly}
-%\alias{subdaily2monthly.default}
-%\alias{subdaily2monthly.zoo}
-%\alias{subdaily2monthly.data.frame}
-%\alias{subdaily2monthly.matrix}
+\alias{subdaily2monthly.default}
+\alias{subdaily2monthly.zoo}
+\alias{subdaily2monthly.data.frame}
+\alias{subdaily2monthly.matrix}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-(Sub)Daily -> Monthly
+(sub)Daily -> Monthly
 }
 \description{
 Generic function for transforming a DAILY (sub-daily or weekly) regular time series into a MONTHLY one
@@ -109,7 +109,7 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 }
 \examples{
 ######################
-## Ex1: Loading the SanMartino DAILY precipitation data
+## Ex1: Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 

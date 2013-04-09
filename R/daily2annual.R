@@ -1,16 +1,17 @@
 # File daily2annual.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
-#####################################
-#          daily2annual             #
-#####################################
-# Generic function for transforming a DAILY regular time series into an ANNUAL one
+################################################################################
+#          daily2annual                                                        #
+################################################################################
+# Generic function for transforming a DAILY (sub-daily, weekly, monthly, quarterly) 
+# regular time series into an ANNUAL one
 
-# 'x'      : Daily zoo object which values will be converted into annual one.
-# 'FUN'    : Function that have to be applied for transforming from Daily to Annual time step
+# 'x'      : zoo/xts object which values will be converted into annual ones
+# 'FUN'    : Function that have to be applied for aggregating into Annual time step
 #            For Precipitation FUN MUST be 'sum'
 #            For Temperature and Flow time series, FUN MUST be 'mean'
 # 'na.rm'  : TRUE : the annual mean  value is computed considering only those values different from NA
@@ -21,79 +22,80 @@
 
 daily2annual <-function(x, ...) UseMethod("daily2annual")
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: XX-XXX-2008                 #
-# Updates: 09-Aug-2011                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: XX-XXX-2008                                                         #
+# Updates: 09-Aug-2011                                                         #
+#          06-Apr-2013                                                         #
+################################################################################
 daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
-     # Checking that the user provied a valid class for 'x'   
-     valid.class <- c("xts", "zoo")    
-     if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
-        stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
-     # Requiring the Zoo Library (Z’s ordered observations)
-     require(zoo)
+     # Checking that 'x' is a zoo object
+     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
 
      daily2annual.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
      
 } # 'daily2annual.default' end
 
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 09-Aug-2011                 #
-# Updates: 09-Aug-2011                 #
-#          04-Jun-2012                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 09-Aug-2011                                                         #
+# Updates: 09-Aug-2011                                                         #
+#          04-Jun-2012                                                         #
+#          06-Apr-2013                                                         #
+################################################################################
 daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 
-	 # Checking that the user provide a valid value for 'FUN'
-	 if (missing(FUN)) 
-           stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values")
+  # Checking that the user provide a valid value for 'FUN'
+  if (missing(FUN)) 
+    stop("Missing argument value: 'FUN' must contain a valid function for aggregating the values")
            
-          # Checking the user provide a valid value for 'x'
-	 if (is.na(match(sfreq(x), c("daily", "monthly")))) 
-	   stop(paste("Invalid argument: 'x' is not a daily or mothly ts, it is a ", sfreq(x), " ts", sep="") )  
+   # Checking the user provide a valid value for 'x'
+  if (sfreq(x) %in% c("annual"))
+    stop("Invalid argument: 'x' is already an annual ts !!" ) 
 
-         # Checking 'out.fmt'
-	 if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
-	   stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )	
+  # Checking 'out.fmt'
+  if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
+    stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )	
 	   
-	 # Annual index for 'x'
-         dates  <- time(x)
-         y      <- as.numeric(format( dates, "%Y"))
-         years  <- factor( y, levels=unique(y) )
+  # Annual index for 'x'
+  dates  <- time(x)
+  y      <- as.numeric(format( dates, "%Y"))
+  years  <- factor( y, levels=unique(y) )
 
-	 # Computing Annual time series
-	 tmp <- aggregate(x, by=years, FUN, na.rm= na.rm)
+  # Computing Annual time series
+  tmp <- aggregate(x, by=years, FUN, na.rm= na.rm)
 
-	 # Replacing the NaNs by 'NA.
-         # mean(NA:NA, na.rm=TRUE) == NaN
-         nan.index <- which(is.nan(tmp))
-         if ( length(nan.index) > 0 ) { tmp[nan.index] <- NA }
+  # Replacing the NaNs by 'NA.
+  # mean(NA:NA, na.rm=TRUE) == NaN
+  nan.index <- which(is.nan(tmp))
+  if ( length(nan.index) > 0 ) tmp[nan.index] <- NA
           
-         # Replacing all the Inf and -Inf by NA's
-         # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
-         inf.index <- which(is.infinite(tmp))
-         if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
+  # Replacing all the Inf and -Inf by NA's
+  # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
+  inf.index <- which(is.infinite(tmp))
+  if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
 	 
-	 # date format for the output annual series:
-	 if (out.fmt == "%Y") {
-	    time(tmp) <- format(time(tmp), "%Y")
-	 } else  time(tmp) <- zoo::as.Date(paste( time(tmp), "-01-01", sep=""))
+  # date format for the output annual series:
+  if (out.fmt == "%Y") {
+    time(tmp) <- format(time(tmp), "%Y")
+  } else  time(tmp) <- as.Date(paste( time(tmp), "-01-01", sep="")) # zoo::as.Date
 
-	 return(tmp)
+  return(tmp)
 
 } # 'daily2annual.zoo' end
 
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: XX-XXX-2008                 #
-# Updates: 09-Aug-2011                 #
-#          04-Jun-2012                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: XX-XXX-2008                                                         #
+# Updates: 09-Aug-2011                                                         #
+#          04-Jun-2012                                                         #
+################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
 #             If 'dates' is a number, it indicates the index of the column in
@@ -125,7 +127,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
-    stop("Missing argument value: 'FUN' must contain a valid function for aggregating the daily values")
+    stop("Missing argument value: 'FUN' must contain a valid function for aggregating the values")
 
   # Checking that the user provied a valid argument for 'dates'
   if (missing(dates)) {
@@ -145,7 +147,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- zoo::as.Date(dates, format= date.fmt)
+  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
@@ -216,7 +218,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
           row.fin <-  j*nyears
 
           z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeted 'nmonths' times
-          z[row.ini:row.fin, 2] <- format(zoo::as.Date(time(a)), "%Y")
+          z[row.ini:row.fin, 2] <- format(as.Date(time(a)), "%Y") # zoo::as.Date
           z[row.ini:row.fin, 3] <- a
 
       } # FOR end
@@ -228,11 +230,12 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
  } #'daily2annual.data.frame' END
 
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: XX-XXX-2008                 #
-# Updates: 09-Aug-2011                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: XX-XXX-2008                                                         #
+# Updates: 09-Aug-2011                                                         #
+################################################################################
 daily2annual.matrix  <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
                                  dates, date.fmt="%Y-%m-%d",
                                  out.type="data.frame",

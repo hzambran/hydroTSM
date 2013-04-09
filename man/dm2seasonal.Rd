@@ -6,9 +6,13 @@
 \alias{dm2seasonal.data.frame}
 \alias{dm2seasonal.matrix}
 \alias{subdaily2seasonal}
+\alias{subdaily2seasonal.default}
+\alias{subdaily2seasonal.zoo}
+\alias{subdaily2seasonal.data.frame}
+\alias{subdaily2seasonal.matrix}
 
 \title{
-Sub-daily/Daily/Weekly/Monthly -> Seasonal Values
+(sub)Daily/Monthly -> Seasonal Values
 }
 \description{
 Generic function for computing a seasonal value for every year of a sub-daily/daily/weekly/monthly time series

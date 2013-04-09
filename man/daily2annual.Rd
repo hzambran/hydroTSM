@@ -4,7 +4,7 @@
 %% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
-\name{daily2annual}
+\name{(sub)daily2annual}
 \Rdversion{1.1}
 \alias{daily2annual}
 \alias{daily2annual.default}
@@ -16,16 +16,23 @@
 \alias{monthly2annual.zoo}
 \alias{monthly2annual.data.frame}
 \alias{monthly2annual.matrix}
+\alias{subdaily2annual}
+\alias{subdaily2annual.default}
+\alias{subdaily2annual.zoo}
+\alias{subdaily2annual.data.frame}
+\alias{subdaily2annual.matrix}
 
 
 \title{
-Daily -> Annual 
+(sub)Daily/Monthly -> Annual 
 }
 \description{
-Generic function for transforming a DAILY/MONTHLY regular time series into an ANNUAL one.
+Generic function for transforming a (sub)DAILY/MONTHLY (weekly and quarterly) regular time series into an ANNUAL one.
 }
 \usage{
 daily2annual(x, ...)
+subdaily2annual(x, ...)
+monthly2annual(x, ...)
 
 \method{daily2annual}{default}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", ...)
 
@@ -40,11 +47,11 @@ daily2annual(x, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-zoo, xts, data.frame or matrix object, with daily/monthly time series. \cr
+zoo, xts, data.frame or matrix object, with (sub)daily/monthly time series. \cr
 Measurements at several gauging stations can be stored in a data.frame or matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
 }
   \item{FUN}{
-Function that have to be applied for transforming from daily/monthly to annual time step (e.g., for precipitation \code{FUN=sum} and for temperature and streamflows ts, \code{FUN=mean}).
+Function that have to be applied for aggregating from (sub)daily/monthly into annual time step (e.g., for precipitation \code{FUN=sum} and for temperature and streamflows ts, \code{FUN=mean}).
 }
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
@@ -103,21 +110,30 @@ Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
 \code{\link{daily2monthly}}, \code{\link{monthly2annual}}, \code{\link{hydroplot}}, \code{\link{annualfunction}}, \code{\link{vector2zoo}}, \code{\link{as.Date}}
 }
 \examples{
-## Loading the SanMartino precipitation data
+######################
+## Ex1: Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
 x <- SanMartinoPPts
-
-## Daily to Monthly
-m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
 
 ## Daily to Annual
 daily2annual(x, FUN=sum, na.rm=TRUE)
 
-## Monthly to Annual
+######################
+## Ex2: Monthly to Annual (same result as )
+m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
 monthly2annual(m, FUN=sum, na.rm=TRUE)
 
+
+######################
+## Ex3: Loading the time series of HOURLY streamflows for the station Karamea at Gorge
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
+
+# Sub-daily to monthly ts
+subdaily2annual(x, FUN=mean, na.rm=TRUE)
+
 ############
-## Loading the monthly time series of precipitation within the Ebro River basin.
+## Ex4: Loading the monthly time series of precipitation within the Ebro River basin
 data(EbroPPtsMonthly)
 
 # computing the annual values for the first 10 gauging station in 'EbroPPtsMonthly'
