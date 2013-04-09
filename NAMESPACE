@@ -1,5 +1,6 @@
 importFrom("zoo", is.zoo, as.Date, as.zoo, zoo)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
+importFrom("xts",  apply.daily, xts)
 importFrom("e1071", skewness, kurtosis)
 #importFrom("maptools", readShapePoly)
 importFrom("gstat", krige, idw)
