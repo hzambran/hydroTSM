@@ -4,9 +4,10 @@ NEWS/ChangeLog for hydroTSM
 0.3-7	under-development
         o new dataset: 'KarameaAtGorgeQts', with hourly streamflows for the Karamea River(New Zeland), provided by the National Institute 
           of Water and Atmospheric Research (http://www.niwa.co.nz/), thanks to the gentle collaboration of Shailesh Singh.
+        o new function: 'subdaily2daily' for aggregating sub-daily values into daily ones
         o new function: 'subdaily2seasonal' for computing seasonal values for every year of a sub-daily time series
         o new function: 'subdaily2monthly' for computing monthly values from sub-daily time series        
-        o new function: 'subdaily2anual' for computing annual values from sub-daily time series 
+        o new function: 'subdaily2annual' for computing annual values from sub-daily time series 
         o 'seasonalfunction.zoo': season names are now correctly given (instead of just numbers) for zoo objects that are matrix/data.frame as well
         o 'annualfunction.zoo'  : TODO: check what happens in the previous version !!: -) now it handles sub-daily values
                                   -) 'na.rm' argument is now used when the input zoo object is a matrix/data.frame (previously a single value of 1 was 

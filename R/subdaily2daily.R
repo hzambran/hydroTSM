@@ -95,7 +95,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
 subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE,
-                                     dates=1, date.fmt="%Y-%m-%d% %H:%M:%S",
+                                     dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				     out.fmt="zoo",
 				     verbose=TRUE,...) {
 
@@ -160,7 +160,7 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE,
 # Updates:                                                                     #
 ################################################################################
 subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE,
-                                  dates=1, date.fmt="%Y-%m-%d% %H:%M:%S",
+                                  dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				  out.fmt="zoo",
                                   verbose=TRUE,...) {
 
