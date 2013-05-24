@@ -1,7 +1,7 @@
 # File hydroplot.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2012 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -402,14 +402,13 @@
 } # '.hydroplothist' end
 
 
-################################################################################
-# hydroplotseasonal: Seasonal plots of hydrological time series                #
-################################################################################
-# Author : Mauricio Zambrano-Bigiarini                                         # 
-# Started: 19-Jun-2011                                                         #
-# Updates: 10-Aug-2011                                                         #
-#          04-Apr-2013                                                         #
-################################################################################
+#########################################################################
+# hydroplotseasonal: Seasonal plots of hydrological time series         #
+#########################################################################
+# Author : Mauricio Zambrano-Bigiarini                                  # 
+# Started: 19-Jun-2011                                                  #
+# Updates: 10-Aug-2011                                                  #
+#########################################################################
 .hydroplotseasonal <- function(x, FUN, na.rm=TRUE,
 		               tick.tstep= "auto", lab.tstep= "auto", lab.fmt=NULL,
                                var.unit="units", main=NULL, xlab="Time", ylab=NULL, 
@@ -451,7 +450,7 @@
           stop("Invalid argument: daily time series need -at least- 365 values !")
       } else if ( sfreq(x) == "monthly" ) {
           if (length(x) < 12 )
-            stop("Invalid argument: monthly time series need -at least- 1 12 values !")
+            stop("Invalid argument: monthly time series need -at least- 12 values !")
         } else if ( sfreq(x) == "annual" ) 
                  stop("Invalid argument: seasonal plots can not be drawn for annual time series !")    
       
@@ -669,7 +668,7 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
        } # ELSE end
 
      # Checking that 'to' is larger than 'from'
-     if (to.pos < from.pos) stop("Invalid argument: 'to' have to be greater than 'from'")
+     if (to.pos < from.pos) stop("Invalid argument: 'to' have to be located in a row below the row corresponding to 'from'")
      
      # Extracting a subset of the values
      x <- window(x, start=from, end=to)
@@ -682,11 +681,11 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
      on.exit(par(def.par))
 
      # Requiring the Zoo Library
-     #require(zoo)
+     require(zoo)
      
      # IF the user wants SEASONAL plots
      if (pfreq == "seasonal") {
-
+       
        # Checking that the user provied a valid value for 'stype'   
        valid.types <- c("default", "FrenchPolynesia")    
        if (length(which(!is.na(match(stype, valid.types )))) <= 0)  
