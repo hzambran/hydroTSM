@@ -96,7 +96,7 @@ further arguments passed to or from other methods.
 %% ~put references to the literature/web site here ~
 %%}
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 %%\note{
 %%  ~~further notes~~

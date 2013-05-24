@@ -184,7 +184,7 @@ further arguments passed to or from other methods (to the plotting functions)
 \cite{Yilmaz, K. K., H. V. Gupta, and T. Wagener  (2008), A process-based diagnostic approach to model evaluation: Application to the NWS distributed hydrologic model, Water Resour. Res., 44, W09417, doi:10.1029/2007WR006716}.
 }
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \note{
 If you do not want to use logarithmic scale for the streamflow axis, you can do it by passing the \code{log=" "} to the \code{...} argument.

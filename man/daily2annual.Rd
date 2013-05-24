@@ -1,7 +1,7 @@
 %% File daily2annual.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{(sub)daily2annual}
@@ -98,7 +98,7 @@ a zoo object with annual frequency
 %% ~put references to the literature/web site here ~
 %%}
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 %%\note{
 %%  ~~further notes~~

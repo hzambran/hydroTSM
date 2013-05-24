@@ -1,3 +1,9 @@
+%% File hydroTSM-package.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{hydroTSM-package}
 \Rdversion{1.1}
 \alias{hydroTSM-package}
@@ -26,7 +32,7 @@ BuiltUnder: \tab R version 2.15.1 (2012-06-22) ; x86_64-redhat-linux-gnu (64-bit
 \author{
 Mauricio Zambrano-Bigiarini
 
-Maintainer: Mauricio Zambrano-Bigiarini <mauricio.zambrano@ing.unitn.it>
+Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail>
 }
 %%\references{
 %%~~ Literature or other references for background information ~~

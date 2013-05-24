@@ -1,7 +1,7 @@
 %% File hypsometric.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2009-2011 Mauricio Zambrano-Bigiarini
+%% Copyright 2009-2013 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{hypsometric}
@@ -69,7 +69,7 @@ Strahler (1952, 1964) further asserted that different types of landform have dif
 \cite{Willgoose, G. and Hancock, G. 1998. Revisiting the hypsometric curve as an indicator of form and process in transport-limited catchment, Earth Surface Processes and Landforms 23, pp. 611-623}
 }
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}, with contribution of Jan Schwanbeck.
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}, with contribution of Jan Schwanbeck.
 }
 %%\note{
 %%

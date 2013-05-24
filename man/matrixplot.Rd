@@ -1,3 +1,9 @@
+%% File matrixplot.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{matrixplot}
 \Rdversion{1.1}
 \alias{matrixplot}
@@ -47,7 +53,7 @@ further arguments passed to \code{\link[lattice]{levelplot}} function (\pkg{latt
 %% ~put references to the literature/web site here ~
 %%}
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \note{
 Adapted from: 

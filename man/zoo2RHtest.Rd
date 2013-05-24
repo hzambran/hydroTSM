@@ -1,3 +1,9 @@
+%%File zoo2RHtest.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{zoo2RHtest}
 \Rdversion{1.1}
 \alias{zoo2RHtest}
@@ -6,7 +12,7 @@
 Zoo -> RHTest 
 }
 \description{
-It creates the input file to the \var{'RHtest_dlyPrcp.r'} script,  used for testing the homogeneity of climatological time series (available at: \url{http://ccma.seos.uvic.ca})
+It creates the input file to the \var{'RHtest_dlyPrcp.r'} script,  used for testing the homogeneity of climatological time series (available at: \url{http://etccdi.pacificclimate.org/software.shtml})
 }
 \usage{
 zoo2RHtest(x, fname="pcp.txt", tstep.out="daily", dec=".", na="-999.0")
@@ -36,10 +42,16 @@ character to be used for representing the missing values in the data
 %%
 %%}
 \references{
-\url{http://ccma.seos.uvic.ca}
+%\url{http://ccma.seos.uvic.ca} % not available anynmore, reported by Gang Dong on March 12th, 2013
+\url{http://etccdi.pacificclimate.org/software.shtml}
+\url{http://etccdi.pacificclimate.org/RHtest/RHtestsV3_UserManual.doc}
+\url{http://css.escwa.org.lb/sdpd/1802/d2-1.pdf}
+
+% \url{http://www.cmc.org.ve/mediawiki/index.php?title=Preparando_los_datos}
+%\url{http://cmc.org.ve/descargas/Cursos/CRRH/}
 }
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 %%\note{
 %%  ~~further notes~~

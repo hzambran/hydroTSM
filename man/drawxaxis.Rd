@@ -1,3 +1,9 @@
+%% File drawTimeAxis.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{drawTimeAxis}
 \Rdversion{1.1}
 \alias{drawTimeAxis}
@@ -53,7 +59,7 @@ further arguments passed to the \code{axis} function or from other methods.
 From version 0.3-0 it changed its name from \code{drawxaxis} to \code{drawTimeAxis}, in order to have a more intuitive name. The old \code{drawxaxis} function is deprecated, but still be kept for compatibility reasons. 
 }
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 %%\note{
 %%  ~~further notes~~

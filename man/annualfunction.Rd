@@ -1,3 +1,9 @@
+%% File annualfunction.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{annualfunction}
 \Rdversion{1.1}
 \alias{annualfunction}
@@ -71,7 +77,7 @@ For a data frame, a named vector with the appropriate method being applied colum
 %% ~put references to the literature/web site here ~
 %%}
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \note{
 \code{FUN} is first applied to all the values of \code{x} belonging to the same year and then it is applied to all the previously computed annual values to get the final result.

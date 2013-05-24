@@ -1,3 +1,9 @@
+%% File gis2spt.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{gists2spt}
 \Rdversion{1.1}
 \alias{gists2spt}
@@ -70,7 +76,7 @@ If \code{p4s} is given, the returning object will be a \link[sp]{SpatialPointsDa
 \url{http://r-spatial.sourceforge.net/gallery/}
 }
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 %%\note{
 %%  ~~further notes~~

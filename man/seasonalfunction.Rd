@@ -1,3 +1,9 @@
+%% File seasonalfunction.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2009-2012 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{seasonalfunction}
 \Rdversion{1.1}
 \alias{seasonalfunction}
@@ -86,7 +92,7 @@ further arguments passed to or from other methods
 %% ~put references to the literature/web site here ~
 %%}
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \note{
 \code{FUN} is applied to all the values of \code{x} belonging to each one of the four weather seasons, so the results of this function depends on the frequency sampling of \code{x} and the type of function given by \code{FUN} \cr

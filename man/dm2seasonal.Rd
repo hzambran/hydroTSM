@@ -1,3 +1,9 @@
+%% File dm2seasonal.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{dm2seasonal}
 \Rdversion{1.1}
 \alias{dm2seasonal}
@@ -95,7 +101,7 @@ A numeric vector with the seasonal values for all the years in which \code{x} is
 %% ~put references to the literature/web site here ~
 %%}
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \note{
 \code{FUN} is applied to all the values of \code{x} belonging to the selected season, so the results of this function depends on the frequency sampling of \code{x} and the type of function given by \code{FUN} \cr

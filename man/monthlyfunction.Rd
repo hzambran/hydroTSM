@@ -1,3 +1,9 @@
+%%File monthlyfunction.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{monthlyfunction}
 \Rdversion{1.1}
 \alias{monthlyfunction}
@@ -83,7 +89,7 @@ When \code{x} is a data.frame which columns represent measurements at different 
 %% ~put references to the literature/web site here ~
 %%}
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \note{
 Due to the fact that \code{FUN} is applied over all the elements in \code{x} belonging to a given calendar month, its result will depend on the sampling frequency of \code{x} and the type of function provided by \code{FUN} (\bold{special attention have to be put when \code{FUN=sum}})

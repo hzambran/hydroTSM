@@ -1,3 +1,9 @@
+%% File rm1stchar.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{rm1stchar}
 \Rdversion{1.1}
 \alias{rm1stchar}
@@ -35,7 +41,7 @@ character object of the same length as \code{x}.
 %% ~put references to the literature/web site here ~
 }
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 %%\note{
 %%  ~~further notes~~

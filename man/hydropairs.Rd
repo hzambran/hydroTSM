@@ -1,3 +1,9 @@
+%% File hydropairs.Rd
+%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+%%                                 http://cran.r-project.org/web/packages/hydroTSM/
+%% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+%% Distributed under GPL 2 or later
+
 \name{hydropairs}
 \Rdversion{1.1}
 \alias{hydropairs}
@@ -41,7 +47,7 @@ further arguments passed to or from other methods, in particular it is used in t
 %% ~put references to the literature/web site here ~
 %%}
 \author{
-Mauricio Zambrano-Bigiarini, \email{mauricio.zambrano@ing.unitn.it}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \note{
 Original idea taken from: \url{http://addictedtor.free.fr/graphiques/graphcode.php?graph=137}. \cr
