@@ -21,8 +21,8 @@ NEWS/ChangeLog for hydroTSM
         o 'dm2seasonal'         : -) now it handles sub-daily and weekly values 
                                   -) improved examples
         o 'time2season'         : now it handles "POSIXct" and "POSIXt" values 
-        o NAMESPACE: functions form package zoo are imported explicitly
-        o TODO: require(zoo) and require(xts) removed from all the functions
+        o NAMESPACE             : functions from package zoo are imported explicitly
+        o TODO: require(zoo) and require(xts) removed from all the functions ###############################
         o 'zoo2RHtest'          : broken links were removed and replaced by new ones. Thanks to Gang Dong and Yan Li !
 
 0.3-6	18-Oct-2012
