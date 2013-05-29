@@ -4,7 +4,7 @@
 %\pdfbookmark[0]{Titlepage}{title} % Sets a PDF bookmark for the title page
 \title{Tutorial for Introductory Analysis of \\
        Daily Precipitation Data with hydroTSM}
-\date{Oct 2010, Apr 2011, Aug 2011}
+\date{May 2013, Aug 2011, Apr 2011, Oct 2010}
 
 %\VignetteIndexEntry{Tutorial for introductory analysis of daily precipitation data with hydroTSM}
 %\VignetteKeyword{hydrology}
@@ -97,7 +97,7 @@ dwi(x, out.unit="mpy")
 
 \item Plotting the monthly precipitation values for each year, useful for identifying dry/wet months.
 
-<<>>=     
+<<fig=TRUE>>=     
 # Daily zoo to monthly zoo
 m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
      
@@ -108,8 +108,8 @@ rownames(M) <- unique(format(time(m), "%Y"))
      
 # Plotting the monthly precipitation values
 require(lattice)
-matrixplot(M, ColorRamp="Precipitation", 
-           main="Monthly precipitation at San Martino st., [mm/month]")
+print(matrixplot(M, ColorRamp="Precipitation", 
+           main="Monthly precipitation at San Martino st., [mm/month]"))
 @
 
 \end{enumerate}
