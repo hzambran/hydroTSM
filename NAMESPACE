@@ -1,6 +1,6 @@
 importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply)
+importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
-#importFrom("xts",  apply.daily, xts)
 importFrom("e1071", skewness, kurtosis)
 #importFrom("maptools", readShapePoly)
 importFrom("gstat", krige, idw)

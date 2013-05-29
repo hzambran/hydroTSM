@@ -52,7 +52,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
      if (missing(FUN))
        stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
-     # Daily aggregation. xts::apply.daily
+     # Daily aggregation. 
      d <- apply.daily(x=x, FUN=FUN, na.rm=na.rm) # xts::apply.daily
 
      # Removing time attibute, but not the dates

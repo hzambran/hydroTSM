@@ -51,6 +51,7 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 # Updates: 23-Aug-2011                                                         #
 #          07-May-2012                                                         #
 #          16-Oct-2012                                                         #
+#          29-May-2013                                                         #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
@@ -77,7 +78,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
                               time(x) <- as.Date(dates, format=date.fmt) )
 
   # sampling frequency of 'x'           
-  x.freq <- xts::periodicity(x)$scale
+  x.freq <- sfreq(x)
         
   # checking that date.fmt and the sampling frequency of 'x' are compatible 
   if (x.freq %in% c("minute","hourly") ) {
