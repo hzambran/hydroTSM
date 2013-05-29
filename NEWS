@@ -8,7 +8,9 @@ NEWS/ChangeLog for hydroTSM
         o new function: 'subdaily2monthly' for computing monthly values from sub-daily time series        
         o new function: 'subdaily2annual' for computing annual values from sub-daily time series 
         o new function: 'subdaily2seasonal' for computing seasonal values for every year of a sub-daily time series
-        o 'seasonalfunction.zoo'       : season names are now correctly given (instead of just numbers) for zoo objects that are matrix/data.frame as well
+        o new function: 'hip' for creating a sequence (or counting the number) of hours between two date/time objects         
+        o 'seasonalfunction.zoo'       : season names are now correctly given (instead of just numbers) for zoo objects that are matrix/data.frame 
+                                         as well
         o 'annualfunction.zoo'         : TODO: check what happens in the previous version !!: -) now it handles sub-daily values
                                          -) 'na.rm' argument is now used when the input zoo object is a matrix/data.frame (previously a single value 
                                              of 1 was artificially introduced to the annual ts of each column when 'na.rm=TRUE', while a single value 

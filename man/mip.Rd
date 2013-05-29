@@ -13,7 +13,7 @@ Months in Period
 }
 \description{
  Given any starting and ending dates, it generates: \cr      
-1) a vector of class 'Date' with all the months between the two dates, OR \cr
+1) a vector of class 'Date' with all the months between the two dates (both of them included), OR \cr
 2) the amount of months between the two dates 
 }
 \usage{
@@ -41,7 +41,7 @@ character indicating the type of result that is given by this function. Valid va
 %%}
 \value{
 Depending on the value of \code{out.type}, it returns: \cr
-1) a vector of class Date with all the months between the two dates, OR \cr
+1) a vector of class Date with all the months between \code{from} and \code{to} (both of them included), OR \cr
 2) a single numeric value with the amount of months between the two dates. 
 }
 %%\references{
