@@ -24,9 +24,6 @@ dwdays <-function(x, ...) UseMethod("dwdays")
 
 dwdays.default <- function(x, thr=0, type="wet", na.rm=TRUE, ... ) {
 
-  # Requiring the Zoo Library (Zoos ordered observations)
-  require(zoo)
-
   # Checking the user provide a valid value for 'x'
   if (is.na(match(class(x), c("zoo"))))
         stop("Invalid argument: 'x' must be of class 'zoo'")
@@ -134,12 +131,7 @@ dwdays.data.frame <- function(x, thr=0, type="wet", na.rm=TRUE,
   # Amount of Years belonging to the desired period
   nyears <- Ending.Year - Starting.Year + 1
 
-
-  # Requiring the Zoo Library (Zoos ordered observations)
-  require(zoo)
-
   if (verbose) message("[Starting the computations...]")
-
 
   # Creating the data.frame that will store the computed averages for each station
   z <- as.data.frame(matrix(data = NA, ncol = 12, nrow = nstations,

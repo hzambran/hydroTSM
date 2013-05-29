@@ -16,6 +16,7 @@
 ################################################################################
 # Started: 14-Jun-2008;                                                        #
 # Updates: 11-Sep-2009 ; 30-Aug-2011  ; 14-Sep-2011 ; 15-Sep-2011              #
+#          29-May-2013                                                         #
 ################################################################################
 smry <-function(x, ...) UseMethod("smry")
 
@@ -23,7 +24,7 @@ smry <-function(x, ...) UseMethod("smry")
 smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)  {
 
     if ( class(x) %in% c("zoo", "xts") ) {
-        x <- zoo::coredata(x)
+        x <- coredata(x) # zoo::coredata
     } # IF end
 
     xname <- deparse(substitute(x))
@@ -157,12 +158,12 @@ smry.matrix <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), .
 # Author: Mauricio Zambrano-Bigiarini                                          #
 ################################################################################
 # Started: 30-Aug-2011                                                         #
-# Updates:                                                                     #
+# Updates: 29-May-2013                                                         #
 ################################################################################
 smry.zoo <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), ...)  {
 
     dates <- time(x)  
-    z     <- zoo::coredata(x)
+    z     <- coredata(x) # zoo::coredata
     
     # Giving meaningful names to the output
     if ( (is.matrix(x)) | (is.data.frame(x)) ) {

@@ -17,6 +17,7 @@ dwi <-function(x, ...) UseMethod("dwi")
 ################################################################################ 
 # Started: XX-XXX-2009                                                         #
 # Updates: 22-Aug-2011                                                         #
+#          29-May-2013                                                         #
 ################################################################################ 
 # This function generates a table indicating the number of days
 # with information (<>NA's) within a zoo object,
@@ -44,9 +45,6 @@ dwi.default <- function(x, out.unit="years", from = start(x), to = end(x),
      if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
         stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
-     # Requiring the Zoo Library (Z’s ordered observations)
-     require(zoo)
-
      dwi.zoo(x=x, out.unit=out.unit, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
 
  } # 'dwi.default' end
@@ -62,6 +60,7 @@ dwi.default <- function(x, out.unit="years", from = start(x), to = end(x),
 # Started: 22-Aug-2009                                                         #
 # Updates: 22-Aug-2011                                                         #
 #          07-May-2012                                                         #
+#          29-May-2013                                                         #
 ################################################################################ 
 dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x), 
                     date.fmt="%Y-%m-%d", tstep="days", ...) {
@@ -78,8 +77,8 @@ dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x),
   # Checking 'from' and 'to'
   if (to < from) stop("Invalid argument: 'from > to')" )    
     
-  from <- zoo::as.Date(from, format=date.fmt)
-  to   <- zoo::as.Date(to, format=date.fmt)
+  from <- as.Date(from, format=date.fmt) # zoo::as.Date
+  to   <- as.Date(to, format=date.fmt)   # zoo::as.Date
 
   # Selecting only those data that are within the time period between 'from' and 'to'
   x.sel <- window(x, start=from, end=to )
@@ -171,7 +170,8 @@ dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x),
 ################################################################################ 
 # dwi.data.frame: days with info in each station stored in a data frame        #
 ################################################################################ 
-#                             March 21th, 2009                                 #
+# Started: 21-Mar-2009                                                         #
+# Updates: 29-May-2013                                                         #
 ################################################################################ 
 # This function generates a table indicating the number of days
 # with information (<>NA's) within a data.frame
@@ -223,13 +223,13 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {
     tmp   <- dates
-    dates <- zoo::as.Date(x[, dates], format= date.fmt)
+    dates <- as.Date(x[, dates], format= date.fmt) # zoo::as.Date
     x     <- x[-tmp]
   }  else
       # If 'dates' is a factor, it have to be converted into 'Date' class,
       # using the date format  specified by 'date.fmt'
       if ( class(dates) == "factor" ) {
-	    dates <- zoo::as.Date(dates, format= date.fmt)
+	    dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
 	  } else
 	    # If 'dates' is already of Date class, the following line verifies that
             # the number of days in 'dates' be equal to the number of element in the

@@ -39,9 +39,6 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
   if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
      stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
-  # Requiring the Zoo Library (Z’s ordered observations)
-  require(zoo)
-
   izoo2rzoo.zoo(x=x, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
 
 } # 'izoo2rzoo.default' END
@@ -59,9 +56,6 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
                           date.fmt="%Y-%m-%d", tstep ="days", ... ) {
 
-  # Requiring the Zoo Library (Zoo's ordered observations)
-  require(zoo)
-  
   if (!is.zoo(x)) stop("Invalid argument: 'x' must be of class 'zoo'")
       
   ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |

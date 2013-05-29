@@ -54,7 +54,7 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      months <- factor( month.abb[m], levels=unique(month.abb[m]) )
      
      # 'as.numeric' is necessary for being able to change the names to the output
-     totals <- aggregate(x, by= months, FUN=FUN, na.rm= na.rm ) # zoo::aggregate
+     totals <- aggregate(x, by= months, FUN=FUN, na.rm= na.rm ) 
 
      # Replacing the NaNs by 'NA.
      # NaN's are obtained when using the FUN=mean with complete NA values

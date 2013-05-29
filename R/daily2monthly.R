@@ -57,10 +57,10 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
       
   # Monthly index for 'x'
   dates  <- time(x)
-  months <- as.Date( as.yearmon( time(x) ) ) # zoo::as.Date
+  months <- as.Date( as.yearmon( time(x) ) ) # zoo::as.Date ; zoo::as.yearmon
 
   # Generating a Monthly time series 
-  tmp <- aggregate( x, by=months, FUN, na.rm= na.rm ) # zoo::aggregate
+  tmp <- aggregate( x, by=months, FUN, na.rm= na.rm ) 
   
   # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN

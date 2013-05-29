@@ -29,7 +29,7 @@
 matrixplot <- function(x, ColorRamp="Days", ncolors=70, main="", ...) {
      
   # If 'x' is a zoo, it trys to coherce into a matrix
-  if (class(x) == "zoo") x <- zoo::coredata(x)
+  if (class(x) == "zoo") x <- coredata(x) # zoo::coredata
   
   # Checking that the user provied a valid class for 'x'   
   valid.class <- c("matrix", "data.frame")    

@@ -1,6 +1,6 @@
-importFrom("zoo", is.zoo, as.Date, as.zoo, zoo)
+importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
-importFrom("xts",  apply.daily, xts)
+#importFrom("xts",  apply.daily, xts)
 importFrom("e1071", skewness, kurtosis)
 #importFrom("maptools", readShapePoly)
 importFrom("gstat", krige, idw)

@@ -28,14 +28,12 @@ seasonalfunction <- function(x, ...) UseMethod("seasonalfunction")
 ################################################################################
 # Started: 11-Sep-2009                                                         #
 # Updates: 08-Aug-2011                                                         #
+#          21-May-2013                                                         #
 ################################################################################
 seasonalfunction.default <- function(x, FUN, na.rm=TRUE, type="default",...) {
 
      # Checking that 'x' is a zoo object
      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
-
-     # Requiring the Zoo Library (Z’s ordered observations)
-     require(zoo)
 
      seasonalfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, type=type, ...)
 

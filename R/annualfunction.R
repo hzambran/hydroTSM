@@ -146,8 +146,7 @@ annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
-  x       <- as.zoo(x)
-  time(x) <- dates
+  x <- zoo(x, dates)
   
   ##############################################################################
   annualfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
