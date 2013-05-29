@@ -1,8 +1,17 @@
-########################################################################
-# dwdays:  average amount of dry/wet days per each month               #
-########################################################################
-#	               Date: 24-Jan-2010                               #
-########################################################################
+# File dwdays.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2010-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+# dwdays:  average amount of dry/wet days per each month                       #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 24-Jan-2010                                                         #
+# Updates: 29-May-2013                                                         #
+################################################################################
 # Given a daily time series of precipitation, this function computes the average amount
 # of dry/wet days (pcp > thr or pcp < thr for wet and dry days, respectively) on each month
 
@@ -62,6 +71,12 @@ dwdays.default <- function(x, thr=0, type="wet", na.rm=TRUE, ... ) {
 
 
 
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 24-Jan-2010                                                         #
+# Updates: 29-May-2013                                                         #
+################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
 #             If 'dates' is a number, it indicates the index of the column in
@@ -75,7 +90,7 @@ dwdays.default <- function(x, thr=0, type="wet", na.rm=TRUE, ... ) {
 #             ONLY required when class(dates)=="factor" or "numeric"
 # 'verbose' : logical; if TRUE, progress messages are printed
 dwdays.data.frame <- function(x, thr=0, type="wet", na.rm=TRUE,
-                              dates,
+                              dates=1,
                               date.fmt="%Y-%m-%d",
 							  verbose=TRUE,...) {
 
@@ -159,8 +174,14 @@ dwdays.data.frame <- function(x, thr=0, type="wet", na.rm=TRUE,
  } #'dwdays.data.frame' END
 
 
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 24-Jan-2010                                                         #
+# Updates: 29-May-2013                                                         #
+################################################################################
 dwdays.matrix  <- function(x, thr=0, type="wet", na.rm=TRUE,
-                           dates,
+                           dates=1,
                            date.fmt="%Y-%m-%d",
 			   verbose=TRUE,...) {
 

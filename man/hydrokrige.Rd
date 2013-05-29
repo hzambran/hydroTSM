@@ -47,7 +47,7 @@ hydrokrige(x.ts, x.gis, ...)
         arrow.plot = FALSE, arrow.offset, arrow.scale, 
         scalebar.plot = FALSE, sb.offset, sb.scale, 
         verbose = TRUE, allNA.action="error",
-        dates, from, to, write2disk = TRUE, 
+        dates=1, from, to, write2disk = TRUE, 
         out.fmt= "csv2",
         fname = paste(ColorRamp, "by_Subcatch.csv", sep = ""), ...)
 }
@@ -201,7 +201,7 @@ Action to be executed when all the values in \code{x.ts} are NA. Valid values ar
 }
   \item{dates}{
 numeric, factor, or character object indicating how to obtain the ID (usually dates) that will be used to identify the interpolation carried out for each row of \code{x.ts}. \cr
-If \code{dates} is a single number, it indicates the index of the column in \code{x.ts} that stores the dates \cr
+If \code{dates} is a single number (default), it indicates the index of the column in \code{x.ts} that stores the dates \cr
 If \code{dates} is a factor or character vector, its values will be used as ID for the interpolations carried out in each row of \code{x.ts}.
 }
   \item{from}{

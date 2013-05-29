@@ -1,7 +1,7 @@
 #############################################################################
 # 'yip': Given any starting and ending dates, it generates:                 #
 #        1) a vector of dates with all the years between the two dates, OR  #
-#		     2) the amount of years between the two dates                       #
+#		     2) the amount of years between the two dates           #
 #############################################################################
 # 18-May-2010
 

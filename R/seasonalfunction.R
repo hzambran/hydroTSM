@@ -1,9 +1,19 @@
-########################################################################
-# seasonalfunction: Generic function for applying any R function to    #
-#                   summarize the seasonal values of 'x'               #
-########################################################################
-#                        Sep 11th, 2009                                #
-########################################################################
+# File seasonalfunction.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+#                            seasonalfunction                                  #
+################################################################################
+# Generic function for applying any R function to summarize the seasonal values#
+# of a time series                                                             #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 11-Sep-2009                                                         #
+################################################################################
 # 'x   '    : variable of type 'zoo' or 'data.frame'
 # 'FUN'      : Function that will be applied to ALL the values in 'x' belonging to each one of the 4 weather seasons
 #              (e.g., Fun can be some of c('mean', 'max', 'min', 'sd'))
@@ -13,11 +23,12 @@
 seasonalfunction <- function(x, ...) UseMethod("seasonalfunction")
 
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 11-Sep-2009                 #
-# Updates: 08-Aug-2011                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 11-Sep-2009                                                         #
+# Updates: 08-Aug-2011                                                         #
+################################################################################
 seasonalfunction.default <- function(x, FUN, na.rm=TRUE, type="default",...) {
 
      # Checking that 'x' is a zoo object
@@ -95,11 +106,12 @@ seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE, type="default", ...) {
 
 
 
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 11-Sep-2009                 #
-# Updates: 08-Aug-2011                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 11-Sep-2009                                                         #
+# Updates: 08-Aug-2011                                                         #
+################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
 #             If 'dates' is a number, it indicates the index of the column in
@@ -121,7 +133,7 @@ seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE, type="default", ...) {
 #                                value corresponding to that year and that station.
 # 'verbose'      : logical; if TRUE, progress messages are printed
 seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE, type="default",
-                                        dates, date.fmt="%Y-%m-%d",
+                                        dates=1, date.fmt="%Y-%m-%d",
                                         out.type="data.frame",
                                         verbose=TRUE,...) {
 
@@ -249,13 +261,14 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE, type="default",
  
  
  
-########################################
-# Author : Mauricio Zambrano-Bigiarini #
-# Started: 11-Sep-2009                 #
-# Updates: 08-Aug-2011                 #
-########################################
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 11-Sep-2009                                                         #
+# Updates: 08-Aug-2011                                                         #
+################################################################################
  seasonalfunction.matrix <- function(x, FUN, na.rm=TRUE, type="default",
-                                     dates, date.fmt="%Y-%m-%d",
+                                     dates=1, date.fmt="%Y-%m-%d",
                                      out.type="data.frame",
                                      verbose=TRUE,...) {
                                      

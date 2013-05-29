@@ -134,6 +134,7 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 ################################################################################
 # Started: 15-May-2009                                                         #
 # Updates: 08-Aug-2011                                                         #
+#          29-May-2013                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -155,7 +156,7 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 #                              The third column will store the season
 #                              The fouth column will contain the seasonal value, corresponding to the year specified in the second column
 dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
-                                   dates, date.fmt="%Y-%m-%d",
+                                   dates=1, date.fmt="%Y-%m-%d",
 				   out.type="data.frame", 
 				   out.fmt="%Y", ... ) {
 
@@ -291,8 +292,12 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
+# Started: 2009                                                                #
+# Updates: 2011                                                                #
+#          29-May-2013                                                         #
+################################################################################
 dm2seasonal.matrix  <- function(x, season, FUN, na.rm=TRUE,
-                                dates, date.fmt="%Y-%m-%d",
+                                dates=1, date.fmt="%Y-%m-%d",
 				out.type="data.frame", 
 				out.fmt="%Y", ... ) {
 

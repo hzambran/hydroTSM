@@ -15,7 +15,7 @@
 # Started: 17-Dic-2008                                                         #
 # Updates: 19-Apr-2011 ; 10-Aug-2011                                           #
 #          18-Oct-2012                                                         #
-#          04-Abr-2013                                                         #
+#          04-Abr-2013 : 29-May-2013                                           #
 ################################################################################
 sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        ptype="ts+boxplot+hist",
@@ -33,7 +33,7 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        cex.lab=1.3,
                        cex.axis=1.3,
                        col=c("blue", "lightblue", "lightblue"),
-                       dates, date.fmt = "%Y-%m-%d",
+                       dates=1, date.fmt = "%Y-%m-%d",
                        from, to, 
                        stype="default", 
                        season.names=c("Winter", "Spring", "Summer", "Autumn"),

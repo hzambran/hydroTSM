@@ -1,7 +1,7 @@
 # File fdcu.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -11,6 +11,7 @@
 #          also gives the probability of exceedence of each element            #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
 # Started: January 29th, 2010                                                  #
 # Updates: February 04th, 2010                                                 #
 #          03-May-2012                                                         #
@@ -41,15 +42,6 @@
 # 'bands.density': See '?polygon'. The density of shading lines for the polygon with the uncertainty bounds, in lines per inch.  The default value of 'NULL' means that no shading lines are drawn. A zero value of 'bands.density' means no shading nor filling whereas negative values (and 'NA') suppress shading (and so allow color filling).
 # 'bands.angle'  : See '?polygon'. The slope of shading lines for the polygon with the uncertainty bounds, given as an angle in degrees (counter-clockwise).
 # 'new'          : logical, if TRUE, a new plotting window is created.
-
-
-# Example:
-# data(EbroQts)
-# q <- sname2ts(EbroQts, "Q071", dates=1)
-# q <- window(q, end=as.Date("1965-1-10"))
-# lband <- q-min(q, na.rm=T)
-# uband <- q+mean(q, na.rm=T)
-# fdcu(q, lband, uband)
 
 fdcu <-function(x, lband, uband, ...) UseMethod("fdcu")
 

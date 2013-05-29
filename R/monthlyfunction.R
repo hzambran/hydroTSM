@@ -83,6 +83,7 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 ################################################################################
 # Started: 25-Jul-2011                                                         #
 # Updates: 08-Aug-2011                                                         #
+#          29-May-2013                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -105,7 +106,7 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 #                              The fourth column contains the monthly value corresponding to the year specified in the second column
 # 'verbose'      : logical; if TRUE, progress messages are printed
 monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
-                                       dates, date.fmt="%Y-%m-%d",
+                                       dates=1, date.fmt="%Y-%m-%d",
                                        out.type="data.frame",
                                        verbose=TRUE,...) {
 
@@ -226,9 +227,10 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 ################################################################################
 # Started: 25-Jul-2011                                                         #
 # Updates: 08-Aug-2011                                                         #
+#          29-May-2013                                                         #
 ################################################################################
 monthlyfunction.matrix <- function(x, FUN, na.rm=TRUE,
-                                   dates, date.fmt="%Y-%m-%d",
+                                   dates=1, date.fmt="%Y-%m-%d",
                                    out.type="data.frame",
                                    verbose=TRUE,...) {
  x <- as.data.frame(x)

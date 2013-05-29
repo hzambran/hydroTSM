@@ -1,8 +1,16 @@
-#######################################
-#          monthly2annual             #
-#######################################
-#           May 13th, 2009            #
-#######################################
+# File monthly2annual.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+#                               monthly2annual                                 #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 13-May-2009                                                         #
+################################################################################
 # This function transform a MONTHLY regular time series into an ANNUAL one .
 # It is only a wrapper to 'daily2annual' and it was not merged as unique function just for clarity
 

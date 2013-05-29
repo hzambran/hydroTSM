@@ -1,8 +1,18 @@
-############################################################################
-#  'infillixy': Fills in ALL the 'NA' values in 'x' with the corrensponding#
-#               values in 'sim'.                                           #
-#               16-Dic-2008, 04-Sep-2009                                   #
-############################################################################
+# File infillxy.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2010-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+#                                'infillxy'                                    #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Fills in ALL the 'NA' values in 'x' with the corrensponding values in 'sim'. #
+# Started: 16-Dic-2008                                                         #
+# Updates: 04-Sep-2009                                                         #
+################################################################################
 #
 # 'x'   : 'data.frame' or 'matrix' in which some (observed) values are 'NA'
 # 'sim' : 'data.frame' or 'matrix', with the same dimension of 'obs',

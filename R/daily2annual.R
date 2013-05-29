@@ -97,6 +97,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 # Started: XX-XXX-2008                                                         #
 # Updates: 09-Aug-2011                                                         #
 #          04-Jun-2012                                                         #
+#          29-May-2013                                                         #      
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -119,7 +120,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 #                                value corresponding to that year and that station.
 # 'verbose' : logical; if TRUE, progress messages are printed
 daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
-                                    dates, date.fmt="%Y-%m-%d",
+                                    dates=1, date.fmt="%Y-%m-%d",
                                     out.type="data.frame",
                                     verbose=TRUE,...) {
                                     
@@ -237,9 +238,10 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
 ################################################################################
 # Started: XX-XXX-2008                                                         #
 # Updates: 09-Aug-2011                                                         #
+#          29-May-2013                                                         #   
 ################################################################################
 daily2annual.matrix  <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
-                                 dates, date.fmt="%Y-%m-%d",
+                                 dates=1, date.fmt="%Y-%m-%d",
                                  out.type="data.frame",
                                  verbose=TRUE,...) {
 

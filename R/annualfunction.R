@@ -83,6 +83,7 @@ annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 ############################################################################
 # Started: 2009-May-15                                                     #
 # Updates: 2009-Sep-01st ; 2011-Aug-09                                     #
+#          29-May-2013                                                     #
 ############################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the 
 #             dates correponding to the 'sname' station
@@ -105,7 +106,7 @@ annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 #                                value corresponding to that year and that station.
 # 'verbose' : logical; if TRUE, progress messages are printed 
 annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
-                                      dates, date.fmt="%Y-%m-%d",
+                                      dates=1, date.fmt="%Y-%m-%d",
                                       verbose=TRUE,...) {
 	  
   # Checking that the user provied a valid argument for 'FUN'
@@ -161,9 +162,10 @@ annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 ############################################################################
 # Started: 2009-May-15                                                     #
 # Updates: 2009-Sep-01st ; 2011-Aug-09                                     #
+#          29-May-2013                                                     #
 ############################################################################
 annualfunction.matrix <- function(x, FUN, na.rm=TRUE,
-                                  dates, date.fmt="%Y-%m-%d",
+                                  dates=1, date.fmt="%Y-%m-%d",
                                   verbose=TRUE,...) {
  
  x <- as.data.frame(x)

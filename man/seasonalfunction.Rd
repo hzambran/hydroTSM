@@ -1,7 +1,7 @@
 %% File seasonalfunction.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2009-2012 Mauricio Zambrano-Bigiarini
+%% Copyright 2009-2013 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{seasonalfunction}
@@ -26,11 +26,11 @@ seasonalfunction(x, ...)
 \method{seasonalfunction}{zoo}(x, FUN, na.rm = TRUE, type="default", ...)
 
 \method{seasonalfunction}{data.frame}(x, FUN, na.rm = TRUE, type="default",
-                          dates, date.fmt = "\%Y-\%m-\%d", 
+                          dates=1, date.fmt = "\%Y-\%m-\%d", 
                           out.type = "data.frame", verbose = TRUE, ...)
                           
 \method{seasonalfunction}{matrix}(x, FUN, na.rm = TRUE, type="default",
-                          dates, date.fmt = "\%Y-\%m-\%d", 
+                          dates=1, date.fmt = "\%Y-\%m-\%d", 
                           out.type = "data.frame", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -54,7 +54,7 @@ character, indicating which weather seasons will be used for computing the outpu
 }
   \item{dates}{
 numeric, factor, Date indicating how to obtain the dates. \cr
-If \code{dates} is a number, it indicates the index of the column in \code{x} that stores the dates \cr
+If \code{dates} is a number (default), it indicates the index of the column in \code{x} that stores the dates \cr
 If \code{dates} is a factor, it is converted into Date class, by using the date format specified by \code{date.fmt}  \cr
 If \code{dates} is already of Date class, the code verifies that the number of days in \code{dates} be equal to the number of element in \code{x}
 }

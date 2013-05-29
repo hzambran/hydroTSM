@@ -31,10 +31,10 @@ subdaily2seasonal(x, ...)
 
 \method{dm2seasonal}{zoo}(x, season, FUN, na.rm = TRUE, out.fmt="\%Y", ...)
 
-\method{dm2seasonal}{data.frame}(x, season, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+\method{dm2seasonal}{data.frame}(x, season, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
         out.type = "data.frame", out.fmt="\%Y", ...)
         
-\method{dm2seasonal}{matrix}(x, season, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+\method{dm2seasonal}{matrix}(x, season, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
         out.type = "data.frame", out.fmt="\%Y", ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -70,7 +70,7 @@ Character indicating the date format for the output time series. See \code{forma
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates. \cr
-If \code{dates} is a number, it indicates the index of the column in \code{x} that stores the dates \cr
+If \code{dates} is a number (default), it indicates the index of the column in \code{x} that stores the dates \cr
 If \code{dates} is a factor, it is converted into Date class, by using the date format specified by \code{date.fmt} \cr
 If \code{dates} is already of Date class, the code verifies that the number of days on it be equal to the number of elements in \code{x}
 }

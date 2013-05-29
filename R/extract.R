@@ -1,3 +1,9 @@
+# File extract.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
 #########################################################################
 # extract: Extracts from a zoo object, all the values belonging to a    #
 #             given month, year or weather season                       #

@@ -15,7 +15,7 @@ Station Name -> Time Series
 This function takes a data.frame whose columns contains the time series of several gauging stations, along with a character representing the name of one gauging station, and extracts the time series corresponding to that station.
 }
 \usage{
-sname2ts(x, sname, dates, date.fmt = "\%Y-\%m-\%d", var.type, 
+sname2ts(x, sname, dates=1, date.fmt = "\%Y-\%m-\%d", var.type, 
          tstep.out = "daily", FUN, na.rm = TRUE, from, to)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -29,7 +29,7 @@ Character representing the name of a station, which have to correspond to one co
 }
   \item{dates}{
 numeric, factor, Date object indicating how to obtain the dates corresponding to the \code{sname} station. \cr
--) If \code{dates} is a number, it indicates the index of the column in \code{x} that stores the dates \cr
+-) If \code{dates} is a number (default), it indicates the index of the column in \code{x} that stores the dates \cr
 -) If \code{dates} is a factor, it is converted into Date class, using the date format specified by \code{date.fmt} \cr
 -) If \code{dates} is already of Date class, the code verifies that the number of days in \code{dates} be equal to the number of element in \code{x}
 }

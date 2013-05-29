@@ -1,3 +1,9 @@
+# File matrixplot.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
 ####################################################################
 # matrixplot: Plots a color matrix representing the amount of days #
 #          with information in a set of gauging stations           #

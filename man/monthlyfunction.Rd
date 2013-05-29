@@ -25,11 +25,11 @@ monthlyfunction(x, ...)
 
 \method{monthlyfunction}{zoo}(x, FUN, na.rm=TRUE,...)
 
-\method{monthlyfunction}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
-             out.type = "data.frame", verbose = TRUE, ...)
+\method{monthlyfunction}{data.frame}(x, FUN, na.rm = TRUE, dates=1, 
+        date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
              
-\method{monthlyfunction}{matrix}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
-             out.type = "data.frame", verbose = TRUE, ...)
+\method{monthlyfunction}{matrix}(x, FUN, na.rm = TRUE, dates=1, 
+        date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -48,7 +48,7 @@ Logical. Should missing values be removed? \cr
   \item{dates}{
 It is only used when \code{x} is not a zoo object. \cr
 numeric, factor, Date indicating how to obtain the dates. \cr
-If \code{dates} is a number, it indicates the index of the column in \code{x} that stores the dates \cr
+If \code{dates} is a number (default), it indicates the index of the column in \code{x} that stores the dates \cr
 If \code{dates} is a factor, it is converted into 'Date' class, using the date format specified by \code{date.fmt} \cr
 If \code{dates} is already of Date class, the code verifies that the number of days in \code{dates} be equal to the number of elements in \code{x}
 }

@@ -1,7 +1,7 @@
 # File hydrokrige.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2009-2011 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -954,17 +954,21 @@ hydrokrige.default <- function(x.ts, x.gis,
 
 
 
-########################################################################
-#  hydrokrige.data.frame                                               #
-########################################################################
-#  Started April 22-28th, 2009;                                        #
-#  Further Developments: Oct 2009, Dec 2010, Apr 2010                  #
-#################################################################################
-# BLOCK IDW interpolation (with optional plot) over a set of subcatchments,     #
-# defined by a polygonal shapefile, and during a Time Window defined by the user#
-# The interpolated values for each subcatchment is computed as the mean value   #
-# over all the cells that belong to each subcatchment                           #
-#################################################################################
+################################################################################
+#                      hydrokrige.data.frame                                   #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: April 22-28th,                                                      #
+# Updates: Oct 2009, Dec 2010, Apr 2010                                        #
+#          29-May-2013                                                         #
+################################################################################
+# BLOCK IDW interpolation (with optional plot) over a set of subcatchments,    #
+# defined by a polygonal shapefile, and during a Time Window defined by the    #
+# user                                                                         #
+# The interpolated values for each subcatchment is computed as the mean value  #
+# over all the cells that belong to each subcatchment                          #
+################################################################################
 
 # 'x.ts' : Character with the filename (with path) of the cvs file with the time series for all the stations.
 #              1) CAN be a database with all the time series in the Basin.
@@ -1094,7 +1098,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 			           scalebar.plot=FALSE, sb.offset, sb.scale,
 			           verbose=TRUE,
                                    allNA.action="error",
-			           dates, from, to,
+			           dates=1, from, to,
 			           write2disk=TRUE,
 				   out.fmt="csv2",
 			           fname=paste(ColorRamp, "by_Subcatch.csv", sep=""),...) {

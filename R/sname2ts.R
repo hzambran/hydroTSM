@@ -1,7 +1,7 @@
 # File sname2ts.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2009-2011 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -11,6 +11,7 @@
 ################################################################################
 # Started: 13-Jan-2009                                                         #
 # Updates: 18-Oct-2012                                                         #
+#          29-May-2013                                                         #
 ################################################################################
 # This function takes a data.frame whose columns contains the time series
 # (without missing dates) of several gauging stations, it takes the name
@@ -49,7 +50,7 @@
 # 'na.rm'    : Logical. Should missing values be removed?
 #              TRUE : the monthly and annual values  are computed considering only those values different from NA
 #              FALSE: if there is AT LEAST one NA within a year, the monthly and annual values are NA
-sname2ts <- function(x, sname, dates, date.fmt="%Y-%m-%d", var.type,
+sname2ts <- function(x, sname, dates=1, date.fmt="%Y-%m-%d", var.type,
                      tstep.out="daily", FUN, na.rm=TRUE, from, to) {
 
   # Checking that the user provied a valid argument for 'x'

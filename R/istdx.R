@@ -1,11 +1,21 @@
-#########################################################################
-#  istdx : This function transforms back a standarized vector/matrix    #
-#           into their original values, i.e., re-scales all the values  #
-#           in the [0,1] interval to the original range of values       #
-#           x = re-scale(z) = z*[ zmax - zmin ] + xmin                  #
-#########################################################################
-#               February 19th, 2009                 #
-#####################################################
+# File istdx.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+#                                  'istdx'                                     #
+################################################################################
+# This function transforms back a standarized vector/matrix into their original#
+# values, i.e., re-scales all the values in the [0,1] interval to the original #
+# range of values                                                              #
+#           x = re-scale(z) = z*[ zmax - zmin ] + xmin                         #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 19-Feb-2009                                                         #
+################################################################################
 #
 
 # 'z'     : standarized vector or matriz to be re-scaled, all the values

@@ -1,8 +1,17 @@
-########################################################################
-# mspplot: Plots 2 or more interpolated maps on the same graph         #
-########################################################################
-#  April 22-25th, 2009; Ago 2009, Sep 2009                             #
-########################################################################
+# File mspplot.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+# mspplot: Plots 2 or more interpolated maps on the same graph                 #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 22-Apr-2009                                                         #
+# Updtes : 25-Apr-2009, Ago 2009, Sep 2009                                     #
+################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
 

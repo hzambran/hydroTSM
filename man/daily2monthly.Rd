@@ -32,10 +32,10 @@ subdaily2monthly(x, ...)
 
 \method{daily2monthly}{zoo}(x, FUN, na.rm = TRUE, ...)
 
-\method{daily2monthly}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+\method{daily2monthly}{data.frame}(x, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
         out.type = "data.frame", out.fmt="numeric", verbose = TRUE, ...)
 
-\method{daily2monthly}{matrix}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+\method{daily2monthly}{matrix}(x, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
         out.type = "data.frame", out.fmt="numeric", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -54,7 +54,7 @@ Logical. Should missing values be removed? \cr
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates for each gauging station \cr
-If \code{dates} is a number, it indicates the index of the column in \var{x} that stores the dates \cr
+If \code{dates} is a number (default), it indicates the index of the column in \var{x} that stores the dates \cr
 If \code{dates} is a factor, it is converted into Date class, using the date format specified by \code{date.fmt}  \cr
 If \code{dates} is already of Date class, the code verifies that the number of days on it be equal to the number of elements in \code{x}
 }

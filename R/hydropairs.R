@@ -1,9 +1,17 @@
-############################################################
-# 'hydropairs' : Visualization of a Correlation Matrix    #
-############################################################
-#                    July 29th, 2009                       #
-############################################################
-# On top the (absolute) value of the correlation plus the result of the cor.test as points. #
+# File hydropairs.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+# 'hydropairs' : Visualization of a Correlation Matrix                         #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 29-Jul-2009                                                         #
+################################################################################
+# On top the (absolute) value of the correlation plus the result of the cor.test as points. 
 # On botttom, the bivariate scatterplots, with a fitted line
 # On diagonal, histograms (from '?pairs')
 

@@ -32,7 +32,7 @@ sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",
            win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto",
            lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
            col=c("blue", "lightblue", "lightblue"), 
-           dates, date.fmt = "\%Y-\%m-\%d", from, to, 
+           dates=1, date.fmt = "\%Y-\%m-\%d", from, to, 
            stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
            h=NULL )
 }
@@ -126,7 +126,7 @@ See \code{\link[graphics]{plot.default}}).
 }
   \item{dates}{
 ONLY required when \code{x} is a data frame. It is a numeric, factor or Date object indicating how to obtain the dates corresponding to the \code{sname} station. \cr
-If \code{dates} is a number, it indicates the index of the column in \code{x} that stores the dates \cr
+If \code{dates} is a number (default), it indicates the index of the column in \code{x} that stores the dates \cr
 If \code{dates} is a factor, it is converted into Date class, using the date format  specified by \code{date.fmt} \cr
 If \code{dates} is already of Date class, the code verifies that the number of days in \code{dates} be equal to the number of element in \code{x}
 }

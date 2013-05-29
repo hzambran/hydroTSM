@@ -1,11 +1,14 @@
-#########################################################################
-#  stdx : standarizes a vector or matrix, i.e., scales all the values   #
-#         in in a way that the transformed values will be within the    #
-#         range [0,1]. z = scale(x) = [ x - xmin ] / [ xmax - xmin ]    #
-#########################################################################
-#               February 19th, 2009                 #
-#####################################################
-# This function
+################################################################################
+#                                    'stdx'                                    #
+################################################################################
+# This function standarizes a vector or matrix, i.e., scales all the values in #
+# a way that the transformed values will be within the range [0,1].            #
+# z = scale(x) = [ x - xmin ] / [ xmax - xmin ]                                #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 19-Feb-2009                                                         #
+################################################################################
 
 # 'x'     : vector or matrix to be scaled
 # 'result': standarized 'x', where all the values of each column of 'x'
@@ -37,6 +40,11 @@ stdx.default <- function (x,...) {
   } # 'stdx.default' end
 
 
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 19-Feb-2009                                                         #
+################################################################################
 stdx.matrix <- function(x,...) {
 
   std <- matrix(data = NA, nrow = nrow(x), ncol = ncol(x))
@@ -53,6 +61,11 @@ stdx.matrix <- function(x,...) {
 }  # 'stdx.matrix' end
 
 
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 19-Feb-2009                                                         #
+################################################################################
 stdx.data.frame <- function(x,...) {
 
   x <- as.matrix(x)

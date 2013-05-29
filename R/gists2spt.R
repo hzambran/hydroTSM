@@ -1,3 +1,9 @@
+# File gists2spt.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
 ##############################################################
 # 'gists2spt': Time Series and GIS to Spatio-temporal Object #
 #                   Sep 12th, 2009                           #

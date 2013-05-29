@@ -1,7 +1,7 @@
 %% File annualfunction.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2012 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{annualfunction}
@@ -25,10 +25,10 @@ annualfunction(x, FUN, na.rm = TRUE, ...)
 
 \method{annualfunction}{zoo}(x, FUN, na.rm = TRUE, ...)
 
-\method{annualfunction}{data.frame}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+\method{annualfunction}{data.frame}(x, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
         verbose = TRUE, ...)
         
-\method{annualfunction}{matrix}(x, FUN, na.rm = TRUE, dates, date.fmt = "\%Y-\%m-\%d", 
+\method{annualfunction}{matrix}(x, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
         verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -47,7 +47,7 @@ Logical. Should missing values be removed?. \cr
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates corresponding to each gauging station. \cr
-If \code{dates} is a number, it indicates the index of the column in \code{x} that stores the dates \cr
+If \code{dates} is a number (default), it indicates the index of the column in \code{x} that stores the dates \cr
 If \code{dates} is a factor, it have to be converted into Date class, using the date format specified by \code{date.fmt} \cr
 If \code{dates} is already of Date class, the code verifies that the number of days in \code{dates} be equal to the number of elements in \code{x}
 }

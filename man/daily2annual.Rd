@@ -38,10 +38,10 @@ monthly2annual(x, ...)
 
 \method{daily2annual}{zoo}(x, FUN, na.rm = TRUE, out.fmt = "\%Y-\%m-\%d", ...)
 
-\method{daily2annual}{data.frame}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", dates, 
+\method{daily2annual}{data.frame}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 
-\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", dates, 
+\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -65,7 +65,7 @@ Character indicating the date format for the output time series. See \code{forma
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates for corresponding to each gauging station \cr
-If \code{dates} is a number, it indicates the index of the column in \code{x} that stores the dates \cr
+If \code{dates} is a number (default), it indicates the index of the column in \code{x} that stores the dates \cr
 If \code{dates} is a factor, it is converted into Date class, using the date format specified by \code{date.fmt} \cr
 If \code{dates} is already of Date class, the code verifies that the number of days on it be equal to the number of element in \code{x}
 }
