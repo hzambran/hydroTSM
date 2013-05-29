@@ -1,8 +1,19 @@
-#####################################################################
-# 'diy' : Given a numeric value of a year, it generates:            #
-#         1) a vector with all the days (dates) within the year, OR #
-#	  2) the amount of days in the year                         #
-#####################################################################
+# File diy.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+# 'diy' : Given a numeric value of a year, it generates:                       #
+#         1) a vector with all the days (dates) within the year, OR            #
+#	  2) the amount of days in the year                                    #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+################################################################################
+# Started: 2008                                                                #
+# Updates:                                                                     #
+################################################################################
 # year    : numeric, the year for which the sequence of days will be generated
 # out.type: Character indicating the type of result that is given by this function.
 #           Valid values are:
