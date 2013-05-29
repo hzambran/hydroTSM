@@ -3,7 +3,7 @@ NEWS/ChangeLog for hydroTSM
 
 0.3-7	under-development
         o new dataset: 'KarameaAtGorgeQts', with hourly streamflows for the Karamea River(New Zeland), provided by the National Institute 
-          of Water and Atmospheric Research (http://www.niwa.co.nz/), thanks to the gentle collaboration of Shailesh Singh.
+          of Water and Atmospheric Research (http://www.niwa.co.nz/), thanks to the kind collaboration of Shailesh Singh.
         o new function: 'subdaily2daily' for aggregating sub-daily values into daily ones
         o new function: 'subdaily2monthly' for computing monthly values from sub-daily time series        
         o new function: 'subdaily2annual' for computing annual values from sub-daily time series 
@@ -42,9 +42,8 @@ NEWS/ChangeLog for hydroTSM
         o 'dm2seasonal'                : -) now it handles sub-daily and weekly values 
                                          -) improved examples
         o 'time2season'                : now it handles "POSIXct" and "POSIXt" values 
-        o NAMESPACE                    : functions from package zoo are imported explicitly
+        o NAMESPACE                    : functions from packages zoo and xts are now imported explicitly
         o 'zoo2RHtest'                 : broken links were removed and replaced by new ones. Thanks to Gang Dong and Yan Li !
-        o TODO: require(zoo) and require(xts) removed from all the functions ###############################
         
 
 0.3-6	18-Oct-2012
