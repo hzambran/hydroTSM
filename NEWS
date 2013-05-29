@@ -14,6 +14,7 @@ NEWS/ChangeLog for hydroTSM
                                              of 1 was artificially introduced to the annual ts of each column when 'na.rm=TRUE', while a single value 
                                              of 0 was artificially introduced to the annual ts of each column when 'na.rm=FALSE') => generally a very 
                                              small difference
+        o 'dip'                        : more informative error messages                                             
         o 'monthlyfunction.matrix'     : default value for 'dates' argument was set to 1 (before it was missing)
         o 'monthlyfunction.data.frame' : default value for 'dates' argument was set to 1 (before it was missing)  
         o 'annualfunction.matrix'      : default value for 'dates' argument was set to 1 (before it was missing)

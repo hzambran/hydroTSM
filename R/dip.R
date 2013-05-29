@@ -1,8 +1,20 @@
-##################################################################
-# 'dip': Given any starting and ending dates, it generates:      #
-#        1) a vector with all the days between the two dates, OR #
-#	 2) the amount of days between the two dates             #
-##################################################################
+# File dwdays.R
+# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
+
+################################################################################
+#                                    'dip'                                     #  
+################################################################################       
+# Purpose: Given any starting and ending dates, it generates:                  #
+#        1) a vector with all the days between the two dates, OR               #
+#	 2) the amount of days between the two dates                           #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: 2008                                                                #
+# Updates: 29-May-2013                                                         #
+################################################################################
 
 # 'from'    : Character indicating the starting date for computing the number of dyas.
 #             It MUST have the date format specified by 'date.fmt'
@@ -18,9 +30,34 @@ dip <- function(from, to, date.fmt="%Y-%m-%d", out.type="seq") {
      # Checking 'out.type'
      if (is.na(match(out.type, c("seq", "nmbr"))))
         stop("Invalid argument: 'out.type' must be of class 'seq' or 'nmbr'")
+        
+     # Converting 'from' into a Date object (if necessary)
+     if (class(from) != "Date") {
+       from.bak <- from
+       from     <- as.Date(from, format=date.fmt)
+     } # IF end
+     
+     # Checking that 'from' is a valid Date object
+     if (is.na(from)) 
+       stop("Invalid argument: 'from' (", from.bak, 
+            ") is not compatible with 'date.ftm' (", date.fmt, ") !")
+     
+     # Converting 'to' into a Date object (if necessary)
+     if (class(to) != "Date") {
+       to.bak <- to
+       to     <- as.Date(to, format=date.fmt)
+     } # IF end
+     
+     # Checking that 'to' is a valid Date object
+     if (is.na(to)) 
+       stop("Invalid argument: 'to' (", to.bak, 
+            ") is not compatible with 'date.ftm' (", date.fmt, ") !")
+     
+     # Checking that 'from' is lower or equal to 'to'
+     if (to < from) stop("Invalid argument: 'from > to' (", from, " > ", to, ")")
 
      # Generating an Annual-regular time series of Dates.
-     vec.days <- seq( from=as.Date(from, format=date.fmt), to=as.Date(to, format=date.fmt), by="days" )
+     vec.days <- seq( from=from, to=to, by="days" )
 
      if (out.type=="seq") return(vec.days)
      else if (out.type=="nmbr") return ( length(vec.days) )
