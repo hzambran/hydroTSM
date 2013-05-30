@@ -26,15 +26,15 @@ dwdays.default <- function(x, thr=0, type="wet", na.rm=TRUE, ... ) {
 
   # Checking the user provide a valid value for 'x'
   if (is.na(match(class(x), c("zoo"))))
-        stop("Invalid argument: 'x' must be of class 'zoo'")
+    stop("Invalid argument: 'x' must be of class 'zoo'")
 
   # Checking the user provide a valid value for 'x'
   if (is.na(match(sfreq(x), c("daily")))) {
-		 stop(paste("Invalid argument: 'x' is not a daily ts, it is a ", sfreq(x), " ts", sep="") ) }
+    stop(paste("Invalid argument: 'x' is not a daily ts, it is a ", sfreq(x), " ts", sep="") ) }
 
   # Checking the user provide a valid value for 'type'
   if ( is.na(match(type, c("dry", "wet"))) )
-        stop("Invalid argument: 'type' must be in c('dry', 'wet'")
+    stop("Invalid argument: 'type' must be in c('dry', 'wet'")
 
   # getting the dates of 'x'
   dates <- time(x)
