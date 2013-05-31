@@ -27,13 +27,14 @@ hydroplot(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",
           stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
           h=NULL, ...)
 
-sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
-           var.type, var.unit="units",main=NULL, xlab="Time", ylab=NULL,
-           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto",
-           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
+sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", 
+           pfreq="dma", var.type, var.unit="units", main=NULL, 
+           xlab="Time", ylab=NULL, win.len1=0, win.len2=0, 
+           tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, 
+           cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
            col=c("blue", "lightblue", "lightblue"), 
-           dates=1, date.fmt = "\%Y-\%m-\%d", from, to, 
-           stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
+           dates=1, date.fmt = "\%Y-\%m-\%d", from, to, stype="default", 
+           season.names=c("Winter", "Spring", "Summer", "Autumn"), 
            h=NULL )
 }
 %- maybe also 'usage' for other objects documented here.
@@ -217,7 +218,8 @@ data(EbroPPtsMonthly)
 sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", dates=1, pfreq="ma")
 
 ## Plotting seasonal precipitation at station "P9001"
-sname2plot(EbroPPtsMonthly, sname="P9001", FUN=sum, dates=1, pfreq="seasonal", stype="default")
+sname2plot(EbroPPtsMonthly, sname="P9001", FUN=sum, dates=1, pfreq="seasonal", 
+           stype="default")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

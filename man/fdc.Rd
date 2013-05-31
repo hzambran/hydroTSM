@@ -21,29 +21,29 @@ Computes and plots the Flow Duration Curve (\acronym{FDC}) corresponding to a gi
 \usage{
 fdc(x, ...)
 
-\method{fdc}{default}(x,lQ.thr=0.7,hQ.thr=0.2, plot=TRUE, log="y", main="Flow Duration Curve", 
-    xlab="\% Time flow equalled or exceeded", ylab="Q, [m3/s]", ylim, 
-    yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), col="black", pch=1, lwd=1, 
-    lty=1, cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL, leg.cex=1, 
+\method{fdc}{default}(x,lQ.thr=0.7,hQ.thr=0.2, plot=TRUE, log="y", 
+    main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
+    ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), col="black", 
+    pch=1, lwd=1, lty=1, cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL, leg.cex=1, 
     leg.pos="topright", verbose= TRUE, thr.shw=TRUE, new=TRUE, ...)
 
-\method{fdc}{matrix}(x, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", main= "Flow Duration Curve",                         
-    xlab="\% Time flow equalled or exceeded", ylab="Q, [m3/s]", ylim, 
-    yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
+\method{fdc}{matrix}(x, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
+    main= "Flow Duration Curve",  xlab="\% Time flow equalled or exceeded", 
+    ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
     col=palette("default")[1:ncol(x)], pch=1:ncol(x), lwd=rep(1, ncol(x)), 
     lty=1:ncol(x), cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL, 
     leg.cex=1, leg.pos="topright",verbose=TRUE, thr.shw=TRUE, new=TRUE, ...)
 
-\method{fdc}{data.frame}(x, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", main= "Flow Duration Curve",                         
-     xlab="\% Time flow equalled or exceeded", ylab="Q, [m3/s]", ylim, 
-     yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
+\method{fdc}{data.frame}(x, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
+     main= "Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
+     ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
      col=palette("default")[1:ncol(x)], pch=1:ncol(x), lwd=rep(1, ncol(x)), 
      lty=1:ncol(x), cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL, 
      leg.cex=1, leg.pos="topright", verbose=TRUE, thr.shw=TRUE, new=TRUE, ...)
      
-\method{fdc}{zoo}(x, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", main= "Flow Duration Curve",                         
-     xlab="\% Time flow equalled or exceeded", ylab="Q, [m3/s]", ylim, 
-     yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
+\method{fdc}{zoo}(x, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
+     main= "Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
+     ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
      col=palette("default")[1:NCOL(x)], pch=1:NCOL(x), lwd=rep(1, NCOL(x)), 
      lty=1:NCOL(x), cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL, 
      leg.cex=1, leg.pos="topright", verbose=TRUE, thr.shw=TRUE, new=TRUE, ...)

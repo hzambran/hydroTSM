@@ -1,5 +1,5 @@
 importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply)
-importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts)
+importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts, .index)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
 importFrom("e1071", skewness, kurtosis)
 #importFrom("maptools", readShapePoly)
@@ -9,14 +9,15 @@ importFrom("sp", proj4string, coordinates, spplot)
 exportPattern("^[^\\.]")
 
 S3method(monthlyfunction, zoo)
-S3method(dm2seasonal, zoo)
-S3method(seasonalfunction, zoo)
 S3method(annualfunction, zoo)
+S3method(seasonalfunction, zoo)
+S3method(dm2seasonal, zoo)
 S3method(daily2monthly, zoo)
 S3method(daily2annual, zoo)
 S3method(dwi, zoo)
 S3method(extract, zoo)
 S3method(smry, zoo)
 S3method(fdc, zoo)
+S3method(subdaily2daily, zoo)
 
 

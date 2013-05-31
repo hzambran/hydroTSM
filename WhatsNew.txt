@@ -1,3 +1,61 @@
+0.3-6	18-Oct-2012
+        o 'vector2zoo' : -) now it handles sub-daily values 
+                         -) 'dates' argument accepts 'POSIXct' & 'POSIXlt' objects
+        o 'izoo2rzoo'  : -) now it handles sub-daily values 
+                         -) 'dates' argument accepts 'POSIXct' & 'POSIXlt' objects
+        o 'sfreq'      : was transformed into a wrapper to the 'xts::periodicity' function, in order to allow identification of more
+                         sampling frequencies: 'minute', 'hourly', 'daily', 'weekly', 'monthly', 'quarterly' and 'annual' (instead of 
+                         'yearly' as used in xts)
+        o 'fdc'        : zero discharge value(s) are now removed ONLY when 'log="y"' AND 'plot=TRUE' (both default values of the function).
+                         Up to hydroTSM 0.3-5, zero values were removed when 'log="y"' (default value of the function), even if 'plot=FALSE' 
+                         (thanks to Giovanni Forzieri !)
+        o 'sname2ts'   : now it works with date.fmt="%Y%m%d" (e.g. 20000101), which were previously interpreted as numbers and not as dates, 
+                         leading to an error (thanks to Vishnu Pandey !)
+        o 'sname2plot' : now it works with date.fmt="%Y%m%d" (e.g. 20000101), which were previously interpreted as numbers and not as dates, 
+                         leading to an error
+        o 'hydrokrige' : fixed interpolation error raised for some constant value maps
+        o DESCRIPTION  : 'Author@R' field was replaced by 'Authors@R'          
+
+0.3-5	04-Jul-2012
+        o 'dwi.zoo'                  : fixed display error for years and months when 'matrixplot' is used to plot the results of 'dwi' 
+                                       applied to a matrix or data.frame.
+                                       This error appeared after an update of the zoo package, and did not imply any error in the 
+                                       computation, only in the display of the years/months
+        o 'izoo2rzoo.zoo'            : now works properly with matrix and data.frame objects 
+        o 'hypsometric'              : now is able to deal with raster objects with more than 1 band 
+                                       (thanks to Jan Schwanbeck for reporting the issue and proposing a solution) 
+        o 'daily2monthly.data.frame' : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
+                                       -) wrong labelling of months was fixed (only occurred when out.type="db")
+        o 'daily2annual.data.frame'  : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
+        o 'daily2annual.zoo'         : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
+                                       -) default value for 'out.fmt' was changed from "%Y" to "%Y-%m-%d" (this is the default for zoo objects)
+        o 'sfreq'                    : -) now gives the correct sampling frequency for zoo objects that are matrix/data.frame
+                                       -) now only works with zoo objects (before it also accepted ts objects)
+        
+        o 'hydroplot'                : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2
+        o 'monthlyfunction'          : -) calls to 'as.Date' were changed to 'zoo::as.Date', to avoid possible conflicts with zoo >= 1.7-2 
+                                          (only for data.frame/matrix objects)
+                                       -) fixed bug in the labelling of columns of the output object (only for data.frame/matrix objects)
+        o 'hydrokrige'               : -) fixed visualisation error "Error using packet 1. 'breaks' are not unique".
+                                       
+0.3-4	03-May-2012
+        o 'fdc' : new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend
+        o 'fdcu': new arguments 'leg.cex' and 'leg.pos' to provide better control over the legend
+        
+0.3-3	07-Nov-2011
+        o new 'fdc.zoo', which works with vectors, matrices and/or data frames
+        o 'fdc.matrix'     : -) the flow duration curve of each column is now returned as an output (although not in an efficient way, yet)
+          'fdc.data.frame'   -) axis numbers and labels are now drawn only once.
+                             -) when missing 'ylim', it is now correctly computed when some series have missing values.
+        
+0.3-2	15-Sep-2011
+        o 'smry' : bugfix in 'smry.zoo' (when some values were NA)
+        	
+0.3-1	14-Sep-2011
+        o hydroTSM 0.3-X is now compatible with R 2.12.X.
+          'sp::coordinates' & 'sp::proj4string' were replaced by 'coordinates' & 'proj4string', respectively. Thanks to Uwe Ligges.
+        o 'smry' : bugfix in 'smry.data.frame' (when -at least- 1 column was not numeric)
+
 0.3-0	01-Sep-2011
 
 	o hydroTSM now depends on xts >= 0.8-2 (=> zoo >= 1.7-2), in order to make use of improved plotting capabilities for ts objects.
@@ -77,6 +135,7 @@
                               -) it works with xts objects as well. 			      
 	o Some 'as.Date' calls were changed to 'zoo::as.Date', in order to work properly with zoo >= 1.7-2
 	
+
 0.2-2	14-Apr-2011
 	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels  when 'log="y"' (thanks to Santosh Aryal !)
 	o All the 'print' calls used to display information messages were replaced by a call to 'message'.
