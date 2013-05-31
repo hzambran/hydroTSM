@@ -20,12 +20,12 @@ The focus of this package has been put in providing a collection of tools useful
 \tabular{ll}{
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
-Version: \tab 0.3-6\cr
-Date: \tab 2012-10-18\cr
+Version: \tab 0.4-0\cr
+Date: \tab 2013-05-31\cr
 License: \tab GPL >= 2 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Thu Oct 18 18:40:51 CEST 2012; MZB \cr
-BuiltUnder: \tab R version 2.15.1 (2012-06-22) ; x86_64-redhat-linux-gnu (64-bit) \cr
+Packaged: \tab Fri May 31 17:17:54 CEST 2013; MZB \cr
+BuiltUnder: \tab R version 3.0.0 (2013-04-03) -- "Masked Marvel" ; x86_64-redhat-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
 }

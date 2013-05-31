@@ -1,3 +1,82 @@
+0.3-0	01-Sep-2011
+
+	o hydroTSM now depends on xts >= 0.8-2 (=> zoo >= 1.7-2), in order to make use of improved plotting capabilities for ts objects.
+	  The first release of 'xts' after the 0.8-0 (which was set as the default building block for plotting time series in hydroTSM) 
+	  was the 0.8-2, and appeared on CRAN on August 9th, 2011	
+	o NAMESPACE created, which leads to reduced dependency of packages e1071, gstat, automap, sp
+	o 'maptools' package is now "suggested" instead of a dependence. It is only used for reading shapefiles in the 
+	  'hydrokrige' and 'mspplot' functions.	
+	o 'drawxaxis'       : -) it was re-written, in order to take advantage of some features of the 'xts' 
+			         package (now added as a dependence), and now it should work with sub-daily 
+			         time series.
+			      -) its name was changed from 'drawxaxis' to 'drawTimeAxis', in order to have a 
+			         more intuitive name. The old 'drawxaxis' function is deprecated, but 
+			         still be kept for back-compatibility reasons.			
+	 		      -) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
+	 		         "minutes", and "seconds", and its default value was changed to "auto".
+	o 'hydroplot'       : -) it takes advantage of the new 'drawTimeAxis' function.
+	  'sname2plot'      : -) now it is able to plot seasonal values (ptype="seasonal")
+	                      -) it works with xts objects as well.
+			      -) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
+	 		         "minutes", and "seconds", and its default value was changed to "auto". 
+	 		      -) the name of 'x' is now used as default for the Y axis label.
+	 		      -) an incorrect default title for the daily histogram was fixed.
+	 		      -) the default value for 'cex' was changed from 0.7 to 0.3
+	 		      -) new arguments: 'from', 'to', for plotting a slice of the original time series
+	 		      -) thanks to Tom Elliott for pointing out my attention to this function again !.
+	 		      -) new argument: 'h', for plotting horizontal lines in seasonal plots
+	 		      -) new argument 'stype', for allowing weather seasons different from 
+	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)
+	                      -) default value for the 'win.len1' argument was changed from 351*1 to 0, in order to avoid the 
+	                         plotting of the 1-year moving average (by default)
+	                      -) default value for the 'win.len2' argument was changed from 351*3 to 0, in order to avoid the 
+	                         plotting of the 3-years moving average (by default)
+	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
+	o 'sfreq'           : -) it works now with xts objects
+	o 'vector2zoo'      : -) added error checking for length of the numeric vector and the dates.
+	o 'hydrokrige'      : -) updated documentation and new example of interpolation over a user-defined raster map.
+	o 'monthlyfunction' : -) new 'monthlyfunction.zoo', ~ 8 times faster than before (for data.frames, when out.type="data.frame")
+			      -) it works now with matrix objects as well.
+	                      -) it works now with xts objects as well.
+	o 'annualfunction'  : -) new 'annualfunction.zoo', much faster than before for data.frames.
+			      -) it works with matrix objects as well.
+	                      -) it works with xts objects as well.
+	o 'daily2monthly'   : -) new 'daily2monthly.zoo', much faster than before (for data.frames, when out.type="data.frame")
+			      -) it works withannualxts objects as well.	 
+	o 'daily2annual'    : -) new 'daily2monthly.zoo', much faster than before (for data.frames, when out.type="data.frame")
+			      -) it works with xts objects as well.			                           	
+	o 'fdc' and 'fdcu'  : -) new argument 'xat', for setting the position of the 'x' axis labels when 'log="x"'
+	o 'time2season'     : -) new argument 'type', for allowing seasons different from 
+	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)
+	o 'dm2seasonal'     : -) new argument 'out.fmt', for better compatibility with zoo and xts objects.
+	                      -) it works with matrix objects as well.
+	                      -) it works with xts objects as well.
+	                      -) argument 'season' now allows weather seasons typical from 
+	                         French Polynesia: c("DJFM", "AM", "JJAS", "ON") (thanks to Lydie Sichoix !)
+	o 'seasonalfunction': -) new 'seasonalfunction.zoo', ~ 30 times faster than before (for data.frames, when out.type="data.frame")
+			      -) it works with matrix objects as well.
+	                      -) it works with xts objects as well.
+	                      -) new argument 'type', for allowing weather seasons different from 
+	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)	
+        o 'extractzoo'      : -) its name was changed from 'extractzoo' to 'extract', in order to have a 
+			         shorter name (this function only apply to zoo objects anyway). 
+			         The old 'extractzoo' function is deprecated, but still be kept for back-compatibility reasons.			
+			      -) new 'extract.zoo'
+			      -) argument 'trgt' now allows weather seasons typical from 
+	                         French Polynesia: c("DJFM", "AM", "JJAS", "ON") (thanks to Lydie Sichoix !)
+	o 'dwi'             : -) new 'dwi.zoo', much faster than before
+			      -) it works with xts objects as well.
+			      -) fixed documentation of the 'out.unit' argument.
+			      -) argument 'tstep' is not required any more, because it is not used any longer.
+			         It is kept for backwards compatibility purposes only.
+        o 'matrixplot       : -) it works with zoo objects as well (zoo matrices/data.frames)
+        o 'izoo2rzoo'       : -) new 'izoo2rzoo.zoo'
+                              -) it works with xts objects as well. 
+        o 'smry'            : -) new 'smry.zoo'	
+                              -) much faster than before for matrices and data.frames 	                            
+                              -) it works with xts objects as well. 			      
+	o Some 'as.Date' calls were changed to 'zoo::as.Date', in order to work properly with zoo >= 1.7-2
+	
 0.2-2	14-Apr-2011
 	o 'fdc' and 'fdcu': new argument 'yat', for setting the position of the 'y' axis labels  when 'log="y"' (thanks to Santosh Aryal !)
 	o All the 'print' calls used to display information messages were replaced by a call to 'message'.
@@ -16,14 +95,6 @@
 	  'cex.lab', 'lty', 'lwd', '...'
 	o 'sname2ts': new arguments: 'from', 'to', 'date.fmt'
 	o 'fdc', 'fdcu': new arguments: 'cex.axis', 'cex.lab'
-	
-############
-# v 0.2-1: #
-############
-*) Release Date: 10-Oct-2010
-
-Modified functions:
-*) 'sname2ts'            : -) checking for the 'sname' argument was added
 
 ############
 # v 0.2-0: #

@@ -1,9 +1,17 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 
-0.3-7	under-development
-        o new dataset: 'KarameaAtGorgeQts', with hourly streamflows for the Karamea River(New Zeland), provided by the National Institute 
-          of Water and Atmospheric Research (http://www.niwa.co.nz/), thanks to the kind collaboration of Shailesh Singh.
+0.4-0	31-May-2013
+        o major changes: -) all the functions should now be compatible with sub-daily time series. See details below.
+                         -) package now is tested against R 3.0.X
+                         -) updated vignette. Now it includes some examples about computation of extreme indices of daily precipitation.
+                         -) new dataset: 'KarameaAtGorgeQts', with hourly streamflows for the Karamea River(New Zeland), provided by the 
+                            National Institute of Water and Atmospheric Research (http://www.niwa.co.nz/), thanks to the kind collaboration 
+                            of Shailesh Singh.
+                         -) e-mail address of maintainer was changed from the @ing.unit.it to the @gmail.com domain
+                         -) DESCRIPTION: new 'MailingList' field, indicating the r-sig mailing list to be used for questions related to this 
+                            package
+ 
         o new function: 'subdaily2daily' for aggregating sub-daily values into daily ones
         o new function: 'subdaily2monthly' for computing monthly values from sub-daily time series        
         o new function: 'subdaily2annual' for computing annual values from sub-daily time series 
@@ -11,11 +19,10 @@ NEWS/ChangeLog for hydroTSM
         o new function: 'hip' for creating a sequence (or counting the number) of hours between two date/time objects         
         o 'seasonalfunction.zoo'       : season names are now correctly given (instead of just numbers) for zoo objects that are matrix/data.frame 
                                          as well
-        o 'annualfunction.zoo'         : TODO: check what happens in the previous version !!: -) now it handles sub-daily values
-                                         -) 'na.rm' argument is now used when the input zoo object is a matrix/data.frame (previously a single value 
-                                             of 1 was artificially introduced to the annual ts of each column when 'na.rm=TRUE', while a single value 
-                                             of 0 was artificially introduced to the annual ts of each column when 'na.rm=FALSE') => generally a very 
-                                             small difference
+        o 'annualfunction.zoo'         : 'na.rm' argument is now used when the input zoo object is a matrix/data.frame (previously a single value 
+                                          of 1 was artificially introduced to the annual ts of each column when 'na.rm=TRUE', while a single value 
+                                          of 0 was artificially introduced to the annual ts of each column when 'na.rm=FALSE') => generally a very 
+                                          small difference
         o 'dip'                        : more informative error messages  
         o 'mip'                        : more informative error messages      
         o 'yip'                        : more informative error messages                                                        
@@ -42,10 +49,10 @@ NEWS/ChangeLog for hydroTSM
         o 'dm2seasonal'                : -) now it handles sub-daily and weekly values 
                                          -) improved examples
         o 'time2season'                : now it handles "POSIXct" and "POSIXt" values 
-        o NAMESPACE                    : functions from packages zoo and xts are now imported explicitly
         o 'zoo2RHtest'                 : broken links were removed and replaced by new ones. Thanks to Gang Dong and Yan Li !
+        o NAMESPACE                    : functions from packages zoo and xts are now imported explicitly        
         
-
+        
 0.3-6	18-Oct-2012
         o 'vector2zoo' : -) now it handles sub-daily values 
                          -) 'dates' argument accepts 'POSIXct' & 'POSIXlt' objects
@@ -104,84 +111,7 @@ NEWS/ChangeLog for hydroTSM
           'sp::coordinates' & 'sp::proj4string' were replaced by 'coordinates' & 'proj4string', respectively. Thanks to Uwe Ligges.
         o 'smry' : bugfix in 'smry.data.frame' (when -at least- 1 column was not numeric)
 	
-0.3-0	01-Sep-2011
 
-	o hydroTSM now depends on xts >= 0.8-2 (=> zoo >= 1.7-2), in order to make use of improved plotting capabilities for ts objects.
-	  The first release of 'xts' after the 0.8-0 (which was set as the default building block for plotting time series in hydroTSM) 
-	  was the 0.8-2, and appeared on CRAN on August 9th, 2011	
-	o NAMESPACE created, which leads to reduced dependency of packages e1071, gstat, automap, sp
-	o 'maptools' package is now "suggested" instead of a dependence. It is only used for reading shapefiles in the 
-	  'hydrokrige' and 'mspplot' functions.	
-	o 'drawxaxis'       : -) it was re-written, in order to take advantage of some features of the 'xts' 
-			         package (now added as a dependence), and now it should work with sub-daily 
-			         time series.
-			      -) its name was changed from 'drawxaxis' to 'drawTimeAxis', in order to have a 
-			         more intuitive name. The old 'drawxaxis' function is deprecated, but 
-			         still be kept for back-compatibility reasons.			
-	 		      -) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
-	 		         "minutes", and "seconds", and its default value was changed to "auto".
-	o 'hydroplot'       : -) it takes advantage of the new 'drawTimeAxis' function.
-	  'sname2plot'      : -) now it is able to plot seasonal values (ptype="seasonal")
-	                      -) it works with xts objects as well.
-			      -) 'tick.tstep' and 'lab.tstep' now accept the values: "auto", "quarters", "weeks", "hours", 
-	 		         "minutes", and "seconds", and its default value was changed to "auto". 
-	 		      -) the name of 'x' is now used as default for the Y axis label.
-	 		      -) an incorrect default title for the daily histogram was fixed.
-	 		      -) the default value for 'cex' was changed from 0.7 to 0.3
-	 		      -) new arguments: 'from', 'to', for plotting a slice of the original time series
-	 		      -) thanks to Tom Elliott for pointing out my attention to this function again !.
-	 		      -) new argument: 'h', for plotting horizontal lines in seasonal plots
-	 		      -) new argument 'stype', for allowing weather seasons different from 
-	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)
-	                      -) default value for the 'win.len1' argument was changed from 351*1 to 0, in order to avoid the 
-	                         plotting of the 1-year moving average (by default)
-	                      -) default value for the 'win.len2' argument was changed from 351*3 to 0, in order to avoid the 
-	                         plotting of the 3-years moving average (by default)
-	o 'hydroplot'       : -) new argument: 'date.fmt' for being used with the new arguments 'from' and 'to'
-	o 'sfreq'           : -) it works now with xts objects
-	o 'vector2zoo'      : -) added error checking for length of the numeric vector and the dates.
-	o 'hydrokrige'      : -) updated documentation and new example of interpolation over a user-defined raster map.
-	o 'monthlyfunction' : -) new 'monthlyfunction.zoo', ~ 8 times faster than before (for data.frames, when out.type="data.frame")
-			      -) it works now with matrix objects as well.
-	                      -) it works now with xts objects as well.
-	o 'annualfunction'  : -) new 'annualfunction.zoo', much faster than before for data.frames.
-			      -) it works with matrix objects as well.
-	                      -) it works with xts objects as well.
-	o 'daily2monthly'   : -) new 'daily2monthly.zoo', much faster than before (for data.frames, when out.type="data.frame")
-			      -) it works withannualxts objects as well.	 
-	o 'daily2annual'    : -) new 'daily2monthly.zoo', much faster than before (for data.frames, when out.type="data.frame")
-			      -) it works with xts objects as well.			                           	
-	o 'fdc' and 'fdcu'  : -) new argument 'xat', for setting the position of the 'x' axis labels when 'log="x"'
-	o 'time2season'     : -) new argument 'type', for allowing seasons different from 
-	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)
-	o 'dm2seasonal'     : -) new argument 'out.fmt', for better compatibility with zoo and xts objects.
-	                      -) it works with matrix objects as well.
-	                      -) it works with xts objects as well.
-	                      -) argument 'season' now allows weather seasons typical from 
-	                         French Polynesia: c("DJFM", "AM", "JJAS", "ON") (thanks to Lydie Sichoix !)
-	o 'seasonalfunction': -) new 'seasonalfunction.zoo', ~ 30 times faster than before (for data.frames, when out.type="data.frame")
-			      -) it works with matrix objects as well.
-	                      -) it works with xts objects as well.
-	                      -) new argument 'type', for allowing weather seasons different from 
-	                         c("DJF", "MAM", "JJA", "SON") (thanks to Lydie Sichoix !)	
-        o 'extractzoo'      : -) its name was changed from 'extractzoo' to 'extract', in order to have a 
-			         shorter name (this function only apply to zoo objects anyway). 
-			         The old 'extractzoo' function is deprecated, but still be kept for back-compatibility reasons.			
-			      -) new 'extract.zoo'
-			      -) argument 'trgt' now allows weather seasons typical from 
-	                         French Polynesia: c("DJFM", "AM", "JJAS", "ON") (thanks to Lydie Sichoix !)
-	o 'dwi'             : -) new 'dwi.zoo', much faster than before
-			      -) it works with xts objects as well.
-			      -) fixed documentation of the 'out.unit' argument.
-			      -) argument 'tstep' is not required any more, because it is not used any longer.
-			         It is kept for backwards compatibility purposes only.
-        o 'matrixplot       : -) it works with zoo objects as well (zoo matrices/data.frames)
-        o 'izoo2rzoo'       : -) new 'izoo2rzoo.zoo'
-                              -) it works with xts objects as well. 
-        o 'smry'            : -) new 'smry.zoo'	
-                              -) much faster than before for matrices and data.frames 	                            
-                              -) it works with xts objects as well. 			      
-	o Some 'as.Date' calls were changed to 'zoo::as.Date', in order to work properly with zoo >= 1.7-2
 
 
 
@@ -189,6 +119,7 @@ NEWS/ChangeLog for hydroTSM
 # Previous Releases (see old file 'WhatsNew.txt)' #
 ###################################################
 
+0.3-0   01-Sep-2011
 0.2-2	14-Apr-2011
 0.2-1	30-Nov-2010
 0.2-0	10-Oct-2010

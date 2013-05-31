@@ -1,11 +1,14 @@
 \documentclass[a4paper]{article}
 
+\usepackage[margin=1.7cm]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
 \author{Mauricio Zambrano-Bigiarini}
 %\pdfbookmark[0]{Titlepage}{title} % Sets a PDF bookmark for the title page
 \title{Tutorial for Introductory Analysis of \\
        Daily Precipitation Data with hydroTSM}
-%\date{May 2013, Aug 2011, Apr 2011, Oct 2010}
 \date{Last Update: 30-May-2013}
+%\date{May 2013, Aug 2011, Apr 2011, Oct 2010}
 
 
 %\VignetteIndexEntry{Tutorial for introductory analysis of daily precipitation data with hydroTSM}
@@ -20,10 +23,16 @@
 \section{Installation}
 \label{sec:Installation}
 
-Installing hydroTSM:
-
+Installing the latest stable version (from \href{http://cran.r-project.org/web/packages/hydroTSM/}{CRAN}):
 <<eval=FALSE>>=
 install.packages("hydroTSM")
+@
+
+\medskip
+
+\noindent Alternatively, you can also try the under-development version (from  \href{http://www.rforge.net/hydroTSM/}{rforge}):
+<<eval=FALSE>>=
+install.packages("hydroTSM",, "http://rforge.net/", type="source")
 @
 
 
@@ -43,7 +52,7 @@ library(hydroTSM)
 data(SanMartinoPPts)
 @
 
-\item Selecting only a 6-years time-slice for the analysis
+\item Selecting only a 6-years time slice for the analysis
 
 <<>>=
 x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
@@ -139,7 +148,7 @@ mean( daily2annual(x, FUN=sum, na.rm=TRUE) )
 
 Another way (more useful for streamflows, where \texttt{FUN=mean}):
 
-The function \textit{annualfunction} is applied \texttt{FUN} twice over \texttt{x}: 
+The function \textit{annualfunction} applies \texttt{FUN} twice over \texttt{x}: 
 ( i) firstly, over all the elements of \texttt{x} belonging to the same year, in order to obtain the corresponding annual values, and
 (ii) secondly, over all the annual values of \texttt{x} previously obtained, in order to obtain a single annual value.
 
@@ -216,6 +225,7 @@ hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 
 
 %#########################################
+\clearpage
 \section{Some Extreme Indices}
 \label{sec:SomeExtremeIndices}
 
@@ -256,35 +266,36 @@ hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
 \subsection{Very Wet Days (R95p)}
 \label{subsec:R95p}
 
-%\begin{enumerate}
-%
-%\item Identifying the wet days (daily precipitation >= 1 mm)
-%<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
-%wet.index <- which(x >= 1)
-%@
-%	
-%	
-%\item Computing the 95th percentile of precipitation on wet days (\textit{PRwn95}):
-%<<>>=
-%( PRwn95 <- quantile(x[wet.index], probs=0.95, na.rm=TRUE) )
-%@
-%\textbf{Note 1}: this computation was carried out for the three-year time period 1988-1990, not the 30-year period 1961-1990 commonly used \newline
-%\textbf{Note 2}: missing values are removed from the computation
-%
-%
-%\item Identifying the very wet days (daily precipitation >= \textit{PRwn95})
-%<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
-%very.wet.index <- which(x >= PRwn95)
-%@
-%
-%
-%\item Computing the total precipitation on the very wet days:
-%<<>>=
-%( R95p <- sum(x[very.wet.index]) )
-%@
-%\textbf{Note 3}: this computation was carried out for the three-year time period 1988-1990, not the 30-year period 1961-1990 commonly used \newline
-%
-%\end{enumerate}
+\begin{enumerate}
+
+\item Identifying the wet days (daily precipitation >= 1 mm):
+<<>>=
+wet.index <- which(x >= 1)
+@
+	
+	
+\item Computing the 95th percentile of precipitation on wet days (\textit{PRwn95}):
+<<>>=
+( PRwn95 <- quantile(x[wet.index], probs=0.95, na.rm=TRUE) )
+@
+
+\textbf{Note 1}: this computation was carried out for the three-year time period 1988-1990, not the 30-year period 1961-1990 commonly used. \newline
+\textbf{Note 2}: missing values are removed from the computation.
+
+
+\item Identifying the very wet days (daily precipitation >= \textit{PRwn95})
+<<>>=
+(very.wet.index <- which(x >= PRwn95))
+@
+
+
+\item Computing the total precipitation on the very wet days:
+<<>>=
+( R95p <- sum(x[very.wet.index]) )
+@
+\textbf{Note 3}: this computation was carried out for the three-year time period 1988-1990, not the 30-year period 1961-1990 commonly used \newline
+
+\end{enumerate}
 
 
 
