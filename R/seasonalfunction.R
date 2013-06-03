@@ -109,6 +109,7 @@ seasonalfunction.zoo <- function(x, FUN, na.rm=TRUE, type="default", ...) {
 ################################################################################
 # Started: 11-Sep-2009                                                         #
 # Updates: 08-Aug-2011                                                         #
+#          03-Jun-2013                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -137,11 +138,11 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE, type="default",
 
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
-      stop("Invalid argument: 'out.type' must be in c('data.frame', 'db'")
+    stop("Invalid argument: 'out.type' must be in c('data.frame', 'db'")
 
   # Checking that the user provied a valid argument for 'FUN'
-   if (missing(FUN))
-       stop("Missing argument: 'FUN' must be provided")
+  if (missing(FUN))
+    stop("Missing argument: 'FUN' must be provided")
        
   # Checking that the user provied a valid value for 'type'   
   valid.types <- c("default", "FrenchPolynesia")    
@@ -156,20 +157,9 @@ seasonalfunction.data.frame <- function(x, FUN, na.rm=TRUE, type="default",
     } # ELSE end 
 
   # Checking that the user provied a valid argument for 'dates'
-  if (missing(dates)) {
-      stop("Missing argument: 'dates' must be provided")
-  } else
-    {
-       # Checking that the user provied a valid argument for 'dates'
-       if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-           stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
-
-        # Verification that the number of days in 'dates' be equal to the number
-        # of elements in 'x'
-        if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-        stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
-    }  # ELSE end
-
+  if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
+    stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
+  
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {

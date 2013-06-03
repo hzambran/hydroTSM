@@ -58,7 +58,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{mip}}, \code{\link{yip}}, \code{\link{diy}}
+\code{\link{mip}}, \code{\link{yip}}, \code{\link{hip}}, \code{\link{diy}}
 }
 \examples{
 ## Sequence of daily dates between "1961-01-01" and "1961-12-31" ##

@@ -134,7 +134,7 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 ################################################################################
 # Started: 15-May-2009                                                         #
 # Updates: 08-Aug-2011                                                         #
-#          29-May-2013                                                         #
+#          29-May-2013 ; 03-Jun-2013                                           #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -195,12 +195,8 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
     stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )
 
   # Checking that the user provied a valid argument for 'dates'
-  if (missing(dates)) {
-      stop("Missing argument: 'dates' must be provided")
-  } else
-     # Checking that the user provied a valid argument for 'dates'
-     if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-         stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
+  if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
+    stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations

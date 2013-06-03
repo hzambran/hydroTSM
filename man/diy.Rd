@@ -53,7 +53,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{dip}}, \code{\link{mip}}, \code{\link{yip}}
+\code{\link{hip}}, \code{\link{dip}}, \code{\link{mip}}, \code{\link{yip}}
 }
 \examples{
 ## Sequence of daily dates for the year 1961

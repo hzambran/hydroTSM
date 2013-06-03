@@ -81,9 +81,9 @@ annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 # annualfunction: Generic function for computing monthly totals/mean values#
 #                 for a zoo object or data.frame                           #
 ############################################################################
-# Started: 2009-May-15                                                     #
-# Updates: 2009-Sep-01st ; 2011-Aug-09                                     #
-#          29-May-2013                                                     #
+# Started: 15-May-2009                                                     #
+# Updates: 01-Sep-2009 ; 09-Aug-2011                                       #
+#          29-May-2013 ; 03-Jun-2013                                       #
 ############################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the 
 #             dates correponding to the 'sname' station
@@ -110,24 +110,13 @@ annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
                                       verbose=TRUE,...) {
 	  
   # Checking that the user provied a valid argument for 'FUN'
-   if (missing(FUN))
-         stop("Missing argument: 'FUN' must be provided")
+  if (missing(FUN))
+    stop("Missing argument: 'FUN' must be provided")
 
   # Checking that the user provied a valid argument for 'dates'
-  if (missing(dates)) {
-      stop("Missing argument: 'dates' must be provided")
-  } else
-    {
-       # Checking that the user provied a valid argument for 'dates'
-       if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-           stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
-
-        # Verification that the number of days in 'dates' be equal to the number
-        # of elements in 'x'
-        if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-        stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
-    } # ELSE end
-
+  if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
+     stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
+  
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {

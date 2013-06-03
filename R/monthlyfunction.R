@@ -83,7 +83,7 @@ monthlyfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 ################################################################################
 # Started: 25-Jul-2011                                                         #
 # Updates: 08-Aug-2011                                                         #
-#          29-May-2013                                                         #
+#          29-May-2013 ; 03-Jun-2013                                           #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -112,43 +112,32 @@ monthlyfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
-      stop("Invalid argument: 'out.type' must be in c('data.frame', 'db'")
+    stop("Invalid argument: 'out.type' must be in c('data.frame', 'db'")
 
-   # Checking that the user provied a valid argument for 'FUN'
-   if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
+  # Checking that the user provied a valid argument for 'FUN'
+  if (missing(FUN)) stop("Missing argument: 'FUN' must be provided")
 
   # Checking that the user provied a valid argument for 'dates'
-  if (missing(dates)) {
-      stop("Missing argument: 'dates' must be provided")
-  } else
-    {
-       # Checking that the user provied a valid argument for 'dates'
-       if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-           stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
-
-        # Verification that the number of days in 'dates' be equal to the number
-        # of elements in 'x'
-        if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-        stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
-    } # ELSE end
+  if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
+     stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( class(dates) == "numeric" ) {
     tmp   <- dates
-    dates <- as.Date(x[, dates], format= date.fmt) # zoo::as.Date
+    dates <- as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
-  }  else
-      # If 'dates' is a factor, it have to be converted into 'Date' class,
-      # using the date format  specified by 'date.fmt'
-      if ( class(dates) == "factor" ) {
-	    dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
-	  } else
-	    # If 'dates' is already of Date class, the following line verifies that
-            # the number of days in 'dates' be equal to the number of element in the
-            # time series corresponding to the 'st.name' station
-            if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-              stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
+  }  # IF end
+
+  # If 'dates' is a factor, it have to be converted into 'Date' class,
+  # using the date format  specified by 'date.fmt'
+  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
+  
+  # If 'dates' is already of Date class, the following line verifies that
+  # the number of days in 'dates' be equal to the number of element in the
+  # time series corresponding to the 'st.name' station
+  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+     stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # Transforming 'x' into a zoo object
   x <- zoo(x, dates)

@@ -15,7 +15,7 @@
 # Started: 17-Dic-2008                                                         #
 # Updates: 19-Apr-2011 ; 10-Aug-2011                                           #
 #          18-Oct-2012                                                         #
-#          04-Abr-2013 : 29-May-2013                                           #
+#          04-Abr-2013 : 29-May-2013 ; 03-Jun-2013                             #
 ################################################################################
 sname2plot <- function(x, sname, FUN, na.rm=TRUE,
                        ptype="ts+boxplot+hist",
@@ -75,11 +75,8 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
   } # IF end
 
   # Checking the user provides the dates
-  if (missing(dates)) { 
-    stop("Missing argument: 'dates' must be provided")
-  } else
-      if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-          stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
+  if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
+    stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
 
   if (is.na(match(ptype, c("ts", "ts+boxplot", "ts+hist", "ts+boxplot+hist"))))
         stop("'ptype' valid values are: 'ts', 'ts+boxplot', 'ts+hist', 'ts+boxplot+hist'")
@@ -95,8 +92,7 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
   # the number of days in 'dates' be equal to the number of element in the
   # time series corresponding to the 'sname' station
   if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-     stop("Invalid argument: 'length(dates
-     )' must be equal to 'nrow(x)'")  
+     stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")  
      
   # Checking that the user provied a valid value for 'stype'   
   valid.types <- c("default", "FrenchPolynesia")    

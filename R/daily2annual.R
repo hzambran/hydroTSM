@@ -133,12 +133,8 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
     stop("Missing argument value: 'FUN' must contain a valid function for aggregating the values")
 
   # Checking that the user provied a valid argument for 'dates'
-  if (missing(dates)) {
-      stop("Missing argument: 'dates' must be provided")
-  } else
-     # Checking that the user provied a valid argument for 'dates'
-     if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-         stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
+  if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
+    stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations

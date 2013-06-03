@@ -57,7 +57,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{dip}}, \code{\link{diy}}, \code{\link{yip}}
+\code{\link{dip}}, \code{\link{diy}}, \code{\link{hip}}, \code{\link{yip}}
 }
 \examples{
 # Sequence of monthly dates between "1961-01-01" and "1961-12-31" ##

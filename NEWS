@@ -1,5 +1,22 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
+0.4-1-1	(under-development)
+        o 'sname2plot'                 : 'dates' argument is not required any more
+        o 'sname2ts'                   : 'dates' argument is not required any more
+        o 'monthlyfunction.matrix'     : 'dates' argument is not required any more
+        o 'monthlyfunction.data.frame' : 'dates' argument is not required any more
+        o 'annualfunction.matrix'      : 'dates' argument is not required any more
+        o 'annualfunction.data.frame'  : 'dates' argument is not required any more
+        o 'seasonalfunction.matrix'    : 'dates' argument is not required any more
+        o 'seasonalfunction.data.frame': 'dates' argument is not required any more
+        o 'daily2annual.matrix'        : 'dates' argument is not required any more
+        o 'daily2annual.data.frame'    : 'dates' argument is not required any more
+        o 'daily2monthly.matrix'       : 'dates' argument is not required any more
+        o 'daily2monthly.data.frame'   : 'dates' argument is not required any more
+        o 'dm2seasonal.matrix'         : 'dates' argument is not required any more
+        o 'dm2seasonal.data.frame'     : 'dates' argument is not required any more
+        o 'hydrokrige.data.frame'      : 'dates' argument is not required any more
+
 0.4-1	31-May-2013
         o DESCRIPTION : 'xts' package was added to the 'Imports' section
         o 'fdc'       :  truncation of some lines in the PDF manual are fixed now.

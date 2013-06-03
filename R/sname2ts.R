@@ -87,12 +87,9 @@ sname2ts <- function(x, sname, dates=1, date.fmt="%Y-%m-%d", var.type,
   if (is.na(match( tstep.out, c("daily", "monthly", "annual") ) ) )
       stop("Invalid argument: 'tstep.out' must be in c('daily', 'monthly', 'annual'")
 
-  # Checking the user provides the dates
-  if (missing(dates)) { stop("Missing argument: 'dates' must be provided")
-  } else
-    # Checking that the user provided a valid argument for 'dates'
-    if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-        stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
+  # Checking that the user provided a valid argument for 'dates'
+  if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
+    stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   if ( class(dates) == "numeric" ) dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
