@@ -1,6 +1,7 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.4-1-1	(under-development)
+0.4-2	(under-development)
+        o 'fdc'                        : 'lwd' argument is now used (thanks to Bernard Bisselink !)
         o 'sname2plot'                 : 'dates' argument is not required any more
         o 'sname2ts'                   : 'dates' argument is not required any more
         o 'monthlyfunction.matrix'     : 'dates' argument is not required any more
