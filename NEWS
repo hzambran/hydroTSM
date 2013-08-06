@@ -17,6 +17,7 @@ NEWS/ChangeLog for hydroTSM
         o 'dm2seasonal.matrix'         : 'dates' argument is not required any more
         o 'dm2seasonal.data.frame'     : 'dates' argument is not required any more
         o 'hydrokrige.data.frame'      : 'dates' argument is not required any more
+        o 'dwi.data.frame'             : 'dates' argument is not required any more
 
 0.4-1	31-May-2013
         o DESCRIPTION : 'xts' package was added to the 'Imports' section

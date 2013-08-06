@@ -171,7 +171,7 @@ dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x),
 # dwi.data.frame: days with info in each station stored in a data frame        #
 ################################################################################ 
 # Started: 21-Mar-2009                                                         #
-# Updates: 29-May-2013                                                         #
+# Updates: 29-May-2013 ; 06-Aug-2013                                           #
 ################################################################################ 
 # This function generates a table indicating the number of days
 # with information (<>NA's) within a data.frame
@@ -204,20 +204,15 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
   if ( is.na( match(out.unit, c("years", "months") ) ) ) {
          stop("Invalid argument value: For data.frames, 'out.unit' must be in c('years', 'months')" ) }
 
+  
   # Checking that the user provied a valid argument for 'dates'
-  if (missing(dates)) {
-      stop("Missing argument: 'dates' must be provided")
-  } else
-    {
-     # Checking that the user provied a valid argument for 'dates'
-     if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-         stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
+  if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
+      stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
 
-     # Verification that the number of days in 'dates' be equal to
-     # the number of elements in 'x'
-     if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-          stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
-    } # ELSE end
+  # Verification that the number of days in 'dates' be equal to
+  # the number of elements in 'x'
+  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+       stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
