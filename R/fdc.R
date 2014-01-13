@@ -62,6 +62,13 @@ fdc.default <- function (x,
      x.zero.index <- which(x==0)
      nzeros <- length(x.zero.index)
 
+#     if (plot & (log == "y") ) {
+#        if (nzeros > 0) {
+#          x <- x[-x.zero.index]
+#          if (verbose) message("[Note: all 'x' equal to zero (", nzeros, ") will not be plotted ]")
+#        } # IF end
+#     } # IF end)
+
      # If 'x' is of class 'ts' or 'zoo'
      #if ( !is.na( match( class(x), c("ts", "zoo") ) ) )
      x <- as.numeric(x)
