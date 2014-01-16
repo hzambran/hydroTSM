@@ -1,7 +1,10 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 0.4-2	(under-development)
-        o 'fdc'                        : 'lwd' argument is now used (thanks to Bernard Bisselink !)
+        o 'fdc'                        : -) 'lwd' argument is now used (thanks to Bernard Bisselink !)
+                                         -) fixed error raised when some element(s) in x were equal to zero, 'plot=TRUE' and 'log=y' or 'log=xy'
+                                            (thanks to David Young !). The error was: 
+                                            Error in xy.coords(x, y, xlabel, ylabel, log) : 'x' and 'y' lengths differ
         o 'sname2plot'                 : 'dates' argument is not required any more
         o 'sname2ts'                   : 'dates' argument is not required any more
         o 'monthlyfunction.matrix'     : 'dates' argument is not required any more

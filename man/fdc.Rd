@@ -1,7 +1,7 @@
 %% File fdc.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2014 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{fdc}
@@ -166,7 +166,7 @@ fdc(OcaEnOnaQts)
 ###################
 # Comparing 2 FDCs:
 
-x <- as.numeric(OcaEnOnaQts)
+x <- OcaEnOnaQts
 
 # Random 2nd ts
 y <- x + rnorm(length(x), mean=10)

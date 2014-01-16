@@ -12,6 +12,7 @@
 # Updates: 25-Feb-2011 ; 04-Nov-2011                                           #
 #          02-May-2012; 16-Oct-2012                                            #
 #          05-Aug-2013                                                         #
+#          15-Jan-2014                                                         # 
 ################################################################################
 
 # Plot the flow Duration Curve in the original time units of 'x' and
@@ -58,17 +59,6 @@ fdc.default <- function (x,
        return(Q.index)
      } # end
 
-     # Detecting zero values
-     x.zero.index <- which(x==0)
-     nzeros <- length(x.zero.index)
-
-#     if (plot & (log == "y") ) {
-#        if (nzeros > 0) {
-#          x <- x[-x.zero.index]
-#          if (verbose) message("[Note: all 'x' equal to zero (", nzeros, ") will not be plotted ]")
-#        } # IF end
-#     } # IF end)
-
      # If 'x' is of class 'ts' or 'zoo'
      #if ( !is.na( match( class(x), c("ts", "zoo") ) ) )
      x <- as.numeric(x)
@@ -79,6 +69,10 @@ fdc.default <- function (x,
      # 1) Sort 'x' in drecreasing order. This is just for avoiding misleading
      #lines when using 'type="o"' for plotting
      x <- sort(x)
+
+     # Detecting zero values
+     x.zero.index <- which(x==0)
+     nzeros <- length(x.zero.index)
 
      # Index with the position of the original values
      ind <- match(x.old, x)
@@ -102,10 +96,13 @@ fdc.default <- function (x,
      # dc <- 1 - Fn(x) + 1/n
 
      if (plot) {
+
+          dc.plot <- dc
   
           if (log == "y") {
             if (nzeros > 0) {
-              x <- x[-x.zero.index]
+              x       <- x[-x.zero.index]
+              dc.plot <- dc.plot[-x.zero.index]
               if (verbose) message("[Note: all 'x' equal to zero (", nzeros, ") will not be plotted ]")
             } # IF end
           } # IF end
@@ -120,9 +117,9 @@ fdc.default <- function (x,
           
           # If a new plot has to be created
           if (new) {
-               plot(dc, x,  xaxt = "n", yaxt = "n", type="o", col=col, pch=pch, lwd=lwd, lty=lty,
+               plot(dc.plot, x,  xaxt = "n", yaxt = "n", type="o", col=col, pch=pch, lwd=lwd, lty=lty,
                     cex=cex, cex.axis= cex.axis, cex.lab=cex.lab, main=main, xlab=xlab, ylab=ylab, ylim=ylim, log=log, ...)
-          } else lines(dc, x,  xaxt = "n", type="o", col=col, pch=pch, lwd=lwd, lty=lty, cex=cex)
+          } else lines(dc.plot, x,  xaxt = "n", type="o", col=col, pch=pch, lwd=lwd, lty=lty, cex=cex)
 
           # Y axis: Drawing the ticks and labels
           ylabels <- pretty(ylim)
@@ -153,8 +150,8 @@ fdc.default <- function (x,
 
           if (thr.shw) {
               # Finding the flow values corresponding to the 'lQ.thr' and 'hQ.thr' pbb of excedence
-              x.lQ <- x[Qposition(dc, lQ.thr)]
-              x.hQ <- x[Qposition(dc, hQ.thr)]
+              x.lQ <- x[Qposition(dc.plot, lQ.thr)]
+              x.hQ <- x[Qposition(dc.plot, hQ.thr)]
 
               legend("bottomleft", c(paste("Qhigh.thr=", round(x.hQ, 2), sep=""),
                                      paste("Qlow.thr=", round(x.lQ, 2), sep="") ),
