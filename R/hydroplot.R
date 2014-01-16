@@ -10,6 +10,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                         # 
 # Started: 2008                                                                #
 # Updates: 17-Apr-2011 ; 10-Aug-2011                                           #
+#          15-Jan-2014                                                         #
 ################################################################################
 # It requires the function'drawTimeAxis' that is stored in the 'lib_Plot.R' library
 # 'x'		 : daily time series of type 'zoo'
