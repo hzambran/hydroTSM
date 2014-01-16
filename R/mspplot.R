@@ -10,7 +10,8 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 22-Apr-2009                                                         #
-# Updtes : 25-Apr-2009, Ago 2009, Sep 2009                                     #
+# Updates: 25-Apr-2009, Ago 2009, Sep 2009                                     #
+#          15-Jan-2014                                                         #
 ################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
@@ -191,7 +192,7 @@ mspplot <- function(x,
 
            if (require(maptools)) {
 	     if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
-	     SubCatchments.shp <- maptools:::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
+	     SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
 	     # Number of Subcatchmnets
 	     nSub <- nrow(SubCatchments.shp@data)
 	     if (verbose) message(paste("[Subcatchments found:", nSub, sep=" ") )

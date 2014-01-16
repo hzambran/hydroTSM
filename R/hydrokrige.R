@@ -11,7 +11,8 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # April 22-25th, 2009; September 2009, December 2009, April 2010               #
-# 04-Jul-2012 ; 05-Jul-2012 ; 09-Jul-2012                                      #   
+#          04-Jul-2012 ; 05-Jul-2012 ; 09-Jul-2012                             #   
+#          15-Jan-2014                                                         #
 ################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
@@ -305,7 +306,7 @@ hydrokrige.default <- function(x.ts, x.gis,
        if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]")
 
        # Reading the Shapefile with the subcatchments
-       SubCatchments.shp <- maptools:::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
+       SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
 
        # Number of Subcatchmnets
        nSub <- nrow(SubCatchments.shp@data)

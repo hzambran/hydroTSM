@@ -75,7 +75,7 @@
               'months', 'weeks', 'days', 'hours', 'minutes', 'seconds')")
 
       # Requiring the Zoo Library (Zoo's ordered observations)
-      require(xts)
+      #require(xts)
 
       # Booleans indicating if the moving averages for the dayly and monthly
       # time series can be computed and ploted. By default they  are FALSE,

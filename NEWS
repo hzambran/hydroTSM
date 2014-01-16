@@ -21,6 +21,8 @@ NEWS/ChangeLog for hydroTSM
         o 'dm2seasonal.data.frame'     : 'dates' argument is not required any more
         o 'hydrokrige.data.frame'      : 'dates' argument is not required any more
         o 'dwi.data.frame'             : 'dates' argument is not required any more
+        o 'maptools:::readShapePoly' was replaced by 'maptools::readShapePoly' in all the package (functions 'hydrokrige' and 'mspplot')
+        o 'require(xts)' was removed from 'hydroplot'
 
 0.4-1	31-May-2013
         o DESCRIPTION : 'xts' package was added to the 'Imports' section
