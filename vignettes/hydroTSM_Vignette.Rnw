@@ -7,8 +7,8 @@
 %\pdfbookmark[0]{Titlepage}{title} % Sets a PDF bookmark for the title page
 \title{Tutorial for Introductory Analysis of \\
        Daily Precipitation Data with hydroTSM}
-\date{Last Update: 30-May-2013}
-%\date{May 2013, Aug 2011, Apr 2011, Oct 2010}
+\date{Last Update: 17-Jan-2014}
+%\date{May 2013, Aug 2011, Apr 2011, Oct 2010,  30-May-2013}
 
 
 %\VignetteIndexEntry{Tutorial for introductory analysis of daily precipitation data with hydroTSM}
@@ -338,6 +338,53 @@ sessionInfo()$R.version$version.string
 paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
 @
 
+
+%##################################
+\appendix 
+\addcontentsline{toc}{section}{Appendix}
+
+\section{Additional Material}
+\label{sec:AdditionalMaterial}
+
+In order to make easier the use of \texttt{hydroTSM} for users not familiar with R, in this section a minimal set of (no well-organised) information is provided to guide the user in the \href{http://www.r-project.org/}{R} world.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Editors, GUI}
+\label{subsec:EditorsGUI}
+
+\begin{itemize}
+\item GNU/Linux only: \href{http://rgedit.sourceforge.net/}{Rgedit}, \href{http://ess.r-project.org/}{ESS}
+\item Windows only  : \href{http://sourceforge.net/projects/tinn-r/}{Tinn-R}, \href{http://sourceforge.net/projects/npptor/}{NppToR}
+\item Multi-platform: \href{http://www.rstudio.com/}{RStudio}
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Importing data}
+\label{subsec:ImportingData}
+
+\begin{itemize}
+\item \texttt{?read.table}, \texttt{?write.table}: allow the user to read/write a file (in $~$table format) and create a data frame from it. Related functions are \texttt{?read.csv}, \texttt{?write.csv}, \texttt{?read.csv2}, \texttt{?write.csv2}.
+
+\item \href{http://cran.r-project.org/web/packages/foreign/}{foreign}: read data stored in several R-external formats (dBase, Minitab, S, SAS, SPSS, Stata, Systat, Weka, ...)
+
+\item \texttt{?zoo::read.zoo}, \texttt{?zoo::write.zoo}: functions for reading and writing time series from/to text files, respectively.
+
+\item \href{http://www.statmethods.net/input/importingdata.html}{some examples} 
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Useful Websites}
+\label{subsec:UsefulWebsites}
+
+\begin{itemize}
+\item \href{http://www.statmethods.net/}{Quick R} 
+\item \href{http://cran.r-project.org/web/views/TimeSeries.html}{Time series in R}
+\item \href{http://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf}{Quick reference for the \texttt{zoo} package}
+\item \href{http://cran.r-project.org/web/packages/xts/vignettes/xts.pdf}{Manipulating time series with the \texttt{xts} package}
+\end{itemize}
 
 
 \end{document}

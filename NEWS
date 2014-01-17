@@ -25,6 +25,7 @@ NEWS/ChangeLog for hydroTSM
         o 'require(xts)' was removed from 'hydroplot'
         o 'zoo' package removed from 'Imports' and 'Enhances' (due to changes in CRAN policies)
         o 'xts' package removed from 'Imports' (due to changes in CRAN policies)
+        o improved vignette
 
 0.4-1	31-May-2013
         o DESCRIPTION : 'xts' package was added to the 'Imports' section
