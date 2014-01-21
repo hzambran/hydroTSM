@@ -1,7 +1,7 @@
 %% File hydroTSM-package.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2009-2014 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{hydroTSM-package}
@@ -20,12 +20,12 @@ The focus of this package has been put in providing a collection of tools useful
 \tabular{ll}{
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
-Version: \tab 0.4-1\cr
-Date: \tab 2013-05-31\cr
+Version: \tab 0.4-2\cr
+Date: \tab 2014-01-21\cr
 License: \tab GPL >= 2 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Fri May 23:55:24 CEST 2013; MZB \cr
-BuiltUnder: \tab R version 3.0.1 (2013-05-16) -- "Good Sport" ; i686-pc-linux-gnu (32-bit) \cr
+Packaged: \tab Tue Jan 21 18:41:35 CLST 2014; MZB \cr
+BuiltUnder: \tab R version 3.0.2 (2013-09-25) -- "Frisbee Sailing" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
 }
