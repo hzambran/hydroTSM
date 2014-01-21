@@ -340,13 +340,14 @@ paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
 
 
 %##################################
+\clearpage
 \appendix 
 \addcontentsline{toc}{section}{Appendix}
 
-\section{Additional Material}
-\label{sec:AdditionalMaterial}
+\section{Appendix}
+\label{sec:Appendix}
 
-In order to make easier the use of \texttt{hydroTSM} for users not familiar with R, in this section a minimal set of (no well-organised) information is provided to guide the user in the \href{http://www.r-project.org/}{R} world.
+In order to make easier the use of \texttt{hydroTSM} for users not familiar with R, in this section a minimal set of information is provided to guide the user in the \href{http://www.r-project.org/}{R} world.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
