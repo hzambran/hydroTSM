@@ -1,5 +1,7 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
+0.4-2-1	22-Jan-2014
+
 0.4-2	21-Jan-2014
         o 'fdc'                        : -) 'lwd' argument is now used (thanks to Bernard Bisselink !)
                                          -) fixed error raised when some element(s) in x were equal to zero, 'plot=TRUE' and 'log=y' or 'log=xy'
@@ -85,7 +87,7 @@ NEWS/ChangeLog for hydroTSM
 
 
 ###################################################
-# Previous Releases (see old file 'WhatsNew.txt)' #
+# Previous Releases (see old file 'ChangeLog)' #
 ###################################################
 
 0.3-6	18-Oct-2012
