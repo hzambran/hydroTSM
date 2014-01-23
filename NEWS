@@ -1,6 +1,10 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.4-2-1	22-Jan-2014
+0.4-2-1	22-Jan-2014 (after CRAN comments)
+        o 'Author' field was removed from DESCRIPTION file
+        o 'WhatsNew.txt' file was renamed 'ChangeLog'
+        o 'dwi'    : part of the 'Examples' section was marked as 'dontrun', because it execution took more than 5 seconds.
+        o 'mspplot': part of the 'Examples' section was marked as 'dontrun', because it execution took more than 5 seconds.
 
 0.4-2	21-Jan-2014
         o 'fdc'                        : -) 'lwd' argument is now used (thanks to Bernard Bisselink !)

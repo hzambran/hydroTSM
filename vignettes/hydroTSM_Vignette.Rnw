@@ -372,6 +372,8 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 \item \texttt{?zoo::read.zoo}, \texttt{?zoo::write.zoo}: functions for reading and writing time series from/to text files, respectively.
 
+\item \href{http://cran.r-project.org/doc/manuals/r-release/R-data.html}{R Data Import/Export}
+
 \item \href{http://www.statmethods.net/input/importingdata.html}{some examples} 
 \end{itemize}
 

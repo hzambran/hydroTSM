@@ -179,6 +179,7 @@ x.ts <- as.numeric(EbroPPtsMonthly[7, 2:ncol(EbroPPtsMonthly)])
 ## Setting the name of the stations
 names(x.ts) <- colnames(EbroPPtsMonthly[ , 2:ncol(EbroPPtsMonthly)])
 
+\dontrun{
 ## IDW interpolation and plot (Jul/1961)
 x.idw2 <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis, 
                      X=X, Y=Y, sname=sname, bname=bname, elevation=elevation,
@@ -201,6 +202,7 @@ mspplot(x=x.idw,
         stations.plot=FALSE,
         arrow.plot=TRUE, arrow.offset=c(900000,4750000), arrow.scale=20000,
         scalebar.plot=TRUE, sb.offset=c(400000,4480000), sb.scale=100000)	
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

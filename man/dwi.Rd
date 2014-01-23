@@ -111,6 +111,7 @@ dwi(x)
 dwi(x, out.unit="mpy")
 
 ###########
+\dontrun{
 ## Loading the monthly time series of precipitation within the Ebro River basin.
 data(EbroPPtsMonthly)
 
@@ -123,7 +124,7 @@ a[sample(length(a), size = 70)] <- rep(1:11, length=70)
 
 ## Plotting the amount of months with information per year in each station
 matrixplot(a, var.type="Days", main="Number of months with info per year")
-
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
