@@ -1,5 +1,9 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
+0.4-2-2	29-Jan-2014 (after CRAN comments)
+        o 'hypsometric' : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
+                          (thanks to Jose Martinez Batlle !)
+
 0.4-2-1	22-Jan-2014 (after CRAN comments)
         o 'Author' field was removed from DESCRIPTION file
         o 'WhatsNew.txt' file was renamed 'ChangeLog'

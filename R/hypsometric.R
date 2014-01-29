@@ -1,7 +1,7 @@
 # File hypsometric.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2014 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -11,6 +11,7 @@
 # Started: 12-Sep-2009                                                         #
 # Updates: Jul 2010                                                            #
 #          21-May-2012                                                         #
+#          29-Jan-2014                                                         #
 ################################################################################
 # Requires: 'sp', 'rgdal'                                                      #
 ################################################################################
@@ -45,11 +46,12 @@ hypsometric <- function(x,
   if (band.error) stop("Invalid argument: 'band' does not exist in 'x' !")
     
   # Getting the elevatin data from the DEM
-  mydem <- x@data[band]
+  mydem <- x@data[band][,1]
 
-  # Minimum and Maximum elevations in 'dem'
-  z.min <- min(mydem, na.rm=TRUE)
-  z.max <- max(mydem, na.rm=TRUE)
+  # Minimum, Mean and Maximum elevations in 'dem'
+  z.min  <- min(mydem, na.rm=TRUE)
+  z.mean <- mean(mydem, na.rm=TRUE)
+  z.max  <- max(mydem, na.rm=TRUE)
 
   # Horizontal dimension of the cells of 'x'
   x.dim <- x@grid@cellsize[1]
@@ -61,12 +63,20 @@ hypsometric <- function(x,
 
   # res$t: elevation values, plus a first value that I don't know what it is
   # res$y: accumulated area BELOW a given elevation value.
-  #res <- plot.stepfun(ecdf(as.matrix(x)), lwd=0, cex.points=0)
   res <- plot.stepfun(ecdf(as.matrix(mydem)), lwd=0, cex.points=0)
 
-  # Mean elevation in 'dem'
-  z.mean.index <- which(round(res$y,3)==0.5)[1]
-  z.mean       <- res$t[z.mean.index]
+  # Median elevation in 'dem', based on the ECDF of the elevation data, with precision=3
+  z.median.index <- which(round(res$y,3)==0.5)[1]
+  z.median       <- res$t[z.median.index]
+
+  if (is.na(z.median)) {
+    # Median elevation in 'dem', based on the ECDF of the elevation data, with precision=2
+    z.median.index <- which(round(res$y,2)==0.5)[1]
+    z.median       <- res$t[z.median.index]
+  } else if (is.na(z.median)) {
+      z.median <- median(mydem, na.rm=TRUE)
+    } # ELSE end
+  
 
   #plot(1 - res$y[-1], res$t[-c(1, length(res$t))],
   #     main=main, xlim=c(0, 1),
@@ -97,14 +107,15 @@ hypsometric <- function(x,
   f <- splinefun(relative.area, relative.elev, method="monoH.FC")
 
   # Computing the hypsometric integral
-  hi <- integrate(f=f, lower=0, upper=1)
+  hi <- integrate(f=f, lower=0, upper=1, stop.on.error = FALSE)
 
   # Drawing a legend with the values of the min, mean, and max elevations
   legend("topright", c(
-         paste("Min Elev. :", round(z.min, 2), "[m.a.s.l.]", sep=" "),
+         paste("Min Elev. :",   round(z.min, 2), "[m.a.s.l.]", sep=" "),
+         paste("Median Elev.:", round(z.median, 1), "[m.a.s.l.]", sep=" "),
          paste("Mean Elev.:", round(z.mean, 1), "[m.a.s.l.]", sep=" "),
-		 paste("Max Elev. :", round(z.max, 1), "[m.a.s.l.]", sep=" "),
-         paste("Max Area  :", round(max.area/1000000, 1), "[km2]", sep=" "),
+         paste("Max Elev. :",   round(z.max, 1), "[m.a.s.l.]", sep=" "),
+         paste("Max Area  :",   round(max.area/1000000, 1), "[km2]", sep=" "),
          "",
          paste("Integral value :", round(hi$value, 3), sep=" "),
          paste("Integral error :", round(hi$abs.error, 3), sep=" ")

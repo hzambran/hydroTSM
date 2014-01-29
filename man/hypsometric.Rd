@@ -1,7 +1,7 @@
 %% File hypsometric.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2009-2014 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{hypsometric}
@@ -45,7 +45,7 @@ further arguments passed to or from other methods
 }
 }
 \note{
-Based on \url{http://osgeo-org.1803224.n2.nabble.com/hypsometric-integral-from-ecdf-curve-td2231345.html}
+Based on \url{http://lists.osgeo.org/pipermail/grass-stats/2009-January/000916.html}
 }
 \details{
 The hypsometric curve and the hypsometric integral are non-dimensional measures of the proportion of the catchment above a given elevation. \cr
