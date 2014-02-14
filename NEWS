@@ -1,8 +1,9 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.4-2-2	29-Jan-2014 (under-development version)
+0.4-2-3	14-Feb-2014 (under-development version)
         o 'hypsometric' : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
                           (thanks to Jose Martinez Batlle !)
+        o 'extract'     : 'trgt' argument allows multiple months or years to be selected (when 'class(trgt) %in% c("integer", "numeric")')
 
 0.4-2-1	22-Jan-2014 (after CRAN comments)
         o 'Author' field was removed from DESCRIPTION file

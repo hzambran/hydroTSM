@@ -1,7 +1,7 @@
 # File extract.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2014 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 #########################################################################
@@ -59,7 +59,7 @@ extract.default <- function(x, trgt, ...) {
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 22-Aug-2011                                                         #
-# Updates:                                                                     #
+# Updates: 13-Feb-2014 ; 14-Feb-2014                                           #
 ################################################################################
 extract.zoo <- function(x, trgt, ...) {
 
@@ -71,12 +71,12 @@ extract.zoo <- function(x, trgt, ...) {
   if ( (class(trgt)=="numeric") | (class(trgt)=="integer")) {
 
     # Checking that 'trgt' is integer
-    if ( trgt - trunc(trgt) != 0 )
+    if ( !isTRUE(all.equal(trgt - trunc(trgt), rep(0,length(trgt)) ) ) )
         stop("Invalid argument: 'trgt' must be integer")
 
-	if (trgt %in% 1:12) {
-	   index <- which( as.numeric(format.Date(time(x), "%m")) == trgt )
-	} else index <- which( as.numeric(format.Date(time(x), "%Y")) == trgt )
+	if ( isTRUE(all.equal((trgt %in% 1:12), rep(TRUE, length(trgt)) ) )) {
+	   index <- which(as.numeric(format.Date(time(x), "%m")) %in% trgt)
+	} else index <- which( as.numeric(format.Date(time(x), "%Y")) %in% trgt )
 
   } # if END
 
@@ -90,7 +90,7 @@ extract.zoo <- function(x, trgt, ...) {
           valid.seasons <- valid.seasons <- union(seasons.default, seasons.FrenchPolynesia)
              
           if (length(which(!is.na(match(trgt, valid.seasons )))) <= 0)  
-            stop( paste("Invalid argument: 'trgt' must be in 'c(", paste(valid.seasons, collapse=", "), ")'",sep="") ) 
+            stop( "Invalid argument: 'trgt' must be in 'c(", paste(valid.seasons, collapse=", "), ")'" ) 
             
           # Finding out if 'tr' belongs to 'seasons.default' or to ' seasons.FrenchPolynesia'.
           if ( trgt %in% seasons.default ) {
@@ -106,6 +106,9 @@ extract.zoo <- function(x, trgt, ...) {
           index <- which(seasons == trgt)
 
       } # ELSE end
+
+  if (length(index)==0)
+    warning("There were no elements of 'x' within 'trgt'")
 
   return(x[index])
 
