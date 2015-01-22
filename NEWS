@@ -1,5 +1,8 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
+0.4-2-4	22-Jan-2015 (under-development version)
+        o repository management moved from SVN to GIT, including rforge
+
 0.4-2-3	14-Feb-2014 (under-development version)
         o 'hypsometric' : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
                           (thanks to Jose Martinez Batlle !)
