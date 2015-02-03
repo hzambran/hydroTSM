@@ -1,7 +1,7 @@
 # File matrixplot.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2015 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ####################################################################
@@ -11,7 +11,7 @@
 # Author : Mauricio Zambrano-Bigiarini                             #
 # Started: 21-May-2009;                                            #
 # Updates: 22-Sep-2009, 24-Sep-2010 ; 23-Aug-2011                  #
-####################################################################
+#          02-Feb-2015                                             #
 # Adapted (and thank you very much) from:
 # http://www2.warwick.ac.uk/fac/sci/moac/currentstudents/peter_cock/r/matrix_contour/
 
@@ -88,7 +88,7 @@ matrixplot <- function(x, ColorRamp="Days", ncolors=70, main="", ...) {
   } # IF end
 
   #par(fig=c(0,0.8,0,0.8), new=TRUE)
-  require(lattice) # for levelplot()
+  #require(lattice) # for levelplot()
   y <- levelplot(x, scales=list(tck=0, x=list(rot=90)),
                  col.regions=ColorRamp(ncolors),
                  #at= seq(0, 366, length.out= ncolors),
