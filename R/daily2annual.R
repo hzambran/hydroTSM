@@ -34,7 +34,7 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
      # Checking that 'x' is a zoo object
      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
 
-     daily2annual.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
+     daily2annual.zoo(x=x, FUN=FUN, na.rm=na.rm, out.fmt=out.fmt, ...)
      
 } # 'daily2annual.default' end
 
@@ -80,9 +80,9 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
   if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
 	 
   # date format for the output annual series:
-  #if (out.fmt == "%Y") {
-  #  time(tmp) <- format(time(tmp), "%Y")
-  #} else  time(tmp) <- as.Date(paste( time(tmp), "-01-01", sep="")) # zoo::as.Date
+  if (out.fmt == "%Y") {
+    time(tmp) <- format(time(tmp), "%Y")
+  } else  time(tmp) <- as.Date(paste( time(tmp), "-01-01", sep="")) # zoo::as.Date
 
   if (NCOL(tmp) == 1) tmp <- zoo(as.numeric(tmp), time(tmp))
 

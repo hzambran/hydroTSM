@@ -1,7 +1,14 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.4-2-4	22-Jan-2015 (under-development version)
-        o repository management moved from SVN to GIT, including rforge
+0.4-2-5	02-Feb-2015 (under-development version)
+        o repository management moved from SVN to GIT, including rforge.
+        o CRAN website removed from URL field in DESCRIPTION file (request from CRAN).
+        o 'hydrokrige': deprecated 'overlay' function was replaced by 'over' (from 'sp'package).
+        o NAMESPACE file: -) 'plot.xts' imported from 'xts' package.
+                          -) 'index' and 'time<-' imported from 'zoo' package.
+                          -) 'over', 'coordinates<-', 'proj4string<-' imported from 'sp' package.
+        o DESCRIPTION file: 'lattice' package was moved from 'Suggests' to 'Imports' (use of 'levelplot' function in 'matrixplot')
+
 
 0.4-2-3	14-Feb-2014 (under-development version)
         o 'hypsometric' : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
