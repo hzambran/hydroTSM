@@ -1,11 +1,12 @@
-importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply)
-importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts, .index)
+importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply, index, "time<-")
+importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts, .index, plot.xts)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
 importFrom("e1071", skewness, kurtosis)
 #importFrom("maptools", readShapePoly)
 importFrom("gstat", krige, idw)
 importFrom("automap", autoKrige)
-importFrom("sp", proj4string, coordinates, spplot)
+importFrom("lattice", levelplot)
+importFrom("sp", proj4string, coordinates, "coordinates<-", "proj4string<-", spplot, CRS, spsample, "gridded<-", SpatialPoints, layout.north.arrow, layout.scale.bar, over)
 exportPattern("^[^\\.]")
 
 S3method(monthlyfunction, zoo)
