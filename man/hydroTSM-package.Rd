@@ -21,10 +21,10 @@ The focus of this package has been put in providing a collection of tools useful
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
 Version: \tab 0.5-0\cr
-Date: \tab 2015-02-03\cr
+Date: \tab 2015-02-04\cr
 License: \tab GPL >= 2 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Tue Feb 03 02:30:14 CLST 2015; MZB \cr
+Packaged: \tab Wed Feb 04 01:30:14 CLST 2015; MZB \cr
 BuiltUnder: \tab R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet" ; i686-pc-linux-gnu (32-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
