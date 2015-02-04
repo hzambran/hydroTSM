@@ -13,6 +13,7 @@
 #          02-May-2012; 16-Oct-2012                                            #
 #          05-Aug-2013                                                         #
 #          15-Jan-2014                                                         # 
+#          04-Feb-2015                                                         #
 ################################################################################
 
 # Plot the flow Duration Curve in the original time units of 'x' and
@@ -118,7 +119,7 @@ fdc.default <- function (x,
           # If a new plot has to be created
           if (new) {
                plot(dc.plot, x,  xaxt = "n", yaxt = "n", type="o", col=col, pch=pch, lwd=lwd, lty=lty,
-                    cex=cex, cex.axis= cex.axis, cex.lab=cex.lab, main=main, xlab=xlab, ylab=ylab, ylim=ylim, log=log, ...)
+                    cex=cex, cex.axis=cex.axis, cex.lab=cex.lab, main=main, xlab=xlab, ylab=ylab, ylim=ylim, log=log, ...)
           } else lines(dc.plot, x,  xaxt = "n", type="o", col=col, pch=pch, lwd=lwd, lty=lty, cex=cex)
 
           # Y axis: Drawing the ticks and labels
@@ -126,7 +127,7 @@ fdc.default <- function (x,
           if ( (log=="y") | (log=="xy") | (log=="yx") ) {            
             ylabels <- union( yat, ylabels )            
           } # IF end
-          Axis( side = 2, at =ylabels, cex.axis=cex.axis, labels = ylabels)
+          axis( side = 2, at =ylabels, cex.axis=cex.axis, labels = ylabels)
           
           # X axis: Drawing the ticks and labels
           xpos    <- seq(0.0, 1, by=0.05)
@@ -135,8 +136,8 @@ fdc.default <- function (x,
             xpos    <- union( xat, xpos ) 
             xlabels <- union( xat, xlabels )            
           } # IF end
-          Axis(side = 1, at = xpos, cex.axis=cex.axis, labels = FALSE)
-          Axis(side = 1, at = xlabels, cex.axis=cex.axis, labels = paste(100*xlabels,"%", sep="") )               
+          axis(side = 1, at = xpos, cex.axis=cex.axis, labels = FALSE)
+          axis(side = 1, at = xlabels, cex.axis=cex.axis, labels = paste(100*xlabels,"%", sep="") )               
 
           # If the user provided a value for 'lQ.thr', a vertical line is drawn
           if ( !is.na(lQ.thr) ) abline(v=lQ.thr, col="grey", lty=3, lwd=2)
