@@ -1,7 +1,7 @@
 # File mspplot.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2015 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -12,6 +12,7 @@
 # Started: 22-Apr-2009                                                         #
 # Updates: 25-Apr-2009, Ago 2009, Sep 2009                                     #
 #          15-Jan-2014                                                         #
+#          04-Feb-2015                                                         #
 ################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
@@ -190,13 +191,13 @@ mspplot <- function(x,
 	#require(maptools) #it is necessary for usign the function "readShapePoly"
 	if (class(subcatchments) == "character") {
 
-           if (require(maptools)) {
-	     if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
-	     SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
+           if (requireNamespace("maptools", quietly = TRUE)) {
+	     if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]" )
+	     SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar) #maptools::readShapePoly
 	     # Number of Subcatchmnets
 	     nSub <- nrow(SubCatchments.shp@data)
-	     if (verbose) message(paste("[Subcatchments found:", nSub, sep=" ") )
-	   } else stop( paste("Missing package: You need 'maptools' for reading the '", basename(subcatchments), "' shapefile", sep="") )
+	     if (verbose) message("[Subcatchments found:", nSub )
+	   } else stop( "Missing package: You need the 'maptools' package for reading the '", basename(subcatchments), "' shapefile")
 
 	} else {	#  If the user already provided 'subcatchments' as an 'SpatialPolygonsDataFrame' object
 
