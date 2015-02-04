@@ -1,7 +1,7 @@
 %% File hydroTSM-package.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2009-2014 Mauricio Zambrano-Bigiarini
+%% Copyright 2009-2015 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{hydroTSM-package}
@@ -24,7 +24,7 @@ Version: \tab 0.5-0\cr
 Date: \tab 2015-02-04\cr
 License: \tab GPL >= 2 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Wed Feb 04 01:30:14 CLST 2015; MZB \cr
+Packaged: \tab Wed Feb 04 02:11:14 CLST 2015; MZB \cr
 BuiltUnder: \tab R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet" ; i686-pc-linux-gnu (32-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
