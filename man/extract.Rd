@@ -1,7 +1,7 @@
 %% File extract.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2015 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{extract}
@@ -31,8 +31,8 @@ zoo object
 }
   \item{trgt}{
 numeric or character indicating the elements to extract from \code{x}. Valid values are: \cr
-1) integer from 1 to 12: \code{trgt} is considered as a month (1=JAN, 2=FEB,...., 12=DEC), and all the values in \code{x} belonging to the month specified by \code{trgt} will be extracted. \cr
-2) integer > 12: \code{trgt} is considered as a year, and all the values in \code{x} belonging to the year specified by \code{trgt} will be extracted \cr
+1) integer(s) from 1 to 12: \code{trgt} is considered as month(s) (1=JAN, 2=FEB,...., 12=DEC), and all the values in \code{x} belonging to the month(s) specified by \code{trgt} will be extracted. \cr
+2) integer(s) > 12: \code{trgt} is considered as year(s), and all the values in \code{x} belonging to the year(s) specified by \code{trgt} will be extracted \cr
 3) character: \code{trgt} is considered as a weather season, and all the values in \code{x} belonging to the season specified by \code{trgt} will be extracted. Valid values are: \cr
    -) \kbd{DJF} : December, January, February   \cr                   
    -) \kbd{MAM} : March, April, May             \cr                     
@@ -76,8 +76,14 @@ x <- SanMartinoPPts
 ## Extracting all the values belonging to February (FEB=2)
 extract(x, trgt=2)
 
+## Extracting all the values belonging to February (FEB=2) and April (APR=4)
+extract(x, trgt=c(2,4))
+
 ## Extracting all the values belonging to the year 1970
 extract(x, trgt=1970)
+
+## Extracting all the values belonging to the years 1970 and 1972
+extract(x, trgt=c(1970,1972))
 
 ## Extracting all the values belonging to the autumn
 extract(x, trgt="SON")
