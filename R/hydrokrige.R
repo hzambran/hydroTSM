@@ -13,7 +13,7 @@
 # April 22-25th, 2009; September 2009, December 2009, April 2010               #
 #          04-Jul-2012 ; 05-Jul-2012 ; 09-Jul-2012                             #   
 #          15-Jan-2014                                                         #
-#          02-Feb-2015                                                         #
+#          02-Feb-2015 ; 04-Feb-2015                                           #
 ################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
@@ -307,7 +307,7 @@ hydrokrige.default <- function(x.ts, x.gis,
        if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]")
 
        # Reading the Shapefile with the subcatchments
-       SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
+       SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar) # maptools::readShapePoly
 
        # Number of Subcatchmnets
        nSub <- nrow(SubCatchments.shp@data)
@@ -964,6 +964,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 # Started: April 22-28th,                                                      #
 # Updates: Oct 2009, Dec 2010, Apr 2010                                        #
 #          29-May-2013 ; 03-Jun-2013                                           #
+#          04-Feb-2015                                                         #
 ################################################################################
 # BLOCK IDW interpolation (with optional plot) over a set of subcatchments,    #
 # defined by a polygonal shapefile, and during a Time Window defined by the    #
@@ -1088,8 +1089,8 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 			           type="block",
 			           formula,
 			           subcatchments,
-				   IDvar=NULL,
-				   p4s=CRS(as.character(NA)),
+				       IDvar=NULL,
+				       p4s=CRS(as.character(NA)),
 			           cell.size=1000, grid.type="regular",
 			           nmin=0, nmax = Inf, maxdist = Inf,
 			           ColorRamp="PCPAnomaly",
@@ -1099,10 +1100,10 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 			           arrow.plot=FALSE, arrow.offset, arrow.scale,
 			           scalebar.plot=FALSE, sb.offset, sb.scale,
 			           verbose=TRUE,
-                                   allNA.action="error",
+                       allNA.action="error",
 			           dates=1, from, to,
 			           write2disk=TRUE,
-				   out.fmt="csv2",
+				       out.fmt="csv2",
 			           fname=paste(ColorRamp, "by_Subcatch.csv", sep=""),...) {
 
   # If the user didn't provide a value for 'p4s' and used the defaul one
@@ -1238,14 +1239,14 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
      if (class(subcatchments) == "character") {
 
        # Reading the SubCATCHMENTS of the CATCHMENT
-       if (require(maptools)) { #it is necessary for usign the function "readShapePoly"
+       if (requireNamespace("maptools", quietly = TRUE)) { #it is necessary for usign the function "readShapePoly"
 
-         if (verbose) message(paste("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]", sep="") )
+         if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]")
 
          # Reading the Shapefile with the subcatchments
-         SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
+         SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar) # maptools::readShapePoly
        
-       } else stop( paste("Missing package: You need 'maptools' for reading the '", basename(subcatchments), "' shapefile", sep="") )
+       } else stop("Missing package: You need 'maptools' for reading the '", basename(subcatchments), "' shapefile")
 
      } else  { #  # If the user provided 'subcatchments' already as an 'SpatialPolygonsDataFrame' object
 
