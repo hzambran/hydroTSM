@@ -452,7 +452,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
        # Grid-points overlay.
        # Assigning to all the points in 'x.work', the corresponding fields in 'predictors'
-       x.work.ov = over(predictors, x.work)
+       x.work.ov = overlay(predictors, x.work)
 
        # Getting the names of the predictor variables in 'predictors'
        pnames <- names(x.work.ov@data)
@@ -630,8 +630,8 @@ hydrokrige.default <- function(x.ts, x.gis,
         #if (!is.null(IDvar)) x.idw.block@data[[IDvar]] <- NULL
         
         if (  class(predictors) == "SpatialGridDataFrame" ) {
-           tmp.block <- over( as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), SubCatchments.shp, fn = mean)
-        } else tmp.block <-  over(x.idw["var1.pred"], SubCatchments.shp, fn = mean)
+           tmp.block <- overlay( as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), SubCatchments.shp, fn = mean)
+        } else tmp.block <-  overlay(x.idw["var1.pred"], SubCatchments.shp, fn = mean)
 
         #if ( length(x.idw.block@data[["var1.pred"]]) == length( tmp.block[,1]) ) {
         #  x.idw.block@data[["var1.pred"]] <- tmp.block[,1]
@@ -660,11 +660,11 @@ hydrokrige.default <- function(x.ts, x.gis,
 	x.idw.block <- SubCatchments.shp
         #if (!is.null(IDvar)) x.idw.block@data[[IDvar]] <- NULL
 
-        #tmp.block <- over( as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), SubCatchments.shp, fn = mean)
+        #tmp.block <- overlay( as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), SubCatchments.shp, fn = mean)
 
         if (  class(predictors) == "SpatialGridDataFrame" ) {
-           tmp.block <- over( as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), SubCatchments.shp, fn = mean)
-        } else tmp.block <-  over(x.idw["var1.pred"], SubCatchments.shp, fn = mean)
+           tmp.block <- overlay( as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), SubCatchments.shp, fn = mean)
+        } else tmp.block <-  overlay(x.idw["var1.pred"], SubCatchments.shp, fn = mean)
         
         #if (length(x.idw.block@data[["var1.pred"]]) == length( tmp.block[,1]) ) {
         #  x.idw.block@data[["var1.pred"]] <- tmp.block[,1]
