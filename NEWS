@@ -2,7 +2,8 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 0.5-0   04-Feb-2015 (under-development version)
         o repository management moved from SVN to GIT, including rforge.
-        o 'hydrokrige'  : 'require(maptools)' was replace by 'requireNamespace("maptools", quietly = TRUE)'
+        o 'hydrokrige'  : -) 'require(maptools)' was replace by 'requireNamespace("maptools", quietly = TRUE)'
+                          -) calls to 'overaly' were replaced by calls to 'over' because 'overaly' was deprecated in 'sp' 1.1-0.
         o 'mspplot   '  : 'require(maptools)' was replace by 'requireNamespace("maptools", quietly = TRUE)'
         o 'hypsometric' : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
                           (thanks to Jose Martinez Batlle !)
@@ -12,9 +13,10 @@ NEWS/ChangeLog for hydroTSM
                           -) 'index' and 'time<-' imported from 'zoo' package.
                           -) 'over', 'coordinates<-', 'proj4string<-' imported from 'sp' package.
                           -) 'readShapePoly' imported from 'maptools' package.
-        o DESCRIPTION file: -) 'lattice' package was moved from 'Suggests' to 'Imports' (use of 'levelplot' function in 'matrixplot').
+        o DESCRIPTION file: -) 'sp' now requires version >= 1.1-0, because 'overlay' was deprecated in that verison of 'sp'
+                            -) 'lattice' package was moved from 'Suggests' to 'Imports' (use of 'levelplot' function in 'matrixplot').
                             -) 'maptools' package was moved from 'Suggests' to 'Imports' (use of 'readShapePoly' function in 'hydrokrige')
-        o CRAN website removed from URL field in DESCRIPTION file (requested by CRAN).
+                            -) CRAN website removed from URL field in DESCRIPTION file (requested by CRAN).
 
 0.4-2-1	22-Jan-2014 (after CRAN comments)
         o 'Author' field was removed from DESCRIPTION file
