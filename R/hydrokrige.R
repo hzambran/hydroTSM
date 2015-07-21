@@ -13,7 +13,7 @@
 # April 22-25th, 2009; September 2009, December 2009, April 2010               #
 #          04-Jul-2012 ; 05-Jul-2012 ; 09-Jul-2012                             #   
 #          15-Jan-2014                                                         #
-#          02-Feb-2015 ; 04-Feb-2015                                           #
+#          02-Feb-2015 ; 04-Feb-2015 ; 17-May-2015                             #
 ################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
@@ -202,7 +202,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 	      stop("Invalid argument: 'grid.type' must be of in c('regular', 'random', 'stratified', 'hexagonal', 'clustered'")
 
       # Printing the defaul 'cell.size' value when the user didn't provide it
-      if (missing(cell.size)) { message(paste("[Note: Missing 'cell.size': using 'cell.size= ", cell.size, " [m]. ]", sep="")) }
+      if (missing(cell.size)) message("[Note: Missing 'cell.size': using 'cell.size= ", cell.size, " [m]. ]") }
 
   } # IF end
 
@@ -1130,7 +1130,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 	 stop("Invalid argument: 'grid.type' must be of in c('regular', 'random', 'stratified', 'hexagonal', 'clustered'")
 
   # Printing the defaul 'cell.size' value when the user didn't provide it
-  if (missing(cell.size)) { message(paste("[Missing 'cell.size': using 'cell.size= ", cell.size, " [m]. ]", sep="") ) }
+  if (missing(cell.size)) message("[Missing 'cell.size': using 'cell.size= ", cell.size, " [m]. ]") 
 
   # Checking that 'nmin' is integer
   if ( !missing(nmin) )
@@ -1269,7 +1269,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
     # Number of Subcatchmnets
     nSub <- nrow(SubCatchments.shp@data)
 
-    if (verbose) message(paste("[Subcatchments found:", nSub, "]", sep=" ") )
+    if (verbose) message("[Subcatchments found: ", nSub, "]")
 
   } # IF end
 
@@ -1290,7 +1290,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 
         if ( !identical( CRS(sp::proj4string(SubCatchments.shp)), p4s ) )  {
 
-	    if (verbose) message(paste("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
+	    if (verbose) message("[Warning: 'p4s' and 'subcatchments' have different CRS. The projection of the shapefile was changed to the one given by 'p4s': '", p4s@projargs, "']")
             proj4string(SubCatchments.shp) <- p4s
         } # IF end
 
@@ -1305,7 +1305,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 	    # Verifying the compatibility between  'predictors' and 'subcatchments'
             if ( !identical( proj4string(SubCatchments.shp), proj4string(predictors) ) )  {
 
-		if (verbose) message(paste("[Warning: 'subcatchments' and 'predictors' has different CRS. The projection of the shapefile was changed to the one given by 'predicotrs': '", proj4string(predictors), "']", sep="") )
+		if (verbose) message("[Warning: 'subcatchments' and 'predictors' has different CRS. The projection of the shapefile was changed to the one given by 'predicotrs': '", proj4string(predictors), "']")
                 proj4string(SubCatchments.shp) <- CRS(proj4string(predictors))
 	             	p4s                            <- CRS(proj4string(predictors))
 
@@ -1318,7 +1318,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
             if ( !missing(subcatchments) ) {
                  if ( !is.na(proj4string(SubCatchments.shp) ) )  {
 
-                    if (verbose) message(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'subcatchments': '", proj4string(SubCatchments.shp), "']", sep="") )
+                    if (verbose) message("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'subcatchments': '", proj4string(SubCatchments.shp), "']")
                     p4s <- CRS(proj4string(SubCatchments.shp))
 
                 } # IF end
@@ -1329,7 +1329,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
             if ( !missing(predictors) ) {
                  if ( !is.na(proj4string(predictors) ) )  {
 
-                    if (verbose) message(paste("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'predictors': '", proj4string(SubCatchments.shp), "']", sep="")  )
+                    if (verbose) message("[Warning: 'You didn't specified a  projection ('p4s') for 'x.gis'. It was set to the one of 'predictors': '", proj4string(SubCatchments.shp), "']")
                     p4s <- CRS(proj4string(predictors))
 
                 } # IF end
@@ -1371,7 +1371,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 
 	 if ( !identical( CRS(proj4string(predictors)), p4s ) )  {
 
-	    if (verbose) message(paste("[Warning: 'p4s' and 'predictors' have different CRS. The projection of 'predictors' was changed to the one given by 'p4s': '", p4s@projargs, "']", sep="") )
+	    if (verbose) message("[Warning: 'p4s' and 'predictors' have different CRS. The projection of 'predictors' was changed to the one given by 'p4s': '", p4s@projargs, "']")
 	    proj4string(predictors) <- p4s
 
 	 } # ELSE end
