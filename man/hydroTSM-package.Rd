@@ -60,7 +60,7 @@ sname2ts(EbroPPtsMonthly, sname="P9001", dates=1, var.type="Precipitation",
 
 #######
 ## Ex3) Monthly and annual plots
-sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", dates=1, pfreq="ma")
+sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", pfreq="ma")
 
 #######
 ## Ex4) IDW interpolation and plot

@@ -14,7 +14,8 @@ NEWS/ChangeLog for hydroTSM
                           -) 'index' and 'time<-' imported from 'zoo' package.
                           -) 'over', 'coordinates<-', 'proj4string<-' imported from 'sp' package.
                           -) 'readShapePoly' imported from 'maptools' package.
-        o DESCRIPTION file: -) 'sp' now requires version >= 1.1-0, because 'overlay' was deprecated in that verison of 'sp'
+        o DESCRIPTION file: -) 'sp' now requires version >= 1.1-0, because 'overlay' was deprecated in that version of 'sp'
+                 TODO       !!!       -) 'xts' now requires version >= 0.9-8, because the new plot.xts is based on quantmod::chart_Series graphics engine.
                             -) 'lattice' package was moved from 'Suggests' to 'Imports' (use of 'levelplot' function in 'matrixplot').
                             -) 'maptools' package was moved from 'Suggests' to 'Imports' (use of 'readShapePoly' function in 'hydrokrige')
                             -) CRAN website removed from URL field in DESCRIPTION file (requested by CRAN).

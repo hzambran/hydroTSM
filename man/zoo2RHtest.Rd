@@ -44,7 +44,7 @@ character to be used for representing the missing values in the data
 \references{
 %\url{http://ccma.seos.uvic.ca} % not available anynmore, reported by Gang Dong on March 12th, 2013
 \url{http://etccdi.pacificclimate.org/software.shtml}
-\url{http://etccdi.pacificclimate.org/RHtest/RHtestsV3_UserManual.doc}
+\url{http://etccdi.pacificclimate.org/RHtest/RHtestsV4_UserManual_10Dec2014.pdf}
 \url{http://css.escwa.org.lb/sdpd/1802/d2-1.pdf}
 
 % \url{http://www.cmc.org.ve/mediawiki/index.php?title=Preparando_los_datos}
