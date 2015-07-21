@@ -1,9 +1,9 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.5-0   04-Feb-2015 (under-development version)
+0.5-0   21-July-2015 (under-development version)
         o repository management moved from SVN to GIT, including rforge.
-        o 'hydrokrige'  : -) 'require(maptools)' was replace by 'requireNamespace("maptools", quietly = TRUE)'
-                          -) calls to 'overaly' were replaced by calls to 'over' because 'overaly' was deprecated in 'sp' 1.1-0.
+        o 'hydrokrige'  : -) 'require(maptools)' was replaced by 'requireNamespace("maptools", quietly = TRUE)'
+                          -) calls to 'overlay' were replaced by calls to 'over' because 'overaly' was deprecated in 'sp' 1.1-0.
         o 'mspplot   '  : 'require(maptools)' was replace by 'requireNamespace("maptools", quietly = TRUE)'
         o 'hypsometric' : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
                           (thanks to Jose Martinez Batlle !)
