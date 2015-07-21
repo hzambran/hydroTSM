@@ -202,7 +202,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 	      stop("Invalid argument: 'grid.type' must be of in c('regular', 'random', 'stratified', 'hexagonal', 'clustered'")
 
       # Printing the defaul 'cell.size' value when the user didn't provide it
-      if (missing(cell.size)) message("[Note: Missing 'cell.size': using 'cell.size= ", cell.size, " [m]. ]") }
+      if (missing(cell.size)) message("[Note: Missing 'cell.size': using 'cell.size= ", cell.size, " [m]. ]")
 
   } # IF end
 

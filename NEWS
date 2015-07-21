@@ -8,7 +8,8 @@ NEWS/ChangeLog for hydroTSM
         o 'hypsometric' : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
                           (thanks to Jose Martinez Batlle !)
         o 'extract'     : 'trgt' argument allows multiple months or years to be selected (when 'class(trgt) %in% c("integer", "numeric")')
-        o 'fdc'         : 'cex.lab'  argument is working now (thanks to Elcin Tan !).
+        o 'fdc'         : -) 'cex.lab'  argument is working now (thanks to Elcin Tan !).
+                          -) new example about computing streamflow values corresponding to a given percentage of time equalled or exceeded (thanks to Prajjwal Panday !) 
         o NAMESPACE file: -) 'plot.xts' imported from 'xts' package.
                           -) 'index' and 'time<-' imported from 'zoo' package.
                           -) 'over', 'coordinates<-', 'proj4string<-' imported from 'sp' package.

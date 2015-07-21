@@ -1,7 +1,7 @@
 %% File fdc.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2014 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2015 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{fdc}
@@ -164,18 +164,34 @@ data(OcaEnOnaQts)
 fdc(OcaEnOnaQts)
 
 ###################
-# Comparing 2 FDCs:
+# Getting the streamflow values corresponding to 5 and 95\% of time equalled or 
+# exceeded (and also the first streamflow value in 'x' just for verification)
+x  <- OcaEnOnaQts
 
-x <- OcaEnOnaQts
+# First streamflow value (x1=42.1 m3/s)
+x1 <- x[1]
 
-# Random 2nd ts
-y <- x + rnorm(length(x), mean=10)
+# Daily FDC for 'x'
+y <- fdc(x)
 
-# data.frame with the 2 time series
-xx <- data.frame(x=x, y=y)
+# value of the FDC for x1 (y1=0.002739726)
+y1 <- y[1]
 
-# FDC plot
-fdc(xx, thr.shw=FALSE)
+# Performing cubic (or Hermite) spline interpolation of 'x' and 'y'
+f <- splinefun(y,x)
+
+# Getting the (known) streamflow value for 'y1'
+f(y1) # 42.1 m3/s, equal to the known 'x1'
+
+# Streamflow values corresponding to 5 and 95\% of time equalled or exceeded
+f(c(.05, .95))
+
+###################
+## Getting 
+data(OcaEnOnaQts)
+
+## Daily Flow Duration Curve
+fdc(OcaEnOnaQts)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
