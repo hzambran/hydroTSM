@@ -1,7 +1,7 @@
 # File smry.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2015 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -16,7 +16,7 @@
 ################################################################################
 # Started: 14-Jun-2008;                                                        #
 # Updates: 11-Sep-2009 ; 30-Aug-2011  ; 14-Sep-2011 ; 15-Sep-2011              #
-#          29-May-2013                                                         #
+#          29-May-2013 ; 21-Jul-2015                                           #
 ################################################################################
 smry <-function(x, ...) UseMethod("smry")
 
@@ -48,7 +48,7 @@ smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), 
         # min, q1, median, mean, q3, max
         z[1:6, 1] <- s
 
-        z[7,1] <- IQR(x, na.rm = na.rm)	                         # Interquantile Range IQR = Q(0.75) – Q(0.25)
+        z[7,1] <- IQR(x, na.rm = na.rm)	                         # Interquantile Range IQR = Q(0.75) - Q(0.25)
         z[8,1] <- sd(x, na.rm = na.rm)	                         # Standard Deviation
         z[9,1] <- sd(x, na.rm = na.rm) / abs(mean(x, na.rm = na.rm)) # Coefficient of variation ( coef. of variation = sd / |mean| )
 
