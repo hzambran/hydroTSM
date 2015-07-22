@@ -18,7 +18,7 @@ Digital elevation model of the Ebro River basin, with 1000x1000m of spatial reso
 'SpatialGridDataFrame'
 }
 \source{
-The original file (Modelo Digital MDT200 RASTER) was downloaded from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://oph.chebro.es/ContenidoCartoApoyo.htm} (last accessed [March 2010]), and then resampled up to 1000x1000m of resolution. \cr
+The original file (Modelo Digital MDT200 RASTER) was downloaded from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://www.chebro.es/} (original link http://oph.chebro.es/ContenidoCartoApoyo.htm, last accessed [March 2010]), and then resampled up to 1000x1000m of resolution. \cr
 
 This dataset is intended to be used for research purposes only, being distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
 }

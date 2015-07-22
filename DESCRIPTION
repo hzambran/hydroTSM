@@ -12,6 +12,6 @@ Imports: e1071, gstat, automap, sp (>= 1.1-0), lattice, maptools
 Suggests: rgdal 
 URL: http://www.rforge.net/hydroTSM/
 MailingList: https://stat.ethz.ch/mailman/listinfo/r-sig-ecology
-BugReports: https://www.rforge.net/bugzilla/describecomponents.cgi?product=hydroTSM
+BugReports: https://github.com/hzambran/hydroTSM/issues
 Keywords: hydrology, hydrological modelling, hydrologic modeling, time series
 LazyLoad: yes

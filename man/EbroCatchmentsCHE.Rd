@@ -25,7 +25,7 @@ The fields stored in the \code{@data} slot of this object are: \cr
 -) \var{AREA_KM2}: are of eac subcatchment, [km2]
 }
 \source{
-Downloaded ('Divisorias Hidrograficas 1:50.000 - CHE') from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://oph.chebro.es/ContenidoCartoHidrologia.htm}. Last accessed [March 2008]. \cr
+Downloaded ('Divisorias Hidrograficas 1:50.000 - CHE') from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://www.chebro.es/} (original link http://oph.chebro.es/ContenidoCartoHidrologia.htm, last accessed [March 2008]). \cr
 These data are intended to be used for research purposes only, being distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
 }
 

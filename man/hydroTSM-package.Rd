@@ -42,7 +42,6 @@ Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail>
 \seealso{
 \url{http://www.rforge.net/hydroGOF/}. \cr
 \url{http://www.rforge.net/hydroPSO/}. \cr
-\url{http://rwiki.sciviews.org/doku.php?id=guides:tutorials:hydrological_data_analysis}
 }
 \examples{
 ## Loading the monthly time series (10 years) of precipitation for the Ebro River basin.

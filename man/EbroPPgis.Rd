@@ -25,7 +25,7 @@ A data.frame with seven fields: \cr
 *) 'CHE_BASIN_NAME': name of the subbasin in which the gauging station s located.
 }
 \source{
-Downloaded ('Red de Control Meteorologico') from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://oph.chebro.es/ContenidoCartoClimatologia.htm}. Last accessed [March 2008], and then the name of 7 selected fields were translated into English language.  \cr
+Downloaded ('Red de Control Meteorologico') from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://www.chebro.es/} (original link http://oph.chebro.es/ContenidoCartoClimatologia.htm, last accessed [March 2008]), and then the name of 7 selected fields were translated into English language.  \cr
 
 These data are intended to be used for research purposes only, being distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
 }

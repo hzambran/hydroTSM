@@ -73,7 +73,8 @@ If \code{p4s} is given, the returning object will be a \link[sp]{SpatialPointsDa
 \references{
 \cite{Applied Spatial Data Analysis with R. Series: Use R. Bivand, Roger S., Pebesma, Edzer J., Gomez-Rubio, Virgilio. 2008. ISBN: 978-0-387-78170-9} \cr
 
-\url{http://r-spatial.sourceforge.net/gallery/}
+\url{http://rspatial.r-forge.r-project.org/}
+     
 }
 \author{
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}

@@ -255,7 +255,7 @@ The automatic kriging is carried out by using a variogram generated automaticall
 
 \url{http://www.gstat.org/} \cr
 
-\url{http://r-spatial.sourceforge.net/gallery/}
+\url{http://rspatial.r-forge.r-project.org/}
 }
 
 \author{

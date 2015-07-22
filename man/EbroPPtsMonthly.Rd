@@ -18,7 +18,7 @@ Monthly time series of precipitation on 331 stations of the Ebro River basin (Sp
 A data.frame with 331 monthly time series, plus the first field storing the dates corresponding to each row.
 }
 \source{
-Downloaded from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://oph.chebro.es/DOCUMENTACION/PrecipitacionMensualRelleno/PrecipitacionMensualRelleno.html}. Last accessed [March 2010]. \cr
+Downloaded from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://www.chebro.es/} (original link http://oph.chebro.es/DOCUMENTACION/PrecipitacionMensualRelleno/PrecipitacionMensualRelleno.html, last accessed [March 2010]). \cr
 These data are intended to be used for research purposes only, being distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
 }
 

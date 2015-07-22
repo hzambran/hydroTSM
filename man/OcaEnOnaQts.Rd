@@ -24,7 +24,7 @@ data(OcaEnOnaQts)
 zoo object.
 }
 \source{
-Downloaded from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://oph.chebro.es/documentacion/CaudalEA/CaudalEA.htm}. Last accessed [March 2010]. \cr
+Downloaded from the web site of the Confederacion Hidrografica del Ebro (CHE) \url{http://www.chebro.es/} (original link http://oph.chebro.es/documentacion/CaudalEA/CaudalEA.htm, last accessed [March 2010]). \cr
 
 These data are intended to be used for research purposes only, being distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
 }

@@ -50,7 +50,7 @@ further arguments passed to or from other methods, in particular it is used in t
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \note{
-Original idea taken from: \url{http://addictedtor.free.fr/graphiques/graphcode.php?graph=137}. \cr
+Original idea taken from the R Graph Gallery (nowadays not available on its original link: http://addictedtor.free.fr/graphiques/graphcode.php?graph=137). \cr
 
 Histogram panel was taken from the R help of the original \code{\link[graphics]{pairs}} function
 }
