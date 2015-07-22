@@ -1,7 +1,7 @@
 # File daily2annual.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2015 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -46,6 +46,7 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 # Updates: 09-Aug-2011                                                         #
 #          04-Jun-2012                                                         #
 #          08-Apr-2013                                                         #
+#          21-Jul-2015                                                         #
 ################################################################################
 daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 
@@ -80,9 +81,8 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
   if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
 	 
   # date format for the output annual series:
-  if (out.fmt == "%Y") {
-    time(tmp) <- format(time(tmp), "%Y")
-  } else  time(tmp) <- as.Date(paste( time(tmp), "-01-01", sep="")) # zoo::as.Date
+  if (out.fmt == "%Y-%m-%d") 
+    time(tmp) <- as.Date(paste( time(tmp), "-01-01", sep="")) # zoo::as.Date  
 
   if (NCOL(tmp) == 1) tmp <- zoo(as.numeric(tmp), time(tmp))
 
@@ -160,7 +160,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
   ##############################################################################
   if (out.type == "data.frame") {
   
-    z <- daily2annual.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
+    z <- daily2annual.zoo(x=x, FUN=FUN, na.rm=na.rm, out.fmt=out.fmt, ...)
     
   } else if (out.type == "db") { 
 

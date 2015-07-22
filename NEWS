@@ -2,24 +2,25 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 0.5-0   21-July-2015 (under-development version)
         o repository management moved from SVN to GIT, including rforge.
-        o 'hydrokrige'  : -) 'require(maptools)' was replaced by 'requireNamespace("maptools", quietly = TRUE)'
-                          -) calls to 'overlay' were replaced by calls to 'over' because 'overaly' was deprecated in 'sp' 1.1-0.
-        o 'mspplot   '  : 'require(maptools)' was replace by 'requireNamespace("maptools", quietly = TRUE)'
-        o 'hypsometric' : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
-                          (thanks to Jose Martinez Batlle !)
-        o 'extract'     : 'trgt' argument allows multiple months or years to be selected (when 'class(trgt) %in% c("integer", "numeric")')
-        o 'fdc'         : -) 'cex.lab'  argument is working now (thanks to Elcin Tan !).
-                          -) new example about computing streamflow values corresponding to a given percentage of time equalled or exceeded (thanks to Prajjwal Panday !) 
-        o NAMESPACE file: -) 'plot.xts' imported from 'xts' package.
-                          -) 'index' and 'time<-' imported from 'zoo' package.
-                          -) 'over', 'coordinates<-', 'proj4string<-' imported from 'sp' package.
-                          -) 'readShapePoly' imported from 'maptools' package.
-                          -) Fifty three (53) S3 methods are now registered.
-        o DESCRIPTION file: -) 'sp' now requires version >= 1.1-0, because 'overlay' was deprecated in that version of 'sp'
+        o 'hydrokrige'       : -) 'require(maptools)' was replaced by 'requireNamespace("maptools", quietly = TRUE)'
+                               -) calls to 'overlay' were replaced by calls to 'over' because 'overaly' was deprecated in 'sp' 1.1-0.
+        o 'mspplot   '       : 'require(maptools)' was replace by 'requireNamespace("maptools", quietly = TRUE)'
+        o 'hypsometric'      : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
+                               (thanks to Jose Martinez Batlle !)
+        o 'extract'          : 'trgt' argument allows multiple months or years to be selected (when 'class(trgt) %in% c("integer", "numeric")')
+        o 'fdc'              : -) 'cex.lab'  argument is working now (thanks to Elcin Tan !).
+                               -) new example about computing streamflow values corresponding to a given percentage of time equalled or exceeded (thanks to Prajjwal Panday !) 
+        o 'daily2annual.zoo' : fixed bug appeared in R 3.2.x (or 3.1.2) which raised an error for data.frames when 'out.fmt="%Y"': Error in format.default(structure(as.character(x), names = names(x), dim = dim(x),  : 
+        o NAMESPACE file     : -) 'plot.xts' imported from 'xts' package.
+                               -) 'index' and 'time<-' imported from 'zoo' package.
+                               -) 'over', 'coordinates<-', 'proj4string<-' imported from 'sp' package.
+                               -) 'readShapePoly' imported from 'maptools' package.
+                               -) Fifty three (53) S3 methods are now registered.
+        o DESCRIPTION file   : -) 'sp' now requires version >= 1.1-0, because 'overlay' was deprecated in that version of 'sp'
                  TODO       !!!       -) 'xts' now requires version >= 0.9-8, because the new plot.xts is based on quantmod::chart_Series graphics engine.
-                            -) 'lattice' package was moved from 'Suggests' to 'Imports' (use of 'levelplot' function in 'matrixplot').
-                            -) 'maptools' package was moved from 'Suggests' to 'Imports' (use of 'readShapePoly' function in 'hydrokrige')
-                            -) CRAN website removed from URL field in DESCRIPTION file (requested by CRAN).
+                               -) 'lattice' package was moved from 'Suggests' to 'Imports' (use of 'levelplot' function in 'matrixplot').
+                               -) 'maptools' package was moved from 'Suggests' to 'Imports' (use of 'readShapePoly' function in 'hydrokrige')
+                               -) CRAN website removed from URL field in DESCRIPTION file (requested by CRAN).
 
 0.4-2-1	22-Jan-2014 (after CRAN comments)
         o 'Author' field was removed from DESCRIPTION file
