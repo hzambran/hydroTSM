@@ -1,7 +1,7 @@
 %% File hydrokrige.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2015 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{hydrokrige}
@@ -323,6 +323,19 @@ x.ok <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis,
                    arrow.offset= c(900000,4750000), arrow.scale= 20000,
                    scalebar.plot= TRUE, 
                    sb.offset= c(400000,4480000), sb.scale= 100000)
+
+
+# Getting the interpolated values in each polygon 
+# ('var1.pred' field in the output data.frame object)
+x.ok.block <- slot(x.ok[["Block"]], "data")
+
+# Getting the interpolated values in each cell (SpatialPixelsDataFrame object)
+# (the pedicted values in each cell are stored in the 'var1.pred' field of the 
+#  'data' slot)
+x.ok.cells <- x.ok[["Cells"]]
+
+# Plotting the interpolated values in each cell
+spplot(x.ok.cells, "var1.pred")
 }
 
 ##################################################
