@@ -381,6 +381,10 @@ EbroDEM1000m$ELEVATION <- EbroDEM1000m$band1
 # Saving memory
 EbroDEM1000m$band1 <- NULL
 
+# Forcing the projection of the DEM to be the same of the 'subcatchments' argument
+# (just because I know in advance they are the same)
+proj4string(EbroDEM1000m) <- p4s
+
 # Computing KED
 \dontrun{
 x.ked <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis, 
