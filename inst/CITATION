@@ -1,0 +1,21 @@
+citHeader("To cite hydroTSM in publications use:")
+
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- paste("R package version", meta$Version)
+
+citEntry(entry = "manual",
+	title = "hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling",
+	author = personList(person("Mauricio", "Zambrano-Bigiarini", email="mzb.devel@gmail.com", role=c("aut","cre"))),
+	year = year,
+	note = vers,
+	url = "http://CRAN.R-project.org/package=hydroTSM",
+        doi = "{zenodo}",
+	textVersion = paste("Mauricio Zambrano-Bigiarini. (", year, ") ",
+        "hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling",
+        vers,
+        ". URL http://CRAN.R-project.org/package=hydroTSM",
+        ". DOI:",
+        ".", sep = ""))
+
+#citFooter("We have invested a lot of time and effort in creating hydroPSO, please cite it if you use it !")
+
