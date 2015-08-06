@@ -2,7 +2,7 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 0.5-0   05-Aug-2015 (under-development version)
         o repository management moved from SVN to GIT, including rforge.
-        o citation with DOI is now possible (and new CITATION file).
+  ToDo: o citation with DOI is now possible (and new CITATION file).
         o broken links in documentation and DESCRIPTION were removed.
         o 'hydrokrige'       : -) 'require(maptools)' was replaced by 'requireNamespace("maptools", quietly = TRUE)'
                                -) calls to 'overlay' were replaced by calls to 'over' because 'overaly' was deprecated in 'sp' 1.1-0.
@@ -20,7 +20,7 @@ NEWS/ChangeLog for hydroTSM
                                -) 'readShapePoly' imported from 'maptools' package.
                                -) Fifty three (53) S3 methods are now registered.
         o DESCRIPTION file   : -) 'sp' now requires version >= 1.1-0, because 'overlay' was deprecated in that version of 'sp'
-                 TODO       !!!       -) 'xts' now requires version >= 0.9-8, because the new plot.xts is based on quantmod::chart_Series graphics engine.
+  ToDo:                        -) 'xts' now requires version >= 0.9-8, because the new plot.xts is based on quantmod::chart_Series graphics engine.
                                -) 'lattice' package was moved from 'Suggests' to 'Imports' (use of 'levelplot' function in 'matrixplot').
                                -) 'maptools' package was moved from 'Suggests' to 'Imports' (use of 'readShapePoly' function in 'hydrokrige')
                                -) CRAN website removed from URL field in DESCRIPTION file (requested by CRAN).
