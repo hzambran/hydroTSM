@@ -4,6 +4,7 @@ NEWS/ChangeLog for hydroTSM
         o repository management moved from SVN to GIT, including rforge.
   ToDo: o citation with DOI is now possible (and new CITATION file).
         o broken links in documentation and DESCRIPTION were removed.
+        o 'monthlyfunction'  : -) argument '...' is now taken into account.
         o 'hydrokrige'       : -) 'require(maptools)' was replaced by 'requireNamespace("maptools", quietly = TRUE)'
                                -) calls to 'overlay' were replaced by calls to 'over' because 'overaly' was deprecated in 'sp' 1.1-0.
                                -) new examples about how to get the interpolated values in each cell and polygon when 'type="both"' is used (thanks to Jochen Scholtes !)
