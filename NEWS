@@ -1,6 +1,6 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.5-0   05-Aug-2015 (under-development version)
+0.5-0   28-Nov-2015 (under-development version)
         o repository management moved from SVN to GIT, including rforge.
   ToDo: o citation with DOI is now possible (and new CITATION file).
         o broken links in documentation and DESCRIPTION were removed.
