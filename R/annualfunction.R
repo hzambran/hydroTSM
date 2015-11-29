@@ -37,6 +37,7 @@ annualfunction.default <- function(x, FUN, na.rm=TRUE,...) {
 # Started: 09-Aug-2011                                                         #
 # Updates: 09-Aug-2011                                                         #
 #          03-Abr-2013                                                         #
+#          29-Nov-2015                                                         #
 ################################################################################
 annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 
@@ -49,13 +50,13 @@ annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
      years  <- factor( y, levels=unique(y) )
 
      # 'FUN' is first applied to all the values of 'x' belonging to the same year
-     totals <- aggregate( x, by= years, FUN=FUN, na.rm= na.rm )
+     totals <- aggregate( x, by= years, FUN=FUN, na.rm= na.rm, ... )
      
      #  'FUN' is applied to all the previously computed annual values to get the final result.
      if ( (is.matrix(x)) | (is.data.frame(x)) ) {
        #totals <- apply(totals, MARGIN=2, FUN=FUN, an.rm=na.rm) # up to version 0.3-6
-       totals <- apply(totals, MARGIN=2, FUN=FUN, na.rm=na.rm) # since version 0.3-7
-     } else totals <- aggregate(totals, by = rep("value", length(totals)), FUN = FUN, na.rm = na.rm)
+       totals <- apply(totals, MARGIN=2, FUN=FUN, na.rm=na.rm, ...) # since version 0.3-7
+     } else totals <- aggregate(totals, by = rep("value", length(totals)), FUN = FUN, na.rm = na.rm, ...)
      
      # Replacing the NaNs by 'NA.
      # NaN's are obtained when using the FUN=mean with complete NA values
