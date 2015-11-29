@@ -156,10 +156,7 @@ Logical, indicating if the interpolated values have to be plotted or not
 integer, number of colours that have to be used for plotting the interpolated values
 }
   \item{col.at}{
-Specify at which interpolated values colours change. Valid values are:  \cr
--) \kbd{R}    : uses the default setting of \code{\link[sp]{spplot}}  \cr
--) \code{numeric}: vector of reals giving the exact values in which the colors have to change. Useful when the user desires the same color for the same value when comparing to maps with different range of values \cr
--) \kbd{auto} : default option. \cr
+Specify at which interpolated values colours change.[MJ m-2 day-1] or [mm d-1]
    \code{at   <- seq(min, max,length.out=col.nintv)} \cr
    \code{min  <- floor(min(idw["var1.pred"]@data, na.rm=TRUE))} \cr
    \code{max  <- ceiling(max(idw["var1.pred"]@data, na.rm=TRUE))}
