@@ -132,7 +132,7 @@ nyears <- yip(from=start(z), to=end(z), out.type="nmbr" )
 
 ## Average annual precipitation, for the first 5 stations in 'x'
 annualfunction(z[ ,1:5], FUN=sum)/nyears
-
+ 
 }
 
 }

@@ -4,6 +4,7 @@ NEWS/ChangeLog for hydroTSM
         o repository management moved from SVN to GIT, including rforge.
   ToDo: o citation with DOI is now possible (and new CITATION file).
         o broken links in documentation and DESCRIPTION were removed.
+        o 'subdaily2daily'   : -) now it works with several (all?) FUN functions, including 'sum', 'min', 'max'. (thanks to Jamis Bruening !))
         o 'monthlyfunction'  : -) argument '...' is now taken into account.
         o 'seasonalfunction' : -) argument '...' is now taken into account.
         o 'annualfunction'   : -) argument '...' is now taken into account.
