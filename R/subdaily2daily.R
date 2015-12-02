@@ -42,12 +42,14 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
 ################################################################################
 # Started: 25-Mar-2013                                                         #
 # Updates: 26-Mar-2013 ; 08-Apr-2013 ; 09-Apr-2013                             #
-#          29-Nov-2015                                                         #
+#          29-Nov-2015 ; 01-Dec-2015                                           #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 
      # Checking that the user provied a valid class for 'x'   
      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'xts' !!")
+
+     print(formals(FUN))
 
      # Checking the user provide a valid value for 'FUN'
      if (missing(FUN))
@@ -59,10 +61,10 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 #     # Daily aggregation. 
 #     d <- apply.daily(x=x, FUN=FUN, na.rm=na.rm) # xts::apply.daily
 
-#     # Removing time attibute, but not the dates
-#     if (NCOL(d) == 1) {
-#       d <- zoo(as.numeric(d), as.Date(format(time(d), "%Y-%m-%d") ) )
-#     } else d <- zoo(coredata(d), as.Date(format(time(d), "%Y-%m-%d") ) )
+     # Removing subdaily time attibute, but not the dates
+     if (NCOL(d) == 1) {
+       d <- zoo(as.numeric(d), as.Date(time(d), format="%Y-%m-%d") ) 
+     } else d <- zoo(coredata(d), as.Date(time(d), format="%Y-%m-%d") ) 
 
      # Replacing the NaNs by 'NA.
      # mean(NA:NA, na.rm=TRUE) == NaN
