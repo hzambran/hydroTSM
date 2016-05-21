@@ -1,6 +1,6 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.5-0   01-Dic-2015 (under-development version)
+0.5-0   21-May-2016 (under-development version)
         o repository management moved from SVN to GIT, including rforge.
   ToDo: o citation with DOI is now possible (and new CITATION file).
         o broken links in documentation and DESCRIPTION were removed.
@@ -11,22 +11,25 @@ NEWS/ChangeLog for hydroTSM
         o 'hydrokrige'       : -) 'require(maptools)' was replaced by 'requireNamespace("maptools", quietly = TRUE)'
                                -) calls to 'overlay' were replaced by calls to 'over' because 'overaly' was deprecated in 'sp' 1.1-0.
                                -) new examples about how to get the interpolated values in each cell and polygon when 'type="both"' is used (thanks to Jochen Scholtes !)
-        o 'mspplot   '       : 'require(maptools)' was replace by 'requireNamespace("maptools", quietly = TRUE)'
-        o 'hypsometric'      : fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
-                               (thanks to Jose Martinez Batlle !)
-        o 'extract'          : 'trgt' argument allows multiple months or years to be selected (when 'class(trgt) %in% c("integer", "numeric")')
+        o 'mspplot   '       : -) 'require(maptools)' was replaced by 'requireNamespace("maptools", quietly = TRUE)'
+        o 'hypsometric'      : -) fixed (very unusual) error: "Error en integrate(f = f, lower = 0, upper = 1) : maximum number of subdivisions reached"
+                                  (thanks to Jose Martinez Batlle !)
+        o 'extract'          : -) 'trgt' argument allows multiple months or years to be selected (when 'class(trgt) %in% c("integer", "numeric")')
         o 'fdc'              : -) 'cex.lab'  argument is working now (thanks to Elcin Tan !).
                                -) new example about computing streamflow values corresponding to a given percentage of time equalled or exceeded (thanks to Prajjwal Panday !) 
-        o 'daily2annual.zoo' : fixed bug appeared in R 3.2.x (or 3.1.2) which raised an error for data.frames when 'out.fmt="%Y"': Error in format.default(structure(as.character(x), names = names(x), dim = dim(x),  : 
-        o NAMESPACE file     : -) 'plot.xts' imported from 'xts' package.
+        o 'daily2annual.zoo' : -) fixed bug appeared in R 3.2.x (or 3.1.2) which raised an error for data.frames when 'out.fmt="%Y"': Error in format.default(structure(as.character(x), names = names(x), dim = dim(x),  : 
+        o NAMESPACE file     : -) several functions explictly imported from the c(stats, utils, methods, graphics, grDevices) to be compatible with R 3.3.0.
+                               -) 'plot.xts' imported from 'xts' package.
                                -) 'index' and 'time<-' imported from 'zoo' package.
                                -) 'over', 'coordinates<-', 'proj4string<-' imported from 'sp' package.
                                -) 'readShapePoly' imported from 'maptools' package.
+                               -) 'start', 'end' and 'window', 'aggregate' are now explicitly imported from the 'stats' package (affects 'dwi', 'izoo2rzoo' and 'monthlyfunction')
                                -) Fifty three (53) S3 methods are now registered.
         o DESCRIPTION file   : -) 'sp' now requires version >= 1.1-0, because 'overlay' was deprecated in that version of 'sp'
   ToDo:                        -) 'xts' now requires version >= 0.9-8, because the new plot.xts is based on quantmod::chart_Series graphics engine.
                                -) 'lattice' package was moved from 'Suggests' to 'Imports' (use of 'levelplot' function in 'matrixplot').
                                -) 'maptools' package was moved from 'Suggests' to 'Imports' (use of 'readShapePoly' function in 'hydrokrige')
+                               -) Packages 'stats', 'utils', 'methods', 'graphics', 'grDevices' are now added in the Imports section.
                                -) CRAN website removed from URL field in DESCRIPTION file (requested by CRAN).
 
 0.4-2-1	22-Jan-2014 (after CRAN comments)

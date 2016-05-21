@@ -46,6 +46,14 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 
+     # argg <- c(as.list(environment()), list(...))
+     #    print(argg)
+
+     # testing the existence of 'na.rm' argument
+     args <- list(...)
+     exist <- "na.rm" %in% names(args)
+     exist
+
      # Checking that the user provied a valid class for 'x'   
      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'xts' !!")
 
