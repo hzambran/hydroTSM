@@ -18,7 +18,7 @@ NEWS/ChangeLog for hydroTSM
         o 'fdc'              : -) 'cex.lab'  argument is working now (thanks to Elcin Tan !).
                                -) new example about computing streamflow values corresponding to a given percentage of time equalled or exceeded (thanks to Prajjwal Panday !) 
         o 'daily2annual.zoo' : -) fixed bug appeared in R 3.2.x (or 3.1.2) which raised an error for data.frames when 'out.fmt="%Y"': Error in format.default(structure(as.character(x), names = names(x), dim = dim(x),  : 
-        o NAMESPACE file     : -) several functions explictly imported from the c(stats, utils, methods, graphics, grDevices) to be compatible with R 3.3.0.
+        o NAMESPACE file     : -) several functions explicitly imported from the c(stats, utils, methods, graphics, grDevices) to be compatible with R 3.3.0.
                                -) 'plot.xts' imported from 'xts' package.
                                -) 'index' and 'time<-' imported from 'zoo' package.
                                -) 'over', 'coordinates<-', 'proj4string<-' imported from 'sp' package.
