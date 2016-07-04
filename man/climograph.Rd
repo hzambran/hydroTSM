@@ -63,7 +63,7 @@ Color used in the legend to represent the monthly average precipitation.
   \item{tmean.col}{
 Color used in the legend to represent the monthly average temperature. 
 }
-
+}
 %%\details{
 %%  ~~ If necessary, more details than the description above ~~
 %%}
