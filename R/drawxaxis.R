@@ -9,9 +9,11 @@
 ################################################################################
 # Started: 2008                                                                #
 # Updates: March 2009, Nov 2010, April 2011                                    #
-#          29-May-2013                                                         #
+#          29-May-2013;                                                        #
+#          04-Jul-2016                                                         #
 ################################################################################
-drawTimeAxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, cex.axis=1, ... ) {
+drawTimeAxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, 
+                         cex.axis=1, mgp=c(3, 2, 0), ... ) {
 
  # Valid tseps for ''tick.tstep' and 'lab.tstep' 
  valid.tstep <- c("auto", "years", "quarters", "months", "weeks", "days", 
@@ -43,10 +45,10 @@ drawTimeAxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, c
      } # ELSE end
  } # IF end
 
- # Margin line values (in mex units) for the axis title, axis labels and axis line
- if (lab.tstep == "auto") {
-   mgp = c(3, 2, 0)
- } else mgp = c(3, 1, 0)
+# # Margin line values (in mex units) for the axis title, axis labels and axis line
+# if (lab.tstep == "auto") {
+#   mgp = c(3, 2, 0)
+# } else mgp = c(3, 1, 0)
 
  # Ticks: Draws the ticks for the time series in the x axis, without labels
  if (tick.tstep == "auto") {

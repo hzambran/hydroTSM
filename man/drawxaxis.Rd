@@ -1,7 +1,7 @@
 %% File drawTimeAxis.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2016 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{drawTimeAxis}
@@ -17,7 +17,7 @@ For a nice time series plot, this function draws a customized time axis, with an
 }
 \usage{
 drawxaxis(x, tick.tstep = "auto", lab.tstep = "auto", 
-          lab.fmt=NULL, cex.axis=1, ...)
+          lab.fmt=NULL, cex.axis=1, mgp=c(3, 2, 0), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -37,6 +37,9 @@ Character indicating the format to be used for the label of the axis. See \code{
 }
   \item{cex.axis}{
 magnification of axis annotation relative to \code{cex} (See \code{\link[graphics]{par}}).
+}
+  \item{mgp}{
+The margin line (in \code{mex} units) for the axis title, axis labels and axis line (See \code{\link[graphics]{par}}). Default value is \code{mgp = c(3, 2, 0)}.
 }
   \item{\dots}{
 further arguments passed to the \code{axis} function or from other methods.
