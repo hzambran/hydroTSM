@@ -16,15 +16,13 @@ Climograph
 Function to draw a climograph based on precipitation and temperature data. 
 }
 \usage{
-climograph(pcp, ...)
-
-\method{climograph}{default}(pcp, tmean, tmx, tmn, na.rm=TRUE,  
-                             from, to, date.fmt="\%Y-\%m-\%d", 
-                             main="Climograph", 
-                             pcp.label="Precipitation, [mm]", 
-                             tmean.label="Temperature, [\U00B0 C]",
-                             pcp.col="lightblue", 
-                             tmean.col="red")
+climograph(pcp, tmean, tmx, tmn, na.rm=TRUE,  
+           from, to, date.fmt="\%Y-\%m-\%d", 
+           main="Climograph", 
+           pcp.label="Precipitation, [mm]", 
+           tmean.label="Temperature, [\U00B0 C]",
+           pcp.col="lightblue", 
+           tmean.col="red")
 
 }
 %- maybe also 'usage' for other objects documented here.

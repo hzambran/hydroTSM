@@ -17,6 +17,7 @@
 ################################################################################
 # Started: 29-Jun-2016                                                         #
 # Updates: 30-Jun-2016 ; 04-Jul-2016                                           # 
+#          08-May-2017                                                         #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
 #               precipitation data
@@ -56,7 +57,7 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
         if ( !is.zoo(tmn) ) stop("Invalid argument: 'class(tmn)' must be in c('zoo', 'xts')")
 
         # Computing 'tmean'
-        if ( all.equal(time(tmn.m), time(tmx.m)) ) {
+        if ( all.equal(time(tmn), time(tmx)) ) {
           tmean <- (tmx+tmn)/2
         } else stop("Invalid argument: 'time(tmn) != time(tmx)' !")
       } # ELSE end
