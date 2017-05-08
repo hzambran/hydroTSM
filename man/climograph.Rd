@@ -102,7 +102,7 @@ data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
 # Sub-daily to monthly ts
-subclimograph(x, FUN=mean, na.rm=TRUE)
+climograph(x, na.rm=TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

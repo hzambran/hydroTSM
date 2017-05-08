@@ -85,5 +85,5 @@ drawTimeAxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL,
 ################################################################################
 drawxaxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, cex.axis=1, mgp=c(3, 2, 0), ... ) {
 
-  drawTimeAxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex.axis=cex.axis, mgp=mgp), ... ) 
+  drawTimeAxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex.axis=cex.axis, mgp=mgp, ... ) 
 }
