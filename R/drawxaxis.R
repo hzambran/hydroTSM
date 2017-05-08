@@ -81,8 +81,9 @@ drawTimeAxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL,
 ################################################################################
 # Started on 2008                                                              #
 # Updates: March 2009, Nov 2010, April 2011                                    #
+#          08-May-2017                                                         #
 ################################################################################
-drawxaxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, cex.axis=1, ... ) {
+drawxaxis <- function(x, tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, cex.axis=1, mgp=c(3, 2, 0), ... ) {
 
-  drawTimeAxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex.axis=cex.axis, ... ) 
+  drawTimeAxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex.axis=cex.axis, mgp=mgp), ... ) 
 }
