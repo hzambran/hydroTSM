@@ -1,6 +1,6 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.5-0   04-Jul-2016 (under-development version)
+0.5-0   08-May-2017 (under-development version)
         o repository management moved from SVN to GIT, including rforge.
   ToDo: o citation with DOI is now possible (and new CITATION file).
         o new function 'climograph' to draw a climograph based on precipitation and temperature data.
@@ -18,6 +18,7 @@ NEWS/ChangeLog for hydroTSM
         o 'extract'          : -) 'trgt' argument allows multiple months or years to be selected (when 'class(trgt) %in% c("integer", "numeric")')
         o 'fdc'              : -) 'cex.lab'  argument is working now (thanks to Elcin Tan !).
                                -) new example about computing streamflow values corresponding to a given percentage of time equalled or exceeded (thanks to Prajjwal Panday !) 
+                               -) corrected small error in the documentation of 'lQ.thr' and 'hQ.thr' (thanks to Luis Andrés Guillén !)
         o 'daily2annual.zoo' : -) fixed bug appeared in R 3.2.x (or 3.1.2) which raised an error for data.frames when 'out.fmt="%Y"': Error in format.default(structure(as.character(x), names = names(x), dim = dim(x),  : 
         o 'drawTimeAxis      : -) new argument 'mgp' to provide greater flexibility.
         o NAMESPACE file     : -) several functions explicitly imported from the c(stats, utils, methods, graphics, grDevices) to be compatible with R 3.3.0.

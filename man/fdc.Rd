@@ -56,10 +56,10 @@ numeric, zoo, data.frame or matrix object with the observed streamflows for whic
 Measurements at several gauging stations can be stored in a data.frame of matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter). When \code{x} is a matrix or data.frame, the flow duration curve is computed for each column.
 }
 \item{lQ.thr}{
-numeric, low-flow separation threshold. If this value is different from NA, a vertical line is drawn in this value, and all the values to the left of it are deemed low flows.
+numeric, low-flow separation threshold. If this value is different from NA, a vertical line is drawn in this value, and all the values to the right of it should be deemed as low flows. Default value is 0.7.
 }
 \item{hQ.thr}{
-numeric, high-flow separation threshold. If this value is different from NA, a vertical line is drawn in this value, and all the values to the right of it are deemed high flows
+numeric, high-flow separation threshold. If this value is different from NA, a vertical line is drawn in this value, and all the values to the left of it should br deemed as high flows. Default value is 0.2.
 }
   \item{plot}{
 logical. Indicates if the flow duration curve should be plotted or not. Default value is TRUE.
