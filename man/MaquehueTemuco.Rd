@@ -23,8 +23,8 @@ data(MaquehueTemuco)
 \format{
 zoo matrix with 3 columns: \cr
 -) \var{pcp}: daily precipitation, [mm/day]. \cr
--) \var{tmx}: daily maximum air temperature, [\U00B0 C]. \cr
--) \var{tmn}: daily minimum air temperature, [\U00B0 C]. \cr 
+-) \var{tmx}: daily maximum air temperature, [degree Celsius]. \cr
+-) \var{tmn}: daily minimum air temperature, [degree Celsius]. \cr 
 }
 \source{
 Provided by Center for Climate and Resilience Research, Universidad de Chile, Santiago, Chile (\url{http://www.cr2.cl/recursos-y-publicaciones/bases-de-datos/}, last accessed [May 2017]). \cr

@@ -89,20 +89,15 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \examples{
 ######################
-## Ex1: Loading the DAILY precipitation data at SanMartino
-data(SanMartinoPPts)
-x <- SanMartinoPPts
+## Ex1: Loading the DAILY precipitation, maximum and minimum air temperature at station Maquehue Temuco Ad (Chile)
+data(MaquehueTemuco)
+pcp <- MaquehueTemuco[, 1]
+tmx <- MaquehueTemuco[, 2]
+tmn <- MaquehueTemuco[, 3]
 
 ## Plotting the climograph
-m <- climograph(x, na.rm=TRUE)
+m <- climograph(x, pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE)
 
-######################
-## Ex2: Loading the time series of HOURLY streamflows for the station Karamea at Gorge
-data(KarameaAtGorgeQts)
-x <- KarameaAtGorgeQts
-
-# Sub-daily to monthly ts
-climograph(x, na.rm=TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
