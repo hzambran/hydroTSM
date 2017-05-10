@@ -101,7 +101,8 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \examples{
 ######################
-## Ex1: Loading the DAILY precipitation, maximum and minimum air temperature at station Maquehue Temuco Ad (Chile)
+## Ex1: Loading the DAILY precipitation, maximum and minimum air temperature at 
+##      station Maquehue Temuco Ad (Chile)
 data(MaquehueTemuco)
 pcp <- MaquehueTemuco[, 1]
 tmx <- MaquehueTemuco[, 2]
