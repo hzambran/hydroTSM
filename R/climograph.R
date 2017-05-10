@@ -68,7 +68,7 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
    
   ###########################################
   ## In case 'from' and 'to' are provided  ##
-  dates.pcp  <- time(x)
+  dates.pcp  <- time(pcp)
   dates.temp <- time(tmean)
      
   # Checking the validity of the 'from' argument
