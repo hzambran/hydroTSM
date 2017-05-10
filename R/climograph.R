@@ -17,7 +17,7 @@
 ################################################################################
 # Started: 29-Jun-2016                                                         #
 # Updates: 30-Jun-2016 ; 04-Jul-2016                                           # 
-#          08-May-2017                                                         #
+#          08-May-2017 ; 09-May-2017                                           #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
 #               precipitation data
@@ -116,16 +116,24 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   #######################################
   xlim <- c(0.5, 14.5)
 
-  # Precipitation bars
+  # Monthly precipitation as barplot
+  ylim <- range(pretty(pcp.m.avg))
   par(mar = c(7,5,3,5)) # c(bottom, left, top, right)
-  x <- barplot(pcp.m.avg, col=pcp.col, xlim=xlim, ylab=pcp.label, las=1, main=main)
+  x <- barplot(pcp.m.avg, col=pcp.col, xlim=xlim, ylim=ylim, ylab=pcp.label, las=1, main=main)
   grid()
+  text(x, pcp.m.avg+5, cex=0.9, adj=0.5, labels= round(pcp.m.avg,1) )
 
   # Mean temperature as lines
+  ylim <- range(pretty(tmean.m.avg))
   par(new = TRUE, xpd=TRUE)
-  plot(x, tmean.m.avg, xlim=xlim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+  plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+  text(x+0.1, tmean.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col="red" )
+
+  # Plotting temperature axis on the right hand side
   axis(side=4, at = pretty(range(tmean.m.avg)), las=1)
-  text(par("usr")[2]+1.7, par("usr")[3]+(par("usr")[4]-par("usr")[3])/2, srt=-90, adj = 0.5, labels= tmean.label,  xpd = TRUE)
+  par(xpd=FALSE)
+  abline(h=axTicks(side=2), col="lightpink", lty = "dotted")
+  text(1.1*par("usr")[2], par("usr")[3]+(par("usr")[4]-par("usr")[3])/2, srt=-90, adj = 0.5, labels= tmean.label,  xpd = TRUE)
 
   # Outter box and legend
   box()

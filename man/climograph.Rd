@@ -93,8 +93,8 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
-## Daily to monthly
-m <- climograph(x, FUN=sum, na.rm=TRUE)
+## Plotting the climograph
+m <- climograph(x, na.rm=TRUE)
 
 ######################
 ## Ex2: Loading the time series of HOURLY streamflows for the station Karamea at Gorge
