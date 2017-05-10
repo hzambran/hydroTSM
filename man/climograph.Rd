@@ -61,6 +61,18 @@ Color used in the legend to represent the monthly average precipitation.
   \item{tmean.col}{
 Color used in the legend to represent the monthly average temperature. 
 }
+  \item{from}{
+OPTIONAL, used for extracting a subset of values. \cr
+Character indicating the starting date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
+}
+  \item{to}{
+OPTIONAL, used for extracting a subset of values. \cr
+Character indicating the ending date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
+}
+  \item{date.fmt}{
+Character indicating the format in which the dates are stored in \var{dates}, \var{from} and \var{to}. See \code{format} in \code{\link[base]{as.Date}}. \cr
+ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
+}
 }
 %%\details{
 %%  ~~ If necessary, more details than the description above ~~
