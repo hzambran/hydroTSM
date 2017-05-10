@@ -108,7 +108,7 @@ tmx <- MaquehueTemuco[, 2]
 tmn <- MaquehueTemuco[, 3]
 
 ## Plotting the climograph
-m <- climograph(x, pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE)
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
