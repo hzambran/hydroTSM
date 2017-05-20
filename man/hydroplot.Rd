@@ -221,10 +221,11 @@ sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", dates=1,
            pfreq="ma")
 
 ## Plotting seasonal precipitation at station "P9001"
-\dontrun{
+par(mar=c(5.1, 4.1, 4.1, 2.1))
+
 sname2plot(EbroPPtsMonthly, sname="P9001", FUN=sum, dates=1, pfreq="seasonal", 
            stype="default")
-}
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
