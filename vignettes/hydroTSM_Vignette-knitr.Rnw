@@ -93,7 +93,7 @@ smry(x)
 \item Using the \textit{hydroplot} function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
 
 \begin{center}
-<<hydroplot, dev='pdf', dev='postscript', fig.width=10, fig.height=8>>=
+<<hydroplot, dev='pdf', fig.width=10, fig.height=8>>=
 hydroplot(x, var.type="Precipitation", main="at San Martino", 
           pfreq = "dm", from="1987-01-01")
 @
