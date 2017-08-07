@@ -14,6 +14,7 @@
 %\VignetteIndexEntry{Tutorial for introductory analysis of daily precipitation data with hydroTSM}
 %\VignetteKeyword{hydrology}
 %\VignetteKeyword{hydrological modelling}
+%\VignetteEngine{knitr::knitr}
 
 
 \begin{document}
@@ -90,7 +91,7 @@ smry(x)
 \item Using the \textit{hydroplot} function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
 
 \begin{center}
-<<fig=TRUE, pdf=TRUE, eps=TRUE, width=10, height=8>>=
+<<dev='pdf', dev='postscript', fig.width=10, fig.height=8>>=
 hydroplot(x, var.type="Precipitation", main="at San Martino", 
           pfreq = "dm", from="1987-01-01")
 @
@@ -109,7 +110,7 @@ dwi(x, out.unit="mpy")
 
 \item Plotting the monthly precipitation values for each year, useful for identifying dry/wet months.
 
-<<fig=TRUE>>=     
+<<>>=
 # Daily zoo to monthly zoo
 m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
      
@@ -183,7 +184,7 @@ months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
 @
 
 \item Boxplot of the monthly values
-<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
+<<dev='pdf'>>=
 boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation", 
          ylab="Precipitation, [mm]", xlab="Month")
 @
@@ -214,7 +215,7 @@ seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
 
 
 \item Plotting the time evolution of the seasonal precipitation values
-<<fig=TRUE, pdf=TRUE, eps=FALSE, width=12, height=10>>=
+<<dev='pdf', fig.width=12, fig.height=10>>=
 hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 @
 
@@ -243,7 +244,7 @@ x <- window(SanMartinoPPts, start=as.Date("1988-01-01"))
 @
 
 \item Plotting the selected time series
-<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
+<<dev='pdf'>>=
 hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
 @
 
@@ -307,7 +308,7 @@ wet.index <- which(x >= 1)
 
 
 \item Computing the 5-day total (accumulated) precipitation \newline
-<<fig=TRUE, pdf=TRUE, eps=FALSE>>=
+<<dev='pdf'>>=
 x.5max <- rollapply(data=x, width=5, FUN=sum, fill=NA, partial= TRUE, 
                     align="center")
 

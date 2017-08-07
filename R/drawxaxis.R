@@ -1,3 +1,8 @@
+# File drawxaxis.R
+# Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
+#                                 https://CRAN.R-project.org/package=hydroTSM
+# Copyright 2008-2017 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
 ################################################################################
 # 'drawTimeAxis': It draws an X axies with daily, monthly, or annual time marks#
 ################################################################################

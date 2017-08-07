@@ -1,7 +1,7 @@
 %% File hydroTSM-package.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2009-2015 Mauricio Zambrano-Bigiarini
+%% Copyright 2009-2017 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{hydroTSM-package}
@@ -21,11 +21,11 @@ The focus of this package has been put in providing a collection of tools useful
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
 Version: \tab 0.5-0\cr
-Date: \tab 2015-02-04\cr
+Date: \tab 2017-08-07\cr
 License: \tab GPL >= 2 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Wed Feb 04 02:11:14 CLST 2015; MZB \cr
-BuiltUnder: \tab R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet" ; i686-pc-linux-gnu (32-bit) \cr
+Packaged: \tab Wed Mon Aug  7 10:30:27 CLT 2017; MZB \cr
+BuiltUnder: \tab R version 3.4.1 (2017-06-30) -- "Single Candle" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
 }
@@ -40,8 +40,8 @@ Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail>
 
 \keyword{ package }
 \seealso{
-\url{http://www.rforge.net/hydroGOF/}. \cr
-\url{http://www.rforge.net/hydroPSO/}. \cr
+\url{https://github.com/hzambran/hydroGOF}. \cr
+\url{https://github.com/hzambran/hydroPSO}. \cr
 }
 \examples{
 ## Loading the monthly time series (10 years) of precipitation for the Ebro River basin.

@@ -1,7 +1,7 @@
 # File hydroplot.R
 # Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2017 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -11,6 +11,7 @@
 # Started: 2008                                                                #
 # Updates: 17-Apr-2011 ; 10-Aug-2011                                           #
 #          15-Jan-2014                                                         #
+#          06-Aug-2017                                                         #
 ################################################################################
 # It requires the function'drawTimeAxis' that is stored in the 'lib_Plot.R' library
 # 'x'		 : daily time series of type 'zoo'
@@ -92,7 +93,7 @@
           if (length(x) >= win.len) {
             d.ma1 <- TRUE
             daily.ma1 <- ma.zoo(x, win.len) 
-            if (!is.xts(daily.ma1)) daily.ma1 <- as.xts(daily.ma1)
+            #if (!is.xts(daily.ma1)) daily.ma1 <- as.xts(daily.ma1)
           }            
       } # IF end
 
@@ -102,7 +103,7 @@
           if (length(x) >= win.len) {
             d.ma2 <- TRUE
             daily.ma2 <- ma.zoo(x, win.len)
-            if (!is.xts(daily.ma2)) daily.ma2 <- as.xts(daily.ma2)
+            #if (!is.xts(daily.ma2)) daily.ma2 <- as.xts(daily.ma2)
           }            
       } # IF end
 
@@ -123,12 +124,12 @@
       } # IF end
       
       # If 'x' is not 'xts' it is transformed into one
-      if ( !(is.xts(x)) ) x <- as.xts(x)
+      #if ( !(is.xts(x)) ) x <- as.xts(x)
 
       # Plotting only the original zoo or xts object, without moving averages and legends
       if ( pfreq == "o") {
           # Plotting the Daily Time Series
-          plot.xts(x, axes=FALSE, type="o", 
+          zoo::plot.zoo(x, xaxt = "n", yaxt = "n", type="o", 
                    main=main, xlab=xlab, ylab=ylab, 
                    cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                    lty=lty, lwd=lwd, ...)
@@ -136,6 +137,10 @@
           # Draws monthly ticks in the X axis, but labels only in years
           drawTimeAxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
+
+          # manually adding a grid
+          grid(nx=NA, ny=NULL)
+          abline(v=time(x)[axTicksByTime(x)], col = "lightgray", lty = "dotted")
       } # IF end
 
 
@@ -145,7 +150,7 @@
           title <- paste("Daily time series", main, sep= " ")
           # Plotting the Daily Time Series
           # xaxt = "n": is for avoiding drawing the x axis
-          plot.xts(x, axes=FALSE, type="o", 
+          zoo::plot.zoo(x, xaxt = "n", yaxt = "n", type="o", 
                    main=title, xlab=xlab, ylab=paste(ylab," [", var.unit,"/day]", sep=""), 
                    cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                    lty=lty, lwd=lwd, ...)
@@ -153,6 +158,10 @@
           # Draws monthly ticks in the X axis, but labels only in years
           drawTimeAxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
+
+          # manually adding a grid
+          grid(nx=NA, ny=NULL)
+          abline(v=time(x)[axTicksByTime(x)], col = "lightgray", lty = "dotted")
 
           if (d.ma1) {
             # Plotting the 1st Moving Average of the Daily time series. If win.len1=365*1 => "Annual Moving Average"
@@ -186,7 +195,7 @@
         # Generating the title of the Monthly Time Series plot
         title <- paste("Monthly time series", main, sep= " ")
         # Plotting the Monthly time series
-        plot.xts(x.monthly, axes=FALSE, type="o",
+        zoo::plot.zoo(x.monthly, xaxt = "n", yaxt = "n", type="o", 
                  main=title, xlab=xlab, ylab=paste(ylab," [", var.unit,"/month]", sep=""),
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ... )
@@ -196,6 +205,11 @@
         # Draws monthly ticks in the X axis, but labels only in years
         drawTimeAxis(x.monthly, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                   cex.lab=cex.lab, cex.axis=cex.axis, ...)
+
+        # manually adding a grid
+        grid(nx=NA, ny=NULL)
+        abline(v=time(x)[axTicksByTime(x.monthly)], col = "lightgray", lty = "dotted")
+
         if (m.ma1) {
         # Plotting the 1st Moving Average of the Daily time series. If win.len1=365*1 => "Annual Moving Average"
         lines(monthly.ma1, type="o", lty=2, lwd=1, col="green", cex = .5) }
@@ -227,7 +241,7 @@
           # Generating the title of the Annual Time Series plot
            title <- paste("Annual time series", main, sep= " ")
           # Plotting the Annual time series
-          plot.xts(x.annual, axes=FALSE, type="o", 
+          zoo::plot.zoo(x.annual, xaxt = "n", yaxt = "n", type="o", 
                    main=title, xlab="Time", ylab=paste(ylab," [", var.unit,"/year]", sep=""),
                    cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                    lty=lty, lwd=lwd, ...)
@@ -235,6 +249,10 @@
           # Draws monthly ticks in the X axis, but labels only in years
           drawTimeAxis(x.annual, tick.tstep="years", lab.tstep="years", lab.fmt="%Y",
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
+
+          # manually adding a grid
+          grid(nx=NA, ny=NULL)
+          abline(v=time(x)[axTicksByTime(x.annual)], col = "lightgray", lty = "dotted")
       } # IF end
 
 } # '.hydroplotts' end
@@ -407,6 +425,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                  # 
 # Started: 19-Jun-2011                                                  #
 # Updates: 10-Aug-2011                                                  #
+#          06-Aug-2017                                                  #
 #########################################################################
 .hydroplotseasonal <- function(x, FUN, na.rm=TRUE,
 		               tick.tstep= "auto", lab.tstep= "auto", lab.fmt=NULL,
@@ -467,10 +486,10 @@
       autumm <- dm2seasonal(x, season=seasons.lab[4], FUN=FUN, out.fmt="%Y-%m-%d")
 
       # Transforming the seasonal values into xts objects
-      winter <- as.xts(winter)
-      spring <- as.xts(spring)
-      summer <- as.xts(summer)
-      autumm <- as.xts(autumm)
+      #winter <- as.xts(winter)
+      #spring <- as.xts(spring)
+      #summer <- as.xts(summer)
+      #autumm <- as.xts(autumm)
 
 
       #################################
@@ -484,40 +503,56 @@
         if (length(h)==1) h <- rep(h,4)
         
         # winter
-        plot.xts(winter, axes=FALSE, type="o", main=paste(season.names[1], " (", seasons.lab[1], ")", sep=""), xlab=xlab, ylab=ylab, 
+        zoo::plot.zoo(winter, xaxt = "n", yaxt = "n", type="o", 
+                 main=paste(season.names[1], " (", seasons.lab[1], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
         drawTimeAxis(winter, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                      cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[1], col="red", lty=2)
+        # manually adding a grid
+        grid(nx=NA, ny=NULL)
+        abline(v=time(x)[axTicksByTime(winter)], col = "lightgray", lty = "dotted")
                 
         # spring
-        plot.xts(spring, axes=FALSE, type="o", main=paste(season.names[2], " (", seasons.lab[2], ")", sep=""), xlab=xlab, ylab=ylab, 
+        zoo::plot.zoo(spring, xaxt = "n", yaxt = "n", type="o", 
+                 main=paste(season.names[2], " (", seasons.lab[2], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
         drawTimeAxis(spring, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                      cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[2], col="red", lty=2)
+        # manually adding a grid
+        grid(nx=NA, ny=NULL)
+        abline(v=time(x)[axTicksByTime(spring)], col = "lightgray", lty = "dotted")
                 
         # summer
-        plot.xts(summer, axes=FALSE, type="o", main=paste(season.names[3], " (", seasons.lab[3], ")", sep=""), xlab=xlab, ylab=ylab, 
+        zoo::plot.zoo(summer, xaxt = "n", yaxt = "n", type="o", 
+                 main=paste(season.names[3], " (", seasons.lab[3], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
         drawTimeAxis(summer, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                      cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[3], col="red", lty=2)
+        # manually adding a grid
+        grid(nx=NA, ny=NULL)
+        abline(v=time(x)[axTicksByTime(summer)], col = "lightgray", lty = "dotted")
       
         # autumm
-        plot.xts(autumm, axes=FALSE, type="o", main=paste(season.names[4], " (", seasons.lab[4], ")", sep=""), xlab=xlab, ylab=ylab, 
+        zoo::plot.zoo(autumm, xaxt = "n", yaxt = "n", type="o", 
+                 main=paste(season.names[4], " (", seasons.lab[4], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
         axis(2, cex.lab=1.3, cex.axis=1.3)
         drawTimeAxis(autumm, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                      cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[4], col="red", lty=2)
+        # manually adding a grid
+        grid(nx=NA, ny=NULL)
+        abline(v=time(x)[axTicksByTime(autumm)], col = "lightgray", lty = "dotted")
       
       #################################
       # Plotting seasonal boxplots    #

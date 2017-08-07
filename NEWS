@@ -1,8 +1,8 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
-0.5-0   08-May-2017 (under-development version)
+0.5-0   07-Aug-2017 (under-development version)
         o repository management moved from SVN to GIT, including rforge.
-  ToDo: o citation with DOI is now possible (and new CITATION file).
+        o citation with DOI is now possible (and new CITATION file).
         o new function 'climograph' to draw a climograph based on precipitation and temperature data.
         o 'subdaily2daily'   : -) now it works with several (all?) FUN functions, including 'sum', 'min', 'max'. (thanks to Jamis Bruening !))
         o 'subdaily2daily'   : -) now it works with several (all?) FUN functions, including 'sum', 'min', 'max'. (thanks to Jamis Bruening !))
@@ -22,18 +22,17 @@ NEWS/ChangeLog for hydroTSM
         o 'daily2annual.zoo' : -) fixed bug appeared in R 3.2.x (or 3.1.2) which raised an error for data.frames when 'out.fmt="%Y"': Error in format.default(structure(as.character(x), names = names(x), dim = dim(x),  : 
         o 'drawTimeAxis      : -) new argument 'mgp' to provide greater flexibility.
         o NAMESPACE file     : -) several functions explicitly imported from the c(stats, utils, methods, graphics, grDevices) to be compatible with R 3.3.0.
-                               -) 'plot.xts' imported from 'xts' package.
+                               -) 'plot.xts' NOT used anymore, to avoid error raised by xts>=0.10-0
                                -) 'index' and 'time<-' imported from 'zoo' package.
                                -) 'over', 'coordinates<-', 'proj4string<-' imported from 'sp' package.
                                -) 'readShapePoly' imported from 'maptools' package.
                                -) 'start', 'end' and 'window', 'aggregate' are now explicitly imported from the 'stats' package (affects 'dwi', 'izoo2rzoo' and 'monthlyfunction')
                                -) Fifty three (53) S3 methods are now registered.
         o DESCRIPTION file   : -) 'sp' now requires version >= 1.1-0, because 'overlay' was deprecated in that version of 'sp'
-  ToDo:                        -) 'xts' now requires version >= 0.9-8, because the new plot.xts is based on quantmod::chart_Series graphics engine.
                                -) 'lattice' package was moved from 'Suggests' to 'Imports' (use of 'levelplot' function in 'matrixplot').
                                -) 'maptools' package was moved from 'Suggests' to 'Imports' (use of 'readShapePoly' function in 'hydrokrige')
                                -) Packages 'stats', 'utils', 'methods', 'graphics', 'grDevices' are now added in the Imports section.
-                               -) CRAN website removed from URL field in DESCRIPTION file (requested by CRAN).
+                               -) CRAN website removed from URL field in DESCRIPTION file (requested by CRAN). Only https://github.com/hzambran/hydroTSM is shown now.
 
 0.4-2-1	22-Jan-2014 (after CRAN comments)
         o 'Author' field was removed from DESCRIPTION file
@@ -66,7 +65,7 @@ NEWS/ChangeLog for hydroTSM
         o 'require(xts)' was removed from 'hydroplot'
         o 'zoo' package removed from 'Imports' and 'Enhances' (due to changes in CRAN policies)
         o 'xts' package removed from 'Imports' (due to changes in CRAN policies)
-        o improved vignette
+        o improved vignette (moved from Sweave to knitr)
 
 0.4-1	31-May-2013
         o DESCRIPTION : 'xts' package was added to the 'Imports' section

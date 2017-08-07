@@ -1,3 +1,8 @@
+# File stdx.R
+# Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
+#                                 https://CRAN.R-project.org/package=hydroTSM
+# Copyright 2009-2017 Mauricio Zambrano-Bigiarini
+# Distributed under GPL 2 or later
 ################################################################################
 #                                    'stdx'                                    #
 ################################################################################

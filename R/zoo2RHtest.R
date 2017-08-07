@@ -1,7 +1,11 @@
+# File zoo2RHtest.R
+# Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
+#                                 https://CRAN.R-project.org/package=hydroTSM
+
 ########################################################################
 # zoo2RHtest: input file to the 'RHtest_dlyPrcp.r' script              #
 ########################################################################
-#	                   Date: 26-Nov-2009                               #
+#	                   Date: 26-Nov-2009                           #
 ########################################################################
 # function for creating the input file to the 'RHtest_dlyPrcp.r' script,
 # that test the homogeneity of climatological time series (http://ccma.seos.uvic.ca)
