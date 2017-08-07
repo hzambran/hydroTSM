@@ -7,9 +7,8 @@ citEntry(entry = "manual",
 	title = "hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling",
 	author = personList(person("Mauricio Zambrano-Bigiarini", email="mzb.devel@gmail.com", role=c("aut","cre"))),
 	year = year,
-	note = vers,
+	note = paste(vers, ". doi: https://doi.org/10.5281/zenodo.83964"),
 	url = "https://github.com/hzambran/hydroTSM",
-        note = "{DOI: https://doi.org/10.5281/zenodo.83964",
 
 	textVersion = paste("Mauricio Zambrano-Bigiarini. (", year, ") ",
         "hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling",
@@ -18,5 +17,5 @@ citEntry(entry = "manual",
         ". DOI:10.5281/zenodo.839864",
         ".", sep = ""))
 
-citFooter("I have invested a lot of time and effort in creating hydroTSM, please cite it if you use it !")
+citFooter("I have invested an important amount of time and effort in creating hydroTSM, please cite it if you use it !")
 
