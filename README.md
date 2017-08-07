@@ -50,11 +50,11 @@ A BibTeX entry for LaTeX users is
 
 ## Related Material 
 
-* [R: a statistical environment for hydrological analysis (EGU-2010 abstract)] (http://meetingorganizer.copernicus.org/EGU2010/EGU2010-13008.pdf).
+* [R: a statistical environment for hydrological analysis (EGU-2010 abstract)](http://meetingorganizer.copernicus.org/EGU2010/EGU2010-13008.pdf).
 
 * [R: a statistical environment for hydrological analysis (EGU-2010 poster)](http://www.slideshare.net/hzambran/egu2010-ra-statisticalenvironmentfordoinghydrologicalanalysis-9095709).
 
-* [Using R for analysing spatio-temporal datasets: a satellite-based precipitation case study (EGU-2017 abstract)] (http://meetingorganizer.copernicus.org/EGU2017/EGU2017-18343.pdf).
+* [Using R for analysing spatio-temporal datasets: a satellite-based precipitation case study (EGU-2017 abstract)](http://meetingorganizer.copernicus.org/EGU2017/EGU2017-18343.pdf).
 
 * [Using R for analysing spatio-temporal datasets: a satellite-based precipitation case study (EGU-2017 poster)](https://doi.org/10.5281/zenodo.570145).
 
