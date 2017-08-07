@@ -34,7 +34,7 @@ To cite hydroTSM in publications use:
 
 A BibTeX entry for LaTeX users is
 
->  @Manual{,
+>  @Manual{hydroTSM,  
 >    title = {hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling},  
 >    author = {{Mauricio Zambrano-Bigiarini}},  
 >    note = {R package version 0.5-0},  
