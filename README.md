@@ -67,10 +67,5 @@ A BibTeX entry for LaTeX users is
 
 Since version 0.5-1 (07 August 2017):
 
-
-Copy
-
-<a href="https://clustrmaps.com/site/19pyt" title="Visit tracker"><img src="//www.clustrmaps.com/map_v2.png?d=v1akGPl4UpLsxa2kycQ79LEAUb7gI_Cxwnf23kaCJsE&cl=ffffff"></a>
-
-
+<a href='https://clustrmaps.com/site/19pyt'  title='Visit tracker'><img src='//clustrmaps.com/map_v2.png?cl=ffffff&w=a&t=n&d=v1akGPl4UpLsxa2kycQ79LEAUb7gI_Cxwnf23kaCJsE'/></a>
 
