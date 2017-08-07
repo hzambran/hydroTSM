@@ -21,6 +21,10 @@ library(devtools)
 install_github("hzambran/hydroTSM")
 ```
 
+## Reporting bugs, request of new features
+
+If you find an error in some function, or want to report a typo in the documentation, or to request a new feature (and wish it be implemented :) you can do it [here](https://github.com/hzambran/hydroGOF/issues)
+
 
 ## Citation 
 ```{r}
@@ -61,11 +65,3 @@ A BibTeX entry for LaTeX users is
 * [hydroGOF: Goodness-of-fit functions for comparison of simulated and observed hydrological time series](https://github.com/hzambran/hydroGOF).
 
 * [hydroPSO: Model-independent Particle Swarm Optimisation (PSO) for environmental/hydrological models](https://github.com/hzambran/hydroPSO).
-
-
-## Visitors 
-
-Since version 0.5-1 (07 August 2017):
-
-<a href='https://clustrmaps.com/site/19pyt'  title='Visit tracker'><img src='//clustrmaps.com/map_v2.png?cl=ffffff&w=a&t=n&d=v1akGPl4UpLsxa2kycQ79LEAUb7gI_Cxwnf23kaCJsE'/></a>
-
