@@ -2,7 +2,7 @@ title: hydroTSM
 description: Time Series Management, Analysis and Interpolation for Hydrological Modelling
 google_analytics: UA-66712425-1
 show_downloads: true
-theme: jekyll-theme-slate
+theme: jekyll-theme-cayman
 
 gems:
   - jekyll-mentions
