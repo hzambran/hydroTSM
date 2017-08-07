@@ -7,8 +7,8 @@
 %\pdfbookmark[0]{Titlepage}{title} % Sets a PDF bookmark for the title page
 \title{Tutorial for Introductory Analysis of \\
        Daily Precipitation Data with hydroTSM}
-\date{Last Update: 17-Jan-2014}
-%\date{May 2013, Aug 2011, Apr 2011, Oct 2010,  30-May-2013}
+\date{Last Update: 07-Aug-2017}
+%\date{Aug 2017, May 2013, Aug 2011, Apr 2011, Oct 2010,  30-May-2013}
 
 
 %\VignetteIndexEntry{Tutorial for introductory analysis of daily precipitation data with hydroTSM}
@@ -25,15 +25,17 @@
 \label{sec:Installation}
 
 Installing the latest stable version (from \href{http://cran.r-project.org/web/packages/hydroTSM/}{CRAN}):
-<<eval=FALSE>>=
+<<installation1, eval=FALSE>>=
 install.packages("hydroTSM")
 @
 
 \medskip
 
-\noindent Alternatively, you can also try the under-development version (from  \href{http://www.rforge.net/hydroTSM/}{rforge}):
-<<eval=FALSE>>=
-install.packages("hydroTSM",, "http://rforge.net/", type="source")
+\noindent Alternatively, you can also try the under-development version (from  \href{https://github.com/hzambran/hydroTSM}{Github}):
+<<installation2, eval=FALSE>>=
+if (!require(devtools)) install.packages("devtools")
+library(devtools)
+install_github("hzambran/hydroTSM")
 @
 
 
@@ -43,34 +45,34 @@ install.packages("hydroTSM",, "http://rforge.net/", type="source")
 \begin{enumerate}
 
 \item Loading the \textit{hydroTSM} library, which contains data and functions used in this analysis.
-<<>>=
+<<LoadingPkg>>=
 library(hydroTSM)
 @
 
 \item Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to 31/Dec/1990.
 
-<<>>=
+<<LoadingData>>=
 data(SanMartinoPPts)
 @
 
 \item Selecting only a 6-years time slice for the analysis
 
-<<>>=
+<<Window>>=
 x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
 @
 
 \item Monthly values of precipitation
-<<>>=
+<<daily2monthly>>=
 ( m <- daily2monthly(x, FUN=sum) )
 @
 
 \item Dates of the daily values of 'x'
-<<>>=
+<<Dates>>=
 dates <- time(x)
 @
 
 \item Amount of years in 'x' (needed for computations)
-<<>>=
+<<yip>>=
 ( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
 @
 
@@ -83,7 +85,7 @@ dates <- time(x)
 \begin{enumerate}
 
 \item Summary statistics
-<<>>=
+<<smry>>=
 smry(x)
 @
 
@@ -91,26 +93,26 @@ smry(x)
 \item Using the \textit{hydroplot} function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
 
 \begin{center}
-<<dev='pdf', dev='postscript', fig.width=10, fig.height=8>>=
+<<hydroplot, dev='pdf', dev='postscript', fig.width=10, fig.height=8>>=
 hydroplot(x, var.type="Precipitation", main="at San Martino", 
           pfreq = "dm", from="1987-01-01")
 @
 \end{center}
 
 \item Amount of days with information (not \texttt{NA}) per year
-<<>>=
+<<dwi1>>=
 dwi(x)
 @
 
 \item Amount of days with information (not \texttt{NA}) per month per year
-<<>>=
+<<dwi2>>=
 dwi(x, out.unit="mpy")
 @
 
 
 \item Plotting the monthly precipitation values for each year, useful for identifying dry/wet months.
 
-<<>>=
+<<matrixplot>>=
 # Daily zoo to monthly zoo
 m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
      
@@ -135,7 +137,7 @@ print(matrixplot(M, ColorRamp="Precipitation",
 \begin{enumerate}
 
 \item Annual values of precipitation
-<<>>=
+<<daily2annual>>=
 daily2annual(x, FUN=sum, na.rm=TRUE)
 @
 
@@ -143,7 +145,7 @@ daily2annual(x, FUN=sum, na.rm=TRUE)
 
 Obvious way:
 
-<<>>=
+<<daily2annual2>>=
 mean( daily2annual(x, FUN=sum, na.rm=TRUE) )
 @
 
@@ -153,7 +155,7 @@ The function \textit{annualfunction} applies \texttt{FUN} twice over \texttt{x}:
 ( i) firstly, over all the elements of \texttt{x} belonging to the same year, in order to obtain the corresponding annual values, and
 (ii) secondly, over all the annual values of \texttt{x} previously obtained, in order to obtain a single annual value.
 
-<<>>=
+<<annualfunction>>=
 annualfunction(x, FUN=sum, na.rm=TRUE) / nyears
 @
 
@@ -169,22 +171,22 @@ annualfunction(x, FUN=sum, na.rm=TRUE) / nyears
 \begin{enumerate}
 \item Median of the monthly values at station 'x'. Not needed, just for looking at these values in the boxplot.
 
-<<>>=
+<<monthlyfunction>>=
 monthlyfunction(m, FUN=median, na.rm=TRUE)
 @
 
 \item Vector with the three-letter abbreviations for the month names
-<<>>=
+<<cmonth>>=
 cmonth <- format(time(m), "%b")
 @
 
 \item Creating ordered monthly factors
-<<>>=
+<<months>>=
 months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
 @
 
 \item Boxplot of the monthly values
-<<dev='pdf'>>=
+<<boxplotMonthly, dev='pdf'>>=
 boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation", 
          ylab="Precipitation, [mm]", xlab="Month")
 @
@@ -201,12 +203,12 @@ boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation",
 \begin{enumerate}
 \item Average seasonal values of precipitation
 
-<<>>=
+<<seasonalfunction>>=
 seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
 @
 
 \item Extracting the seasonal values for each year
-<<>>=
+<<dm2seasonal>>=
 ( DJF <- dm2seasonal(x, season="DJF", FUN=sum) )
 ( MAM <- dm2seasonal(m, season="MAM", FUN=sum) )
 ( JJA <- dm2seasonal(m, season="JJA", FUN=sum) )
@@ -215,7 +217,7 @@ seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
 
 
 \item Plotting the time evolution of the seasonal precipitation values
-<<dev='pdf', fig.width=12, fig.height=10>>=
+<<hydroplot2, dev='pdf', fig.width=12, fig.height=10>>=
 hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 @
 
@@ -234,17 +236,17 @@ Common steps for the analysis of this section:
 
 \begin{enumerate}
 \item Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to 31/Dec/1990.
-<<>>=
+<<LoadingData2>>=
 data(SanMartinoPPts)
 @
 	
 \item Selecting only a three-year time slice for the analysis
-<<>>=
+<<Window2>>=
 x <- window(SanMartinoPPts, start=as.Date("1988-01-01"))
 @
 
 \item Plotting the selected time series
-<<dev='pdf'>>=
+<<hydroplot3, dev='pdf'>>=
 hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
 @
 
@@ -256,7 +258,7 @@ hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
 
 \begin{enumerate}
 \item Counting and plotting the number of days in the period where precipitation is > 10 [mm]
-<<>>=
+<<R10mm>>=
 ( R10mm <- length( x[x>10] ) )
 @
 
@@ -270,13 +272,13 @@ hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
 \begin{enumerate}
 
 \item Identifying the wet days (daily precipitation >= 1 mm):
-<<>>=
+<<wet_index>>=
 wet.index <- which(x >= 1)
 @
 	
 	
 \item Computing the 95th percentile of precipitation on wet days (\textit{PRwn95}):
-<<>>=
+<<PRwn95>>=
 ( PRwn95 <- quantile(x[wet.index], probs=0.95, na.rm=TRUE) )
 @
 
@@ -285,13 +287,13 @@ wet.index <- which(x >= 1)
 
 
 \item Identifying the very wet days (daily precipitation >= \textit{PRwn95})
-<<>>=
+<<very_wet_index>>=
 (very.wet.index <- which(x >= PRwn95))
 @
 
 
 \item Computing the total precipitation on the very wet days:
-<<>>=
+<<R95p>>=
 ( R95p <- sum(x[very.wet.index]) )
 @
 \textbf{Note 3}: this computation was carried out for the three-year time period 1988-1990, not the 30-year period 1961-1990 commonly used \newline
@@ -308,7 +310,7 @@ wet.index <- which(x >= 1)
 
 
 \item Computing the 5-day total (accumulated) precipitation \newline
-<<dev='pdf'>>=
+<<x_5max, dev='pdf'>>=
 x.5max <- rollapply(data=x, width=5, FUN=sum, fill=NA, partial= TRUE, 
                     align="center")
 
@@ -316,7 +318,7 @@ hydroplot(x.5max,  ptype="ts+boxplot", pfreq="o", var.unit="mm")
 @
 
 \item Maximum annual value of 5-day total precipitation
-<<>>=
+<<(x_5max_annual>>=
 (x.5max.annual <- daily2annual(x.5max, FUN=max, na.rm=TRUE))
 @
 
