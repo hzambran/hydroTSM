@@ -104,11 +104,13 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
+\dontrun{
 ## Days with information per year
 dwi(x)
 
 ## Days with information per month per year.
 dwi(x, out.unit="mpy")
+}
 
 ###########
 \dontrun{

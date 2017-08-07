@@ -20,11 +20,11 @@ The focus of this package has been put in providing a collection of tools useful
 \tabular{ll}{
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
-Version: \tab 0.5-0\cr
+Version: \tab 0.5-1\cr
 Date: \tab 2017-08-07\cr
 License: \tab GPL >= 2 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Wed Mon Aug  7 10:30:27 CLT 2017; MZB \cr
+Packaged: \tab Mon Aug  7 16:23:05 CLT 2017; MZB \cr
 BuiltUnder: \tab R version 3.4.1 (2017-06-30) -- "Single Candle" ; x86_64-pc-linux-gnu (64-bit) \cr
 }
 %%~~ An overview of how to use the package, including the most important functions ~~
