@@ -63,3 +63,8 @@ A BibTeX entry for LaTeX users is
 * [hydroPSO: Model-independent Particle Swarm Optimisation (PSO) for environmental/hydrological models](https://github.com/hzambran/hydroPSO).
 
 
+## Visitors 
+
+Since version 0.5-1 (07 August 2017):
+
+<script type="text/javascript" id="clstr_globe" src="//cdn.clustrmaps.com/globe.js?d=v1akGPl4UpLsxa2kycQ79LEAUb7gI_Cxwnf23kaCJsE"></script>
