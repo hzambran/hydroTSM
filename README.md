@@ -33,7 +33,7 @@ citation("hydroTSM")
 
 To cite hydroTSM in publications use:
 
->  Mauricio Zambrano-Bigiarini. hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological ModellingR package version 0.5-1. URL https://github.com/hzambran/hydroTSM. DOI:10.5281/zenodo.839864
+>  Mauricio Zambrano-Bigiarini. hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling. R package version 0.5-1. URL https://hzambran.github.io/hydroTSM/. DOI:10.5281/zenodo.839864
 
 
 A BibTeX entry for LaTeX users is
@@ -42,7 +42,7 @@ A BibTeX entry for LaTeX users is
 >    title = {hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling},  
 >    author = {{Mauricio Zambrano-Bigiarini}},  
 >    note = {R package version 0.5-1},  
->    url = {https://github.com/hzambran/hydroTSM},  
+>    url = {https://hzambran.github.io/hydroTSM/},  
 >    doi = {10.5281/zenodo.839864},  
 >  }
 
