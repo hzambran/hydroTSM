@@ -48,7 +48,7 @@ A BibTeX entry for LaTeX users is
 
 
 ## Vignette 
-[Here](https://cran.r-project.org/web/packages/hydroTSM/vignettes/hydroTSM_Vignette.pdf) you can find an introductory vignette showing the use of several hydroTSM functions.
+[Here](https://cran.r-project.org/web/packages/hydroTSM/vignettes/hydroTSM_Vignette-knitr.pdf) you can find an introductory vignette showing the use of several hydroTSM functions.
 
 
 
