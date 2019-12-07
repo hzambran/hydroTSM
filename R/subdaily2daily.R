@@ -1,7 +1,7 @@
 # File subdaily2daily.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2013-2017 Mauricio Zambrano-Bigiarini
+# Copyright 2013-2019 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -25,14 +25,14 @@ subdaily2daily <-function(x, ...) UseMethod("subdaily2daily")
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Apr-2013                                                         #
-# Updates:                                                                     #
+# Updates: 06-Dec-2019                                                         #
 ################################################################################
-subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
+subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", ... ) {
 
   # Checking that 'x' is a zoo object
-  if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
+  if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
 
-  subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
+  subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, ...)
 
 } # 'subdaily2daily.default' end
 
@@ -43,8 +43,9 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, ... ) {
 # Started: 25-Mar-2013                                                         #
 # Updates: 26-Mar-2013 ; 08-Apr-2013 ; 09-Apr-2013                             #
 #          29-Nov-2015 ; 01-Dec-2015                                           #
+#          06-Dec-2019                                                         #
 ################################################################################
-subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
+subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", ... ) {
 
      # testing the existence of 'na.rm' argument
      #args <- list(...)
@@ -52,11 +53,31 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
      #exist
 
      # Checking that the user provied a valid class for 'x'   
-     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'xts' !!")
+     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
 
      # Checking the user provide a valid value for 'FUN'
      if (missing(FUN))
        stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
+
+     # Transforming the original time into a POSIXct object
+     time.old <- time(x)
+
+     # Converting the new staring time provided by the user into a POSIXct object
+     start <- as.POSIXct(start, format="%H:%M:%S")
+
+     # normal staring time for a day
+     nstart <- as.POSIXct("00:00:00", format="%H:%M:%S")
+
+    # time difference between the desired starting time 'strat' and the "normal"
+    # starting time 'nstart', [s]
+    delta <- difftime(start, nstart, units="secs")
+
+    # Computing teh time difference between 'start' and the "normal" starting time, [s]
+    time.new <- as.POSIXct(time.old) - delta
+
+    # Changing the time in 'x' in 'delta' seconds
+    time(x)  <- time.new
+     
 
      # 'as.numeric' is necessary for being able to change the names to the output
      d <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
