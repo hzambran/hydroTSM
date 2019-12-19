@@ -1,9 +1,9 @@
-importFrom("stats", time, cor, cor.test, symnum, plot.stepfun, ecdf, median, splinefun, integrate, filter, IQR, sd, start, end, window, aggregate)
+importFrom("stats", time, cor, cor.test, symnum, plot.stepfun, ecdf, median, splinefun, integrate, filter, IQR, sd, start, end, window, aggregate, approxfun, fivenum, lm, quantile, rnorm, runif)
 importFrom("graphics", boxplot, plot, hist, par, layout, axis, Axis, abline, lines, points, legend, box, text, strwidth, rect, polygon, pairs, panel.smooth)
-importFrom("grDevices", xy.coords, palette, colorRampPalette, dev.set, dev.list, dev.new) 
-importFrom("utils", write.table, write.csv, write.csv2) 
+importFrom("grDevices", xy.coords, palette, colorRampPalette, dev.set, dev.list, dev.new, dev.off, png, rainbow) 
+importFrom("utils", read.table, write.table, write.csv, write.csv2, installed.packages, ls.str, modifyList, sessionInfo, setTxtProgressBar, txtProgressBar) 
 importFrom("methods", as, hasArg) 
-importFrom("graphics", barplot, grid, axTicks) 
+importFrom("graphics", barplot, grid, axTicks, Axis, abline, axis, boxplot, hist, legend, lines, mtext, par, plot)
 
 importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply, index, "time<-")
 importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts, .index)
