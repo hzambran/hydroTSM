@@ -22,15 +22,17 @@ Generic function for transforming a Sub-DAILY time series into a DAILY one
 \usage{
 subdaily2daily(x, ...)
 
-\method{subdaily2daily}{default}(x, FUN, na.rm = TRUE, ...)
+\method{subdaily2daily}{default}(x, FUN, na.rm = TRUE, start="00:00:00", ...)
 
-\method{subdaily2daily}{zoo}(x, FUN, na.rm = TRUE, ...)
+\method{subdaily2daily}{zoo}(x, FUN, na.rm = TRUE, start="00:00:00", ...)
 
-\method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, dates=1, 
-           date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", verbose= TRUE, ...)
+\method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, start="00:00:00",
+           dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
+           verbose= TRUE, ...)
 
-\method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, dates=1, 
-           date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", verbose= TRUE, ...)
+\method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, start="00:00:00",
+           dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
+           verbose= TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,6 +47,9 @@ Function that have to be applied for transforming from sub-daily to daily time s
 Logical. Should missing values be removed? \cr
 -) \kbd{TRUE} : the daily values  are computed considering only those values different from NA \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA sub-daily value within a day, the corresponing daily value(s) will be NA as well
+}
+  \item{start}{
+character, indicating the starting time used for aggregating subdaily time series into daily ones. It MUST be provided in the \code{"\%H:\%M:\%S"} format.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each gauging station \cr
