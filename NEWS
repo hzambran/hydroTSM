@@ -1,5 +1,9 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
+
+0.6-0   under development
+        o 'subdaily2daily'   : -) new argument 'start' to allow daily observations start at any time different from 00:00:00 UTC.
+
 0.5-1   07-Aug-2017 (after CRAN comments)
         o DESCRIPTION file   : -) 'Keywords' field completly removed
         o 'dwi'              : -) some examples were wrapped into 'dontrun' to avoid running times larger than 10s in CRAN.
