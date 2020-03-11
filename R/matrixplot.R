@@ -62,7 +62,7 @@ matrixplot <- function(x, ColorRamp="Days", ncolors=70, main="", ...) {
   # Temperature.cols <- rev(heat.colors(100))
 
   # # Generating palettes of colors
-  if !(is(ColorRamp, "function") ) {
+  if (!(is(ColorRamp, "function") ) ) {
      # Checking that the user provided a valid argument for 'ColorRamp'
     if (is.na(match(ColorRamp, c("Days", "Precipitation", "Temperature", "PCPAnomaly", "PCPAnomaly2", "TEMPAnomaly", "TEMPAnomaly2", "TEMPAnomaly3") ) ) ) {
       stop("Invalid argument: 'ColorRamp' must be in c('Days', 'Precipitation', 'Temperature', 'PCPAnomaly', 'PCPAnomaly2', 'TEMPAnomaly', 'TEMPAnomaly2', 'TEMPAnomaly3')")
