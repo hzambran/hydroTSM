@@ -45,7 +45,7 @@ character to be used for representing the missing values in the data
 %\url{http://ccma.seos.uvic.ca} % not available anynmore, reported by Gang Dong on March 12th, 2013
 \url{http://etccdi.pacificclimate.org/software.shtml}
 \url{http://etccdi.pacificclimate.org/RHtest/RHtestsV4_UserManual_10Dec2014.pdf}
-\url{http://css.escwa.org.lb/sdpd/1802/d2-1.pdf}
+%\url{http://css.escwa.org.lb/sdpd/1802/d2-1.pdf} % not available anynmore, rdetected on March 10th, 2020
 
 % \url{http://www.cmc.org.ve/mediawiki/index.php?title=Preparando_los_datos}
 %\url{http://cmc.org.ve/descargas/Cursos/CRRH/}
