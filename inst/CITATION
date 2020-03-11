@@ -14,7 +14,7 @@ citEntry(entry = "manual",
         "hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling",
         vers,
         ". URL https://github.com/hzambran/hydroTSM",
-        ". DOI:10.5281/zenodo.839864",
+        ". DOI:10.5281/zenodo.839565",
         ".", sep = ""))
 
 citFooter("I have invested an important amount of time and effort in creating hydroTSM, please cite it if you use it !")
