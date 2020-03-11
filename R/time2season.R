@@ -18,6 +18,7 @@
 # Started: 18-Mar-2009                                                         #
 # Updates: 09-Aug-2011                                                         #
 #          05-Apr-2013                                                         #
+#          10-Mar-2020                                                         #
 ################################################################################
 
 # 'x'       : vector with the dates that have to be transformed. class(x) must be "Date"
@@ -30,7 +31,7 @@
 time2season <- function(x, out.fmt="months", type="default") {
 
  # Checking that 'class(x)==Date'
- if ( ( !( class(x) %in% c("Date", "POSIXct", "POSIXt") ) ) && TRUE )
+ if ( is(x, "Date") | is(x, "POSIXct") | is(x, "POSIXt") ) 
      stop("Invalid argument: 'x' must be of class 'Date'")
 
  # Checking the class of out.fmt
