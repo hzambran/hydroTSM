@@ -1,7 +1,7 @@
 # File dm2seasonal.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2009-2017 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2020 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -135,6 +135,7 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 # Started: 15-May-2009                                                         #
 # Updates: 08-Aug-2011                                                         #
 #          29-May-2013 ; 03-Jun-2013                                           #
+#          10-March-2020                                                       #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -200,7 +201,7 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
-  if ( class(dates) == "numeric" ) {
+  if ( is(dates, "numeric") ) {
     tmp   <- dates
     dates <- as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
@@ -208,12 +209,12 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
+  if ( is(dates, "factor") ) dates <- as.Date(dates, format= date.fmt)
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
   # time series corresponding to the 'st.name' station
-  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+  if ( ( is(dates, "Date") & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # Transforming 'x' into zoo
