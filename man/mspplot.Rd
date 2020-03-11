@@ -158,7 +158,7 @@ names(x.ts) <- colnames(EbroPPtsMonthly[ ,2:ncol(EbroPPtsMonthly)])
 
 
 ########
-\dontrun{
+\donttest{
 ## IDW interpolation and plot (Jan/61)
 x.idw <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis, 
                     X=X, Y=Y, sname=sname, bname=bname, elevation=elevation, 
