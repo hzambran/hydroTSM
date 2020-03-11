@@ -1,7 +1,7 @@
 # File time2season.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2009-2017 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2020 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -31,8 +31,9 @@
 time2season <- function(x, out.fmt="months", type="default") {
 
  # Checking that 'class(x)==Date'
- if ( is(x, "Date") | is(x, "POSIXct") | is(x, "POSIXt") ) 
-     stop("Invalid argument: 'x' must be of class 'Date'")
+ #if ( ( !( class(x) %in% c("Date", "POSIXct", "POSIXt") ) ) && TRUE ) 
+ if (!( is(x, "Date") | is(x, "POSIXct") | is(x, "POSIXt") )) 
+     stop("Invalid argument: 'x' must be in c('Date', 'POSIXct', 'POSIXt') !")
 
  # Checking the class of out.fmt
  if (is.na(match(out.fmt, c("seasons", "months") ) ) )
