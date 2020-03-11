@@ -1,7 +1,7 @@
 # File matrixplot.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2009-2017 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2020 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ####################################################################
@@ -12,6 +12,7 @@
 # Started: 21-May-2009;                                            #
 # Updates: 22-Sep-2009, 24-Sep-2010 ; 23-Aug-2011                  #
 #          02-Feb-2015                                             #
+#          10-Mar-2020                                             #
 # Adapted (and thank you very much) from:
 # http://www2.warwick.ac.uk/fac/sci/moac/currentstudents/peter_cock/r/matrix_contour/
 
@@ -29,7 +30,7 @@
 matrixplot <- function(x, ColorRamp="Days", ncolors=70, main="", ...) {
      
   # If 'x' is a zoo, it trys to coherce into a matrix
-  if (class(x) == "zoo") x <- coredata(x) # zoo::coredata
+  if (is.zoo(x)) x <- coredata(x) # zoo::coredata
   
   # Checking that the user provied a valid class for 'x'   
   valid.class <- c("matrix", "data.frame")    
@@ -37,7 +38,7 @@ matrixplot <- function(x, ColorRamp="Days", ncolors=70, main="", ...) {
      stop("Invalid argument: 'class(x)' must be in c('matrix', 'data.frame')")
 
   # If 'x' is a data.frame, it trys to coherce into a matrix
-  if (class(x) == "data.frame") x <- as.matrix(x)
+  if (is(x, "data.frame")) x <- as.matrix(x)
 
   # Generate the traspose of the matrix, in order to get the years in the 'x' axis
   # and the stations in the 'y' axis
@@ -61,7 +62,7 @@ matrixplot <- function(x, ColorRamp="Days", ncolors=70, main="", ...) {
   # Temperature.cols <- rev(heat.colors(100))
 
   # # Generating palettes of colors
-  if (class(ColorRamp) != "function"  ) {
+  if !(is(ColorRamp, "function") ) {
      # Checking that the user provided a valid argument for 'ColorRamp'
     if (is.na(match(ColorRamp, c("Days", "Precipitation", "Temperature", "PCPAnomaly", "PCPAnomaly2", "TEMPAnomaly", "TEMPAnomaly2", "TEMPAnomaly3") ) ) ) {
       stop("Invalid argument: 'ColorRamp' must be in c('Days', 'Precipitation', 'Temperature', 'PCPAnomaly', 'PCPAnomaly2', 'TEMPAnomaly', 'TEMPAnomaly2', 'TEMPAnomaly3')")
