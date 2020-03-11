@@ -1,7 +1,8 @@
 %%File zoo2RHtest.Rd
-%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
-%%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
+%%                                 https://CRAN.R-project.org/package=hydroTSM
+%%                                 http://www.rforge.net/hydroTSM/
+%% Copyright 2008-2020 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{zoo2RHtest}
@@ -70,10 +71,10 @@ x <- SanMartinoPPts
 #Getting the monthly ts
 pcp.m <- daily2monthly(x, FUN=sum, na.rm=FALSE)
 
+\dontrun{
 # From zoo to the input format required by 'FindU.dlyPrcp' function
 zoo2RHtest(x=pcp.m, fname="pcp-monthly.txt", tstep.out="monthly", na="-999.0")
 
-\dontrun{
 # Homogeneity analysis
 FindU.dlyPrcp(InSeries="pcp-monthly.txt", output="pcp-monthly", MissingValueCode="-999.0", 
 GUI=FALSE, pthr=0, Mq=10, p.lev=0.95, Iadj=10000)
