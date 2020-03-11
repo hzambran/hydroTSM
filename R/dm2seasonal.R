@@ -214,7 +214,7 @@ dm2seasonal.data.frame <- function(x, season, FUN, na.rm=TRUE,
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
   # time series corresponding to the 'st.name' station
-  if ( ( is(dates, "Date") & (length(dates) != nrow(x) ) )
+  if ( is(dates, "Date") & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # Transforming 'x' into zoo
