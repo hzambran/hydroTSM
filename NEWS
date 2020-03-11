@@ -3,6 +3,7 @@ NEWS/ChangeLog for hydroTSM
 
 0.6-0   under development
         o Package tested against R Under development (unstable) (2020-03-10 r77920) -- "Unsuffered Consequences", following an imperative request made by CRAN.
+        o Vignette on Introductory Analysis of Daily Precipitation was moved from Sweave to Knitr and now includes a climograph example
         o 'subdaily2daily'   : new argument 'start' to allow daily observations start at any time different from 00:00:00 UTC.
         o 'time2season'      : class of objects is now tested in a way compatible with the upcoming R 4.0.0
         o 'dm2seasonal'      : class of objects is now tested in a way compatible with the upcoming R 4.0.0

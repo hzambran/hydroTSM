@@ -1,7 +1,8 @@
 # File climograph.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2016-2017 Mauricio Zambrano-Bigiarini
+#                                 http://www.rforge.net/hydroTSM/
+# Copyright 2016-2020 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -18,6 +19,7 @@
 # Started: 29-Jun-2016                                                         #
 # Updates: 30-Jun-2016 ; 04-Jul-2016                                           # 
 #          08-May-2017 ; 09-May-2017                                           #
+#          10-Mar-2020                                                         #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
 #               precipitation data
@@ -137,8 +139,9 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
   # Outter box and legend
   box()
+  par(xpd=TRUE)
   legend("bottom", legend = c("Precipitation", "Temperature"), bty="n",
-         pch=c(15, 15), lty=c(NA, 1), cex=1.2, col=c(pcp.col, tmean.col), ncol=2, inset=c(0.5,-0.2),
+         pch=c(15, 15), lty=c(NA, 1), cex=1.2, col=c(pcp.col, tmean.col), ncol=2, inset=c(0.5, -0.2),
              #lty = 1:2, xjust = 1, yjust = 1,
          title = "")
   

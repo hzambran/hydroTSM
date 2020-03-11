@@ -1,0 +1,369 @@
+---
+title: <center>Tutorial for Introductory Analysis of
+ Daily Precipitation Data with `hydroTSM`</center>
+author:
+- Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
+date: " version 0.7, 11-Mar-2020"
+output:
+  pdf_document:
+    number_sections: yes
+  html_document:
+    df_print: paged
+vignette: |
+  %\VignetteIndexEntry{Tutorial for merging satellite-based precipitation datasets with ground observations using `RFmerge`} 
+  %\VignetteEngine{knitr::rmarkdown} \usepackage[utf8]{inputenc} 
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+       
+
+# Installation
+
+Installing the latest stable version (from [CRAN](http://cran.r-project.org/web/packages/hydroTSM/)):
+```{r installation1, eval=FALSE}
+install.packages("hydroTSM")
+```
+
+
+\noindent Alternatively, you can also try the under-development version (from  [Github](https://github.com/hzambran/hydroTSM)):
+```{r installation2, eval=FALSE}
+if (!require(devtools)) install.packages("devtools")
+library(devtools)
+install_github("hzambran/hydroTSM")
+```
+
+
+# Setting up the environment
+
+
+* Loading the *hydroTSM* library, which contains data and functions used in this analysis.
+```{r LoadingPkg}
+library(hydroTSM)
+```
+
+* Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to 31/Dec/1990.
+
+```{r LoadingData}
+data(SanMartinoPPts)
+```
+
+*  Selecting only a 6-years time slice for the analysis
+
+```{r Window}
+x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
+```
+
+*  Monthly values of precipitation
+```{r daily2monthly}
+( m <- daily2monthly(x, FUN=sum) )
+```
+
+*  Dates of the daily values of 'x'
+```{r Dates}
+dates <- time(x)
+```
+
+*  Amount of years in 'x' (needed for computations)
+```{r yip}
+( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
+```
+
+
+
+# Basic exploratory data analysis (EDA)
+
+
+1)  Summary statistics
+```{r smry}
+smry(x)
+```
+
+
+-  Using the *hydroplot* function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
+
+```{r hydroplot, dev='pdf', fig.width=10, fig.height=8}
+hydroplot(x, var.type="Precipitation", main="at San Martino", 
+          pfreq = "dm", from="1987-01-01")
+```
+
+2)  Amount of days with information (not \texttt{NA}) per year
+```{r dwi1}
+dwi(x)
+```
+
+3)  Amount of days with information (not \texttt{NA}) per month per year
+```{r dwi2}
+dwi(x, out.unit="mpy")
+```
+
+
+4)  Plotting the monthly precipitation values for each year, useful for identifying dry/wet months.
+
+```{r matrixplot}
+# Daily zoo to monthly zoo
+m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
+     
+# Creating a matrix with monthly values per year in each column
+M <- matrix(m, ncol=12, byrow=TRUE)
+colnames(M) <- month.abb
+rownames(M) <- unique(format(time(m), "%Y"))
+     
+# Plotting the monthly precipitation values
+require(lattice)
+print(matrixplot(M, ColorRamp="Precipitation", 
+           main="Monthly precipitation at San Martino st., [mm/month]"))
+```
+
+
+
+
+# Annual analysis
+
+
+Annual values of precipitation
+```{r daily2annual}
+daily2annual(x, FUN=sum, na.rm=TRUE)
+```
+
+Average annual precipitation
+
+Obvious way:
+
+```{r daily2annual2}
+mean( daily2annual(x, FUN=sum, na.rm=TRUE) )
+```
+
+Another way (more useful for streamflows, where `FUN=mean`):
+
+The function *annualfunction* applies `FUN` twice over `x`: 
+
+( i) firstly, over all the elements of `x` belonging to the same year, in order to obtain the corresponding annual values, and
+(ii) secondly, over all the annual values of `x` previously obtained, in order to obtain a single annual value.
+
+```{r annualfunction}
+annualfunction(x, FUN=sum, na.rm=TRUE) / nyears
+```
+
+
+
+# Monthly analysis
+
+
+Median of the monthly values at station 'x'. Not needed, just for looking at these values in the boxplot.
+
+```{r monthlyfunction}
+monthlyfunction(m, FUN=median, na.rm=TRUE)
+```
+
+Vector with the three-letter abbreviations for the month names
+```{r cmonth}
+cmonth <- format(time(m), "%b")
+```
+
+Creating ordered monthly factors
+```{r months}
+months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
+```
+
+Boxplot of the monthly values
+```{r boxplotMonthly, dev='pdf'}
+boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation", 
+         ylab="Precipitation, [mm]", xlab="Month")
+```
+
+
+
+
+# Seasonal analysis
+
+Average seasonal values of precipitation
+
+```{r seasonalfunction}
+seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
+```
+
+Extracting the seasonal values for each year
+```{r dm2seasonal}
+( DJF <- dm2seasonal(x, season="DJF", FUN=sum) )
+( MAM <- dm2seasonal(m, season="MAM", FUN=sum) )
+( JJA <- dm2seasonal(m, season="JJA", FUN=sum) )
+( SON <- dm2seasonal(m, season="SON", FUN=sum) )
+```
+
+
+Plotting the time evolution of the seasonal precipitation values
+```{r hydroplot2, dev='pdf', fig.width=12, fig.height=10}
+hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
+```
+
+
+
+
+
+# Some extreme indices
+
+Common steps for the analysis of this section:
+
+
+Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to 31/Dec/1990.
+```{r LoadingData2}
+data(SanMartinoPPts)
+```
+	
+Selecting only a three-year time slice for the analysis
+```{r Window2}
+x <- window(SanMartinoPPts, start=as.Date("1988-01-01"))
+```
+
+Plotting the selected time series
+```{r hydroplot3, dev='pdf'}
+hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
+```
+
+
+
+## Heavy precipitation days (R10mm)
+
+Counting and plotting the number of days in the period where precipitation is > 10 [mm]
+```{r R10mm}
+( R10mm <- length( x[x>10] ) )
+```
+
+
+
+
+
+## Very wet days (R95p)
+
+* Identifying the wet days (daily precipitation >= 1 mm):
+```{r wet_index}
+wet.index <- which(x >= 1)
+```
+	
+	
+* Computing the 95th percentile of precipitation on wet days (*PRwn95*):
+```{r PRwn95}
+( PRwn95 <- quantile(x[wet.index], probs=0.95, na.rm=TRUE) )
+```
+
+**Note 1**: this computation was carried out for the three-year time period 1988-1990, not the 30-year period 1961-1990 commonly used. 
+
+**Note 2**: missing values are removed from the computation.
+
+
+* Identifying the very wet days (daily precipitation >= *PRwn95*)
+```{r very_wet_index}
+(very.wet.index <- which(x >= PRwn95))
+```
+
+
+* Computing the total precipitation on the very wet days:
+```{r R95p}
+( R95p <- sum(x[very.wet.index]) )
+```
+
+**Note 3**: this computation was carried out for the three-year time period 1988-1990, not the 30-year period 1961-1990 commonly used 
+
+
+
+## 5-day total precipitation
+
+Computing the 5-day total (accumulated) precipitation \newline
+```{r x_5max, dev='pdf'}
+x.5max <- rollapply(data=x, width=5, FUN=sum, fill=NA, partial= TRUE, 
+                    align="center")
+
+hydroplot(x.5max,  ptype="ts+boxplot", pfreq="o", var.unit="mm")
+```
+
+Maximum annual value of 5-day total precipitation
+```{r (x_5max_annual}
+(x.5max.annual <- daily2annual(x.5max, FUN=max, na.rm=TRUE))
+```
+
+**Note 1**: for this computation, a moving window centred in the current day is used. If the user wants the 5-day total precipitation accumulated in the 4 days before the current day + the precipitation in the current day, the user have to modify the moving window.\newline
+
+**Note 2**: For the first two and last two values, the width of the window is adapted to ignore values not within the time series
+
+
+# Climograph
+
+Since v0.5-0, `hydroTSM` includes a function to plot a climograph, considering not only precipitation but air temperature data as well:
+
+```{r climograph, fig.width = 8, fig.height = 6, fig.align = "center"}
+# Loading daily ts of precipitation, maximum and minimum temperature
+data(MaquehueTemuco)
+
+# extracting individual ts of precipitation, maximum and minimum temperature
+pcp <- MaquehueTemuco[, 1]
+tmx <- MaquehueTemuco[, 2]
+tmn <- MaquehueTemuco[, 3]
+     
+# Plotting the climograph
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE)
+```
+
+
+
+# Software Details
+This tutorial was built under: 
+
+```{r echo=FALSE}
+sessionInfo()$platform
+sessionInfo()$R.version$version.string 
+paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
+```
+
+
+# Version history
+
+* v0.7: Mar 2020
+* v0.6: Aug 2017
+* v0.5: May 2013
+* v0.4: Aug 2011
+* v0.3: Apr 2011
+* v0.2: Oct 2010
+* v0.1: 30-May-2013
+
+# Appendix
+
+In order to make easier the use of \texttt{hydroTSM} for users not familiar with R, in this section a minimal set of information is provided to guide the user in the [R](http://www.r-project.org/) world.
+
+
+## Editors, GUI
+
+
+*  GNU/Linux only: [Rgedit](http://rgedit.sourceforge.net/), [ESS](http://ess.r-project.org/)
+
+*  Windows only  : [Tinn-R](http://sourceforge.net/projects/tinn-r/), [NppToR](http://sourceforge.net/projects/npptor/)
+
+*  Multi-platform: [RStudio](http://www.rstudio.com/)
+
+
+## Importing data
+
+*  `?read.table`, `?write.table`: allow the user to read/write a file (in $~$table format) and create a data frame from it. Related functions are `?read.csv`, `?write.csv`, `?read.csv2`, `?write.csv2`.
+
+*  [foreign](http://cran.r-project.org/web/packages/foreign/): read data stored in several R-external formats (dBase, Minitab, S, SAS, SPSS, Stata, Systat, Weka, ...)
+
+*  `?zoo::read.zoo`, `?zoo::write.zoo`: functions for reading and writing time series from/to text files, respectively.
+
+*  [R Data Import/Export](http://cran.r-project.org/doc/manuals/r-release/R-data.html)
+
+*  [some examples](http://www.statmethods.net/input/importingdata.html) 
+
+
+
+## Useful Websites
+
+*  [Quick R](http://www.statmethods.net/) 
+
+*  [Time series in R](http://cran.r-project.org/web/views/TimeSeries.html)
+
+*  [Quick reference for the `zoo` package](http://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf)
+
+
