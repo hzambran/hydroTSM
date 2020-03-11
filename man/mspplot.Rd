@@ -158,6 +158,7 @@ names(x.ts) <- colnames(EbroPPtsMonthly[ ,2:ncol(EbroPPtsMonthly)])
 
 
 ########
+\dontrun{
 ## IDW interpolation and plot (Jan/61)
 x.idw <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis, 
                     X=X, Y=Y, sname=sname, bname=bname, elevation=elevation, 
@@ -179,7 +180,7 @@ x.ts <- as.numeric(EbroPPtsMonthly[7, 2:ncol(EbroPPtsMonthly)])
 ## Setting the name of the stations
 names(x.ts) <- colnames(EbroPPtsMonthly[ , 2:ncol(EbroPPtsMonthly)])
 
-\dontrun{
+
 ## IDW interpolation and plot (Jul/1961)
 x.idw2 <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis, 
                      X=X, Y=Y, sname=sname, bname=bname, elevation=elevation,
