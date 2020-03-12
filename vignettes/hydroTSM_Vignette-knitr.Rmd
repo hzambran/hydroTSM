@@ -10,7 +10,9 @@ output:
   html_document:
     df_print: paged
 vignette: |
-  %\VignetteIndexEntry{Tutorial for merging satellite-based precipitation datasets with ground observations using `RFmerge`} 
+  %\VignetteIndexEntry{Tutorial for Introductory Analysis of Daily Precipitation Data with `hydroTSM`} 
+  %\VignetteKeyword{hydrology}
+  %\VignetteKeyword{hydrological modelling}
   %\VignetteEngine{knitr::rmarkdown} \usepackage[utf8]{inputenc} 
   %\VignetteEncoding{UTF-8}
 ---
