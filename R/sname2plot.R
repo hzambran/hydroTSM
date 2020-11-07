@@ -21,9 +21,44 @@
 
 sname2plot <-function(x, ...) UseMethod("sname2plot")
 
+
+sname2plot.default <- function(x, sname, FUN, na.rm=TRUE,
+                               ptype="ts+boxplot+hist",
+		                       pfreq="dma",                      
+                               var.type,                      
+                               var.unit="units",
+                               main=NULL, xlab="Time", ylab=NULL,
+                               win.len1=0,
+                               win.len2=0,                      
+                               tick.tstep="auto",
+                               lab.tstep="auto",
+                               lab.fmt=NULL,
+                               cex=0.3,
+                               cex.main=1.3,
+                               cex.lab=1.3,
+                               cex.axis=1.3,
+                               col=c("blue", "lightblue", "lightblue"),
+                               dates=1, date.fmt="%Y-%m-%d",
+                               from=NULL, to=NULL, 
+                               stype="default", 
+                               season.names=c("Winter", "Spring", "Summer", "Autumn"),
+                               h=NULL, ...) {
+
+    # Checking that 'x' is a zoo object
+    if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
+
+    hydroplot.zoo(x, sname=sname, FUN=FUN, na.rm=na.rm, ptype=ptype, pfreq=pfreq,                      
+              var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
+              win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
+              lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
+              cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h, ...)
+
+} # 'hydroplot.default' end
+
+
 sname2plot.zoo <- function(x, sname, FUN, na.rm=TRUE,
                            ptype="ts+boxplot+hist",
-		                       pfreq="dma",                      
+		                   pfreq="dma",                      
                            var.type,                      
                            var.unit="units",
                            main=NULL, xlab="Time", ylab=NULL,
@@ -41,8 +76,7 @@ sname2plot.zoo <- function(x, sname, FUN, na.rm=TRUE,
                            from=NULL, to=NULL, 
                            stype="default", 
                            season.names=c("Winter", "Spring", "Summer", "Autumn"),
-                           h=NULL
-                           ) {
+                           h=NULL, ...) {
 
   # Checking the user provides 'sname'
   if (missing(sname)) { 
@@ -140,7 +174,7 @@ sname2plot.zoo <- function(x, sname, FUN, na.rm=TRUE,
               var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
               win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
               lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
-              cex.axis=cex.axis, col=col, stype=stype, season.names=season.names, h=h)
+              cex.axis=cex.axis, col=col, stype=stype, season.names=season.names, h=h, ...)
 
   } else stop("The station name", sname, "does not exist in 'x'")
 
@@ -182,40 +216,39 @@ sname2plot.data.frame <- function(x, sname, FUN, na.rm=TRUE,
                                   from=NULL, to=NULL, 
                                   stype="default", 
                                   season.names=c("Winter", "Spring", "Summer", "Autumn"),
-                                  h=NULL
-                                  ) {
+                                  h=NULL, ...) {
 
   
-# Checking the user provides the dates
-if ( !any( class(dates) %in% c("numeric", "factor", "character", "Date" ,"POSIXct", "POSIXlt", "POSIXt") ) )
-  stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'character', 'Date', 'POSIXct', 'POSIXlt', 'POSIXt'")
+  # Checking the user provides the dates
+  if ( !any( class(dates) %in% c("numeric", "factor", "character", "Date" ,"POSIXct", "POSIXlt", "POSIXt") ) )
+    stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'character', 'Date', 'POSIXct', 'POSIXlt', 'POSIXt'")
 
-# If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
-if ( class(dates) == "numeric" ) {
-  temp  <- x[, -dates]
-  dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
-  x     <- temp
-} # IF end
+  # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
+  if ( class(dates) == "numeric" ) {
+    temp  <- x[, -dates]
+    dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
+    x     <- temp
+  } # IF end
 
-# If 'dates' is a factor, it have to be converted into 'Date' class,
-# using the date format  specified by 'date.fmt'
-if ( (class(dates) == "factor") | (class(dates) == "character")) 
-  dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
+  # If 'dates' is a factor, it have to be converted into 'Date' class,
+  # using the date format  specified by 'date.fmt'
+  if ( (class(dates) == "factor") | (class(dates) == "character")) 
+    dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
 
-# If 'dates' is already of Date class, the following line verifies that
-# the number of days in 'dates' be equal to the number of element in the
-# time series corresponding to the 'sname' station
-if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-  stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")  
+  # If 'dates' is already of Date class, the following line verifies that
+  # the number of days in 'dates' be equal to the number of element in the
+  # time series corresponding to the 'sname' station
+  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+    stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")  
 
-# converting from data.frame to zoo
-x <- zoo::zoo(x, dates)     
+  # converting from data.frame to zoo
+  x <- zoo::zoo(x, dates)     
 
-sname2plot.zoo(x, sname=sname, FUN=FUN, na.rm=na.rm, ptype=ptype, pfreq=pfreq,                      
-              var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
-              win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
-              lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
-              cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h)
+  sname2plot.zoo(x, sname=sname, FUN=FUN, na.rm=na.rm, ptype=ptype, pfreq=pfreq,                      
+                var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
+                win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
+                lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
+                cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h, ...)
 
 
 

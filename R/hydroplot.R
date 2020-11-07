@@ -6,6 +6,8 @@
 
 hydroplot <-function(x, ...) UseMethod("hydroplot")
 
+
+
 ################################################################################
 # .hydroplotts Daily, Monthly and Annual Time Series                           #
 ################################################################################
@@ -590,6 +592,52 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 #          04-Apr-2013 ; 29-May-2013                                           #
 #          07-Nov-2020                                                         #
 ################################################################################
+hydroplot.default <- function(x, 
+                              FUN, na.rm=TRUE,
+                              ptype="ts+boxplot+hist",
+                              pfreq="dma",                      
+                              var.type,                      
+                              var.unit="units",
+                              main=NULL, xlab="Time", ylab,
+                              win.len1=0,
+                              win.len2=0,                      
+                              tick.tstep="auto",
+                              lab.tstep="auto",
+                              lab.fmt=NULL,
+                              cex=0.3,
+                              cex.main=1.3,
+                              cex.lab=1.3,
+                              cex.axis=1.3,
+                              col=c("blue", "lightblue", "lightblue"),
+                              from=NULL, 
+                              to=NULL,
+                              dates=1, date.fmt = "%Y-%m-%d",
+                              stype="default",
+                              season.names=c("Winter", "Spring", "Summer", "Autumn"),
+                              h=NULL, ...) {
+
+    # Checking that 'x' is a zoo object
+    if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
+
+    hydroplot.zoo(x, FUN=FUN, na.rm=na.rm, ptype=ptype, pfreq=pfreq,                      
+              var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
+              win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
+              lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
+              cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h, ...)
+
+} # 'hydroplot.default' end
+
+################################################################################
+# hydroplot.zoo: Daily, Monthly and Annual plots of hydrological time series   #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         # 
+################################################################################
+# Started: 2008                                                                #
+# Updates: 19-Apr-2011 ; 19-Jun-2011  ; 10-Aug-2011                            #
+#          04-Jun-2012                                                         #
+#          04-Apr-2013 ; 29-May-2013                                           #
+#          07-Nov-2020                                                         #
+################################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
 # 2: Line plot with Monthly time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -622,8 +670,7 @@ hydroplot.zoo <- function(x,
                           dates=1, date.fmt = "%Y-%m-%d",
                           stype="default",
                           season.names=c("Winter", "Spring", "Summer", "Autumn"),
-                          h=NULL,                      
-                          ...) {
+                          h=NULL, ...) {
 
      # Checking that the user provied a valid class for 'x'   
      if (!is.zoo(x)) 
@@ -895,8 +942,7 @@ hydroplot.data.frame <- function(x,
                                  dates=1, date.fmt = "%Y-%m-%d",
                                  stype="default",
                                  season.names=c("Winter", "Spring", "Summer", "Autumn"),
-                                 h=NULL,                      
-                                 ...) {
+                                 h=NULL, ...) {
 
   # Checking the user provides the dates
   if ( !any( class(dates) %in% c("numeric", "factor", "character", "Date" ,"POSIXct", "POSIXlt", "POSIXt") ) )
@@ -927,6 +973,6 @@ hydroplot.data.frame <- function(x,
               var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
               win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
               lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
-              cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h)
+              cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h, ...)
 
 } # 'hydroplot.data.frame' END
