@@ -1,13 +1,18 @@
 % File hydroplot.Rd
-% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
-%                                 http://cran.r-project.org/web/packages/hydroTSM/
-% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
+%                                 http://www.rforge.net/hydroTSM/ ; 
+%                                 https://cran.r-project.org/package=hydroTSM
+% Copyright 2008-2020 Mauricio Zambrano-Bigiarini
 % Distributed under GPL 2 or later
 
 \name{hydroplot}
 \Rdversion{1.1}
 \alias{sname2plot}
+\alias{sname2plot.zoo}
+\alias{sname2plot.data.frame}
 \alias{hydroplot}
+\alias{hydroplot.zoo}
+\alias{hydroplot.data.frame}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Hydrological time series plotting and extraction.
@@ -23,7 +28,7 @@ hydroplot(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",
           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
           col=c("blue", "lightblue", "lightblue"), 
-          from, to, date.fmt= "\%Y-\%m-\%d", 
+          from=NULL, to=NULL, dates=1, date.fmt= "\%Y-\%m-\%d", 
           stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
           h=NULL, ...)
 
@@ -33,7 +38,7 @@ sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist",
            tick.tstep="auto", lab.tstep="auto", lab.fmt=NULL, 
            cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3,
            col=c("blue", "lightblue", "lightblue"), 
-           dates=1, date.fmt = "\%Y-\%m-\%d", from, to, stype="default", 
+           dates=1, date.fmt = "\%Y-\%m-\%d", from=NULL, to=NULL, stype="default", 
            season.names=c("Winter", "Spring", "Summer", "Autumn"), 
            h=NULL )
 }
