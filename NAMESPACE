@@ -29,6 +29,8 @@ S3method(fdc, zoo)
 S3method(subdaily2daily, zoo)
 S3method(hydroplot, zoo)
 S3method(hydroplot, data.frame)
+S3method(sname2plot, zoo)
+S3method(sname2plot, data.frame)
 
 S3method(annualfunction, data.frame)
 S3method(annualfunction, default)

@@ -16,29 +16,30 @@
 # Updates: 19-Apr-2011 ; 10-Aug-2011                                           #
 #          18-Oct-2012                                                         #
 #          04-Abr-2013 : 29-May-2013 ; 03-Jun-2013                             #
+#          07-Nov-2020                                                         #
 ################################################################################
-sname2plot <- function(x, sname, FUN, na.rm=TRUE,
-                       ptype="ts+boxplot+hist",
-		       pfreq="dma",                      
-                       var.type,                      
-                       var.unit="units",
-                       main=NULL, xlab="Time", ylab=NULL,
-                       win.len1=0,
-                       win.len2=0,                      
-                       tick.tstep="auto",
-                       lab.tstep="auto",
-                       lab.fmt=NULL,
-                       cex=0.3,
-                       cex.main=1.3,
-                       cex.lab=1.3,
-                       cex.axis=1.3,
-                       col=c("blue", "lightblue", "lightblue"),
-                       dates=1, date.fmt = "%Y-%m-%d",
-                       from, to, 
-                       stype="default", 
-                       season.names=c("Winter", "Spring", "Summer", "Autumn"),
-                       h=NULL
-                       ) {
+sname2plot.zoo <- function(x, sname, FUN, na.rm=TRUE,
+                           ptype="ts+boxplot+hist",
+		                       pfreq="dma",                      
+                           var.type,                      
+                           var.unit="units",
+                           main=NULL, xlab="Time", ylab=NULL,
+                           win.len1=0,
+                           win.len2=0,                      
+                           tick.tstep="auto",
+                           lab.tstep="auto",
+                           lab.fmt=NULL,
+                           cex=0.3,
+                           cex.main=1.3,
+                           cex.lab=1.3,
+                           cex.axis=1.3,
+                           col=c("blue", "lightblue", "lightblue"),
+                           dates=1, date.fmt="%Y-%m-%d",
+                           from=NULL, to=NULL, 
+                           stype="default", 
+                           season.names=c("Winter", "Spring", "Summer", "Autumn"),
+                           h=NULL
+                           ) {
 
   # Checking the user provides 'sname'
   if (missing(sname)) { 
@@ -74,26 +75,9 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
     } # IF end
   } # IF end
 
-  # Checking the user provides the dates
-  if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
-    stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
-
   if (is.na(match(ptype, c("ts", "ts+boxplot", "ts+hist", "ts+boxplot+hist"))))
         stop("'ptype' valid values are: 'ts', 'ts+boxplot', 'ts+hist', 'ts+boxplot+hist'")
 
-  # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
-  if ( class(dates) == "numeric" ) dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
-
-  # If 'dates' is a factor, it have to be converted into 'Date' class,
-  # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
-
-  # If 'dates' is already of Date class, the following line verifies that
-  # the number of days in 'dates' be equal to the number of element in the
-  # time series corresponding to the 'sname' station
-  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
-     stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")  
-     
   # Checking that the user provied a valid value for 'stype'   
   valid.types <- c("default", "FrenchPolynesia")    
   if (length(which(!is.na(match(stype, valid.types )))) <= 0)  
@@ -110,30 +94,24 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
      
   ##########################################   
   ## In case 'from' and 'to' are provided  ##
+  dates  <- time(x)
+  ndates <- length(dates)
+     
   # Checking the validity of the 'from' argument
-  if (missing(from)) { 
-     from     <- dates[1]
-     from.pos <- 1
-  } else {
-      from <- as.Date(from, format=date.fmt) # zoo::as.Date
-      if ( length( which(dates == from) ) > 0 ) {
-        from.pos <- which( dates == from )
-       } else stop("Invalid argument: 'from' is not in 'dates' ")
-    } # ELSE end
+  if (!is.null(from)) { 
+     from <- as.Date(from, format=date.fmt)
+     if ( !(from %in% dates) ) {
+        stop("Invalid argument: 'from' is not in 'dates' ")
+     } else x <- window(x, start=from)
+  } # IF end
 
   # Checking the validity of the 'to' argument
-   if (missing(to)) { 
-     to.pos <- length(dates)
-     to     <- dates[to.pos]     
-  } else {
-      to <- as.Date(to, format=date.fmt) # zoo::as.Date
-      if ( length( which(dates == to) ) > 0 ) {
-        to.pos <- which( dates == to )
-      } else stop("Invalid argument: 'to' is not in 'dates' ")
-    } # ELSE end
-
-  # Checking that 'to' is larger than 'from'
-  if (to.pos < from.pos) stop("Invalid argument: 'to' have to be grater than 'from'")
+  if (!is.null(to)) { 
+     to <- as.Date(to, format=date.fmt)
+     if ( !(from %in% dates) ) {
+        stop("Invalid argument: 'to' is not in 'dates' ")
+     } else x <- window(x, end=to)
+  } # IF end
 
   ################
   # column index of the station identified by 'sname' within 'x'
@@ -144,13 +122,6 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
 
     # Slecting the time series within 'x' corresponding to the 'sname' station
     x <- x[ ,col.index]
-
-    # Transform the vector of time series ('x') and the vector with dates ('dates')
-    # into a zoo variable, using the format psecified by 'date.fmt'
-    x <- vector2zoo(x, dates, date.fmt)
-    
-    # Extracting a subset of the values
-    x <- window(x, start=from, end=to)
 
     # 9 plots:
     # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -170,5 +141,82 @@ sname2plot <- function(x, sname, FUN, na.rm=TRUE,
 
   } else stop("The station name", sname, "does not exist in 'x'")
 
-}  # 'sname2plot' END
+}  # 'sname2plot.zoo' END
+
+
+
+################################################################################
+#  'sname2plot': Given a data.frame whose columns contains the ts              #
+#                (without missing dates) of several gauging stations, it       #
+#                takes the name of one gauging station and plots 9 graphs      #
+#                (see 'hydroplot' description)                                 #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         # 
+################################################################################
+# Started: 17-Dic-2008                                                         #
+# Updates: 19-Apr-2011 ; 10-Aug-2011                                           #
+#          18-Oct-2012                                                         #
+#          04-Abr-2013 : 29-May-2013 ; 03-Jun-2013                             #
+#          07-Nov-2020                                                         #
+################################################################################
+sname2plot.data.frame <- function(x, sname, FUN, na.rm=TRUE,
+                                  ptype="ts+boxplot+hist",
+                                  pfreq="dma",                      
+                                  var.type,                      
+                                  var.unit="units",
+                                  main=NULL, xlab="Time", ylab=NULL,
+                                  win.len1=0,
+                                  win.len2=0,                      
+                                  tick.tstep="auto",
+                                  lab.tstep="auto",
+                                  lab.fmt=NULL,
+                                  cex=0.3,
+                                  cex.main=1.3,
+                                  cex.lab=1.3,
+                                  cex.axis=1.3,
+                                  col=c("blue", "lightblue", "lightblue"),
+                                  dates=1, date.fmt = "%Y-%m-%d",
+                                  from=NULL, to=NULL, 
+                                  stype="default", 
+                                  season.names=c("Winter", "Spring", "Summer", "Autumn"),
+                                  h=NULL
+                                  ) {
+
+  
+# Checking the user provides the dates
+if ( !any( class(dates) %in% c("numeric", "factor", "character", "Date" ,"POSIXct", "POSIXlt", "POSIXt") ) )
+  stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'character', 'Date', 'POSIXct', 'POSIXlt', 'POSIXt'")
+
+# If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
+if ( class(dates) == "numeric" ) {
+  temp  <- x[, -dates]
+  dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
+  x     <- temp
+} # IF end
+
+# If 'dates' is a factor, it have to be converted into 'Date' class,
+# using the date format  specified by 'date.fmt'
+if ( (class(dates) == "factor") | (class(dates) == "character")) 
+  dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
+
+# If 'dates' is already of Date class, the following line verifies that
+# the number of days in 'dates' be equal to the number of element in the
+# time series corresponding to the 'sname' station
+if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+  stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")  
+
+# converting from data.frame to zoo
+x <- zoo::zoo(x, dates)     
+
+sname2plot.zoo(x, sname=sname, FUN=FUN, na.rm=na.rm, ptype=ptype, pfreq=pfreq,                      
+              var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
+              win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
+              lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
+              cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h)
+
+
+
+}  # 'sname2plot.data.frame' END
+
+
 
