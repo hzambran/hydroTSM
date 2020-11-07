@@ -11,6 +11,10 @@ NEWS/ChangeLog for hydroTSM
         o 'climograph'  : -) now it plots the minimum and maximum temperature when they are provided 
                           -) new argument 'tmn.col' to choose the color to be used to plot the minimum monthly temperature
                           -) new argument 'tmx.col' to choose the color to be used to plot the maximum monthly temperature
+                          -) new argument 'pcp.labels' to decide whether to show the numeric values above the monthly precipitation bars
+                          -) new argument 'tmean.labels' to decide whether to show the numeric values above the monthly mean temperature lines
+                          -) new argument 'tmx.labels' to decide whether to show the numeric values above the monthly maximum temperature lines
+                          -) new argument 'tmn.labels' to decide whether to show the numeric values above the monthly minimum temperature lines
         o NAMESPACE file: -) 'hydroplot' and 'sname2plot' are now exported S3 methods
 
 
