@@ -1,7 +1,8 @@
 %%File climograph.Rd
-%% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
-%%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
+%%                                 https://CRAN.R-project.org/package=hydroTSM
+%%                                 http://www.rforge.net/hydroTSM/ ; 
+%% Copyright 2008-2020 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{climograph}
@@ -22,7 +23,9 @@ climograph(pcp, tmean, tmx, tmn, na.rm=TRUE,
            pcp.label="Precipitation, [mm]", 
            tmean.label="Temperature, [\U00B0 C]",
            pcp.col="lightblue", 
-           tmean.col="red")
+           tmean.col="red"
+           tmn.col="blue",
+           tmx.col="darkred")
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -60,6 +63,12 @@ Color used in the legend to represent the monthly average precipitation.
 }
   \item{tmean.col}{
 Color used in the legend to represent the monthly average temperature. 
+}
+  \item{tmn.col}{
+Color used in the legend to represent the monthly minimum temperature. 
+}
+  \item{tmx.col}{
+Color used in the legend to represent the monthly maximum temperature. 
 }
   \item{from}{
 OPTIONAL, used for extracting a subset of values. \cr

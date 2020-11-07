@@ -19,18 +19,18 @@
 # Started: 29-Jun-2016                                                         #
 # Updates: 30-Jun-2016 ; 04-Jul-2016                                           # 
 #          08-May-2017 ; 09-May-2017                                           #
-#          10-Mar-2020                                                         #
+#          10-Mar-2020 ; 07-Nov-2020                                           #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
-#               precipitation data
+#              precipitation data
 # 'tmean'    : variable of type 'zoo' with monthly, daily or subdaily          
-#               mean temperature data
+#              mean temperature data
 # 'tmx'      : variable of type 'zoo' with monthly, daily or subdaily          
-#               maximum temperature data. 
-#               ONLY used (togheter with 'tmn') when 'tmean' is missing
+#              maximum temperature data. 
+#              ONLY used (togheter with 'tmn') when 'tmean' is missing
 # 'tmn'      : variable of type 'zoo' with monthly, daily or subdaily          
-#               minimum temperature data. 
-#               ONLY used (togheter with 'tmx') when 'tmean' is missing
+#              minimum temperature data. 
+#              ONLY used (togheter with 'tmx') when 'tmean' is missing
 # 'date.fmt' : format in which the dates are stored in 'from' and 'to'.
 # 'na.rm'    : Logical. Should missing values be removed?
 #              TRUE : the monthly values  are computed considering only those values in 'x' different from NA
@@ -42,7 +42,9 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        pcp.label="Precipitation, [mm]", 
                        tmean.label="Temperature, [\U00B0 C]",
                        pcp.col="lightblue", 
-                       tmean.col="red") {
+                       tmean.col="red",
+                       tmx.col="darkred",
+                       tmn.col="blue") {
 
   if (missing(pcp)) {
     stop("Missing argument: 'pcp' must be provided !")
@@ -130,6 +132,22 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   par(new = TRUE, xpd=TRUE)
   plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
   text(x+0.1, tmean.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col="red" )
+
+  # If provided, tmn as line
+  if (!missing(tmn)) {
+    ylim <- range(pretty(tmn))
+    par(new = TRUE, xpd=TRUE)
+    plot(x, tmn, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+    text(x+0.1, tmean.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col="red" )
+  } # IF end
+
+  # If provided, tmx as line
+  if (!missing(tmx)) {
+    ylim <- range(pretty(tmx))
+    par(new = TRUE, xpd=TRUE)
+    plot(x, tmx, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+    text(x+0.1, tmean.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col="red" )
+  } # IF end
 
   # Plotting temperature axis on the right hand side
   axis(side=4, at = pretty(range(tmean.m.avg)), las=1)
