@@ -56,8 +56,7 @@ further arguments passed to \code{\link[lattice]{levelplot}} function (\pkg{latt
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \note{
-Adapted from: 
-\url{http://www2.warwick.ac.uk/fac/sci/moac/currentstudents/peter_cock/r/matrix_contour/}
+Adapted from a not available web page (http://www2.warwick.ac.uk/fac/sci/moac/currentstudents/peter_cock/r/matrix_contour/)
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
