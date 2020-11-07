@@ -578,7 +578,7 @@
 
 
 ################################################################################
-# hydroplot: Daily, Monthly and Annual plots of hydrological time series       #
+# hydroplot.zoo: Daily, Monthly and Annual plots of hydrological time series   #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         # 
 ################################################################################
@@ -586,6 +586,7 @@
 # Updates: 19-Apr-2011 ; 19-Jun-2011  ; 10-Aug-2011                            #
 #          04-Jun-2012                                                         #
 #          04-Apr-2013 ; 29-May-2013                                           #
+#          07-Nov-2020                                                         #
 ################################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -597,29 +598,30 @@
 # 7: Histogram of the daily time series
 # 8: Histogram of the monthly time series
 # 9: Histogram of the annual time series
-hydroplot <- function(x, FUN, na.rm=TRUE,
-                      ptype="ts+boxplot+hist",
-		      pfreq="dma",                      
-                      var.type,                      
-                      var.unit="units",
-                      main=NULL, xlab="Time", ylab,
-                      win.len1=0,
-                      win.len2=0,                      
-                      tick.tstep="auto",
-                      lab.tstep="auto",
-                      lab.fmt=NULL,
-                      cex=0.3,
-                      cex.main=1.3,
-                      cex.lab=1.3,
-                      cex.axis=1.3,
-                      col=c("blue", "lightblue", "lightblue"),
-                      from, 
-                      to,
-                      date.fmt= "%Y-%m-%d",
-                      stype="default",
-                      season.names=c("Winter", "Spring", "Summer", "Autumn"),
-                      h=NULL,                      
-                      ...) {
+hydroplot.zoo <- function(x, 
+                          FUN, na.rm=TRUE,
+                          ptype="ts+boxplot+hist",
+                          pfreq="dma",                      
+                          var.type,                      
+                          var.unit="units",
+                          main=NULL, xlab="Time", ylab,
+                          win.len1=0,
+                          win.len2=0,                      
+                          tick.tstep="auto",
+                          lab.tstep="auto",
+                          lab.fmt=NULL,
+                          cex=0.3,
+                          cex.main=1.3,
+                          cex.lab=1.3,
+                          cex.axis=1.3,
+                          col=c("blue", "lightblue", "lightblue"),
+                          from=NULL, 
+                          to=NULL,
+                          dates=1, date.fmt = "%Y-%m-%d",
+                          stype="default",
+                          season.names=c("Winter", "Spring", "Summer", "Autumn"),
+                          h=NULL,                      
+                          ...) {
 
      # Checking that the user provied a valid class for 'x'   
      if (!is.zoo(x)) 
@@ -678,35 +680,26 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
      
      ##########################################   
      ## In case 'from' and 'to' are provided  ##
-     dates <- time(x)
+     dates  <- time(x)
+     ndates <- length(dates)
      
      # Checking the validity of the 'from' argument
-     if (missing(from)) { 
-        from     <- dates[1]
-        from.pos <- 1
-     } else {
-         from <- as.Date(from, format=date.fmt)
-         if ( length( which(dates == from) ) > 0 ) {
-           from.pos <- which( dates == from )
-          } else stop("Invalid argument: 'from' is not in 'dates' ")
-       } # ELSE end
+     if (!is.null(from)) { 
+        from <- as.Date(from, format=date.fmt)
+        if ( !(from %in% dates) ) {
+           stop("Invalid argument: 'from' is not in 'dates' ")
+        } else x <- window(x, start=from)
+     } # IF end
 
      # Checking the validity of the 'to' argument
-      if (missing(to)) { 
-        to.pos <- length(dates)
-        to     <- dates[to.pos]     
-     } else {
-         to <- as.Date(to, format=date.fmt) # zoo::as.Date
-         if ( length( which(dates == to) ) > 0 ) {
-           to.pos <- which( dates == to )
-         } else stop("Invalid argument: 'to' is not in 'dates' ")
-       } # ELSE end
+     if (!is.null(to)) { 
+        to <- as.Date(to, format=date.fmt)
+        if ( !(from %in% dates) ) {
+           stop("Invalid argument: 'to' is not in 'dates' ")
+        } else x <- window(x, end=to)
+     } # IF end
 
-     # Checking that 'to' is larger than 'from'
-     if (to.pos < from.pos) stop("Invalid argument: 'to' have to be located in a row below the row corresponding to 'from'")
-     
-     # Extracting a subset of the values
-     x <- window(x, start=from, end=to)
+
      #################
 
      # Assigning a dummy value to FUN, which is not used when pfreq="o"
@@ -863,4 +856,75 @@ hydroplot <- function(x, FUN, na.rm=TRUE,
      
    } # ELSE end (if (pfreq == "seasonal")
 
- } # 'hydroplot end
+ } # 'hydroplot.zoo end
+
+
+
+################################################################################
+# hydroplot.data.frame: Daily, Monthly and Annual plots of hydrological ts     #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         # 
+################################################################################
+# Started: 2008                                                                #
+# Updates: 19-Apr-2011 ; 19-Jun-2011  ; 10-Aug-2011                            #
+#          04-Jun-2012                                                         #
+#          04-Apr-2013 ; 29-May-2013                                           #
+#          07-Nov-2020                                                         #
+################################################################################
+hydroplot.data.frame <- function(x, 
+                                 FUN, na.rm=TRUE,
+                                 ptype="ts+boxplot+hist",
+                                 pfreq="dma",                      
+                                 var.type,                      
+                                 var.unit="units",
+                                 main=NULL, xlab="Time", ylab,
+                                 win.len1=0,
+                                 win.len2=0,                      
+                                 tick.tstep="auto",
+                                 lab.tstep="auto",
+                                 lab.fmt=NULL,
+                                 cex=0.3,
+                                 cex.main=1.3,
+                                 cex.lab=1.3,
+                                 cex.axis=1.3,
+                                 col=c("blue", "lightblue", "lightblue"),
+                                 from=NULL, 
+                                 to=NULL,
+                                 dates=1, date.fmt = "%Y-%m-%d",
+                                 stype="default",
+                                 season.names=c("Winter", "Spring", "Summer", "Autumn"),
+                                 h=NULL,                      
+                                 ...) {
+
+  # Checking the user provides the dates
+  if ( !any( class(dates) %in% c("numeric", "factor", "character", "Date" ,"POSIXct", "POSIXlt", "POSIXt") ) )
+    stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'character', 'Date', 'POSIXct', 'POSIXlt', 'POSIXt'")
+
+  # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
+  if ( class(dates) == "numeric" ) {
+    temp  <- x[, -dates]
+    dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
+    x     <- temp
+  } # IF end
+
+  # If 'dates' is a factor, it have to be converted into 'Date' class,
+  # using the date format  specified by 'date.fmt'
+  if ( (class(dates) == "factor") | (class(dates) == "character")) 
+    dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
+
+  # If 'dates' is already of Date class, the following line verifies that
+  # the number of days in 'dates' be equal to the number of element in the
+  # time series corresponding to the 'sname' station
+  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+    stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")  
+
+  # converting from data.frame to zoo
+  x <- zoo::zoo(x, dates) 
+
+  hydroplot.zoo(x, FUN=FUN, na.rm=na.rm, ptype=ptype, pfreq=pfreq,                      
+              var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
+              win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
+              lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
+              cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h)
+
+} # 'hydroplot.data.frame' END

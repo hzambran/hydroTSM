@@ -1,5 +1,11 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
+0.7-0   (under-development)
+        o 'hydroplot': -) now works correctly with zoo objects that have multiple columns, and separate (internal) functions are provided for zoo and data.frame objects.
+                       -) 'from' argument has a default value of NULL
+                       -) 'to' argument has a default value of NULL
+                       -) new argument 'dates' in order to facilitate the transformation into zoo when working with data.frame objects
+
 
 0.6-0   11-Mar-2020
         o Package tested against R Under development (unstable) (2020-03-10 r77920) -- "Unsuffered Consequences", following an imperative request made by CRAN.
