@@ -1,7 +1,7 @@
 # File sname2plot.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2008-2017 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2020 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -18,9 +18,12 @@
 #          04-Abr-2013 : 29-May-2013 ; 03-Jun-2013                             #
 #          07-Nov-2020                                                         #
 ################################################################################
+
+sname2plot <-function(x, ...) UseMethod("sname2plot")
+
 sname2plot.zoo <- function(x, sname, FUN, na.rm=TRUE,
                            ptype="ts+boxplot+hist",
-		                       pfreq="dma",                      
+		                   pfreq="dma",                      
                            var.type,                      
                            var.unit="units",
                            main=NULL, xlab="Time", ylab=NULL,

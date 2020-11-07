@@ -1,8 +1,10 @@
 # File hydroplot.R
-# Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
+# Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM 
 #                                 http://cran.r-project.org/web/packages/hydroTSM/
-# Copyright 2008-2017 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2020 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
+
+hydroplot <-function(x, ...) UseMethod("hydroplot")
 
 ################################################################################
 # .hydroplotts Daily, Monthly and Annual Time Series                           #
