@@ -23,9 +23,13 @@ climograph(pcp, tmean, tmx, tmn, na.rm=TRUE,
            pcp.label="Precipitation, [mm]", 
            tmean.label="Temperature, [\U00B0 C]",
            pcp.col="lightblue", 
-           tmean.col="red"
+           tmean.col="red",
            tmn.col="blue",
-           tmx.col="darkred")
+           tmx.col="darkred",
+           pcp.labels=TRUE,
+           tmean.labels=TRUE,
+           tmx.labels=FALSE,
+           tmn.labels=FALSE)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -69,6 +73,18 @@ Color used in the legend to represent the monthly minimum temperature.
 }
   \item{tmx.col}{
 Color used in the legend to represent the monthly maximum temperature. 
+}
+  \item{pcp.labels}{
+logical. Should monthly precipitation values to be shown above the bars?. By default \code{pcp.labels=TRUE}.
+}
+  \item{tmean.labels}{
+logical. Should monthly mean temperature values to be shown above the lines?. By default \code{tmean.labels=TRUE}.
+}
+  \item{tmx.labels}{
+logical. Should monthly maximum temperature values to be shown above the lines?. By default \code{tmx.labels=FALSE}.
+}
+  \item{tmn.labels}{
+logical. Should monthly minimum temperature values to be shown above the lines?. By default \code{tmn.labels=FALSE}.
 }
   \item{from}{
 OPTIONAL, used for extracting a subset of values. \cr

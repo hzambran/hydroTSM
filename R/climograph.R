@@ -35,6 +35,10 @@
 # 'na.rm'    : Logical. Should missing values be removed?
 #              TRUE : the monthly values  are computed considering only those values in 'x' different from NA
 #              FALSE: if there is AT LEAST one NA within a month, the FUN and monthly values are NA
+# 'pcp.labels'  : logical. Should monthly precipitation values to be shown above the bars?
+# 'tmean.labels': logical. Should monthly mean temperature values to be shown above the lines?
+# 'tmx.labels'  : logical. Should monthly maximum temperature values to be shown above the lines?
+# 'tmn.labels'  : logical. Should monthly minimum temperature values to be shown above the lines?
 
 climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE, 
                        from, to, date.fmt="%Y-%m-%d", 
@@ -43,8 +47,13 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        tmean.label="Temperature, [\U00B0 C]",
                        pcp.col="lightblue", 
                        tmean.col="red",
+                       tmn.col="blue",
                        tmx.col="darkred",
-                       tmn.col="blue") {
+                       pcp.labels=TRUE,
+                       tmean.labels=TRUE,
+                       tmx.labels=FALSE,
+                       tmn.labels=FALSE
+                       ) {
 
   if (missing(pcp)) {
     stop("Missing argument: 'pcp' must be provided !")
@@ -125,32 +134,43 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   par(mar = c(7,5,3,5)) # c(bottom, left, top, right)
   x <- barplot(pcp.m.avg, col=pcp.col, xlim=xlim, ylim=ylim, ylab=pcp.label, las=1, main=main)
   grid()
-  text(x, pcp.m.avg+5, cex=0.9, adj=0.5, labels= round(pcp.m.avg,1) )
+  if (pcp.labels) text(x, pcp.m.avg+5, cex=0.9, adj=0.5, labels= round(pcp.m.avg,1), col="black" )
+
+  if ( !missing(tmx) & !missing(tmn)) {
+    if ( (sfreq(tmx) != "monthly") | ( (sfreq(tmx) == "monthly") & ( length(tmx) > 12) ) )
+      tmx.m.avg <- monthlyfunction(tmx, FUN=mean, na.rm=na.rm)
+
+    if ( (sfreq(tmn) != "monthly") | ( (sfreq(tmn) == "monthly") & ( length(tmn) > 12) ) )
+      tmn.m.avg <- monthlyfunction(tmn, FUN=mean, na.rm=na.rm)
+
+    ylim <- range(pretty(tmx.m.avg), pretty(tmean.m.avg), pretty(tmn.m.avg))
+  } else ylim <- range(pretty(tmean.m.avg))
+
 
   # Mean temperature as lines
-  ylim <- range(pretty(tmean.m.avg))
   par(new = TRUE, xpd=TRUE)
   plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-  text(x+0.1, tmean.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col="red" )
+  if (tmean.labels) text(x+0.1, tmean.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col=tmean.col )
 
   # If provided, tmn as line
   if (!missing(tmn)) {
-    ylim <- range(pretty(tmn))
     par(new = TRUE, xpd=TRUE)
-    plot(x, tmn, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-    text(x+0.1, tmean.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col="red" )
+    plot(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+    if (tmn.labels) text(x+0.1, tmn.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmn.m.avg,1), col=tmn.col )
   } # IF end
 
   # If provided, tmx as line
   if (!missing(tmx)) {
-    ylim <- range(pretty(tmx))
     par(new = TRUE, xpd=TRUE)
-    plot(x, tmx, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-    text(x+0.1, tmean.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col="red" )
+    plot(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+    if (tmx.labels) text(x+0.1, tmx.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmx.m.avg,1), col=tmx.col )
   } # IF end
 
+
   # Plotting temperature axis on the right hand side
-  axis(side=4, at = pretty(range(tmean.m.avg)), las=1)
+  if ( !missing(tmx) & !missing(tmn)) {
+    axis(side=4, at = pretty(range(tmn.m.avg, tmean.m.avg, tmx.m.avg)), las=1)
+  } else axis(side=4, at = pretty(range(tmean.m.avg)), las=1)
   par(xpd=FALSE)
   abline(h=axTicks(side=2), col="lightpink", lty = "dotted")
   text(1.1*par("usr")[2], par("usr")[3]+(par("usr")[4]-par("usr")[3])/2, srt=-90, adj = 0.5, labels= tmean.label,  xpd = TRUE)
@@ -158,9 +178,15 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   # Outter box and legend
   box()
   par(xpd=TRUE)
-  legend("bottom", legend = c("Precipitation", "Temperature"), bty="n",
-         pch=c(15, 15), lty=c(NA, 1), cex=1.2, col=c(pcp.col, tmean.col), ncol=2, inset=c(0.5, -0.2),
+  if ( !missing(tmx) & !missing(tmn)) {
+    legend("bottom", legend = c("Prec.", "Tmn", "Tmean", "Tmx"), bty="n",
+           pch=c(15, 15, 15, 15), lty=c(NA, 1, 1, 1), cex=1.2, col=c(pcp.col, tmn.col, tmean.col, tmx.col), ncol=4, inset=c(0.5, -0.2),
+           #lty = 1:2, xjust = 1, yjust = 1,
+           title = "")
+  } else
+      legend("bottom", legend = c("Precipitation", "Temperature"), bty="n",
+             pch=c(15, 15), lty=c(NA, 1), cex=1.2, col=c(pcp.col, tmean.col), ncol=2, inset=c(0.5, -0.2),
              #lty = 1:2, xjust = 1, yjust = 1,
-         title = "")
+             title = "")
   
 } # 'climograph' END
