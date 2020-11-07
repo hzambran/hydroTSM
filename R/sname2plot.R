@@ -23,7 +23,7 @@ sname2plot <-function(x, ...) UseMethod("sname2plot")
 
 sname2plot.zoo <- function(x, sname, FUN, na.rm=TRUE,
                            ptype="ts+boxplot+hist",
-		                   pfreq="dma",                      
+		                       pfreq="dma",                      
                            var.type,                      
                            var.unit="units",
                            main=NULL, xlab="Time", ylab=NULL,
