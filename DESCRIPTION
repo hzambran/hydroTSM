@@ -8,8 +8,8 @@ Description: S3 functions for management, analysis, interpolation and plotting o
 License: GPL (>=2)
 Depends: R (>= 2.10.0), zoo (>= 1.7-2), xts (>= 0.9-7)
 Imports: e1071, gstat, automap, sp (>= 1.1-0), lattice, maptools, stats, utils, methods, graphics, grDevices 
-Suggests: knitr
-VignetteBuilder: knitr
+Suggests: rmarkdown
+VignetteBuilder: rmarkdown
 URL: https://github.com/hzambran/hydroTSM
 MailingList: https://stat.ethz.ch/mailman/listinfo/r-sig-ecology
 BugReports: https://github.com/hzambran/hydroTSM/issues
