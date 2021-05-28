@@ -1,7 +1,7 @@
 %%File subdaily2daily.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2021 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{subdaily2daily}
@@ -22,15 +22,19 @@ Generic function for transforming a Sub-DAILY time series into a DAILY one
 \usage{
 subdaily2daily(x, ...)
 
-\method{subdaily2daily}{default}(x, FUN, na.rm = TRUE, start="00:00:00", ...)
+\method{subdaily2daily}{default}(x, FUN, na.rm = TRUE, start="00:00:00", 
+                                 start.fmt= "%H:%M:%S", tz="GMT", ...)
 
-\method{subdaily2daily}{zoo}(x, FUN, na.rm = TRUE, start="00:00:00", ...)
+\method{subdaily2daily}{zoo}(x, FUN, na.rm = TRUE, start="00:00:00", 
+                             start.fmt= "%H:%M:%S", tz="GMT", ...)
 
-\method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, start="00:00:00",
+\method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, start="00:00:00", 
+           start.fmt= "%H:%M:%S", tz="GMT",
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 
-\method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, start="00:00:00",
+\method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, start="00:00:00", 
+           start.fmt= "%H:%M:%S", tz="GMT",
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 }
@@ -50,6 +54,12 @@ Logical. Should missing values be removed? \cr
 }
   \item{start}{
 character, indicating the starting time used for aggregating subdaily time series into daily ones. It MUST be provided in the \code{"\%H:\%M:\%S"} format.
+}
+  \item{start.fmt}{
+character indicating the format in which the time is provided in \code{start}, By default \code{date.fmt=\%H:\%M:\%S}. See \code{format} in \code{\link[base]{as.Date}}.
+}
+  \item{tz}{
+character, indicating the time zone specification to be used for both \code{start} and \code{dates}. System-specific, but \kbd{"GMT"} is UTC (Universal Time Coordinated), the dault, and \kbd{""} is the current time zone.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each gauging station \cr

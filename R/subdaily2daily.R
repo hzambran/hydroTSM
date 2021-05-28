@@ -26,13 +26,15 @@ subdaily2daily <-function(x, ...) UseMethod("subdaily2daily")
 ################################################################################
 # Started: 09-Apr-2013                                                         #
 # Updates: 06-Dec-2019                                                         #
+#          27-May-2021                                                         #
 ################################################################################
-subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", ...) {
+subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+                                   start.fmt= "%H:%M:%S", tz="GMT", ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
 
-  subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, ...)
+  subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
 
 } # 'subdaily2daily.default' end
 
@@ -44,8 +46,10 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", ...) {
 # Updates: 26-Mar-2013 ; 08-Apr-2013 ; 09-Apr-2013                             #
 #          29-Nov-2015 ; 01-Dec-2015                                           #
 #          06-Dec-2019 ; 18-Dec-2019                                           #
+#          27-May-2021                                                         #
 ################################################################################
-subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", ...) {
+subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+                                   start.fmt= "%H:%M:%S", tz="GMT", ...) {
 
      # testing the existence of 'na.rm' argument
      #args <- list(...)
@@ -63,17 +67,17 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", ...) {
      time.old <- time(x)
 
      # Converting the new staring time provided by the user into a POSIXct object
-     start <- as.POSIXct(start, format="%H:%M:%S")
+     start <- as.POSIXct(start, format=start.fmt, tz=tz)
 
      # normal staring time for a day
-     nstart <- as.POSIXct("00:00:00", format="%H:%M:%S")
+     nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
 
     # time difference between the desired starting time 'strat' and the "normal"
     # starting time 'nstart', [s]
     delta <- difftime(start, nstart, units="secs")
 
     # Computing teh time difference between 'start' and the "normal" starting time, [s]
-    time.new <- as.POSIXct(time.old) - delta
+    time.new <- as.POSIXct(time.old, tz=tz) - delta
 
     # Changing the time in 'x' in 'delta' seconds
     time(x)  <- time.new
@@ -110,6 +114,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", ...) {
 ################################################################################
 # Started: 09-Apr-2013                                                         #
 # Updates: 18-Dec-2019                                                         #
+#          27-May-2021                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -124,10 +129,11 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", ...) {
 #             ONLY required when class(dates)=="factor" or "numeric"
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
-subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
-                                     dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				     out.fmt="zoo",
-				     verbose=TRUE,...) {
+subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+                                   start.fmt= "%H:%M:%S", tz="GMT", ...
+                                   dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
+				   out.fmt="zoo",
+				   verbose=TRUE,...) {
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
@@ -149,7 +155,7 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( TRUE && (class(dates) == "numeric") ) {
     tmp   <- dates
-    dates <- as.POSIXct(x[, dates], format= date.fmt) 
+    dates <- as.POSIXct(x[, dates], format= date.fmt, tz=tz) 
     x     <- x[-tmp]
   }  # IF end
 
@@ -168,7 +174,7 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
   
   ##############################################################################
   
-  z <- subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, ...)
+  z <- subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
     
   if (out.fmt == "numeric") {
      snames      <- colnames(z)
@@ -188,17 +194,20 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 ################################################################################
 # Started: 09-Apr-2013                                                         #
 # Updates: 18-Dec-2019                                                         #
+#          27-May-2021                                                         #
 ################################################################################
-subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00",
-                                  dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				  out.fmt="zoo",
-                                  verbose=TRUE,...) {
+subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+                                   start.fmt= "%H:%M:%S", tz="GMT",
+                                   dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
+				   out.fmt="zoo",
+                                   verbose=TRUE,...) {
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
-   subdaily2daily.data.frame(x=x, FUN=FUN, na.rm=na.rm, start=start,
-                            dates=dates, date.fmt=date.fmt,
-			    out.fmt=out.fmt,
-                            verbose=verbose,...)
+   subdaily2daily.data.frame(x=x, FUN=FUN, na.rm=na.rm, start=start, 
+                             start.fmt=start.fmt, tz=tz,
+                             dates=dates, date.fmt=date.fmt,
+			     out.fmt=out.fmt,
+                             verbose=verbose,...)
 
 } # 'subdaily2daily.matrix  ' END
