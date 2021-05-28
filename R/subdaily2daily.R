@@ -130,10 +130,10 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
 subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz="GMT", ...
-                                   dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				   out.fmt="zoo",
-				   verbose=TRUE,...) {
+                                      start.fmt= "%H:%M:%S", tz="GMT", 
+                                      dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
+				                      out.fmt="zoo",
+				                      verbose=TRUE,...) {
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
@@ -199,7 +199,7 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz="GMT",
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				   out.fmt="zoo",
+				                   out.fmt="zoo",
                                    verbose=TRUE,...) {
 
    x <- as.data.frame(x)
@@ -207,7 +207,7 @@ subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00",
    subdaily2daily.data.frame(x=x, FUN=FUN, na.rm=na.rm, start=start, 
                              start.fmt=start.fmt, tz=tz,
                              dates=dates, date.fmt=date.fmt,
-			     out.fmt=out.fmt,
+			                 out.fmt=out.fmt,
                              verbose=verbose,...)
 
 } # 'subdaily2daily.matrix  ' END
