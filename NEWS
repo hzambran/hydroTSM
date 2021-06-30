@@ -1,6 +1,8 @@
 NEWS/ChangeLog for hydroTSM
 --------------------------
 0.7-0   (under-development)
+        o new function: 'subhourly2hourly' for aggregating sub-hourly values into hourly ones.
+
         o 'hydroplot'   :   -) now works correctly with zoo objects that have multiple columns, and separate (internal) functions are provided for zoo and data.frame objects.
                             -) 'from' argument has a default value of NULL
                             -) 'to' argument has a default value of NULL
