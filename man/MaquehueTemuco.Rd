@@ -27,7 +27,7 @@ zoo matrix with 3 columns: \cr
 -) \var{tmn}: daily minimum air temperature, [degree Celsius]. \cr 
 }
 \source{
-Provided by Center for Climate and Resilience Research, Universidad de Chile, Santiago, Chile (\url{http://www.cr2.cl/recursos-y-publicaciones/bases-de-datos/}, last accessed [May 2017]). \cr
+Provided by Center for Climate and Resilience Research, Universidad de Chile, Santiago, Chile (\url{https://www.cr2.cl/recursos-y-publicaciones/bases-de-datos/}, last accessed [May 2017]). \cr
 These data are intended to be used for research purposes only, being distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
 }
 
