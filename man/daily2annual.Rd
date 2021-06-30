@@ -1,7 +1,7 @@
 %% File daily2annual.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2021 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{(sub)daily2annual}
@@ -92,7 +92,7 @@ further arguments passed to or from other methods.
 %%  ~~ If necessary, more details than the description above ~~
 %%}
 \value{
-a zoo object with annual frequency
+a zoo object with annual time frequency
 }
 %%\references{
 %% ~put references to the literature/web site here ~
@@ -107,7 +107,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{daily2monthly}}, \code{\link{monthly2annual}}, \code{\link{hydroplot}}, \code{\link{annualfunction}}, \code{\link{vector2zoo}}, \code{\link{as.Date}}
+\code{\link{subhourly2hourly}}, \code{\link{daily2monthly}}, \code{\link{monthly2annual}}, \code{\link{hydroplot}}, \code{\link{annualfunction}}, \code{\link{vector2zoo}}, \code{\link{as.Date}}
 }
 \examples{
 ######################

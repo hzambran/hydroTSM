@@ -85,13 +85,9 @@ further arguments passed to or from other methods.
 %%\details{
 %%  ~~ If necessary, more details than the description above ~~
 %%}
-%%\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-%%}
+\value{
+a zoo object with monthly time frequency
+}
 %%\references{
 %% ~put references to the literature/web site here ~
 %%}
@@ -105,7 +101,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{daily2annual}}, \code{\link{subdaily2daily}}, \code{\link{monthlyfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
+\code{\link{subhourly2hourly}}, \code{\link{daily2annual}}, \code{\link{subdaily2daily}}, \code{\link{monthlyfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
 }
 \examples{
 ######################
