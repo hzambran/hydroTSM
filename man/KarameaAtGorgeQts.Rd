@@ -25,7 +25,7 @@ data(KarameaAtGorgeQts)
 zoo object.
 }
 \source{
-Provided by the National Institute of Water and Atmospheric Research \url{https://www.niwa.co.nz/}, thanks to the gentle collaboration of Shailesh Singh \cr
+Provided by the National Institute of Water and Atmospheric Research \url{https://niwa.co.nz/}, thanks to the gentle collaboration of Shailesh Singh \cr
 
 These data are intended to be used for research purposes only, being distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
 }
