@@ -6,12 +6,12 @@
 
 ################################################################################
 # time2season : This function transforms a vector of dates or date-time into a # 
-#               vector of seasons (summer, winter, autumm, spring),            #
+#               vector of seasons (summer, winter, autumn, spring),            #
 #               considering that, by default:                                  #
 #               winter = DJF: December, January, February                      #
 #               spring = MAM: March, April, May                                #
 #               summer = JJA: June, July, August                               #
-#               autumm = SON: September, October, November                     #
+#               autumn = SON: September, October, November                     #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
@@ -23,8 +23,8 @@
 
 # 'x'       : vector with the dates that have to be transformed. class(x) must be "Date"
 # 'out.fmt' : format of the output seasons. Possible values are:
-#             -) 'seasons' =>  "winter", "spring",  "summer", autumm"
-#             -) 'months'  =>  "DJF", "MAM",  "JJA", SON"
+#             -) 'seasons' =>  "winter", "spring",  "summer", "autumn"
+#             -) 'months'  =>  "DJF", "MAM",  "JJA", "SON"
 
 # 'result': vector with the wheater season to which each date in 'x' belongs
 
@@ -51,12 +51,12 @@ time2season <- function(x, out.fmt="months", type="default") {
    winter <- which( months %in% c("12", "01", "02") )
    spring <- which( months %in% c("03", "04", "05") )
    summer <- which( months %in% c("06", "07", "08") )
-   autumm <- which( months %in% c("09", "10", "11") ) 
+   autumn <- which( months %in% c("09", "10", "11") ) 
  } else if (type=="FrenchPolynesia") {
    winter <- which( months %in% c("12", "01", "02", "03") )
    spring <- which( months %in% c("04", "05") )
    summer <- which( months %in% c("06", "07", "08", "09") )
-   autumm <- which( months %in% c("10", "11") ) 
+   autumn <- which( months %in% c("10", "11") ) 
  } # ELSE end
 
  # Creation of the output, with the same length of the 'x' input
@@ -67,7 +67,7 @@ time2season <- function(x, out.fmt="months", type="default") {
     seasons[winter] <- "winter"
     seasons[spring] <- "spring"
     seasons[summer] <- "summer"
-    seasons[autumm] <- "autumm"
+    seasons[autumn] <- "autumn"
     
  } else { # out.fmt == "months"
  
@@ -75,12 +75,12 @@ time2season <- function(x, out.fmt="months", type="default") {
       seasons[winter] <- "DJF"
       seasons[spring] <- "MAM"
       seasons[summer] <- "JJA"
-      seasons[autumm] <- "SON"
+      seasons[autumn] <- "SON"
     } else  if (type=="FrenchPolynesia") {
        seasons[winter] <- "DJFM"
        seasons[spring] <- "AM"
        seasons[summer] <- "JJAS"
-       seasons[autumm] <- "ON"
+       seasons[autumn] <- "ON"
       } # IF end
    
  } # IF end
