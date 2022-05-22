@@ -19,6 +19,7 @@ NEWS/ChangeLog for hydroTSM
                             -) new argument 'tmn.labels' to decide whether to show the numeric values above the monthly minimum temperature lines
         o 'subdaily2daily': -) new argument 'start.fmt' to indicate the format used to provide 'start'
                             -) new argument 'tz' to indicate the time zone used for both 'start' argument and the datetimes of the object
+        o 'daily2annual'  : -) for zoo objects, dates are correctly given in the output when FUN=min or FUN=max (e.g. for getting the date of the annual maximum or minimum)
         o NAMESPACE file:   -) 'hydroplot' and 'sname2plot' are now exported S3 methods
 
 
