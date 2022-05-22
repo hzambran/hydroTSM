@@ -47,8 +47,35 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 #          04-Jun-2012                                                         #
 #          08-Apr-2013                                                         #
 #          21-Jul-2015                                                         #
+#          21-May-2022                                                         #
 ################################################################################
 daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
+
+
+  get.dates <- function(x, years, fun) {
+
+    lget.minmax.date <- function(i, juliandays, years) {
+      lorigin <- c(month=1, day=1, year=years[i])
+      ldate <- chron::month.day.year(jul=juliandays[i], origin.=lorigin)
+      return( as.Date( paste0(ldate[["year"]], "-", ldate[["month"]], "-", ldate[["day"]]) ) )
+    } # 'lget.minmax.date' END
+
+    years.unique <- as.numeric(unique(years))
+    nyears       <- length(years.unique)
+
+    if ( (substitute(fun)=="max") | (substitute(fun)=="min")) {
+
+      if (substitute(fun)=="max") {
+        dates.julian <- aggregate(x, by=years, FUN=which.max)
+      } else dates.julian <- aggregate(x, by=years, FUN=which.min)
+
+      dates <- sapply(1:nyears, FUN=lget.minmax.date, juliandays=dates.julian, years=years.unique)
+    } else dates <- paste0(years.unique, "-01-01")
+
+    return( as.Date(dates) )
+    
+  } # 'get.dates' END
+
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN)) 
@@ -64,8 +91,9 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 	   
   # Annual index for 'x'
   dates  <- time(x)
-  y      <- as.numeric(format( dates, "%Y"))
-  years  <- factor( y, levels=unique(y) )
+  #y      <- as.numeric(format( dates, "%Y"))
+  #years  <- factor( y, levels=unique(y) )
+  years  <- format( dates, "%Y")
 
   # Computing Annual time series
   tmp <- aggregate(x, by=years, FUN, na.rm= na.rm)
@@ -81,15 +109,24 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
   if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
 	 
   # date format for the output annual series:
-  if (out.fmt == "%Y-%m-%d") 
-    time(tmp) <- as.Date(paste( time(tmp), "-01-01", sep="")) # zoo::as.Date  
+  if (out.fmt == "%Y-%m-%d") {
+    if (NCOL(tmp) == 1) {
+      ldates <- get.dates(x, years=years, fun=FUN)
+      out    <- zoo(tmp, ldates)
+    } else { # NCOL(tmp) > 1
+        out   <- vector("list", NCOL(tmp))
+        for (i in 1:NCOL(tmp)) {
+          ldates   <-  get.dates(x[,i], years=years, fun=FUN)
+          out[[i]] <-  zoo(tmp[,i], ldates)
+        } # FOR end       
+      } # ELSE end
 
-  if (NCOL(tmp) == 1) tmp <- zoo(as.numeric(tmp), time(tmp))
+  } else out <- tmp
 
-  return(tmp)
+  return(out)
 
 } # 'daily2annual.zoo' end
-
+daily2annual(x, FUN=max)
 
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
