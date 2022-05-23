@@ -126,7 +126,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
   return(out)
 
 } # 'daily2annual.zoo' end
-daily2annual(x, FUN=max)
+
 
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
