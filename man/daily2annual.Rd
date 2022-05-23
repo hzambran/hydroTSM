@@ -59,9 +59,9 @@ Logical. Should missing values be removed? \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a year, the corresponding annual value is NA.
 }
   \item{out.fmt}{
-Character indicating the date format for the output time series. See \code{format} in \code{\link[base]{as.Date}}. Possible values are: \cr
+Character indicating the date format for the output zoo object. See \code{format} in \code{\link[base]{as.Date}}. Possible values are: \cr
 -) \kbd{\%Y}        : only the year will be used for the time. Default option. (e.g., "1961" "1962"...) \cr
--) \kbd{\%Y-\%m-\%d}: a complete date format will be used for the time. (e.g., "1961-01-01" "1962-01-01"...)
+-) \kbd{\%Y-\%m-\%d}: a complete date format will be used for the time. (e.g., "1961-01-01" "1962-01-01"...). See Details.
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates for corresponding to each gauging station \cr
@@ -92,7 +92,8 @@ further arguments passed to or from other methods.
 %%  ~~ If necessary, more details than the description above ~~
 %%}
 \value{
-a zoo object with annual time frequency
+a zoo object with annual time frequency, where the time attribute ses the format defined in \code{out.fmt}. \cr
+When \code{out.fmt="\%Y-\%m-\%d"} the time attribute of the output zoo object will use the 1st of January of each year to create a full Date object from the corresponding year of each element of the output object (e.g., fi the year is \kbd{2022}, the time attribute will be \kbd{2022-01-01}). The only exception occurrs when \code{FUN=max} or \code{FUN=min}, where the time attribute of each element will correspond to the actual date where the annual maximum/minimum occurrs (which is very useful for identifying the date of the annual maximum or the annual ninimum of a time series)
 }
 %%\references{
 %% ~put references to the literature/web site here ~
