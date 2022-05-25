@@ -47,12 +47,12 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 #          04-Jun-2012                                                         #
 #          08-Apr-2013                                                         #
 #          21-Jul-2015                                                         #
-#          21-May-2022                                                         #
+#          21-May-2022 ; 25-May-2022                                           #
 ################################################################################
 daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 
 
-  get.dates <- function(x, years, fun) {
+  get.dates <- function(x, years, fun, fn.name) {
 
     lget.minmax.date <- function(i, juliandays, years) {
       lorigin <- c(month=1, day=1, year=years[i])
@@ -63,9 +63,9 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
     years.unique <- as.numeric(unique(years))
     nyears       <- length(years.unique)
 
-    if ( (substitute(fun)=="max") | (substitute(fun)=="min")) {
+    if ( (fn.name=="max") | (fn.name=="min")) {
 
-      if (substitute(fun)=="max") {
+      if (fn.name=="max") {
         dates.julian <- aggregate(x, by=years, FUN=which.max)
       } else dates.julian <- aggregate(x, by=years, FUN=which.min)
 
@@ -106,12 +106,15 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
   # Replacing all the Inf and -Inf by NA's
   # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
   inf.index <- which(is.infinite(tmp))
-  if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
+  if ( length(inf.index) > 0 ) tmp[inf.index] <- NA
+
+  # getting the name of the function as character
+  fn.name <- substitute(FUN)
 	 
   # date format for the output annual series:
   if (out.fmt == "%Y-%m-%d") {
     if (NCOL(tmp) == 1) {
-      ldates <- get.dates(x, years=years, fun=FUN)
+      ldates <- get.dates(x, years=years, fun=FUN, fn.name=fn.name)
       out    <- zoo(tmp, ldates)
     } else { # NCOL(tmp) > 1
         out   <- vector("list", NCOL(tmp))
