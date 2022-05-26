@@ -92,8 +92,8 @@ further arguments passed to or from other methods.
 %%  ~~ If necessary, more details than the description above ~~
 %%}
 \value{
-a zoo object with annual time frequency, where the time attribute ses the format defined in \code{out.fmt}. \cr
-When \code{out.fmt="\%Y-\%m-\%d"} the time attribute of the output zoo object will use the 1st of January of each year to create a full Date object from the corresponding year of each element of the output object (e.g., fi the year is \kbd{2022}, the time attribute will be \kbd{2022-01-01}). The only exception occurrs when \code{FUN=max} or \code{FUN=min}, where the time attribute of each element will correspond to the actual date where the annual maximum/minimum occurrs (which is very useful for identifying the date of the annual maximum or the annual ninimum of a time series)
+a zoo object with annual time frequency, where the time attribute has the format defined in \code{out.fmt}. \cr
+When \code{out.fmt="\%Y-\%m-\%d"} the time attribute of the output zoo object will use the 1st of January of each year to create a full Date object from the corresponding year of each element of the output object (e.g., fi the year is \kbd{2022}, the time attribute will be \kbd{2022-01-01}). The only exception occurrs when \code{FUN=max} or \code{FUN=min}, where the time attribute of each element will correspond to the actual date where the annual maximum/minimum occurs (which is very useful for identifying the date of the annual maximum or the annual minimum of a time series)
 }
 %%\references{
 %% ~put references to the literature/web site here ~
@@ -116,17 +116,23 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
-## Daily to Annual
+## Aggregating from dDaily to Annual precipitation time series
 daily2annual(x, FUN=sum, na.rm=TRUE)
 
 ######################
-## Ex2: Monthly to Annual (same result as )
+## Ex2: Getting the annual maximum and minimum values, including the date where this annual 
+##      maximum and minimum values actually occurs
+daily2annual(x, FUN=max)
+
+
+######################
+## Ex3: Monthly to Annual (same result as )
 m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
 monthly2annual(m, FUN=sum, na.rm=TRUE)
 
 
 ######################
-## Ex3: Loading the time series of HOURLY streamflows for the station Karamea at Gorge
+## Ex4: Loading the time series of HOURLY streamflows for the station Karamea at Gorge
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
@@ -134,7 +140,7 @@ x <- KarameaAtGorgeQts
 subdaily2annual(x, FUN=mean, na.rm=TRUE)
 
 ############
-## Ex4: Loading the monthly time series of precipitation within the Ebro River basin
+## Ex5: Loading the monthly time series of precipitation within the Ebro River basin
 data(EbroPPtsMonthly)
 
 # computing the annual values for the first 10 gauging station in 'EbroPPtsMonthly'
