@@ -2,7 +2,7 @@
 %% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 %%                                 https://CRAN.R-project.org/package=hydroTSM
 %%                                 http://www.rforge.net/hydroTSM/ ; 
-%% Copyright 2008-2020 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2022 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{climograph}
@@ -19,17 +19,16 @@ Function to draw a climograph based on precipitation and temperature data.
 \usage{
 climograph(pcp, tmean, tmx, tmn, na.rm=TRUE,  
            from, to, date.fmt="\%Y-\%m-\%d", 
-           main="Climograph", 
-           pcp.label="Precipitation, [mm]", 
-           tmean.label="Temperature, [\U00B0 C]",
-           pcp.col="lightblue", 
-           tmean.col="red",
-           tmn.col="blue",
-           tmx.col="darkred",
-           pcp.labels=TRUE,
-           tmean.labels=TRUE,
-           tmx.labels=FALSE,
-           tmn.labels=FALSE)
+           main="Climograph", pcp.label="Precipitation, [mm]", 
+           tmean.label="Air temperature, [\U00B0 C]",
+           pcp.col="lightblue", tmean.col="darkred", tmn.col="blue", tmx.col="red",
+           pcp.labels=TRUE, tmean.labels=TRUE, tmx.labels=TRUE, tmn.labels=TRUE,
+           lat, lon,
+           plot.pcp.probs=TRUE, pcp.probs=c(0.25, 0.75),
+           plot.temp.probs=TRUE, temp.probs=c(0.25, 0.75), 
+           temp.probs.col=c("#3399FF", "#FF9966", "#FFCC66"),
+           temp.probs.alpha=0.3
+           )
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -52,6 +51,18 @@ ONLY used (togheter with \code{tmx}) when \code{tmean} is missing.
 Logical. Should missing values be removed? \cr
 -) \kbd{TRUE} : the monthly values  are computed considering only those values different from NA \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a month, the resulting average monthly value is NA .
+}
+  \item{from}{
+OPTIONAL, used for extracting a subset of values. \cr
+Character indicating the starting date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
+}
+  \item{to}{
+OPTIONAL, used for extracting a subset of values. \cr
+Character indicating the ending date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
+}
+  \item{date.fmt}{
+Character indicating the format in which the dates are stored in \var{dates}, \var{from} and \var{to}. See \code{format} in \code{\link[base]{as.Date}}. \cr
+ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
 }
   \item{main}{
 Character representing the main title of the plot. 
@@ -81,23 +92,43 @@ logical. Should monthly precipitation values to be shown above the bars?. By def
 logical. Should monthly mean temperature values to be shown above the lines?. By default \code{tmean.labels=TRUE}.
 }
   \item{tmx.labels}{
-logical. Should monthly maximum temperature values to be shown above the lines?. By default \code{tmx.labels=FALSE}.
+logical. Should monthly maximum temperature values to be shown above the lines?. By default \code{tmx.labels=TRUE}.
 }
   \item{tmn.labels}{
-logical. Should monthly minimum temperature values to be shown above the lines?. By default \code{tmn.labels=FALSE}.
-}
-  \item{from}{
-OPTIONAL, used for extracting a subset of values. \cr
-Character indicating the starting date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
-}
-  \item{to}{
-OPTIONAL, used for extracting a subset of values. \cr
-Character indicating the ending date for the values to be extracted. It must be provided in the format specified by \code{date.fmt}.
-}
-  \item{date.fmt}{
-Character indicating the format in which the dates are stored in \var{dates}, \var{from} and \var{to}. See \code{format} in \code{\link[base]{as.Date}}. \cr
-ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
-}
+logical. Should monthly minimum temperature values to be shown above the lines?. By default \code{tmn.labels=TRUE}.
+} 
+  \item{lat}{
+[OPTIONAL] numeric or character used to show the latitude for which the climograph was plotted for.
+} 
+  \item{lon}{
+[OPTIONAL] numeric or character used to show the longitude for which the climograph was plotted for.
+} 
+  \item{plot.pcp.probs}{
+logical used to decide whether to show uncertainty values around the monthly mean precipitation values. By default \code{plot.pcp.probs=TRUE}. \cr 
+When \code{plot.pcp.probs=TRUE} the \code{pcp.probs} argument is used to define the values of the lower an upper uncertainty bounds.
+} 
+  \item{pcp.probs}{
+numeric of length 2. It is used to define quantile values used to compute the lower an upper uncertainty bounds for each one of the 12 monthly precipitation values.\cr 
+By default \code{pcp.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly precipitation values. 
+If \code{pcp} is a (sub)daily zoo object, it is first agreggated into monthly values using \code{mean}, and then the \code{pcp.probs} quantiles are computed over all the monthly values belonging to a calendar month.
+} 
+  \item{plot.temp.probs}{
+logical used to decide whether to show uncertainty values around the monthly mean temperature values. By default \code{plot.temp.probs=TRUE}. \cr 
+When \code{plot.temp.probs=TRUE} the \code{temp.probs} argument is used to define the values of the lower an upper uncertainty bounds.
+} 
+  \item{temp.probs}{
+numeric of length 2. It is used to define quantile values used to compute the lower an upper uncertainty bounds for each one of the 12 monthly mean temperature values.\cr 
+If \code{tmx} and \code{tmn} are provided, then \code{temp.probs} are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly maximum/minimum temperature values. \cr
+By default \code{temp.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly mean(maximum/minimum) values. 
+If \code{tmx/tmn} is provided and is a (sub)daily zoo object, it is first agreggated into monthly values using \code{mean}, and then the \code{temp.probs} quantiles are computed over all the monthly values belonging to a calendar month.
+} 
+  \item{temp.probs.col}{
+character of lenght 3, with the colors used to for plotting the uncertainty bands around the average monthly values of the minimum, mean and maximum air temperature, respectively. \cr
+If \code{tmx} and \code{tmn} are not provided by the user, the second element of \code{temp.probs.col} will still be used to define the color of the  uncertainty band around the mean monthly values of air temperature.
+} 
+  \item{temp.probs.alpha}{
+numeric of lenght 1, with the factor used to modify the opacity of \code{temp.probs.col}. Typically in [0,1], with 0 indicating a completly transparent colour and 1 indicating no transparency.
+} 
 }
 %%\details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -115,9 +146,9 @@ ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric
 \author{
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
-%%\note{
-%%  ~~further notes~~
-%%}
+\note{
+If the output climograph present some mixed or not legible characters, you might try resizing the graphical window and run climograph again with the new size, until you get the climograph in the way you want to.
+}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
@@ -133,8 +164,23 @@ pcp <- MaquehueTemuco[, 1]
 tmx <- MaquehueTemuco[, 2]
 tmn <- MaquehueTemuco[, 3]
 
-## Plotting the climograph
-m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE)
+## Plotting a full climograph
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
+
+## Plotting a climograph with uncertainty bands around mean values, but with no labels for tmx and tmn
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE)
+
+## Plotting a climograph with uncertainty bands around mean values, but with no labels for 
+##  tmx, tmn and pcp
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
+                pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE)
+
+## Plotting a climograph with no uncertainty bands around mean values
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE)
+
+## Plotting the most basic climograph: only mean values of precipiation and air temperature
+m <- climograph(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

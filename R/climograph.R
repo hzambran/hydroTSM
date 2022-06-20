@@ -2,7 +2,7 @@
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
 #                                 http://www.rforge.net/hydroTSM/
-# Copyright 2016-2020 Mauricio Zambrano-Bigiarini
+# Copyright 2016-2022 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -20,6 +20,7 @@
 # Updates: 30-Jun-2016 ; 04-Jul-2016                                           # 
 #          08-May-2017 ; 09-May-2017                                           #
 #          10-Mar-2020 ; 07-Nov-2020                                           #
+#          May-2022    ; 20-Jun-2022                                           #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
 #              precipitation data
@@ -44,16 +45,35 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        from, to, date.fmt="%Y-%m-%d", 
                        main="Climograph", 
                        pcp.label="Precipitation, [mm]", 
-                       tmean.label="Temperature, [\U00B0 C]",
+                       tmean.label="Air temperature, [\U00B0 C]",
+
                        pcp.col="lightblue", 
-                       tmean.col="red",
+                       tmean.col="darkred",
                        tmn.col="blue",
-                       tmx.col="darkred",
+                       tmx.col="red",
                        pcp.labels=TRUE,
                        tmean.labels=TRUE,
-                       tmx.labels=FALSE,
-                       tmn.labels=FALSE
+                       tmx.labels=TRUE,
+                       tmn.labels=TRUE,
+
+                       lat, # [OPTIONAL] numeric or character used to show the latitude for which the climograph was plotted for
+                       lon, # [OPTIONAL] numeric or character used to show the longitude for which the climograph was plotted for
+
+                       plot.pcp.probs=TRUE,
+                       pcp.probs=c(0.25, 0.75),
+
+                       plot.temp.probs=TRUE,
+                       temp.probs=c(0.25, 0.75),
+                       temp.probs.col=c("#3399FF", "#FF9966", "#FFCC66"), # color of tmn, tmean, tmx
+                       temp.probs.alpha=0.3
                        ) {
+
+
+  .plotbands <- function(x, lband, uband, col="", border=NA) {
+    t <- c(x, rev(x))
+    bands <- c(as.numeric(lband), rev(as.numeric(uband)))
+    polygon(t, bands, col=col, border=border)
+  } # .plotbands END
 
   if (missing(pcp)) {
     stop("Missing argument: 'pcp' must be provided !")
@@ -124,18 +144,67 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   if ( (sfreq(tmean) != "monthly") | ( (sfreq(tmean) == "monthly") & ( length(tmean) > 12) ) )
     tmean.m.avg <- monthlyfunction(tmean, FUN=mean, na.rm=na.rm)
 
+  if (plot.pcp.probs) {
+    pcp.m    <- daily2monthly(pcp, FUN=sum, na.rm=na.rm)
+    pcp.m.q1 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[1], na.rm=na.rm)
+    pcp.m.q2 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[2], na.rm=na.rm)
+  } # IF end
+
+  if (plot.temp.probs) {
+    temp.probs.col <- grDevices::adjustcolor(temp.probs.col, alpha.f=temp.probs.alpha)
+
+    tmean.m    <- daily2monthly(tmean, FUN=mean, na.rm=na.rm)
+    tmean.m.q1 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
+    tmean.m.q2 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
+
+    if ( !missing(tmx) & !missing(tmn)) {
+      tmx.m    <- daily2monthly(tmx, FUN=mean, na.rm=na.rm)
+      tmn.m    <- daily2monthly(tmn, FUN=mean, na.rm=na.rm)
+      tmx.m.q1 <- monthlyfunction(tmx.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
+      tmx.m.q2 <- monthlyfunction(tmx.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
+      tmn.m.q1 <- monthlyfunction(tmn.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
+      tmn.m.q2 <- monthlyfunction(tmn.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
+    } # IF end
+  } # IF end
+
   #######################################
   # Drawing the climograph
   #######################################
   xlim <- c(0.5, 14.5)
 
   # Monthly precipitation as barplot
-  ylim <- range(pretty(pcp.m.avg))
+  if (plot.pcp.probs) {
+    ylim <- range(pretty(pcp.m.avg), pretty(pcp.m.q1), pretty(pcp.m.q2))
+  } else ylim <- range(pretty(pcp.m.avg))
+
   par(mar = c(7,5,3,5)) # c(bottom, left, top, right)
   x <- barplot(pcp.m.avg, col=pcp.col, xlim=xlim, ylim=ylim, ylab=pcp.label, las=1, main=main)
-  grid()
-  if (pcp.labels) text(x, pcp.m.avg+5, cex=0.9, adj=0.5, labels= round(pcp.m.avg,1), col="black" )
 
+  #legend with lat and lon if they are provided
+  legend.text.lab <- c("", "")
+  legend.text.val <- c("", "")
+  if (!missing(lat)) {
+    legend.text.lab[1] <- "Lat:"
+    legend.text.val[1] <- lat
+  }  # IF end
+  if (!missing(lon)) {
+    legend.text.lab[2] <- "Lon:"
+    legend.text.val[2] <- lon
+  } # IF end
+  legend("topright", paste(legend.text.lab, legend.text.val), bty="n",
+         cex=1.2, ncol=1, title = "")
+
+  # Adding error bars
+  if (plot.pcp.probs)
+    graphics::arrows(x0 = x, y0 = pcp.m.q2, y1 = pcp.m.q1, angle=90, code=3, length=0.1)
+
+  grid()
+  ifelse(plot.pcp.probs, deltax <- 0.2, deltax <- 0.0)
+  if (pcp.labels) text(x+deltax, pcp.m.avg+5, cex=0.9, adj=0.5, labels= round(pcp.m.avg,1), col="black" )
+
+
+  # If provided, computing monthly values of tmx and tmn, and the 
+  # ylim for the secondary temperature axis
   if ( !missing(tmx) & !missing(tmn)) {
     if ( (sfreq(tmx) != "monthly") | ( (sfreq(tmx) == "monthly") & ( length(tmx) > 12) ) )
       tmx.m.avg <- monthlyfunction(tmx, FUN=mean, na.rm=na.rm)
@@ -143,27 +212,54 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     if ( (sfreq(tmn) != "monthly") | ( (sfreq(tmn) == "monthly") & ( length(tmn) > 12) ) )
       tmn.m.avg <- monthlyfunction(tmn, FUN=mean, na.rm=na.rm)
 
-    ylim <- range(pretty(tmx.m.avg), pretty(tmean.m.avg), pretty(tmn.m.avg))
-  } else ylim <- range(pretty(tmean.m.avg))
+    if (plot.temp.probs) {
+      ylim <- range(#pretty(tmx.m.avg), pretty(tmean.m.avg), pretty(tmn.m.avg),
+                    pretty(tmx.m.q1), pretty(tmean.m.q1), pretty(tmn.m.q1),
+                    pretty(tmx.m.q2), pretty(tmean.m.q2), pretty(tmn.m.q2)
+                   )
+    } else ylim <- range(pretty(tmx.m.avg), pretty(tmean.m.avg), pretty(tmn.m.avg))
+  } else if (plot.temp.probs) {
+           ylim <- range(pretty(tmean.m.q1), pretty(tmean.m.avg), pretty(tmean.m.q2))
+         } else ylim <- range(pretty(tmean.m.avg))
 
 
-  # Mean temperature as lines
+  # Mean temperature as line
   par(new = TRUE, xpd=TRUE)
-  plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-  if (tmean.labels) text(x+0.1, tmean.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col=tmean.col )
+  if (plot.temp.probs) {
+   deltax <- 0.02
+   deltay <- 0.05
+  } else {
+      deltax <- 0.0
+      deltay <- 0.0
+    } # ELSE end
+  if (plot.temp.probs) {
+    plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, type="n", xlab="", ylab="", axes=FALSE)
+    .plotbands(x=x, lband=tmean.m.q1, uband=tmean.m.q2, col=temp.probs.col[2], border=NA)
+    lines(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, bty = "n", xlab = "", ylab = "")
+  } else plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+  if (tmean.labels) text(x+0.10+deltax, tmean.m.avg+0.5+deltay, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col=tmean.col )
 
   # If provided, tmn as line
   if (!missing(tmn)) {
     par(new = TRUE, xpd=TRUE)
-    plot(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-    if (tmn.labels) text(x+0.1, tmn.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmn.m.avg,1), col=tmn.col )
+    if (plot.temp.probs) {
+      plot(x, tmn.m.avg, xlim=xlim, ylim=ylim, type="n", xlab="", ylab="", axes=FALSE)
+      .plotbands(x=x, lband=tmn.m.q1, uband=tmn.m.q2, col=temp.probs.col[1], border=NA) 
+      lines(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, bty = "n", xlab = "", ylab = "")
+    } else plot(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+
+    if (tmn.labels) text(x+0.10+deltax, tmn.m.avg+0.5+deltay, cex=0.9, adj=0.5, labels= round(tmn.m.avg,1), col=tmn.col )
   } # IF end
 
   # If provided, tmx as line
   if (!missing(tmx)) {
     par(new = TRUE, xpd=TRUE)
-    plot(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-    if (tmx.labels) text(x+0.1, tmx.m.avg+0.5, cex=0.9, adj=0.5, labels= round(tmx.m.avg,1), col=tmx.col )
+    if (plot.temp.probs) {
+      plot(x, tmx.m.avg, xlim=xlim, ylim=ylim, type="n", xlab="", ylab="", axes=FALSE)
+      .plotbands(x=x, lband=tmx.m.q1, uband=tmx.m.q2, col=temp.probs.col[3], border=NA)
+      lines(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, bty = "n", xlab = "", ylab = "")
+    } else plot(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+    if (tmx.labels) text(x+0.12, tmx.m.avg+0.5+deltay, cex=0.9, adj=0.5, labels= round(tmx.m.avg,1), col=tmx.col )
   } # IF end
 
 
@@ -171,9 +267,9 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   if ( !missing(tmx) & !missing(tmn)) {
     axis(side=4, at = pretty(range(tmn.m.avg, tmean.m.avg, tmx.m.avg)), las=1)
   } else axis(side=4, at = pretty(range(tmean.m.avg)), las=1)
-  par(xpd=FALSE)
   abline(h=axTicks(side=2), col="lightpink", lty = "dotted")
-  text(1.1*par("usr")[2], par("usr")[3]+(par("usr")[4]-par("usr")[3])/2, srt=-90, adj = 0.5, labels= tmean.label,  xpd = TRUE)
+  text(par("usr")[2]*1.05,mean(par("usr")[3:4]), labels= tmean.label, srt = -90, xpd = TRUE, pos = 4)
+
 
   # Outter box and legend
   box()
