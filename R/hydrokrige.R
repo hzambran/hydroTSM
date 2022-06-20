@@ -14,6 +14,7 @@
 #          04-Jul-2012 ; 05-Jul-2012 ; 09-Jul-2012                             #   
 #          15-Jan-2014                                                         #
 #          02-Feb-2015 ; 04-Feb-2015 ; 17-May-2015                             #
+#          20-Jun-2022 (deprecated)                                            #
 ################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
@@ -156,6 +157,9 @@ hydrokrige.default <- function(x.ts, x.gis,
 			       scalebar.plot=FALSE, sb.offset, sb.scale,
 			       verbose=TRUE,
 			       allNA.action="error", ...) {
+
+ .Deprecated(new="gstat", package="gstat")
+
 
  ##################################
  #  1) Checking the arguments     #
@@ -1105,6 +1109,9 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 			           write2disk=TRUE,
 				       out.fmt="csv2",
 			           fname=paste(ColorRamp, "by_Subcatch.csv", sep=""),...) {
+
+
+  .Deprecated(new="gstat", package="gstat")
 
   # If the user didn't provide a value for 'p4s' and used the defaul one
   if ( missing(p4s) ) {
