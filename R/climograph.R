@@ -55,6 +55,10 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        tmean.labels=TRUE,
                        tmx.labels=TRUE,
                        tmn.labels=TRUE,
+                       pcp.labels.cex=0.8,
+                       temp.labels.cex=0.8,
+                       temp.labels.dx=c(rep(-0.2,6), rep(0.2,6)),
+                       temp.labels.dy=rep(-0.4, 12),
 
                        lat, # [OPTIONAL] numeric or character used to show the latitude for which the climograph was plotted for
                        lon, # [OPTIONAL] numeric or character used to show the longitude for which the climograph was plotted for
@@ -98,7 +102,10 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
       # Checking that 'tmean'is a zoo object
       if ( !is.zoo(tmean) ) stop("Invalid argument: 'class(tmean)' must be in c('zoo', 'xts')")
 
-   
+  # Checking the length of 'temp.labels.dx' and 'temp.labels.dy'
+  if (length(temp.labels.dx) > 12) temp.labels.dx <- temp.labels.dx[1:12]
+  if (length(temp.labels.dy) > 12) temp.labels.dy <- temp.labels.dy[1:12]
+
   ###########################################
   ## In case 'from' and 'to' are provided  ##
   dates.pcp  <- time(pcp)
@@ -199,8 +206,8 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     graphics::arrows(x0 = x, y0 = pcp.m.q2, y1 = pcp.m.q1, angle=90, code=3, length=0.1)
 
   grid()
-  ifelse(plot.pcp.probs, deltax <- 0.2, deltax <- 0.0)
-  if (pcp.labels) text(x+deltax, pcp.m.avg+5, cex=0.9, adj=0.5, labels= round(pcp.m.avg,1), col="black" )
+  ifelse(plot.pcp.probs, deltax <- 0.25, deltax <- 0.0)
+  if (pcp.labels) text(x-deltax, pcp.m.avg+2, cex=pcp.labels.cex, adj=0.5, labels= round(pcp.m.avg,1), col="black" )
 
 
   # If provided, computing monthly values of tmx and tmn, and the 
@@ -226,18 +233,11 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   # Mean temperature as line
   par(new = TRUE, xpd=TRUE)
   if (plot.temp.probs) {
-   deltax <- 0.02
-   deltay <- 0.05
-  } else {
-      deltax <- 0.0
-      deltay <- 0.0
-    } # ELSE end
-  if (plot.temp.probs) {
     plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, type="n", xlab="", ylab="", axes=FALSE)
     .plotbands(x=x, lband=tmean.m.q1, uband=tmean.m.q2, col=temp.probs.col[2], border=NA)
     lines(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, bty = "n", xlab = "", ylab = "")
   } else plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-  if (tmean.labels) text(x+0.10+deltax, tmean.m.avg+0.5+deltay, cex=0.9, adj=0.5, labels= round(tmean.m.avg,1), col=tmean.col )
+  if (tmean.labels) text(x+temp.labels.dx, tmean.m.avg+temp.labels.dy, cex=temp.labels.cex, adj=0.5, labels= round(tmean.m.avg,1), col=tmean.col )
 
   # If provided, tmn as line
   if (!missing(tmn)) {
@@ -248,7 +248,7 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
       lines(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, bty = "n", xlab = "", ylab = "")
     } else plot(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
 
-    if (tmn.labels) text(x+0.10+deltax, tmn.m.avg+0.5+deltay, cex=0.9, adj=0.5, labels= round(tmn.m.avg,1), col=tmn.col )
+    if (tmn.labels) text(x+temp.labels.dx, tmn.m.avg+temp.labels.dy, cex=temp.labels.cex, adj=0.5, labels= round(tmn.m.avg,1), col=tmn.col )
   } # IF end
 
   # If provided, tmx as line
@@ -259,7 +259,7 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
       .plotbands(x=x, lband=tmx.m.q1, uband=tmx.m.q2, col=temp.probs.col[3], border=NA)
       lines(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, bty = "n", xlab = "", ylab = "")
     } else plot(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-    if (tmx.labels) text(x+0.12, tmx.m.avg+0.5+deltay, cex=0.9, adj=0.5, labels= round(tmx.m.avg,1), col=tmx.col )
+    if (tmx.labels) text(x+temp.labels.dx, tmx.m.avg+temp.labels.dy, cex=temp.labels.cex, adj=0.5, labels= round(tmx.m.avg,1), col=tmx.col )
   } # IF end
 
 

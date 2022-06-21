@@ -23,6 +23,8 @@ climograph(pcp, tmean, tmx, tmn, na.rm=TRUE,
            tmean.label="Air temperature, [\U00B0 C]",
            pcp.col="lightblue", tmean.col="darkred", tmn.col="blue", tmx.col="red",
            pcp.labels=TRUE, tmean.labels=TRUE, tmx.labels=TRUE, tmn.labels=TRUE,
+           pcp.labels.cex=0.8, temp.labels.cex=0.8,
+           temp.labels.dx=c(rep(-0.2,6), rep(0.2,6)), temp.labels.dy=rep(-0.4, 12),
            lat, lon,
            plot.pcp.probs=TRUE, pcp.probs=c(0.25, 0.75),
            plot.temp.probs=TRUE, temp.probs=c(0.25, 0.75), 
@@ -97,6 +99,24 @@ logical. Should monthly maximum temperature values to be shown above the lines?.
   \item{tmn.labels}{
 logical. Should monthly minimum temperature values to be shown above the lines?. By default \code{tmn.labels=TRUE}.
 } 
+  \item{pcp.labels.cex}{
+numeric giving the amount by which plotting characters used to show the numeric values of monthly precipitation values are scaled relative to the default. \cr
+It is only used when \code{pcp.labels=TRUE}.
+}
+  \item{temp.labels.cex}{
+numeric giving the amount by which plotting characters used to show the numeric values of monthly air temperature values (mean, maximum, minimum) are scaled relative to the default.   \cr
+It is only used when \code{tmean.labels=TRUE} or \code{tmx.labels=TRUE} or \code{tmn.labels=TRUE}.
+}
+  \item{temp.labels.dx}{
+numeric of lenght 12 giving the amount of horizontal coordinate positions that have to be used to shift the labels of monthly air temperature values (mean, maximum, minimum). \cr
+It is only used when \code{tmean.labels=TRUE} or \code{tmx.labels=TRUE} or \code{tmn.labels=TRUE}. \cr
+Lenghts smaller than 12 are recycled and larger lenghts are not used.
+}
+  \item{temp.labels.dy}{
+numeric of lenght 12 giving the amount of veritcal coordinate positions that have to be used to shift the labels of monthly air temperature values (mean, maximum, minimum). \cr
+It is only used when \code{tmean.labels=TRUE} or \code{tmx.labels=TRUE} or \code{tmn.labels=TRUE}. \cr
+Lenghts smaller than 12 are recycled and larger lenghts are not used.
+}
   \item{lat}{
 [OPTIONAL] numeric or character used to show the latitude for which the climograph was plotted for.
 } 
@@ -169,18 +189,22 @@ m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE,
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 ## Plotting a climograph with uncertainty bands around mean values, but with no labels for tmx and tmn
-m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE)
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 ## Plotting a climograph with uncertainty bands around mean values, but with no labels for 
 ##  tmx, tmn and pcp
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
-                pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE)
+                pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 ## Plotting a climograph with no uncertainty bands around mean values
-m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE)
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 ## Plotting the most basic climograph: only mean values of precipiation and air temperature
-m <- climograph(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE)
+m <- climograph(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
