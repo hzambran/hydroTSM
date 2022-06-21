@@ -296,7 +296,7 @@ Maximum annual value of 5-day total precipitation
 
 Since v0.5-0, `hydroTSM` includes a function to plot a climograph, considering not only precipitation but air temperature data as well:
 
-```{r climograph, fig.width = 9, fig.height = 8, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9)}
+```{r climograph, fig.width = 8, fig.height = 7, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9)}
 # Loading daily ts of precipitation, maximum and minimum temperature
 data(MaquehueTemuco)
 
@@ -314,13 +314,9 @@ m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.lab
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 ## Plotting a climograph with uncertainty bands around mean values, but with no labels for 
-##  tmx, tmn and pcp
+## tmx, tmn and pcp
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
                 pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
-
-## Plotting a climograph with no uncertainty bands around mean values
-m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE, 
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 ```
 
