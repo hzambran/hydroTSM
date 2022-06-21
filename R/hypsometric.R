@@ -1,7 +1,7 @@
 # File hypsometric.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2009-2017 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2022 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -12,12 +12,14 @@
 # Updates: Jul 2010                                                            #
 #          21-May-2012                                                         #
 #          29-Jan-2014                                                         #
+#          30-Jun-2021 ; 03-Jul-2021                                           #
+#          May-2022 ; 20-Jun-2022                                              #
 ################################################################################
 # Requires: 'sp', 'rgdal'                                                      #
 ################################################################################
 # Taken from: http://osgeo-org.1803224.n2.nabble.com/hypsometric-integral-from-ecdf-curve-td2231345.html
 
-# 'x'   : 'SpatialGridDataFrame' object with the elevations of the catchment
+# 'x'   : 'SpatialGridDataFrame', 'RasterLayer', 'SpatRaster'  object with the elevations of the catchment
 # Result: Plot in the 'y' axis the elevations of the catchment, and in
 #         the 'x' axis, the percentage of the catchment area that is BELOW a given elevation
 
@@ -25,45 +27,69 @@
 #require(rgdal)
 #dem <- readGDAL(x)
 #hypsometric(dem)
-hypsometric <- function(x, 
-                        band=1,
-                        main="Hypsometric Curve",
-                        xlab="Relative Area above Elevation, (a/A)",
-                        ylab="Relative Elevation, (h/H)", 
-                        col="blue",...) {
 
-  if (class(x) != "SpatialGridDataFrame")
-    stop("Invalid argument: 'class(x)' must be 'SpatialGridDataFrame'")
+hypsometric <- function(x,...) UseMethod("hypsometric")
+
+hypsometric.SpatialGridDataFrame <- function(x, 
+                                             band=1,
+                                             main="Hypsometric Curve",
+                                             xlab="Relative Area above Elevation, (a/A)",
+                                             ylab="Relative Elevation, (h/H)", 
+                                             col="blue",
+                                             out.type=c("absolute", "realtive"),
+                                             dec=2, 
+                                             ...) {
     
-  # Checking band argument
+  # Checking 'out.type' argument
+  out.type <- match.arg(out.type)
+
+  # Checking 'band' argument
   band.error <- FALSE
-  if (is.numeric(band) | is.integer(band) ) {
-    if ( (band < 1) | (band > length(colnames(x@data))) )
-      band.error <- TRUE      
-  } else if (is.character(band) )
-    if ( !(band %in% colnames(x@data) ) )
-      band.error <- TRUE    
-  if (band.error) stop("Invalid argument: 'band' does not exist in 'x' !")
+  if (band != 1) {
+    if (is.numeric(band) | is.integer(band) ) {
+      if ( (band < 1) | (band > length(colnames(slot(x, "data")))) )
+        band.error <- TRUE      
+    } else if (is.character(band) )
+      if ( !(band %in% colnames(slot(x, "data")) ) )
+        band.error <- TRUE    
+    if (band.error) stop("Invalid argument: 'band' does not exist in 'x' !")
+  } # IF end
     
   # Getting the elevatin data from the DEM
-  mydem <- x@data[band][,1]
+  dem <- slot(x, "data")[band][,1]
+
+  # Horizontal dimension of the cells of 'x'
+  x.dim <- slot(slot(x, "grid"), "cellsize")[1]
+  # Vertical dimension of the cells of 'x'
+  y.dim <- slot(slot(x, "grid"), "cellsize")[2]
+
+  # calling the function that will plot the hypsometric curve
+  .hc(mydem=dem, x.dim=x.dim, y.dim=y.dim, main=main, 
+      xlab=xlab, ylab=ylab, col=col, out.type=out.type, dec, ...)
+
+} # 'hypsometric.SpatialGridDataFrame' END
+
+################################################################################
+# Computes: Inernal function for computing the hypometric curve of a DEM       #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: 30-Jun-2021                                                         #
+# Updates: 3-Jul-2021                                                          #
+#          May-2022 ; 20-Jun-2022                                              #
+################################################################################
+.hc <- function(mydem, x.dim, y.dim, main, xlab, ylab, col, out.type, dec, ...) {
 
   # Minimum, Mean and Maximum elevations in 'dem'
   z.min  <- min(mydem, na.rm=TRUE)
   z.mean <- mean(mydem, na.rm=TRUE)
   z.max  <- max(mydem, na.rm=TRUE)
 
-  # Horizontal dimension of the cells of 'x'
-  x.dim <- x@grid@cellsize[1]
-  # Vertical dimension of the cells of 'x'
-  y.dim <- x@grid@cellsize[2]
-
   # Maximum area of the 'dem', in [m2]
   max.area <- length(which(!is.na(mydem))) * x.dim * y.dim
 
   # res$t: elevation values, plus a first value that I don't know what it is
   # res$y: accumulated area BELOW a given elevation value.
-  res <- plot.stepfun(ecdf(as.matrix(mydem)), lwd=0, cex.points=0)
+  res <- plot.stepfun(ecdf(mydem), lwd=0, cex.points=0)
 
   # Median elevation in 'dem', based on the ECDF of the elevation data, with precision=3
   z.median.index <- which(round(res$y,3)==0.5)[1]
@@ -73,9 +99,8 @@ hypsometric <- function(x,
     # Median elevation in 'dem', based on the ECDF of the elevation data, with precision=2
     z.median.index <- which(round(res$y,2)==0.5)[1]
     z.median       <- res$t[z.median.index]
-  } else if (is.na(z.median)) {
+  } else if (is.na(z.median)) 
       z.median <- median(mydem, na.rm=TRUE)
-    } # ELSE end
   
 
   #plot(1 - res$y[-1], res$t[-c(1, length(res$t))],
@@ -86,12 +111,12 @@ hypsometric <- function(x,
   # res$y[1] represent the accumulated area below the minimum elevation
 
   # Relative area ABOVE a given elevation
-  relative.area <- ( 1 - res$y[-1] )
+  area.relative <- ( 1 - res$y[-1] )
 
   # Relative elevation
-  relative.elev <- ( res$t[-c(1, length(res$t))] -z.min ) / ( z.max - z.min )
+  elev.relative <- ( res$t[-c(1, length(res$t))] -z.min ) / ( z.max - z.min )
 
-  plot(relative.area, relative.elev,
+  plot(area.relative, elev.relative,
        xaxt="n", yaxt="n",
        main=main, xlim=c(0, 1), ylim=c(0, 1),
        type="l", ylab=ylab, xlab=xlab, col=col,...)
@@ -104,7 +129,7 @@ hypsometric <- function(x,
 
   # Obtaining a functional form of the spline approximation to the hyposometric integral.
   # Possible methods are in c("fmm", "periodic", "natural", "monoH.FC")
-  f <- splinefun(relative.area, relative.elev, method="monoH.FC")
+  f <- splinefun(area.relative, elev.relative, method="monoH.FC")
 
   # Computing the hypsometric integral
   hi <- integrate(f=f, lower=0, upper=1, stop.on.error = FALSE)
@@ -123,4 +148,11 @@ hypsometric <- function(x,
 		 bty="n", cex =0.9, col = c("black","black","black"),
 		 lty=c(NULL,NULL,NULL,NULL) ) #bty="n" => no box around the legend
 
-} # 'hypsometric' END
+ if (out.type=="absolute") {
+   area.absolute <- area.relative*max.area
+   elev.absolute <- elev.relative*(z.max-z.min)+z.min
+   out <- data.frame(elevation=elev.absolute, area_km2=area.absolute/1e6 )
+ } else out <- data.frame(elevation.relative=elev.relative, area.relative=area.relative)
+
+ return( round(out, dec) )
+} # '.hc' END

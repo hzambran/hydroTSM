@@ -1,12 +1,13 @@
 %% File hypsometric.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2009-2021 Mauricio Zambrano-Bigiarini
+%% Copyright 2009-2022 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{hypsometric}
 \Rdversion{1.1}
 \alias{hypsometric}
+\alias{hypsometric.SpatialGridDataFrame}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Hypsometric Curve
@@ -15,15 +16,18 @@ Hypsometric Curve
 Computes and plots the hypsometric curve corresponding to the data provided by a digital elevation model (DEM)
 }
 \usage{
-hypsometric(x, band=1, main="Hypsometric Curve",
+hypsometric(x, ...)
+
+\method{hypsometric}{SpatialGridDataFrame}(x, band=1, main="Hypsometric Curve",
             xlab="Relative Area above Elevation, (a/A)",
-            ylab="Relative Elevation, (h/H)", col="blue",...)
+            ylab="Relative Elevation, (h/H)", col="blue",
+            out.type=c("absolute", "realtive"), dec=2, ...)
 
 }
 %- maybe also 'usage' for other objects documented here. 
 \arguments{
   \item{x}{
-\link[sp]{SpatialGridDataFrame-class} object with the elevations of the catchment. Possibly, a raster file already read with the \code{\link[rgdal]{readGDAL}} function of the \pkg{rgdal} package.
+\link[sp]{SpatialGridDataFrame-class} object with the elevations of the catchment.
 }
   \item{band}{
 integer or character indicating the band in \code{x} that stores the elevation data.
@@ -39,6 +43,12 @@ See \code{\link[graphics]{plot}}. A title for the y axis: see \code{\link[graphi
 }
   \item{col}{
 See \code{\link[graphics]{plot.default}}. The colors for lines and points.
+}
+  \item{out.type}{
+character indicating whether the resulting hypsometric figure should show absolute or relative values of both elevation and area.
+}
+  \item{dec}{
+numeric indicating the amount o decimal places to be used for rounding the hypsometric values returned by this function.
 }
   \item{\dots}{
 further arguments passed to or from other methods
