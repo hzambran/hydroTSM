@@ -19,9 +19,9 @@ It takes an irregular zoo object (with non-existing values for some dates) and c
 \usage{
 izoo2rzoo(x, ...)
 
-\method{izoo2rzoo}{default}(x, from= start(x), to= end(x), date.fmt= "\%Y-\%m-\%d", tstep= "days", ...)
+\method{izoo2rzoo}{default}(x, from= start(x), to= end(x), date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="GMT", ...)
      
-\method{izoo2rzoo}{zoo}(x, from= start(x), to= end(x), date.fmt= "\%Y-\%m-\%d", tstep= "days", ...)
+\method{izoo2rzoo}{zoo}(x, from= start(x), to= end(x), date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="GMT", ...)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -43,6 +43,10 @@ character indicating the format in which the dates are stored in \code{from} and
   \item{tstep}{
 character, indicating the time step used for creating the time sequence going from \code{from} to \code{to} that will be used as \code{time(x)} \cr
 Valid values are (but not limited to) \kbd{days}, \kbd{months}, \kbd{years}, \kbd{hours}
+}
+  \item{tz}{
+time zone specification to be used with subdaily zoo objects.  System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+This argument can be used when working with subdaily zooobjects to force using GMT as time zone instead of the local one.
 }
   \item{\dots}{
 further arguments passed to or from other methods
@@ -71,7 +75,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{vector2zoo}}
+\code{\link[zoo]{zoo}}, \code{\link{vector2zoo}}, \code{\link[base]{as.POSIXct}}, \code{\link[base]{Sys.timezone}}
 }
 
 \examples{
@@ -87,7 +91,7 @@ dates <- c("1964-02-25", "1964-02-26", "1964-02-27", "1964-02-28", "1964-03-01",
 dates <- as.Date(dates)
 
 ## From 'numeric' to 'zoo' class
-x <- zoo(x, dates) # Feb 29th is still missing
+x <- zoo(x, dates) # Feb 29th is still not present in 'x'
 
 ## Adding a missing value (NA in this case) for Feb 29th
 y <- izoo2rzoo(x)
@@ -119,9 +123,14 @@ x      <- zoo(values, dates)
 # removing values from 02:00 to 05:00 (not present at all in 'x', not even NA !)
 x <- x[-c(2:5)]
 
-#  Adding missing values (NA in this case) from 02:00 to 05:00
-y <-  izoo2rzoo(x, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", tstep="hours")
+# Adding missing values (NA in this case) from 02:00 to 05:00, using GMT as time zone
+# The argument 'tz' could have been ommited in this example, becuase GMT is its default value 
+y <-  izoo2rzoo(x, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", tstep="hours", tz="GMT")
+time(y)
 
+#  Adding missing values (NA in this case) from 02:00 to 05:00, using local time zone
+y <-  izoo2rzoo(x, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", tstep="hours", tz="")
+time(y)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -32,14 +32,14 @@ izoo2rzoo <-function(x, ...) UseMethod("izoo2rzoo")
 # Updates: 23-Aug-2011                                                         #
 ################################################################################ 
 izoo2rzoo.default <- function(x, from= start(x), to= end(x), 
-                              date.fmt="%Y-%m-%d", tstep ="days", ...) {
+                              date.fmt="%Y-%m-%d", tstep ="days", tz="GMT", ...) {
 
   # Checking that the user provied a valid class for 'x'   
   valid.class <- c("xts", "zoo")    
   if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
      stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
 
-  izoo2rzoo.zoo(x=x, from=from, to=to, date.fmt=date.fmt, tstep=tstep, ...)
+  izoo2rzoo.zoo(x=x, from=from, to=to, date.fmt=date.fmt, tstep=tstep, tz=tz, ...)
 
 } # 'izoo2rzoo.default' END
 
@@ -52,10 +52,11 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 #          07-May-2012                                                         #
 #          16-Oct-2012                                                         #
 #          29-May-2013                                                         #
+#          17-Jun-2022 ; 20-Jun-2022                                           #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
-                          date.fmt="%Y-%m-%d", tstep ="days", ... ) {
+                          date.fmt="%Y-%m-%d", tstep ="days", tz="GMT", ... ) {
 
   if (!is.zoo(x)) stop("Invalid argument: 'x' must be of class 'zoo'")
       
@@ -64,9 +65,11 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
            grepl("%p", date.fmt, fixed=TRUE) | grepl("%X", date.fmt, fixed=TRUE),
            subdaily.date.fmt <- TRUE, subdaily.date.fmt <- FALSE )
   
-  if(subdaily.date.fmt) {
-    from <- as.POSIXct(from, format=date.fmt)
-    to   <- as.POSIXct(to, format=date.fmt)
+  if (subdaily.date.fmt) {
+    from <- as.POSIXct(as.character(from), format=date.fmt, tz=tz)
+    to   <- as.POSIXct(as.character(to), format=date.fmt, tz=tz)
+
+    time(x) <- as.POSIXct(as.character(time(x)), tz=tz)
   } else {
       from <- as.Date(from, format=date.fmt)
       to   <- as.Date(to, format=date.fmt)
@@ -74,7 +77,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
     
   # If the index of 'x' is character, it is converted into a Date object
   if ( class(time(x))[1] %in% c("factor", "character") )
-    ifelse(subdaily.date.fmt, time(x) <- as.POSIXct(dates, format=date.fmt),
+    ifelse(subdaily.date.fmt, time(x) <- as.POSIXct(as.character(dates), format=date.fmt, tz=tz),
                               time(x) <- as.Date(dates, format=date.fmt) )
 
   # sampling frequency of 'x'           
@@ -85,8 +88,8 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
     if (!subdaily.date.fmt) stop("Invalid argument: 'date.fmt' (", date.fmt, ") is not compatible with a sub-daily time series !!")
   } else
        if (subdaily.date.fmt) {
-          time(x) <- as.POSIXct(time(x))
-          warning("'date.fmt' (", date.fmt, ") is sub-daily, while 'x' is a '", x.freq, "' ts => 'time(x)=as.POSIXct(time(x))'")
+          time(x) <- as.POSIXct(as.character(time(x)), tz=tz)
+          warning("'date.fmt' (", date.fmt, ") is sub-daily, while 'x' is a '", x.freq, "' ts => 'time(x)=as.POSIXct(time(x), tz)'")
        } # IF end
  
   # Creating a regular time series with NA's in all dates in [from, to]
