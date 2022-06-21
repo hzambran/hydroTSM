@@ -2,7 +2,7 @@ importFrom("stats", time, cor, cor.test, symnum, plot.stepfun, ecdf, median, spl
 importFrom("graphics", boxplot, plot, hist, par, layout, axis, Axis, abline, lines, points, legend, box, text, strwidth, rect, polygon, pairs, panel.smooth)
 importFrom("grDevices", xy.coords, palette, colorRampPalette, dev.set, dev.list, dev.new, dev.off, png, rainbow) 
 importFrom("utils", read.table, write.table, write.csv, write.csv2, installed.packages, ls.str, modifyList, sessionInfo, setTxtProgressBar, txtProgressBar) 
-importFrom("methods", as, hasArg, is) 
+importFrom("methods", as, hasArg, is, slot) 
 importFrom("graphics", barplot, grid, axTicks, Axis, abline, axis, boxplot, hist, legend, lines, mtext, par, plot)
 
 importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply, index, "time<-")
@@ -92,6 +92,6 @@ S3method(subdaily2daily, matrix)
 S3method(subhourly2hourly, data.frame)
 S3method(subhourly2hourly, default)
 S3method(subhourly2hourly, matrix)
-
+S3method(hypsometric, SpatialGridDataFrame)
 
 
