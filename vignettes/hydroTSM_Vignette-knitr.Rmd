@@ -13,7 +13,7 @@ vignette: |
   %\VignetteIndexEntry{Tutorial for Introductory Analysis of Daily Precipitation Data with `hydroTSM`} 
   %\VignetteKeyword{hydrology}
   %\VignetteKeyword{hydrological modelling}
-  %\VignetteEngine{knitr::rmarkdown} \usepackage[utf8]{inputenc} 
+  %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -305,8 +305,23 @@ pcp <- MaquehueTemuco[, 1]
 tmx <- MaquehueTemuco[, 2]
 tmn <- MaquehueTemuco[, 3]
      
-# Plotting the climograph
-m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE)
+## Plotting a full climograph
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
+
+## Plotting a climograph with uncertainty bands around mean values, but with no labels for tmx and tmn
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE)
+
+## Plotting a climograph with uncertainty bands around mean values, but with no labels for 
+##  tmx, tmn and pcp
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
+                pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE)
+
+## Plotting a climograph with no uncertainty bands around mean values
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE)
+
+## Plotting the most basic climograph: only mean values of precipitation and air temperature
+m <- climograph(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE)
 ```
 
 
@@ -350,22 +365,24 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 *  `?read.table`, `?write.table`: allow the user to read/write a file (in $~$table format) and create a data frame from it. Related functions are `?read.csv`, `?write.csv`, `?read.csv2`, `?write.csv2`.
 
-*  [foreign](http://cran.r-project.org/web/packages/foreign/): read data stored in several R-external formats (dBase, Minitab, S, SAS, SPSS, Stata, Systat, Weka, ...)
-
 *  `?zoo::read.zoo`, `?zoo::write.zoo`: functions for reading and writing time series from/to text files, respectively.
 
-*  [R Data Import/Export](http://cran.r-project.org/doc/manuals/r-release/R-data.html)
+*  [R Data Import/Export](https://cran.r-project.org/doc/manuals/r-release/R-data.html)
 
-*  [some examples](http://www.statmethods.net/input/importingdata.html) 
+*  [foreign](https://cran.r-project.org/package=foreign): read data stored in several R-external formats (dBase, Minitab, S, SAS, SPSS, Stata, Systat, Weka, ...)
+
+*  [readxl](https://cran.r-project.org/package=readxl): Import MS Excel files into R. 
+
+*  [some examples](https://www.statmethods.net/input/importingdata.html) 
 
 
 
 ## Useful Websites
 
-*  [Quick R](http://www.statmethods.net/) 
+*  [Quick R](https://www.statmethods.net/) 
 
-*  [Time series in R](http://cran.r-project.org/web/views/TimeSeries.html)
+*  [Time series in R](https://cran.r-project.org/web/views/TimeSeries.html)
 
-*  [Quick reference for the `zoo` package](http://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf)
+*  [Quick reference for the `zoo` package](https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf)
 
 
