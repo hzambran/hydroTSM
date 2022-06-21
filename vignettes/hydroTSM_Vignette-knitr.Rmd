@@ -3,7 +3,7 @@ title: <center>Tutorial for Introductory Analysis of
  Daily Precipitation Data with `hydroTSM`</center>
 author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
-date: " version 0.7, 11-Mar-2020"
+date: " version 0.8, DD-MMM-2022"
 output:
   pdf_document:
     number_sections: yes
@@ -296,7 +296,7 @@ Maximum annual value of 5-day total precipitation
 
 Since v0.5-0, `hydroTSM` includes a function to plot a climograph, considering not only precipitation but air temperature data as well:
 
-```{r climograph, fig.width = 8, fig.height = 6, fig.align = "center"}
+```{r climograph, fig.width = 9, fig.height = 8, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9)}
 # Loading daily ts of precipitation, maximum and minimum temperature
 data(MaquehueTemuco)
 
@@ -310,18 +310,18 @@ m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE,
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 ## Plotting a climograph with uncertainty bands around mean values, but with no labels for tmx and tmn
-m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE)
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 ## Plotting a climograph with uncertainty bands around mean values, but with no labels for 
 ##  tmx, tmn and pcp
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
-                pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE)
+                pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 ## Plotting a climograph with no uncertainty bands around mean values
-m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE)
-
-## Plotting the most basic climograph: only mean values of precipitation and air temperature
-m <- climograph(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE)
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 ```
 
 
@@ -338,6 +338,7 @@ paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
 
 # Version history
 
+* v0.8: XXX 2022
 * v0.7: Mar 2020
 * v0.6: Aug 2017
 * v0.5: May 2013
@@ -353,12 +354,11 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 ## Editors, GUI
 
+*  GNU/Linux only: [ESS](http://ess.r-project.org/)
 
-*  GNU/Linux only: [Rgedit](http://rgedit.sourceforge.net/), [ESS](http://ess.r-project.org/)
+*  Windows only  : [NppToR](http://sourceforge.net/projects/npptor/)
 
-*  Windows only  : [Tinn-R](http://sourceforge.net/projects/tinn-r/), [NppToR](http://sourceforge.net/projects/npptor/)
-
-*  Multi-platform: [RStudio](http://www.rstudio.com/)
+*  Multi-platform: [Sublime Text](https://sublime.weberup.com/) ; [RStudio](http://www.rstudio.com/)
 
 
 ## Importing data
@@ -367,22 +367,22 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 *  `?zoo::read.zoo`, `?zoo::write.zoo`: functions for reading and writing time series from/to text files, respectively.
 
-*  [R Data Import/Export](https://cran.r-project.org/doc/manuals/r-release/R-data.html)
+*  [R Data Import/Export](https://cran.r-project.org/doc/manuals/r-release/R-data.html): https://cran.r-project.org/doc/manuals/r-release/R-data.html
 
-*  [foreign](https://cran.r-project.org/package=foreign): read data stored in several R-external formats (dBase, Minitab, S, SAS, SPSS, Stata, Systat, Weka, ...)
+*  [foreign R package](https://cran.r-project.org/package=foreign): read data stored in several R-external formats (dBase, Minitab, S, SAS, SPSS, Stata, Systat, Weka, ...)
 
-*  [readxl](https://cran.r-project.org/package=readxl): Import MS Excel files into R. 
+*  [readxl R package](https://cran.r-project.org/package=readxl): Import MS Excel files into R. 
 
-*  [some examples](https://www.statmethods.net/input/importingdata.html) 
+*  [some examples](https://www.statmethods.net/input/importingdata.html): https://www.statmethods.net/input/importingdata.html
 
 
 
 ## Useful Websites
 
-*  [Quick R](https://www.statmethods.net/) 
+*  [Quick R](https://www.statmethods.net/): https://www.statmethods.net/
 
-*  [Time series in R](https://cran.r-project.org/web/views/TimeSeries.html)
+*  [Time series in R](https://cran.r-project.org/web/views/TimeSeries.html): https://cran.r-project.org/web/views/TimeSeries.html
 
-*  [Quick reference for the `zoo` package](https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf)
+*  [Quick reference for the `zoo` package](https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf): https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf
 
 
