@@ -17,6 +17,9 @@ NEWS/ChangeLog for hydroTSM
                             -) new argument 'tmean.labels' to decide whether to show the numeric values above the monthly mean temperature lines
                             -) new argument 'tmx.labels' to decide whether to show the numeric values above the monthly maximum temperature lines
                             -) new argument 'tmn.labels' to decide whether to show the numeric values above the monthly minimum temperature lines
+                            -) new argument 'pcp.labels.cex' to specify the relative scaling of the monthly precipitation values shown in the climograph
+                            -) new argument 'temp.labels.cex' to specify the relative scaling of the monthly air temperature values (mean, maximum, minimum) shown in the climograph
+                            -) new arguments 'temp.labels.dx' and 'temp.labels.dy' to specify the position of air temperature labels
                             -) new argument 'plot.pcp.probs' to decide whether to show uncertainty values around the monthly mean precipitation values
                             -) new argument 'pcp.probs' to define the quantile values used to show uncertainty values around the monthlyy mean precipitation values
                             -) new argument 'plot.temp.probs' to decide whether to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
