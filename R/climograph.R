@@ -46,6 +46,7 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        main="Climograph", 
                        pcp.label="Precipitation, [mm]", 
                        tmean.label="Air temperature, [\U00B0 C]",
+                       start.month=1,
 
                        pcp.col="lightblue", 
                        tmean.col="darkred",
@@ -78,6 +79,23 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     bands <- c(as.numeric(lband), rev(as.numeric(uband)))
     polygon(t, bands, col=col, border=border)
   } # .plotbands END
+
+  .shift <- function(x, imonth) {
+    L <- length(x)
+    if (imonth>L) stop("[ Invalid value: 'imonth' can not be larger than ", L, " !]")
+    delta <- imonth-1
+    index.old <- 1:L
+    index.new <- index.old-delta
+    neg <- which(index.new <=0)
+    index.new[neg] <- index.new[neg]+L
+    if (class(x) == "zoo") {
+      x.raw    <- zoo::coredata(x)
+      x.labels <- as.character(time(x))
+      out        <- x.raw[match(index.old, index.new)] 
+      names(out) <- x.labels[match(index.old, index.new)] 
+    } else out <- x[match(index.old, index.new)] 
+    return(out)
+  } # .shift END
 
   if (missing(pcp)) {
     stop("Missing argument: 'pcp' must be provided !")
@@ -147,14 +165,31 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
   if ( (sfreq(pcp) != "monthly") | ( (sfreq(pcp) == "monthly") & ( length(pcp) > 12) ) )
     pcp.m.avg <- monthlyfunction(pcp, FUN=sum, na.rm=na.rm) / nyears
+    if (start.month != 1) pcp.m.avg <- .shift(x=pcp.m.avg, imonth=start.month)
 
   if ( (sfreq(tmean) != "monthly") | ( (sfreq(tmean) == "monthly") & ( length(tmean) > 12) ) )
     tmean.m.avg <- monthlyfunction(tmean, FUN=mean, na.rm=na.rm)
+    if (start.month != 1) tmean.m.avg <- .shift(x=tmean.m.avg, imonth=start.month)
+
+  # If provided, computing monthly values of tmx and tmn
+  if ( !missing(tmx) & !missing(tmn)) {
+    if ( (sfreq(tmx) != "monthly") | ( (sfreq(tmx) == "monthly") & ( length(tmx) > 12) ) ) {
+      tmx.m.avg <- monthlyfunction(tmx, FUN=mean, na.rm=na.rm)
+      if (start.month != 1) tmx.m.avg <- .shift(x=tmx.m.avg, imonth=start.month)
+    } # IF end
+
+    if ( (sfreq(tmn) != "monthly") | ( (sfreq(tmn) == "monthly") & ( length(tmn) > 12) ) ) {
+      tmn.m.avg <- monthlyfunction(tmn, FUN=mean, na.rm=na.rm)
+      if (start.month != 1) tmn.m.avg <- .shift(x=tmn.m.avg, imonth=start.month)
+    } # IF end
+  } # IF end
 
   if (plot.pcp.probs) {
     pcp.m    <- daily2monthly(pcp, FUN=sum, na.rm=na.rm)
     pcp.m.q1 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[1], na.rm=na.rm)
     pcp.m.q2 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[2], na.rm=na.rm)
+    if (start.month != 1) pcp.m.q1 <- .shift(x=pcp.m.q1, imonth=start.month)
+    if (start.month != 1) pcp.m.q2 <- .shift(x=pcp.m.q2, imonth=start.month)
   } # IF end
 
   if (plot.temp.probs) {
@@ -163,6 +198,8 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     tmean.m    <- daily2monthly(tmean, FUN=mean, na.rm=na.rm)
     tmean.m.q1 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
     tmean.m.q2 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
+    if (start.month != 1) tmean.m.q1 <- .shift(x=tmean.m.q1, imonth=start.month)
+    if (start.month != 1) tmean.m.q2 <- .shift(x=tmean.m.q2, imonth=start.month)
 
     if ( !missing(tmx) & !missing(tmn)) {
       tmx.m    <- daily2monthly(tmx, FUN=mean, na.rm=na.rm)
@@ -171,6 +208,12 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
       tmx.m.q2 <- monthlyfunction(tmx.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
       tmn.m.q1 <- monthlyfunction(tmn.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
       tmn.m.q2 <- monthlyfunction(tmn.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
+      if (start.month != 1) {
+        tmx.m.q1 <- .shift(x=tmx.m.q1, imonth=start.month)
+        tmx.m.q2 <- .shift(x=tmx.m.q2, imonth=start.month)
+        tmn.m.q1 <- .shift(x=tmn.m.q1, imonth=start.month)
+        tmn.m.q2 <- .shift(x=tmn.m.q2, imonth=start.month)
+      } # IF end
     } # IF end
   } # IF end
 
@@ -210,15 +253,8 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   if (pcp.labels) text(x-deltax, pcp.m.avg+2, cex=pcp.labels.cex, adj=0.5, labels= round(pcp.m.avg,1), col="black" )
 
 
-  # If provided, computing monthly values of tmx and tmn, and the 
-  # ylim for the secondary temperature axis
+  # If provided, computing the ylim for the secondary temperature axis
   if ( !missing(tmx) & !missing(tmn)) {
-    if ( (sfreq(tmx) != "monthly") | ( (sfreq(tmx) == "monthly") & ( length(tmx) > 12) ) )
-      tmx.m.avg <- monthlyfunction(tmx, FUN=mean, na.rm=na.rm)
-
-    if ( (sfreq(tmn) != "monthly") | ( (sfreq(tmn) == "monthly") & ( length(tmn) > 12) ) )
-      tmn.m.avg <- monthlyfunction(tmn, FUN=mean, na.rm=na.rm)
-
     if (plot.temp.probs) {
       ylim <- range(#pretty(tmx.m.avg), pretty(tmean.m.avg), pretty(tmn.m.avg),
                     pretty(tmx.m.q1), pretty(tmean.m.q1), pretty(tmn.m.q1),

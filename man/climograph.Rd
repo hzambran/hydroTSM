@@ -20,7 +20,7 @@ Function to draw a climograph based on precipitation and temperature data.
 climograph(pcp, tmean, tmx, tmn, na.rm=TRUE,  
            from, to, date.fmt="\%Y-\%m-\%d", 
            main="Climograph", pcp.label="Precipitation, [mm]", 
-           tmean.label="Air temperature, [\U00B0 C]",
+           tmean.label="Air temperature, [\U00B0 C]",start.month=1,
            pcp.col="lightblue", tmean.col="darkred", tmn.col="blue", tmx.col="red",
            pcp.labels=TRUE, tmean.labels=TRUE, tmx.labels=TRUE, tmn.labels=TRUE,
            pcp.labels.cex=0.8, temp.labels.cex=0.8,
@@ -74,6 +74,9 @@ Character used in the legend to represent the monthly average precipitation (mos
 }
   \item{tmean.label}{
 Character used in the legend to represent the monthly average temperature (mostly thought for languages different from English). 
+}
+  \item{start.month}{
+numeric in [1:12] indicating the starting month for the climograph. Numeric values in [1, 12] represents months in [January, December]. By default \code{start.month=1}.
 }
   \item{pcp.col}{
 Color used in the legend to represent the monthly average precipitation. 
@@ -204,6 +207,13 @@ m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plo
 
 ## Plotting the most basic climograph: only mean values of precipiation and air temperature
 m <- climograph(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE, 
+                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
+
+
+## Plotting a full climograph, starting in April (start.month=4) instead of January (start.month=1),
+## to better represent the hydrological year in Chile (South America)
+m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
+                start.month=4, temp.labels.dx=c(rep(-0.2,4), rep(0.2,6),rep(-0.2,2)),
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 }
