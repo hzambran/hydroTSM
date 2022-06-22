@@ -11,6 +11,7 @@ NEWS/ChangeLog for hydroTSM
                             -) 'from' argument has a default value of NULL
                             -) 'to' argument has a default value of NULL
         o 'climograph'  :   -) now it plots the minimum and maximum temperature when they are provided 
+                            -) new argument 'start.month' to choose the starting month for the climograph (1=Jan, 12=Dec).
                             -) new argument 'tmn.col' to choose the color to be used to plot the minimum monthly temperature
                             -) new argument 'tmx.col' to choose the color to be used to plot the maximum monthly temperature
                             -) new argument 'pcp.labels' to decide whether to show the numeric values above the monthly precipitation bars
