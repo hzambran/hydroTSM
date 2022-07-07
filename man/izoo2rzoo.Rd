@@ -45,8 +45,8 @@ character, indicating the time step used for creating the time sequence going fr
 Valid values are (but not limited to) \kbd{days}, \kbd{months}, \kbd{years}, \kbd{hours}
 }
   \item{tz}{
-time zone specification to be used with subdaily zoo objects.  System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
-This argument can be used when working with subdaily zooobjects to force using GMT as time zone instead of the local one.
+specification of the desired time zone yo be used. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+This argument can be used when working with subdaily zoo objects to force using the local time zone instead of GMT as time zone.
 }
   \item{\dots}{
 further arguments passed to or from other methods
