@@ -17,7 +17,7 @@ Given any starting and ending date/time objects, it generates:  \cr
 2) the amount of hours between the two date/time objects 
 }
 \usage{
-hip(from, to, date.fmt="\%Y-\%m-\%d \%H", out.type = "seq")
+hip(from, to, date.fmt="\%Y-\%m-\%d \%H", out.type = "seq", tz="GMT")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
