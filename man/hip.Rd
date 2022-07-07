@@ -36,6 +36,10 @@ Character indicating the type of result that is given by this function. Valid va
 1) \kbd{seq} : a vector of class Date with all the days between the two dates, OR \cr
 2) \kbd{nmbr}: a single numeric value with the amount of days between the two dates.
 }
+  \item{tz}{
+specification of the desired time zone yo be used. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+This argument can be used when working with subdaily zoo objects to force using the local time zone instead of GMT as time zone.
+}
 }
 %%\details{
 %%  ~~ If necessary, more details than the description above ~~

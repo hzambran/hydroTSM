@@ -9,11 +9,12 @@
 ################################################################################       
 # Purpose: Given any starting and ending date/time objects, it generates:      #
 #        1) a vector with all the hours between the two dates, OR              #
-#	 2) the amount of hours between the two date/time objects              #
+#	 2) the amount of hours between the two date/time objects                  #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 2008                                                                #
 # Updates: 29-May-2013                                                         #
+#          07-Jul-2022                                                         #
 ################################################################################
 
 # 'from'    : Character indicating the starting date/time object for computing the number of hours.
@@ -25,7 +26,11 @@
 #             Valid values are:
 #		      -) type= "seq"  => a vectorial sequence with all the hours within the given time period
 #		      -) type= "nmbr" => the number of hours in the vectorial sequence with all the hourswithin the given time period
-hip <- function(from, to, date.fmt="%Y-%m-%d %H", out.type="seq") {
+# 'tz'      : specification of the desired time zone yo be used. 
+#             System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). 
+#             See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+#             This argument can be used when working with subdaily zoo objects to force using the local time zone instead of GMT as time zone.
+hip <- function(from, to, date.fmt="%Y-%m-%d %H", out.type="seq", tz="GMT") {
 
      # Checking 'out.type'
      if (is.na(match(out.type, c("seq", "nmbr"))))
@@ -34,7 +39,7 @@ hip <- function(from, to, date.fmt="%Y-%m-%d %H", out.type="seq") {
      # Converting 'from' into a Date object (if necessary)
      if (is.na(match(class(from), c("POSIXct", "POSIXt")))) {
        from.bak <- from
-       from     <- as.POSIXct(from, format=date.fmt)
+       from     <- as.POSIXct(from, format=date.fmt, tz=tz)
      } # IF end
      
      # Checking that 'from' is a valid Date object
@@ -45,7 +50,7 @@ hip <- function(from, to, date.fmt="%Y-%m-%d %H", out.type="seq") {
      # Converting 'to' into a Date object (if necessary)
      if (is.na(match(class(to), c("POSIXct", "POSIXt")))) {
        to.bak <- to
-       to     <- as.POSIXct(to, format=date.fmt)
+       to     <- as.POSIXct(to, format=date.fmt, tz=tz)
      } # IF end
      
      # Checking that 'to' is a valid Date object
