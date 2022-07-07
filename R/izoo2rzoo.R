@@ -21,6 +21,10 @@
 # from      : starting date for the merged output
 # to	    : ending date for the merged output
 # tstep     : time step in which are stored the values of 'x'
+# tz        : specification of the desired time zone yo be used. 
+#             System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). 
+#             See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+#             This argument can be used when working with subdaily zoo objects to force using the local time zone instead of GMT as time zone.
 
 izoo2rzoo <-function(x, ...) UseMethod("izoo2rzoo")
 
