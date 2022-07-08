@@ -395,3 +395,35 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 *  [**Quick reference for the `zoo` package**](https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf): https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf
 
 
+## F.A.Q.
+
+# How to print more than one `matrixplot` in a single Figure?
+Beacuase `matrixplot` is based on lattice graphs, normal plotting commands included in base R does not work. 
+Therefore, for plotting ore than 1 matrixplot ina single figure, you need to save the individual plots in an R object and then print them as you want.
+
+Int he following sequential lines of code, you can see two examples that show you how to plot two matrixplots in a single Figure:
+
+
+```{r FAQmatrixplot1, fig.width = 8, fig.height = 7, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9)}
+library(hydroTSM)
+data(SanMartinoPPts)
+x <- window(SanMartinoPPts, end=as.Date("1960-12-31"))
+m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
+M <- matrix(m, ncol=12, byrow=TRUE)
+colnames(M) <- month.abb
+rownames(M) <- unique(format(time(m), "%Y"))
+p <- matrixplot(M, ColorRamp="Precipitation", main="Monthly precipitation,")
+
+print(p, position=c(0, .6, 1, 1), more=TRUE)
+print(p, position=c(0, 0, 1, .4))
+```
+
+The second and easier way allows you to obtain the same previous figure (not shown here), but you are required to install the `gridExtra` package:
+
+```{r FAQmatrixplot2, fig.width = 8, fig.height = 7, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9), eval=FALSE}
+if (!require(gridExtra)) install.packages("gridExtra")
+require(gridExtra) # also loads grid
+require(lattice)
+
+grid.arrange(p, p, nrow=2)
+```
