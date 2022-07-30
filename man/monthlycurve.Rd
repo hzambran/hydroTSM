@@ -143,41 +143,25 @@ If the output monthlycurve present some mixed or not legible characters, you mig
 }
 \examples{
 ######################
-## Ex1: Loading the DAILY precipitation, maximum and minimum air temperature at 
-##      station Maquehue Temuco Ad (Chile)
-data(MaquehueTemuco)
-pcp <- MaquehueTemuco[, 1]
-tmx <- MaquehueTemuco[, 2]
-tmn <- MaquehueTemuco[, 3]
+## Ex1: Loading daily streamflows at the station Oca en Ona (Ebro River basin, Spain)
+## 
+data(OcaEnOnaQts)
+q <- OcaEnOnaQts
+
+# Because we do not have the actual precipitation values over the Oca en Ona, we are going to 
+# create a dummy values thereof:
+p <- q/10
 
 ## Plotting a full monthlycurve
-m <- monthlycurve(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
+m <- monthlycurve(q, pcp=p)
 
-## Plotting a monthlycurve with uncertainty bands around mean values, but with no labels for tmx and tmn
-m <- monthlycurve(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
+## Plotting a monthlycurve with uncertainty bands around mean values, but with no labels
+m <- monthlycurve(q, pcp=p, labels=FALSE)
 
-## Plotting a monthlycurve with uncertainty bands around mean values, but with no labels for 
-##  tmx, tmn and pcp
-m <- monthlycurve(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
-                pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
-
-## Plotting a monthlycurve with no uncertainty bands around mean values
-m <- monthlycurve(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
-
-## Plotting the most basic monthlycurve: only mean values of precipiation and air temperature
-m <- monthlycurve(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
+## Plotting a monthlycurve without precipitation data
+m <- monthlycurve(q)
 
 
-## Plotting a full monthlycurve, starting in April (start.month=4) instead of January (start.month=1),
-## to better represent the hydrological year in Chile (South America)
-m <- monthlycurve(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
-                start.month=4, temp.labels.dx=c(rep(-0.2,4), rep(0.2,6),rep(-0.2,2)),
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
