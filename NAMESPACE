@@ -93,5 +93,4 @@ S3method(subhourly2hourly, data.frame)
 S3method(subhourly2hourly, default)
 S3method(subhourly2hourly, matrix)
 S3method(hypsometric, SpatialGridDataFrame)
-S3method(monthlycurve, default)
 
