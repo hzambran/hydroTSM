@@ -47,7 +47,7 @@ ONLY used (togheter with \code{tmn}) when \code{tmean}' is missing.
 }
   \item{tmn}{
 variable of type 'zoo' with monthly, daily or subdaily minimum temperature data. 
-ONLY used (togheter with \code{tmx}) when \code{tmean} is missing.
+ONLY used (together with \code{tmx}) when \code{tmean} is missing.
 }
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
@@ -111,14 +111,14 @@ numeric giving the amount by which plotting characters used to show the numeric 
 It is only used when \code{tmean.labels=TRUE} or \code{tmx.labels=TRUE} or \code{tmn.labels=TRUE}.
 }
   \item{temp.labels.dx}{
-numeric of lenght 12 giving the amount of horizontal coordinate positions that have to be used to shift the labels of monthly air temperature values (mean, maximum, minimum). \cr
+numeric of length 12 giving the amount of horizontal coordinate positions that have to be used to shift the labels of monthly air temperature values (mean, maximum, minimum). \cr
 It is only used when \code{tmean.labels=TRUE} or \code{tmx.labels=TRUE} or \code{tmn.labels=TRUE}. \cr
-Lenghts smaller than 12 are recycled and larger lenghts are not used.
+Lengths smaller than 12 are recycled and larger lenghts are not used.
 }
   \item{temp.labels.dy}{
-numeric of lenght 12 giving the amount of veritcal coordinate positions that have to be used to shift the labels of monthly air temperature values (mean, maximum, minimum). \cr
+numeric of length 12 giving the amount of vertical coordinate positions that have to be used to shift the labels of monthly air temperature values (mean, maximum, minimum). \cr
 It is only used when \code{tmean.labels=TRUE} or \code{tmx.labels=TRUE} or \code{tmn.labels=TRUE}. \cr
-Lenghts smaller than 12 are recycled and larger lenghts are not used.
+Lengths smaller than 12 are recycled and larger lengths are not used.
 }
   \item{lat}{
 [OPTIONAL] numeric or character used to show the latitude for which the climograph was plotted for.
@@ -131,9 +131,9 @@ logical used to decide whether to show uncertainty values around the monthly mea
 When \code{plot.pcp.probs=TRUE} the \code{pcp.probs} argument is used to define the values of the lower an upper uncertainty bounds.
 } 
   \item{pcp.probs}{
-numeric of length 2. It is used to define quantile values used to compute the lower an upper uncertainty bounds for each one of the 12 monthly precipitation values.\cr 
+numeric of length 2. It defines the quantile values used to compute the lower an upper uncertainty bounds for each one of the 12 monthly precipitation values.\cr 
 By default \code{pcp.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly precipitation values. 
-If \code{pcp} is a (sub)daily zoo object, it is first agreggated into monthly values using \code{mean}, and then the \code{pcp.probs} quantiles are computed over all the monthly values belonging to a calendar month.
+If \code{pcp} is a (sub)daily zoo object, it is first aggregated into monthly values using \code{mean}, and then the \code{pcp.probs} quantiles are computed over all the monthly values belonging to a calendar month.
 } 
   \item{plot.temp.probs}{
 logical used to decide whether to show uncertainty values around the monthly mean temperature values. By default \code{plot.temp.probs=TRUE}. \cr 
@@ -143,14 +143,14 @@ When \code{plot.temp.probs=TRUE} the \code{temp.probs} argument is used to defin
 numeric of length 2. It is used to define quantile values used to compute the lower an upper uncertainty bounds for each one of the 12 monthly mean temperature values.\cr 
 If \code{tmx} and \code{tmn} are provided, then \code{temp.probs} are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly maximum/minimum temperature values. \cr
 By default \code{temp.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly mean(maximum/minimum) values. 
-If \code{tmx/tmn} is provided and is a (sub)daily zoo object, it is first agreggated into monthly values using \code{mean}, and then the \code{temp.probs} quantiles are computed over all the monthly values belonging to a calendar month.
+If \code{tmx/tmn} is provided and is a (sub)daily zoo object, it is first aggregated into monthly values using \code{mean}, and then the \code{temp.probs} quantiles are computed over all the monthly values belonging to a calendar month.
 } 
   \item{temp.probs.col}{
-character of lenght 3, with the colors used to for plotting the uncertainty bands around the average monthly values of the minimum, mean and maximum air temperature, respectively. \cr
+character of length 3, with the colors used to for plotting the uncertainty bands around the average monthly values of the minimum, mean and maximum air temperature, respectively. \cr
 If \code{tmx} and \code{tmn} are not provided by the user, the second element of \code{temp.probs.col} will still be used to define the color of the  uncertainty band around the mean monthly values of air temperature.
 } 
   \item{temp.probs.alpha}{
-numeric of lenght 1, with the factor used to modify the opacity of \code{temp.probs.col}. Typically in [0,1], with 0 indicating a completly transparent colour and 1 indicating no transparency.
+numeric of length 1, with the factor used to modify the opacity of \code{temp.probs.col}. Typically in [0,1], with 0 indicating a completely transparent colour and 1 indicating no transparency.
 } 
 }
 %%\details{
