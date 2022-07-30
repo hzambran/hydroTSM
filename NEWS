@@ -2,6 +2,7 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 0.7-0   (under-development)
         o new function  : 'subhourly2hourly' for aggregating sub-hourly values into hourly ones.
+        o new function  : 'monthlycurve' to plot monthly variation of streamflow (and optionally precipitation) values, with uncertainty bound around mean values.
 
         o 'hip'         :   -) new argument 'tz' to allow the user to specify the desired time zone. By default, "tz='GMT'", while previous versions implicitly used "tz=''" (local time zone)
 
