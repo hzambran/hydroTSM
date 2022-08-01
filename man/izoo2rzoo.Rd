@@ -19,9 +19,11 @@ It takes an irregular zoo object (with non-existing values for some dates) and c
 \usage{
 izoo2rzoo(x, ...)
 
-\method{izoo2rzoo}{default}(x, from= start(x), to= end(x), date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="GMT", ...)
+\method{izoo2rzoo}{default}(x, from= start(x), to= end(x), 
+                            date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="GMT", ...)
      
-\method{izoo2rzoo}{zoo}(x, from= start(x), to= end(x), date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="GMT", ...)
+\method{izoo2rzoo}{zoo}(x, from= start(x), to= end(x), 
+                        date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="GMT", ...)
 
 }
 %- maybe also 'usage' for other objects documented here.

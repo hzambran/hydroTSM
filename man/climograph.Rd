@@ -191,7 +191,8 @@ tmn <- MaquehueTemuco[, 3]
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
-## Plotting a climograph with uncertainty bands around mean values, but with no labels for tmx and tmn
+## Plotting a climograph with uncertainty bands around mean values, 
+## but with no labels for tmx and tmn
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE, 
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
@@ -206,8 +207,9 @@ m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plo
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 ## Plotting the most basic climograph: only mean values of precipiation and air temperature
-m <- climograph(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
+m <- climograph(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, 
+                plot.temp.probs=FALSE, main="Maquehue Temuco Ad (Chile)", 
+                lat=-38.770, lon=-72.637)
 
 
 ## Plotting a full climograph, starting in April (start.month=4) instead of January (start.month=1),

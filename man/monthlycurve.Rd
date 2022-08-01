@@ -21,9 +21,11 @@ monthlycurve(x, pcp, na.rm=TRUE, from, to, date.fmt="\%Y-\%m-\%d",
              main=ifelse(missing(pcp), "Monthly Streamflows", "Monthly P and Q"), 
              FUN=mean, start.month=1, x.col="blue", 
              ubands.probs=c(0.25, 0.75), ubands.col="lightskyblue1", ubands.alpha=0.8,
-             pcp.probs=c(0.25, 0.75), pcp.col="lightskyblue1", pcp.alpha=0.8, pcp.ylab="P, [mm]",
+             pcp.probs=c(0.25, 0.75), pcp.col="lightskyblue1", 
+             pcp.alpha=0.8, pcp.ylab="P, [mm]",
              xlab="Month", ylab="Q, [m3/s]", labels=TRUE, labels.cex=0.8,
-             labels.dx=c(rep(-0.2,6), rep(0.2,6)), labels.dy=rep(-median(x, na.rm=TRUE)/10, 12)
+             labels.dx=c(rep(-0.2,6), rep(0.2,6)), 
+             labels.dy=rep(-median(x, na.rm=TRUE)/10, 12)
              )
 
 }
