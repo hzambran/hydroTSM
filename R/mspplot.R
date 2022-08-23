@@ -13,6 +13,7 @@
 # Updates: 25-Apr-2009, Ago 2009, Sep 2009                                     #
 #          15-Jan-2014                                                         #
 #          04-Feb-2015                                                         #
+#          23-Aug-2022                                                         #
 ################################################################################
 # This function makes an IDW interpolation over a catchment defined by a
 # polygonal shapefile, and plots its map. It works only for 1 single time
@@ -75,12 +76,14 @@ mspplot <- function(x,
  #  1) Checking the arguments     #
  ##################################
 
+ .Deprecated(new="plot", package="terra")
+
   # Checking the class of 'x'
   #if (is.na(match(class(x), c("data.frame", "numeric", "integer") ) ) ) {
   #   stop( "Invalid argument: class(x) must be in c('data.frame', 'numeric', 'integer')" ) }
 
   # Checking that the file 'subcatchments' really exists
-  if (class(subcatchments) == "character") {
+  if ( inherits(subcatchments, "character") ) {
     if (!file.exists(subcatchments) )
        stop(paste("Invalid argument: the file '", basename(subcatchments), "' doesn't exist", sep="") )
   } # IF end
@@ -100,7 +103,7 @@ mspplot <- function(x,
   # Temperature.cols <- rev(heat.colors(100))
 
   ## Generating palettes of colors
-  if (class(ColorRamp) != "function"  ) {
+  if ( !inherits(ColorRamp, "function")  ) {
      # Checking that the user provided a valid argument for 'ColorRamp'
     if (is.na(match(ColorRamp, c("Precipitation", "Temperature", "PCPAnomaly", "PCPAnomaly2", "TEMPAnomaly", "TEMPAnomaly2", "TEMPAnomaly3") ) ) ) {
       stop("Invalid argument: 'ColorRamp' must be in c('Precipitation', 'Temperature', 'PCPAnomaly', 'PCPAnomaly2', 'TEMPAnomaly', 'TEMPAnomaly2', 'TEMPAnomaly3')")
@@ -158,7 +161,7 @@ mspplot <- function(x,
      if (missing(stations.gis)) {
        stop( "Missing argument: 'stations.gis' has to be supplied when 'stations.plot=TRUE'" )
      } else {# Checking the class of 'stations.gis'
-          if (class(stations.gis) != "data.frame" ) {
+          if (!inherits(stations.gis, "data.frame") ) {
 
 	     stop( "Invalid argument: class(stations.gis) have to be 'data.frame' " )
 
@@ -189,7 +192,7 @@ mspplot <- function(x,
   # 6.4)Polygon with the catchment, for being put over the interpolations
 	# Reading the SubCATCHMENTS of the CATCHMENT
 	#require(maptools) #it is necessary for usign the function "readShapePoly"
-	if (class(subcatchments) == "character") {
+	if (inherits(subcatchments, "character") ) {
 
            if (requireNamespace("maptools", quietly = TRUE)) {
 	     if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]" )
@@ -266,7 +269,7 @@ mspplot <- function(x,
 				 } else {map.layout <- list(catchment.l1) }
 		  } # END if (stations.plot)
 
-	 if (class(col.at)=="numeric") {
+	 if ( inherits(col.at, "numeric") ) {
 	   a <- sp::spplot(x, sp.layout = map.layout, scales=list(draw=TRUE, y=list(rot=90), abbreviate=FALSE),
                        main=main, col.regions= ColorRamp(col.nintv), at=col.at, as.table=TRUE )
 	} else {

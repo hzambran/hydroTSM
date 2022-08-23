@@ -9,11 +9,12 @@
 ################################################################################
 # Given any starting and ending dates, it generates:                           #
 #        1) a vector of dates with all the years between the two dates, OR     #
-#		     2) the amount of years between the two dates              #
+#		     2) the amount of years between the two dates                          #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 18-May-2010                                                         #
 # Updates: 29-May-2013                                                         #
+#          22-Aug-2022                                                         #
 ################################################################################
 
 # 'from'    : Starting date for computing the number of years. MUST have the date format specified by 'date.fmt'
@@ -29,7 +30,7 @@ yip <- function(from, to, date.fmt="%Y-%m-%d", out.type="seq") {
         stop("Invalid argument: 'out.type' must be of class 'seq' or 'nmbr'")
         
      # Converting 'from' into a Date object (if necessary)
-     if (class(from) != "Date") {
+     if ( !inherits(from, "Date") ) {
        from.bak <- from
        from     <- as.Date(from, format=date.fmt)
      } # IF end
@@ -40,7 +41,7 @@ yip <- function(from, to, date.fmt="%Y-%m-%d", out.type="seq") {
             ") is not compatible with 'date.ftm' (", date.fmt, ") !")
      
      # Converting 'to' into a Date object (if necessary)
-     if (class(to) != "Date") {
+     if ( !inherits(to, "Date") ) {
        to.bak <- to
        to     <- as.Date(to, format=date.fmt)
      } # IF end

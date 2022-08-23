@@ -105,7 +105,7 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates:                                                                     #
+# Updates: 23-Aug-2022                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -144,7 +144,7 @@ subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
-  if ( TRUE && (class(dates) == "numeric") ) {
+  if ( TRUE && ( inherits(dates, "numeric") ) ) {
     tmp   <- dates
     dates <- as.POSIXct(x[, dates], format= date.fmt, tz=tz) 
     x     <- x[-tmp]
@@ -152,7 +152,7 @@ subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( TRUE && (class(dates) == "factor") ) dates <- as.POSIXct(dates, format= date.fmt) 
+  if ( TRUE && ( inherits(dates, "factor") ) ) dates <- as.POSIXct(dates, format= date.fmt) 
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the

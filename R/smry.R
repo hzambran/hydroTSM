@@ -17,6 +17,7 @@
 # Started: 14-Jun-2008;                                                        #
 # Updates: 11-Sep-2009 ; 30-Aug-2011  ; 14-Sep-2011 ; 15-Sep-2011              #
 #          29-May-2013 ; 21-Jul-2015                                           #
+#          23-Aug-2022                                                         #
 ################################################################################
 smry <-function(x, ...) UseMethod("smry")
 
@@ -62,7 +63,7 @@ smry.default <- function(x, na.rm=TRUE, digits = max(3, getOption("digits")-3), 
         z[13,1] <- n   # Number of elements
 
 
-    } else if ( class(x) == "Date" ) { 
+    } else if ( inherits(x, "Date") ) { 
               z <- smry.Date( x, na.rm=na.rm, digits=digits, ... ) 
            } else z[1:13, 1] <- NA
 

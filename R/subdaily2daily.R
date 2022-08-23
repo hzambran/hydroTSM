@@ -115,6 +115,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Started: 09-Apr-2013                                                         #
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
+#          23-Aug-2022                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -153,7 +154,7 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
-  if ( TRUE && (class(dates) == "numeric") ) {
+  if ( TRUE && ( inherits(dates, "numeric") ) ) {
     tmp   <- dates
     dates <- as.POSIXct(x[, dates], format= date.fmt, tz=tz) 
     x     <- x[-tmp]
@@ -161,7 +162,7 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( TRUE && (class(dates) == "factor") ) dates <- as.POSIXct(dates, format= date.fmt) 
+  if ( TRUE && ( inherits(dates, "factor") ) ) dates <- as.POSIXct(dates, format= date.fmt) 
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the

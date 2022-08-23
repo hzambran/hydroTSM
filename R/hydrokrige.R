@@ -179,7 +179,7 @@ hydrokrige.default <- function(x.ts, x.gis,
   # Checking that the user provided a valid value for 'x.gis'
   if ( missing(x.gis) ) {
     stop("Missing argument: 'x.gis' must be provided")
-  } else if ( class(x.gis) != "data.frame")
+  } else if ( !inherits(x.gis, "data.frame") )
      stop("Invalid argument: 'class(x.gis)' must be 'data.frame'")
 
   # Checking that there are -at least- 2 stations in 'x.ts' with a location in 'x.gis'
@@ -192,7 +192,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
   # When provided, checking that the file 'subcatchments' really exists
   if (!missing(subcatchments)) {
-      if (class(subcatchments) == "character") {
+      if ( inherits(subcatchments, "character") ) {
 	if (!file.exists(subcatchments) )
 	   stop(paste("Invalid argument: The file '", basename(subcatchments), "' doesn't exist", sep="") )
       } # IF end
@@ -303,7 +303,7 @@ hydrokrige.default <- function(x.ts, x.gis,
  if (!missing(subcatchments)) {
 
      # If the user provided the name of the shapefile
-     if (class(subcatchments) == "character") {
+     if ( inherits(subcatchments, "character") ) {
 
        # Reading the SubCATCHMENTS of the CATCHMENT
        #require(maptools) #it is necessary for usign the function "readShapePoly"
@@ -452,7 +452,7 @@ hydrokrige.default <- function(x.ts, x.gis,
  #    read from a raster file and it has attributes that can be used
  if ( !missing(predictors)  ) {
 
-   if (class(predictors)=="SpatialGridDataFrame" ) {
+   if ( inherits(predictors, "SpatialGridDataFrame") ) {
 
        # Grid-points overlay.
        # Assigning to all the points in 'x.work', the corresponding fields in 'predictors'
@@ -509,7 +509,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 	      message("[Warning: All the measurements are equal. Assigning the constant value to the predictions]")
 
         # Flag that indicates if all the measurements are equal
-	constant_field <- TRUE
+	      constant_field <- TRUE
 
         constant_value <- unique(x.work$value)
         
@@ -518,7 +518,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
     } else {
         # Flag that indicates if all the measurements are equal
-	constant_field <- FALSE
+	      constant_field <- FALSE
       } # ELSE end
 
 
@@ -577,7 +577,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
       # If the user didn't provide the raster map (class "SpatialGridDataFrame"),
       # all the cells in 'predictors' will receive the constant value
-      if (class(predictors) != "SpatialGridDataFrame" ) {
+      if ( !inherits(predictors, "SpatialGridDataFrame") ) {
 
         x.idw@data["var1.pred"] <- constant_value
 
@@ -633,7 +633,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
         #if (!is.null(IDvar)) x.idw.block@data[[IDvar]] <- NULL
         
-        if (  class(predictors) == "SpatialGridDataFrame" ) {
+        if (  inherits(predictors, "SpatialGridDataFrame") ) {
            tmp.block <- over(SubCatchments.shp, as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), fn = mean)
         } else tmp.block <-  over(SubCatchments.shp, x.idw["var1.pred"], fn = mean)
 
@@ -658,7 +658,7 @@ hydrokrige.default <- function(x.ts, x.gis,
         }  # IF end
 
 	#require(automap)
-        #x.autokrige.block <- automap::autoKrige(formula, input_data=x.work, new_data=SubCatchments.shp, nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
+  #x.autokrige.block <- automap::autoKrige(formula, input_data=x.work, new_data=SubCatchments.shp, nmin=nmin, nmax=nmax, maxdist=maxdist, verbose=verbose,...)
 	#x.idw.block <- x.autokrige.block$krige_output
 
 	x.idw.block <- SubCatchments.shp
@@ -666,7 +666,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
         #tmp.block <- overlay( as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), SubCatchments.shp, fn = mean)
 
-        if (  class(predictors) == "SpatialGridDataFrame" ) {
+        if (  inherits(predictors, "SpatialGridDataFrame") ) {
            tmp.block <- over( SubCatchments.shp, as(x.idw["var1.pred"], "SpatialPixelsDataFrame"), fn = mean)
         } else tmp.block <-  over( SubCatchments.shp, x.idw["var1.pred"], fn = mean)
         
@@ -802,7 +802,7 @@ hydrokrige.default <- function(x.ts, x.gis,
 
 
      ## Generating palettes of colors
-    if (class(ColorRamp) != "function"  ) {
+    if ( !inherits(ColorRamp, "function") ) {
      # Checking that the user provided a valid argument for 'ColorRamp'
     if (is.na(match(ColorRamp, c("Precipitation", "Temperature", "PCPAnomaly", "PCPAnomaly2", "TEMPAnomaly", "TEMPAnomaly2", "TEMPAnomaly3") ) ) ) {
       stop("Invalid argument: 'ColorRamp' must be in c('Precipitation', 'Temperature', 'PCPAnomaly', 'PCPAnomaly2', 'TEMPAnomaly', 'TEMPAnomaly2', 'TEMPAnomaly3')")
@@ -827,7 +827,7 @@ hydrokrige.default <- function(x.ts, x.gis,
   } # IF end
 
      # Specify at which interpolated values colours change
-     if (class(col.at)=="numeric") {
+     if ( inherits(col.at, "numeric") ) {
 	      at.idw       <- col.at
 	      at.idw.block <- col.at
      } else
@@ -1119,7 +1119,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
   } else p4s.exists <- TRUE
 
   # Checking the class of 'x.gis'
-  if (class(x.gis) != "data.frame" )
+  if ( !inherits(x.gis, "data.frame") )
 	 stop(paste("Invalid argument: class(x.gis) must be 'data.fame'", sep=""))
 
   # Checking 'out.fmt'
@@ -1127,7 +1127,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 	 stop("Invalid argument: 'out.fmt' must be of in c('csv', 'csv2'")
 
   # Checking that the file 'subcatchments' really exists
-  if (class(subcatchments) == "character") {
+  if ( inherits(subcatchments, "character") ) {
     if (!file.exists(subcatchments) )
        stop(paste("Invalid argument: the file '", basename(subcatchments), "' doesn't exist", sep="") )
   } # IF end
@@ -1164,7 +1164,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
        stop("Invalid argument: 'col.nintv' must be integer")
 
   # Checking that the user provied a valid argument for 'col.at'
-  if (class(col.at) != "numeric" ) {
+  if ( !inherits(col.at, "numeric") ) {
 	if ( is.na(match(col.at, c("R", "auto") ) ) ) {
 		stop("Invalid argument: 'col.at' must be in c('R', 'auto') or be a numeric vector")
 	} # IF end
@@ -1195,7 +1195,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
 
   # Checking that the user provied a valid argument for 'dates'
   # If 'dates' is a single number, it indicates the index of the column of 'x' that stores the dates
-  if ( (class(dates) == "numeric") & (length(dates)==1 ) ) {
+  if ( ( inherits(dates, "numeric") ) & (length(dates)==1 ) ) {
      dates.col  <- dates
      dates      <- x.ts[, dates.col]
   }  else { # When class('dates') is not numeric
@@ -1243,7 +1243,7 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
   if (!missing(subcatchments)) {
 
      # If the user provided the name of the shapefile
-     if (class(subcatchments) == "character") {
+     if ( inherits(subcatchments, "character") ) {
 
        # Reading the SubCATCHMENTS of the CATCHMENT
        if (requireNamespace("maptools", quietly = TRUE)) { #it is necessary for usign the function "readShapePoly"

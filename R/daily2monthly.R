@@ -87,6 +87,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 # Updates: 09-Aug-2011                                                         #
 #          04-Jun-2012                                                         #
 #          29-May-2013                                                         #
+#          23-Aug-2022                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -133,7 +134,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
-  if ( class(dates) == "numeric" ) {
+  if ( inherits(dates, "numeric") ) {
     tmp   <- dates
     dates <- as.Date(x[, dates], format= date.fmt) # zoo::as.Date
     x     <- x[-tmp]
@@ -141,12 +142,12 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
+  if ( inherits(dates, "factor") ) dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
   # time series corresponding to the 'st.name' station
-  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+  if ( ( inherits(dates, "Date") ) & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
      
   # Transforming 'x' into a zoo object

@@ -20,7 +20,7 @@
 # Updates: 30-Jun-2016 ; 04-Jul-2016                                           # 
 #          08-May-2017 ; 09-May-2017                                           #
 #          10-Mar-2020 ; 07-Nov-2020                                           #
-#          May-2022    ; 20-Jun-2022                                           #
+#          May-2022    ; 20-Jun-2022 ; 22-Aug-2022                             #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
 #              precipitation data
@@ -88,7 +88,7 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     index.new <- index.old-delta
     neg <- which(index.new <=0)
     index.new[neg] <- index.new[neg]+L
-    if (class(x) == "zoo") {
+    if (inherits(x, "zoo")) {
       x.raw    <- zoo::coredata(x)
       x.labels <- as.character(time(x))
       out        <- x.raw[match(index.old, index.new)] 

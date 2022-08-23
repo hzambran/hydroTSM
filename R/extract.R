@@ -60,6 +60,7 @@ extract.default <- function(x, trgt, ...) {
 ################################################################################
 # Started: 22-Aug-2011                                                         #
 # Updates: 13-Feb-2014 ; 14-Feb-2014                                           #
+#          22-Aug-2022                                                         #
 ################################################################################
 extract.zoo <- function(x, trgt, ...) {
 
@@ -68,7 +69,7 @@ extract.zoo <- function(x, trgt, ...) {
       stop("Invalid argument: class('trgt') must be in c('integer', 'numeric','character')")
 
   # If 'trgt' is a month or a year
-  if ( (class(trgt)=="numeric") | (class(trgt)=="integer")) {
+  if ( (inherits(trgt, "numeric") ) | ( inherits(trgt, "integer") ) ) {
 
     # Checking that 'trgt' is integer
     if ( !isTRUE(all.equal(trgt - trunc(trgt), rep(0,length(trgt)) ) ) )
@@ -81,7 +82,7 @@ extract.zoo <- function(x, trgt, ...) {
   } # if END
 
     # if 'trgt' is a weather season
-    else if (class(trgt)=="character") {
+    else if ( inherits(trgt, "character") ) {
     
           seasons.default         <- c("DJF",  "MAM", "JJA",  "SON")
           seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJAS", "ON")

@@ -7,6 +7,7 @@
 ##############################################################
 # 'gists2spt': Time Series and GIS to Spatio-temporal Object #
 #                   Sep 12th, 2009                           #
+#  Updates: 23-Aug-2022                                      #          
 ##############################################################
 # Given a data.frame (x.gis) with the spatial coordinates of a set of
 # gauging stations, and a set of measurements in that stations (x.ts)
@@ -62,14 +63,14 @@ gists2spt <- function(x.gis, x.ts, sname, bname, X="x", Y="y", elevation,
 
 	# If 'x.ts' is a data.frame with only 1 row, it is converted into numeric,
         # for being sure that some functions refered to names of 'x.ts' will work
-	if ( (class(x.ts) == "data.frame") )  {
+	if ( ( inherits(x.ts, "data.frame") ) )  {
 	  snames <- colnames(x.ts)
 	  x.ts   <- as.numeric(x.ts)
 	  names(x.ts) <- snames
 	} # IF end
 
    # Checking the class of 'x.gis'
-   if (class(x.gis) != "data.frame" )
+   if ( !inherits(x.gis, "data.frame") )
      stop( "Invalid argument: class(x.gis) have to be 'data.frame' " )
 
    # If the user provided 'X', it checks that the field 'x' exists in 'x.gis'

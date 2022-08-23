@@ -85,6 +85,7 @@ annualfunction.zoo <- function(x, FUN, na.rm=TRUE,...) {
 # Started: 15-May-2009                                                     #
 # Updates: 01-Sep-2009 ; 09-Aug-2011                                       #
 #          29-May-2013 ; 03-Jun-2013                                       #
+#          22-Aug-2022                                                     #
 ############################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the 
 #             dates correponding to the 'sname' station
@@ -120,7 +121,7 @@ annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
   
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
-  if ( class(dates) == "numeric" ) {
+  if ( inherits(dates,  "numeric" ) ) {
     tmp   <- dates
     dates <- as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
@@ -128,12 +129,12 @@ annualfunction.data.frame <- function(x, FUN, na.rm=TRUE,
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
+  if ( inherits(dates, "factor") ) dates <- as.Date(dates, format= date.fmt)
   
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
   # time series corresponding to the 'st.name' station
-  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+  if ( ( inherits(dates, "Date") ) & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   x <- zoo(x, dates)

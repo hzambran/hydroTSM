@@ -12,6 +12,7 @@
 # Started: 13-Jan-2009                                                         #
 # Updates: 18-Oct-2012                                                         #
 #          29-May-2013 ; 29-May-2013                                           #
+#          23-Aug-2022                                                         #
 ################################################################################
 # This function takes a data.frame whose columns contains the time series
 # (without missing dates) of several gauging stations, it takes the name
@@ -92,16 +93,16 @@ sname2ts <- function(x, sname, dates=1, date.fmt="%Y-%m-%d", var.type,
     stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
-  if ( class(dates) == "numeric" ) dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
+  if ( inherits(dates, "numeric") ) dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
+  if ( inherits(dates, "factor") ) dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
   # time series corresponding to the 'st.name' station
-  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+  if ( ( inherits(dates, "Date") ) & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # column index of the station identified by 'sname' within 'x'

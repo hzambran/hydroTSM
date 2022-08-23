@@ -919,6 +919,7 @@ hydroplot.zoo <- function(x,
 #          04-Jun-2012                                                         #
 #          04-Apr-2013 ; 29-May-2013                                           #
 #          07-Nov-2020                                                         #
+#          23-Aug-2022                                                         #
 ################################################################################
 hydroplot.data.frame <- function(x, 
                                  FUN, na.rm=TRUE,
@@ -949,7 +950,7 @@ hydroplot.data.frame <- function(x,
     stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'character', 'Date', 'POSIXct', 'POSIXlt', 'POSIXt'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
-  if ( class(dates) == "numeric" ) {
+  if ( inherits(dates, "numeric") ) {
     temp  <- x[, -dates]
     dates <- as.Date(as.character(x[, dates]), format= date.fmt) # zoo::as.Date
     x     <- temp
@@ -957,13 +958,13 @@ hydroplot.data.frame <- function(x,
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( (class(dates) == "factor") | (class(dates) == "character")) 
+  if ( ( inherits(dates, "factor") ) | ( inherits(dates, "character") ) ) 
     dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
   # time series corresponding to the 'sname' station
-  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+  if ( ( inherits(dates, "Date") ) & (length(dates) != nrow(x) ) )
     stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")  
 
   # converting from data.frame to zoo

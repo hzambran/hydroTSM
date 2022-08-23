@@ -172,6 +172,7 @@ dwi.zoo <- function(x, out.unit="years", from= start(x), to= end(x),
 ################################################################################ 
 # Started: 21-Mar-2009                                                         #
 # Updates: 29-May-2013 ; 06-Aug-2013                                           #
+#          23-Aug-2022                                                         #
 ################################################################################ 
 # This function generates a table indicating the number of days
 # with information (<>NA's) within a data.frame
@@ -211,25 +212,25 @@ dwi.data.frame <- function(x, out.unit="years", from, to,
 
   # Verification that the number of days in 'dates' be equal to
   # the number of elements in 'x'
-  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+  if ( ( inherits(dates, "Date") ) & (length(dates) != nrow(x) ) )
        stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
-  if ( class(dates) == "numeric" ) {
+  if ( inherits(dates, "numeric") ) {
     tmp   <- dates
     dates <- as.Date(x[, dates], format= date.fmt) # zoo::as.Date
     x     <- x[-tmp]
   }  else
       # If 'dates' is a factor, it have to be converted into 'Date' class,
       # using the date format  specified by 'date.fmt'
-      if ( class(dates) == "factor" ) {
+      if ( inherits(dates, "factor") ) {
 	    dates <- as.Date(dates, format= date.fmt) # zoo::as.Date
 	  } else
 	    # If 'dates' is already of Date class, the following line verifies that
             # the number of days in 'dates' be equal to the number of element in the
             # time series corresponding to the 'st.name' station
-            if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+            if ( ( inherits(dates, "Date") ) & (length(dates) != nrow(x) ) )
               stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # Checking the validity of the 'from' argument

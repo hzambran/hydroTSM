@@ -11,6 +11,7 @@
 ################################################################################
 # Started: 24-Jan-2010                                                         #
 # Updates: 29-May-2013                                                         #
+#          23-Aug-2022                                                         #
 ################################################################################
 # Given a daily time series of precipitation, this function computes the average amount
 # of dry/wet days (pcp > thr or pcp < thr for wet and dry days, respectively) on each month
@@ -25,7 +26,7 @@ dwdays <-function(x, ...) UseMethod("dwdays")
 dwdays.default <- function(x, thr=0, type="wet", na.rm=TRUE, ... ) {
 
   # Checking the user provide a valid value for 'x'
-  if (is.na(match(class(x), c("zoo"))))
+  if ( !inherits(x, "zoo") )
     stop("Invalid argument: 'x' must be of class 'zoo'")
 
   # Checking the user provide a valid value for 'x'
@@ -73,6 +74,7 @@ dwdays.default <- function(x, thr=0, type="wet", na.rm=TRUE, ... ) {
 ################################################################################
 # Started: 24-Jan-2010                                                         #
 # Updates: 29-May-2013                                                         #
+#          23-Aug-2022                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -102,7 +104,7 @@ dwdays.data.frame <- function(x, thr=0, type="wet", na.rm=TRUE,
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
-  if ( class(dates) == "numeric" ) {
+  if ( inherits(dates,  "numeric") ) {
     tmp   <- dates
     dates <- as.Date(x[, dates], format= date.fmt)
     x     <- x[-tmp]
@@ -110,12 +112,12 @@ dwdays.data.frame <- function(x, thr=0, type="wet", na.rm=TRUE,
 
   # If 'dates' is a factor, it have to be converted into 'Date' class,
   # using the date format  specified by 'date.fmt'
-  if ( class(dates) == "factor" ) dates <- as.Date(dates, format= date.fmt)
+  if ( inherits(dates, "factor") ) dates <- as.Date(dates, format= date.fmt)
 
   # If 'dates' is already of Date class, the following line verifies that
   # the number of days in 'dates' be equal to the number of element in the
   # time series corresponding to the 'st.name' station
-  if ( ( class(dates) == "Date") & (length(dates) != nrow(x) ) )
+  if ( ( inherits(dates, "Date") ) & (length(dates) != nrow(x) ) )
      stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
 
   # Amount of stations in 'x'

@@ -71,7 +71,7 @@ monthlycurve <- function(x,
     index.new <- index.old-delta
     neg <- which(index.new <=0)
     index.new[neg] <- index.new[neg]+L
-    if (class(x) == "zoo") {
+    if ( is.zoo(x) == "zoo" ) {
       x.raw    <- zoo::coredata(x)
       x.labels <- as.character(time(x))
       out        <- x.raw[match(index.old, index.new)] 
