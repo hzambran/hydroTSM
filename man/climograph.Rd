@@ -76,7 +76,9 @@ Character used in the legend to represent the monthly average precipitation (mos
 Character used in the legend to represent the monthly average temperature (mostly thought for languages different from English). 
 }
   \item{start.month}{
-numeric in [1:12] indicating the starting month for the climograph. Numeric values in [1, 12] represents months in [January, December]. By default \code{start.month=1}.
+[OPTIONAL]. Only used when the (hydrological) year of interest is different from the calendar year.
+
+numeric in [1:12] indicating the starting month of the (hydrological) year. Numeric values in [1, 12] represents months in [January, December]. By default \code{start.month=1}.
 }
   \item{pcp.col}{
 Color used in the legend to represent the monthly average precipitation. 

@@ -69,6 +69,7 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
                        plot.temp.probs=TRUE,
                        temp.probs=c(0.25, 0.75),
+
                        temp.probs.col=c("#3399FF", "#FF9966", "#FFCC66"), # color of tmn, tmean, tmx
                        temp.probs.alpha=0.3
                        ) {
