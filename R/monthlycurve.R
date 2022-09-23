@@ -16,20 +16,20 @@
 # Author : Mauricio Zambrano-Bigiarini                                            #
 ###################################################################################
 # Started: 26-Jul-2022                                                            #
-# Updates.x:                                                                        #
+# Updates: 22-Sep-2022                                                            #
 ###################################################################################
-# 'x'        : object of type 'zoo' with monthly, daily or subdaily streamflow data.
-#              If x is a monthly zoo object, it must have 12 elments and it should be 
-#              named with the names of the months (levels(time(x))), otherwise, 
+# 'q'        : object of type 'zoo' with monthly, daily or subdaily streamflow data.
+#              If q is a monthly zoo object, it must have 12 elments and it should be 
+#              named with the names of the months (levels(time(q))), otherwise, 
 #              automatic names will be asigned from Jan to Dec for each one of the 
 #              12 monthly values
-# 'date.fmt' : format in which the dates.x are stored in 'from' and 'to'.
-# 'na.rm'    : Logical. Should missing values in 'x' be removed when using FUN?. 
+# 'date.fmt' : format in which the dates.q are stored in 'from' and 'to'.
+# 'na.rm'    : Logical. Should missing values in 'q' be removed when using FUN?. 
 #              It is also used when the optional argument 'pcp' is submonthly (e.g., daily, hourly), to decide whether missing values in the optional argument 'pcp' should be removed before aggregated into monthly scale
-#              TRUE : the monthly values  are computed considering only those values in 'x' (and 'pcp') different from NA
-#              FALSE: if 'x' (and 'pcp') has AT LEAST one NA within a month, the corresponding monthly values are NA
+#              TRUE : the monthly values  are computed considering only those values in 'q' (and 'pcp') different from NA
+#              FALSE: if 'q' (and 'pcp') has AT LEAST one NA within a month, the corresponding monthly values are NA
 
-monthlycurve <- function(x, 
+monthlycurve <- function(q, 
                          pcp,
                          na.rm=TRUE, 
                          from, 
@@ -38,14 +38,19 @@ monthlycurve <- function(x,
                          main=ifelse(missing(pcp), "Monthly Streamflows", "Monthly P and Q"), 
                          FUN=mean, # function used to aggregate 'x' from a submonthly time frquency (e.g., daily, hourly) into a monthly time frequency. It must support the 'na.rm' argument
                          start.month=1,
-                         x.col="blue", 
-                         ubands.probs=c(0.25, 0.75),
-                         ubands.col="lightskyblue1",
-                         ubands.alpha=0.8,
+
+                         q.col="blue", 
+
+                         plot.q.probs=TRUE,
+                         q.probs=c(0.25, 0.75),
+                         q.probs.col="lightskyblue1",
+                         q.probs.alpha=0.8,
                          
+                         plot.pcp.probs=TRUE,
                          pcp.probs=c(0.25, 0.75),
                          pcp.col="lightskyblue1",
                          pcp.alpha=0.8,
+
                          pcp.ylab="P, [mm]",
 
                          xlab="Month",
@@ -54,7 +59,7 @@ monthlycurve <- function(x,
                          labels=TRUE,
                          labels.cex=0.8,
                          labels.dx=c(rep(-0.2,6), rep(0.2,6)),
-                         labels.dy=rep(-median(x, na.rm=TRUE)/10, 12)
+                         labels.dy=rep(-median(q, na.rm=TRUE)/10, 12)
                          ) {
 
   .plotbands <- function(x, lband, uband, col="", border=NA) {
@@ -80,74 +85,82 @@ monthlycurve <- function(x,
     return(out)
   } # .shift END
 
-  if (missing(x)) {
-    stop("Missing argument: 'x' must be provided !")
+  if (missing(q)) {
+    stop("Missing argument: 'q' must be provided !")
   } else 
-      # Checking that 'x' is a zoo object
-      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
+      # Checking that 'q' is a zoo object
+      if ( !is.zoo(q) ) stop("Invalid argument: 'class(q)' must be in c('zoo', 'xts')")
    
   if (!missing(FUN))
     FUN <- match.fun(FUN)
   ###########################################
   ## In case 'from' and 'to' are provided  ##
-  dates.x  <- time(x)
-  if (!missing(pcp)) {
-    dates.pcp <- time(pcp)
-    if (!all.equal(dates.x, dates.pcp))
-      stop("Invalid arguments: 'dates(x)' must be equal to 'dates(pcp)' !!")
-  } # IF end
-     
+    
+   dates.q  <- time(q)
+
   # Checking the validity of the 'from' argument
   if (!missing(from)) { 
      from <- as.Date(from, format=date.fmt)
 
-     if (from < dates.x[1])
-       stop("Invalid argument: 'from' is lower than the first date in 'x' !")
+     if (from < dates.q[1])
+       stop("Invalid argument: 'from' is lower than the first date in 'q' !")
 
-     x <- window(x, start=from)
+     q <- window(q, start=from)
+
+     if (!missing(pcp)) pcp <- window(pcp, start=from)
    } # ELSE end
 
   # Checking the validity of the 'to' argument
   if (!missing(to)) { 
      to <- as.Date(to, format=date.fmt)
 
-     if (to > dates.x[length(x)])
+     if (to > dates.q[length(q)])
        stop("Invalid argument: 'to' is greater than the last date in 'x' !")
 
-     x <- window(x, end=to)
+     q <- window(q, end=to)
+
+     if (!missing(pcp)) pcp <- window(pcp, end=to)
    } # ELSE end
 
+
+  # Checking that 'q' and 'pcp' have the same dates
+  dates.q  <- time(q)
+  if (!missing(pcp)) {
+    dates.pcp <- time(pcp)
+    if (!all.equal(dates.q, dates.pcp))
+      stop("Invalid arguments: 'dates(q)' must be equal to 'dates(pcp)' !!")
+  } # IF end
+
   ###########################################
-  ## In case 'x' is not average monthly values
-  from <- time(x)[1]
-  to   <- time(x)[length(x)]
+  ## In case 'q' is not average monthly values
+  from <- time(q)[1]
+  to   <- time(q)[length(q)]
 
-  if ( (sfreq(x) != "monthly") ) {
-    x.m    <- daily2monthly(x, FUN=FUN, na.rm=na.rm)
-  } else x.m <- x
+  if ( (sfreq(q) != "monthly") ) {
+    q.m    <- daily2monthly(q, FUN=FUN, na.rm=na.rm)
+  } else q.m <- q
 
-  if ( (sfreq(x) != "monthly") | ( (sfreq(x) == "monthly") & ( length(x) > 12) ) ) {
-    x.m.med     <- monthlyfunction(x.m, FUN=quantile, probs=0.5, na.rm=na.rm)
-    month.names <- levels(time(x.m.med))
+  if ( (sfreq(q) != "monthly") | ( (sfreq(q) == "monthly") & ( length(q) > 12) ) ) {
+    q.m.med     <- monthlyfunction(q.m, FUN=quantile, probs=0.5, na.rm=na.rm)
+    month.names <- levels(time(q.m.med))
   } else {
-      x.m.med     <- x
-      month.names <- levels(time(x))
+      q.m.med     <- q
+      month.names <- levels(time(q))
       if (is.null(month.names))
         month.names <- month.abb
     } # ELSE end  
 
-  x.m.q1 <- monthlyfunction(x.m, FUN=quantile, probs=ubands.probs[1], na.rm=na.rm)
-  x.m.q2 <- monthlyfunction(x.m, FUN=quantile, probs=ubands.probs[2], na.rm=na.rm)
-  if (start.month != 1) x.m.med     <- .shift(x=x.m.med    , imonth=start.month)
-  if (start.month != 1) x.m.q1      <- .shift(x=x.m.q1     , imonth=start.month)
-  if (start.month != 1) x.m.q2      <- .shift(x=x.m.q2     , imonth=start.month)
+  q.m.q1 <- monthlyfunction(q.m, FUN=quantile, probs=q.probs[1], na.rm=na.rm)
+  q.m.q2 <- monthlyfunction(q.m, FUN=quantile, probs=q.probs[2], na.rm=na.rm)
+
+  if (start.month != 1) q.m.med     <- .shift(x=q.m.med    , imonth=start.month)
+  if (start.month != 1) q.m.q1      <- .shift(x=q.m.q1     , imonth=start.month)
+  if (start.month != 1) q.m.q2      <- .shift(x=q.m.q2     , imonth=start.month)
   if (start.month != 1) month.names <- .shift(x=month.names, imonth=start.month)
 
   if (!missing(pcp)) {
-    if (!missing(from)) pcp <- window(pcp, start=from)
-    if (!missing(to))   pcp <- window(pcp, end=to)
 
-    if ( (sfreq(x) != "monthly") ) {
+    if ( (sfreq(q) != "monthly") ) {
       pcp.m <- daily2monthly(pcp, FUN=sum, na.rm=na.rm)
     } else pcp.m <- pcp
 
@@ -164,20 +177,26 @@ monthlycurve <- function(x,
   } # IF end
 
   ##############################################################################
-  # Definining theplotting area (2 rows and 1 column, 
+  # Definining the plotting area (2 rows and 1 column, 
   # where the lower window has a height 3 time larger than the upper window
   ##############################################################################
   # the next line is required just in case a previous plot modified the graphical 'layout'
   par(mfrow=c(1,1)) 
 
-  if (!missing(pcp)) {
+  if ( !missing(pcp) ) {
     par(mar=c(3, 4.1, 3, 1.5)) # default  c(5.1, 4.1, 4.1, 2.1)
     layout(matrix(c(1,2), 2, 1, byrow = TRUE), widths=5, heights=c(1,3))  
  
     ylim <- range(pretty(pcp.m.q1), pretty(pcp.m.q2))
     barplot(pcp.m.med, ylim=rev(ylim), xlab="", ylab=pcp.ylab, axes=TRUE, col=pcp.col, names.arg=month.names, main=main)
     #axis(side=1, at=lx, labels=month.names, line=0.02, outer=TRUE, pos=1)
+
+    # Adding error bars
+    if (plot.pcp.probs) 
+      graphics::arrows(x0 = pcp.m.med, y0 = pcp.m.q2, y1 = pcp.m.q1, angle=90, code=3, length=0.1)
   } # IF end
+
+
   #######################################
   # 2nd Figure: Drawing the monthly curve
   #######################################
@@ -185,18 +204,21 @@ monthlycurve <- function(x,
     par(mar=c(3, 4.1, 0.5, 1.5)) # default  c(5.1, 4.1, 4.1, 2.1)
     main <- ""
   } else par(mar=c(3, 4.1, 4.1, 1.5))
-  lubands.col <- grDevices::adjustcolor(ubands.col, alpha.f=ubands.alpha)
+  lubands.col <- grDevices::adjustcolor(q.probs.col, alpha.f=q.probs.alpha)
   xlim <- c(0.5, 12.5)
-  ylim <- range(pretty(x.m.q1), pretty(x.m.q2))
+  ylim <- range(pretty(q.m.q1), pretty(q.m.q2))
 
   # Monthly values as lines
   lx   <- 1:12 
-  plot(lx, x.m.med, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, type="n", axes=TRUE, xaxt="n", main=main)
-  #plot(lx, x.m.med, xlim=xlim, ylim=ylim, col= x.col, type="o", lwd=3, pch=15, cex=1.4, axes=TRUE, xaxt="n", xlab=xlab, ylab=ylab)
-  .plotbands(x=lx, lband=x.m.q1, uband=x.m.q2, col=lubands.col, border=NA)
-  grid()
-  lines(lx, x.m.med, xlim=xlim, ylim=ylim, col= x.col, type = "o", lwd=3, pch=15, cex=1.4)
-  axis(side=1, at=lx, labels=month.names)
-  if (labels) text(lx+labels.dx, x.m.med+labels.dy, cex=labels.cex, adj=0.5, labels= round(x.m.med,1), col=x.col )
+  plot(lx, q.m.med, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab, type="n", axes=TRUE, xaxt="n", main=main)
+  #plot(lx, q.m.med, xlim=xlim, ylim=ylim, col= q.col, type="o", lwd=3, pch=15, cex=1.4, axes=TRUE, xaxt="n", xlab=xlab, ylab=ylab)
+
+  if (plot.q.probs) 
+    .plotbands(x=lx, lband=q.m.q1, uband=q.m.q2, col=lubands.col, border=NA)
   
+  grid()
+  lines(lx, q.m.med, xlim=xlim, ylim=ylim, col= q.col, type = "o", lwd=3, pch=15, cex=1.4)
+  axis(side=1, at=lx, labels=month.names)
+  if (labels) text(lx+labels.dx, q.m.med+labels.dy, cex=labels.cex, adj=0.5, labels= round(q.m.med,1), col=q.col )
+ 
 } # 'monthlycurve' END

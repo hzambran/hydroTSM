@@ -17,21 +17,22 @@ monthlycurve
 Function to draw a monthlycurve of streamflow (and optionally precipitation) data. 
 }
 \usage{
-monthlycurve(x, pcp, na.rm=TRUE, from, to, date.fmt="\%Y-\%m-\%d", 
+monthlycurve(q, pcp, na.rm=TRUE, from, to, date.fmt="\%Y-\%m-\%d", 
              main=ifelse(missing(pcp), "Monthly Streamflows", "Monthly P and Q"), 
-             FUN=mean, start.month=1, x.col="blue", 
-             ubands.probs=c(0.25, 0.75), ubands.col="lightskyblue1", ubands.alpha=0.8,
-             pcp.probs=c(0.25, 0.75), pcp.col="lightskyblue1", 
-             pcp.alpha=0.8, pcp.ylab="P, [mm]",
+             FUN=mean, start.month=1, q.col="blue", 
+             plot.q.probs=TRUE, q.probs=c(0.25, 0.75), 
+             q.probs.col="lightskyblue1", q.probs.alpha=0.8,
+             plot.pcp.probs=TRUE, pcp.probs=c(0.25, 0.75), 
+             pcp.col="lightskyblue1", pcp.alpha=0.8, pcp.ylab="P, [mm]",
              xlab="Month", ylab="Q, [m3/s]", labels=TRUE, labels.cex=0.8,
              labels.dx=c(rep(-0.2,6), rep(0.2,6)), 
-             labels.dy=rep(-median(x, na.rm=TRUE)/10, 12)
+             labels.dy=rep(-median(q, na.rm=TRUE)/10, 12)
              )
 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
+  \item{q}{
 variable of type zoo with monthly, daily or subdaily streamflow data (or other variable of interest).
 }
   \item{pcp}{
@@ -63,23 +64,31 @@ function used to aggregate \code{x} from a sub-monthly time frequency (e.g., dai
   \item{start.month}{
 numeric in [1:12] indicating the starting month for the monthlycurve. Numeric values in [1, 12] represents months in [January, December]. By default \code{start.month=1}.
 }
-  \item{x.col}{
+  \item{q.col}{
 Color used to plot the monthly average or median streamflow values.
 }
-  \item{ubands.probs}{
-numeric of length 2. It is used to define quantile values used to compute the lower an upper uncertainty bounds around each one of the 12 monthly average or median streamflow .\cr 
+  \item{plot.q.probs}{
+logical used to decide whether to show uncertainty bands around each one of the 12 monthly average or median streamflow values. By default \code{plot.q.probs=TRUE}. \cr 
+When \code{plot.q.probs=TRUE} the \code{q.probs} argument is used to define the values of the lower an upper uncertainty bands.
+} 
+  \item{q.probs}{
+numeric of length 2. It is used to define quantile values used to compute the lower an upper uncertainty bands around each one of the 12 monthly average or median streamflow. \cr 
 If \code{pcp} is provided, then \code{ubands.probs} are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly average or median precipitation values. \cr
 By default \code{ubands.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly average or median values. 
 If \code{x} is provided and is a (sub)daily zoo object, it is first aggregated into monthly values using \code{FUN}, and then the \code{ubands.probs} quantiles are computed over all the monthly values belonging to a calendar month.
 }
-  \item{ubands.col}{
+  \item{q.probs.col}{
 character with the color used to plot the uncertainty bands around the average or median streamflow values. \cr
 } 
-  \item{ubands.alpha}{
-numeric of length 1, with the factor used to modify the opacity of \code{ubands.col}. Typically in [0,1], with 0 indicating a completely transparent colour and 1 indicating no transparency.
+  \item{q.probs.alpha}{
+numeric of length 1, with the factor used to modify the opacity of \code{q.probs.col}. Typically in [0,1], with 0 indicating a completely transparent colour and 1 indicating no transparency.
+} 
+  \item{plot.pcp.probs}{
+logical used to decide whether to show lower an upper uncertainty values for each one of the 12 monthly precipitation values. By default \code{plot.pcp.probs=TRUE}. \cr 
+When \code{plot.pcp.probs=TRUE} the \code{pcp.probs} argument is used to define the values of the lower an upper uncertainty values.
 } 
   \item{pcp.probs}{
-numeric of length 2. It defines the quantile values used to compute the lower an upper uncertainty bounds for each one of the 12 monthly precipitation values.\cr 
+numeric of length 2. It defines the quantile values used to compute the lower an upper uncertainty values for each one of the 12 monthly precipitation values. This uncertainty values are drawn as vertical lines over the bars used to plot the 12 monthly precipitation values. \cr 
 By default \code{pcp.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly precipitation values. 
 If \code{pcp} is a (sub)daily zoo object, it is first aggregated into monthly values using \code{mean}, and then the \code{pcp.probs} quantiles are computed over all the monthly values belonging to a calendar month.
 } 
