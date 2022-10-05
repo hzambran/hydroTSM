@@ -166,6 +166,10 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   if ( ( sfreq(pcp) == "monthly" ) & (length(pcp) == 12) ) {
     pcp.is.mean.monthly <- TRUE
 
+    months     <- format(time(pcp), "%b")
+    pcp        <- as.numeric(pcp)
+    names(pcp) <- months
+
     if (start.month != 1)
       pcp <- .shift(x=pcp, imonth=start.month)
 
@@ -177,6 +181,10 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   if ( ( sfreq(tmean) == "monthly" ) & (length(tmean) == 12) ) {
     tmean.is.mean.monthly <- TRUE
 
+    months       <- format(time(tmean), "%b")
+    tmean        <- as.numeric(tmean)
+    names(tmean) <- months
+
     if (start.month != 1)
       tmean <- .shift(x=tmean, imonth=start.month)
 
@@ -185,26 +193,38 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     tmean.m.q2  <- tmean
   } # IF end
 
-  if ( ( sfreq(tmx) == "monthly" ) & (length(tmx) == 12) ) {
-    tmx.is.mean.monthly <- TRUE
+  if (!missing(tmx)) {
+    if ( ( sfreq(tmx) == "monthly" ) & (length(tmx) == 12) ) {
+      tmx.is.mean.monthly <- TRUE
 
-    if (start.month != 1)
-      tmx <- .shift(x=tmx, imonth=start.month)
+      months     <- format(time(tmx), "%b")
+      tmx        <- as.numeric(tmx)
+      names(tmx) <- months
 
-    tmx.m.avg <- tmx
-    tmx.m.q1  <- tmx
-    tmx.m.q2  <- tmx
+      if (start.month != 1)
+        tmx <- .shift(x=tmx, imonth=start.month)
+
+      tmx.m.avg <- tmx
+      tmx.m.q1  <- tmx
+      tmx.m.q2  <- tmx
+    } # IF end
   } # IF end
 
-  if ( ( sfreq(tmn) == "monthly" ) & (length(tmn) == 12) ) {
-    tmn.is.mean.monthly <- TRUE
+  if (!missing(tmn)) {
+    if ( ( sfreq(tmn) == "monthly" ) & (length(tmn) == 12) ) {
+      tmn.is.mean.monthly <- TRUE
 
-    if (start.month != 1)
-      tmn <- .shift(x=tmn, imonth=start.month)
+      months     <- format(time(tmn), "%b")
+      tmn        <- as.numeric(tmn)
+      names(tmn) <- months
 
-    tmn.m.avg <- tmn
-    tmn.m.q1  <- tmn
-    tmn.m.q2  <- tmn
+      if (start.month != 1)
+        tmn <- .shift(x=tmn, imonth=start.month)
+
+      tmn.m.avg <- tmn
+      tmn.m.q1  <- tmn
+      tmn.m.q2  <- tmn
+    } # IF end
   } # IF end
 
   
@@ -302,11 +322,13 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
   # Adding error bars
   if (plot.pcp.probs)
-    graphics::arrows(x0 = x, y0 = pcp.m.q2, y1 = pcp.m.q1, angle=90, code=3, length=0.1)
+    suppressWarnings( graphics::arrows(x0 = x, y0 = pcp.m.q2, y1 = pcp.m.q1, 
+                                       angle=90, code=3, length=0.1) )
 
   grid()
   ifelse(plot.pcp.probs, deltax <- 0.25, deltax <- 0.0)
-  if (pcp.labels) text(x-deltax, pcp.m.avg+2, cex=pcp.labels.cex, adj=0.5, labels= round(pcp.m.avg,1), col="black" )
+  if (pcp.labels) text(x-deltax, pcp.m.avg+2, cex=pcp.labels.cex, adj=0.5, 
+                       labels= round(pcp.m.avg,1), col="black" )
 
 
   # If provided, computing the ylim for the secondary temperature axis
@@ -327,9 +349,12 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   if (plot.temp.probs) {
     plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, type="n", xlab="", ylab="", axes=FALSE)
     .plotbands(x=x, lband=tmean.m.q1, uband=tmean.m.q2, col=temp.probs.col[2], border=NA)
-    lines(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, bty = "n", xlab = "", ylab = "")
-  } else plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-  if (tmean.labels) text(x+temp.labels.dx, tmean.m.avg+temp.labels.dy, cex=temp.labels.cex, adj=0.5, labels= round(tmean.m.avg,1), col=tmean.col )
+    lines(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, pch=15, 
+          cex=1.4, bty = "n", xlab = "", ylab = "")
+  } else plot(x, tmean.m.avg, xlim=xlim, ylim=ylim, col= tmean.col, type = "o", lwd=3, 
+              pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+  if (tmean.labels) text(x+temp.labels.dx, tmean.m.avg+temp.labels.dy, cex=temp.labels.cex, 
+                         adj=0.5, labels= round(tmean.m.avg,1), col=tmean.col )
 
   # If provided, tmn as line
   if (!missing(tmn)) {
@@ -337,10 +362,13 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     if (plot.temp.probs) {
       plot(x, tmn.m.avg, xlim=xlim, ylim=ylim, type="n", xlab="", ylab="", axes=FALSE)
       .plotbands(x=x, lband=tmn.m.q1, uband=tmn.m.q2, col=temp.probs.col[1], border=NA) 
-      lines(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, bty = "n", xlab = "", ylab = "")
-    } else plot(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+      lines(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, 
+            cex=1.4, bty = "n", xlab = "", ylab = "")
+    } else plot(x, tmn.m.avg, xlim=xlim, ylim=ylim, col= tmn.col, type = "o", lwd=3, pch=15, 
+                cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
 
-    if (tmn.labels) text(x+temp.labels.dx, tmn.m.avg+temp.labels.dy, cex=temp.labels.cex, adj=0.5, labels= round(tmn.m.avg,1), col=tmn.col )
+    if (tmn.labels) text(x+temp.labels.dx, tmn.m.avg+temp.labels.dy, cex=temp.labels.cex, 
+                         adj=0.5, labels= round(tmn.m.avg,1), col=tmn.col )
   } # IF end
 
   # If provided, tmx as line
@@ -349,9 +377,12 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     if (plot.temp.probs) {
       plot(x, tmx.m.avg, xlim=xlim, ylim=ylim, type="n", xlab="", ylab="", axes=FALSE)
       .plotbands(x=x, lband=tmx.m.q1, uband=tmx.m.q2, col=temp.probs.col[3], border=NA)
-      lines(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, bty = "n", xlab = "", ylab = "")
-    } else plot(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
-    if (tmx.labels) text(x+temp.labels.dx, tmx.m.avg+temp.labels.dy, cex=temp.labels.cex, adj=0.5, labels= round(tmx.m.avg,1), col=tmx.col )
+      lines(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, 
+            cex=1.4, bty = "n", xlab = "", ylab = "")
+    } else plot(x, tmx.m.avg, xlim=xlim, ylim=ylim, col= tmx.col, type = "o", lwd=3, pch=15, 
+                cex=1.4, axes = FALSE, bty = "n", xlab = "", ylab = "")
+    if (tmx.labels) text(x+temp.labels.dx, tmx.m.avg+temp.labels.dy, cex=temp.labels.cex, 
+                         adj=0.5, labels= round(tmx.m.avg,1), col=tmx.col )
   } # IF end
 
 
@@ -360,7 +391,8 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     axis(side=4, at = pretty(range(tmn.m.avg, tmean.m.avg, tmx.m.avg)), las=1)
   } else axis(side=4, at = pretty(range(tmean.m.avg)), las=1)
   abline(h=axTicks(side=2), col="lightpink", lty = "dotted")
-  text(par("usr")[2]*1.05,mean(par("usr")[3:4]), labels= tmean.label, srt = -90, xpd = TRUE, pos = 4)
+  text(par("usr")[2]*1.05,mean(par("usr")[3:4]), labels= tmean.label, 
+       srt=-90, xpd=TRUE, pos=4)
 
 
   # Outter box and legend
@@ -368,13 +400,14 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   par(xpd=TRUE)
   if ( !missing(tmx) & !missing(tmn)) {
     legend("bottom", legend = c("Prec.", "Tmn", "Tmean", "Tmx"), bty="n",
-           pch=c(15, 15, 15, 15), lty=c(NA, 1, 1, 1), cex=1.2, col=c(pcp.col, tmn.col, tmean.col, tmx.col), ncol=4, inset=c(0.5, -0.2),
+           pch=c(15, 15, 15, 15), lty=c(NA, 1, 1, 1), cex=1.2, col=c(pcp.col, tmn.col,
+           tmean.col, tmx.col), ncol=4, inset=c(0.5, -0.2),
            #lty = 1:2, xjust = 1, yjust = 1,
            title = "")
   } else
       legend("bottom", legend = c("Precipitation", "Temperature"), bty="n",
-             pch=c(15, 15), lty=c(NA, 1), cex=1.2, col=c(pcp.col, tmean.col), ncol=2, inset=c(0.5, -0.2),
+             pch=c(15, 15), lty=c(NA, 1), cex=1.2, col=c(pcp.col, tmean.col), ncol=2, 
              #lty = 1:2, xjust = 1, yjust = 1,
-             title = "")
+             inset=c(0.5, -0.2), title = "")
   
 } # 'climograph' END
