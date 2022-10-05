@@ -20,7 +20,7 @@
 # Updates: 30-Jun-2016 ; 04-Jul-2016                                           # 
 #          08-May-2017 ; 09-May-2017                                           #
 #          10-Mar-2020 ; 07-Nov-2020                                           #
-#          May-2022    ; 20-Jun-2022 ; 22-Aug-2022                             #
+#          May-2022    ; 20-Jun-2022 ; 22-Aug-2022 ; 05-Oct-2022               #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
 #              precipitation data
@@ -157,65 +157,120 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
    } # ELSE end
 
 
+  # Detecting if 'pcp' and 'tmean', 'tmx' 'tmn' are already mean monthly values
+  pcp.is.mean.monthly   <- FALSE
+  tmean.is.mean.monthly <- FALSE
+  tmx.is.mean.monthly   <- FALSE
+  tmn.is.mean.monthly   <- FALSE
+
+  if ( ( sfreq(pcp) == "monthly" ) & (length(pcp) == 12) ) {
+    pcp.is.mean.monthly <- TRUE
+
+    if (start.month != 1)
+      pcp <- .shift(x=pcp, imonth=start.month)
+
+    pcp.m.avg <- pcp
+    pcp.m.q1  <- pcp
+    pcp.m.q2  <- pcp    
+  } # IF enbd
+
+  if ( ( sfreq(tmean) == "monthly" ) & (length(tmean) == 12) ) {
+    tmean.is.mean.monthly <- TRUE
+
+    if (start.month != 1)
+      tmean <- .shift(x=tmean, imonth=start.month)
+
+    tmean.m.avg <- tmean
+    tmean.m.q1  <- tmean
+    tmean.m.q2  <- tmean
+  } # IF end
+
+  if ( ( sfreq(tmx) == "monthly" ) & (length(tmx) == 12) ) {
+    tmx.is.mean.monthly <- TRUE
+
+    if (start.month != 1)
+      tmx <- .shift(x=tmx, imonth=start.month)
+
+    tmx.m.avg <- tmx
+    tmx.m.q1  <- tmx
+    tmx.m.q2  <- tmx
+  } # IF end
+
+  if ( ( sfreq(tmn) == "monthly" ) & (length(tmn) == 12) ) {
+    tmn.is.mean.monthly <- TRUE
+
+    if (start.month != 1)
+      tmn <- .shift(x=tmn, imonth=start.month)
+
+    tmn.m.avg <- tmn
+    tmn.m.q1  <- tmn
+    tmn.m.q2  <- tmn
+  } # IF end
+
+  
   ###########################################
-  ## In case 'pcp' and 'tmean' are not average monthly values
-  from <- time(pcp)[1]
-  to   <- time(pcp)[length(pcp)]
+  ## In case 'pcp', 'tmean' ('tmx' and 'tmn') are not average monthly values
+  if ( (!pcp.is.mean.monthly) & (!tmean.is.mean.monthly) ) {
 
-  nyears <- yip(from=from, to=to, date.fmt="%Y-%m-%d", out.type="nmbr")
+    from <- time(pcp)[1]
+    to   <- time(pcp)[length(pcp)]
 
-  if ( (sfreq(pcp) != "monthly") | ( (sfreq(pcp) == "monthly") & ( length(pcp) > 12) ) )
-    pcp.m.avg <- monthlyfunction(pcp, FUN=sum, na.rm=na.rm) / nyears
-    if (start.month != 1) pcp.m.avg <- .shift(x=pcp.m.avg, imonth=start.month)
+    nyears <- yip(from=from, to=to, date.fmt="%Y-%m-%d", out.type="nmbr")
 
-  if ( (sfreq(tmean) != "monthly") | ( (sfreq(tmean) == "monthly") & ( length(tmean) > 12) ) )
-    tmean.m.avg <- monthlyfunction(tmean, FUN=mean, na.rm=na.rm)
-    if (start.month != 1) tmean.m.avg <- .shift(x=tmean.m.avg, imonth=start.month)
+    if ( (sfreq(pcp) != "monthly") | ( (sfreq(pcp) == "monthly") & ( length(pcp) > 12) ) )
+      pcp.m.avg <- monthlyfunction(pcp, FUN=sum, na.rm=na.rm) / nyears
+      if (start.month != 1) pcp.m.avg <- .shift(x=pcp.m.avg, imonth=start.month)
 
-  # If provided, computing monthly values of tmx and tmn
-  if ( !missing(tmx) & !missing(tmn)) {
-    if ( (sfreq(tmx) != "monthly") | ( (sfreq(tmx) == "monthly") & ( length(tmx) > 12) ) ) {
-      tmx.m.avg <- monthlyfunction(tmx, FUN=mean, na.rm=na.rm)
-      if (start.month != 1) tmx.m.avg <- .shift(x=tmx.m.avg, imonth=start.month)
-    } # IF end
+    if ( (sfreq(tmean) != "monthly") | ( (sfreq(tmean) == "monthly") & ( length(tmean) > 12) ) )
+      tmean.m.avg <- monthlyfunction(tmean, FUN=mean, na.rm=na.rm)
+      if (start.month != 1) tmean.m.avg <- .shift(x=tmean.m.avg, imonth=start.month)
 
-    if ( (sfreq(tmn) != "monthly") | ( (sfreq(tmn) == "monthly") & ( length(tmn) > 12) ) ) {
-      tmn.m.avg <- monthlyfunction(tmn, FUN=mean, na.rm=na.rm)
-      if (start.month != 1) tmn.m.avg <- .shift(x=tmn.m.avg, imonth=start.month)
-    } # IF end
-  } # IF end
-
-  if (plot.pcp.probs) {
-    pcp.m    <- daily2monthly(pcp, FUN=sum, na.rm=na.rm)
-    pcp.m.q1 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[1], na.rm=na.rm)
-    pcp.m.q2 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[2], na.rm=na.rm)
-    if (start.month != 1) pcp.m.q1 <- .shift(x=pcp.m.q1, imonth=start.month)
-    if (start.month != 1) pcp.m.q2 <- .shift(x=pcp.m.q2, imonth=start.month)
-  } # IF end
-
-  if (plot.temp.probs) {
-    temp.probs.col <- grDevices::adjustcolor(temp.probs.col, alpha.f=temp.probs.alpha)
-
-    tmean.m    <- daily2monthly(tmean, FUN=mean, na.rm=na.rm)
-    tmean.m.q1 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
-    tmean.m.q2 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
-    if (start.month != 1) tmean.m.q1 <- .shift(x=tmean.m.q1, imonth=start.month)
-    if (start.month != 1) tmean.m.q2 <- .shift(x=tmean.m.q2, imonth=start.month)
-
+    # If provided, computing monthly values of tmx and tmn
     if ( !missing(tmx) & !missing(tmn)) {
-      tmx.m    <- daily2monthly(tmx, FUN=mean, na.rm=na.rm)
-      tmn.m    <- daily2monthly(tmn, FUN=mean, na.rm=na.rm)
-      tmx.m.q1 <- monthlyfunction(tmx.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
-      tmx.m.q2 <- monthlyfunction(tmx.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
-      tmn.m.q1 <- monthlyfunction(tmn.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
-      tmn.m.q2 <- monthlyfunction(tmn.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
-      if (start.month != 1) {
-        tmx.m.q1 <- .shift(x=tmx.m.q1, imonth=start.month)
-        tmx.m.q2 <- .shift(x=tmx.m.q2, imonth=start.month)
-        tmn.m.q1 <- .shift(x=tmn.m.q1, imonth=start.month)
-        tmn.m.q2 <- .shift(x=tmn.m.q2, imonth=start.month)
+      if ( (sfreq(tmx) != "monthly") | ( (sfreq(tmx) == "monthly") & ( length(tmx) > 12) ) ) {
+        tmx.m.avg <- monthlyfunction(tmx, FUN=mean, na.rm=na.rm)
+        if (start.month != 1) tmx.m.avg <- .shift(x=tmx.m.avg, imonth=start.month)
+      } # IF end
+
+      if ( (sfreq(tmn) != "monthly") | ( (sfreq(tmn) == "monthly") & ( length(tmn) > 12) ) ) {
+        tmn.m.avg <- monthlyfunction(tmn, FUN=mean, na.rm=na.rm)
+        if (start.month != 1) tmn.m.avg <- .shift(x=tmn.m.avg, imonth=start.month)
       } # IF end
     } # IF end
+
+    if (plot.pcp.probs) {
+      pcp.m    <- daily2monthly(pcp, FUN=sum, na.rm=na.rm)
+      pcp.m.q1 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[1], na.rm=na.rm)
+      pcp.m.q2 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[2], na.rm=na.rm)
+      if (start.month != 1) pcp.m.q1 <- .shift(x=pcp.m.q1, imonth=start.month)
+      if (start.month != 1) pcp.m.q2 <- .shift(x=pcp.m.q2, imonth=start.month)
+    } # IF end
+
+    if (plot.temp.probs) {
+      temp.probs.col <- grDevices::adjustcolor(temp.probs.col, alpha.f=temp.probs.alpha)
+
+      tmean.m    <- daily2monthly(tmean, FUN=mean, na.rm=na.rm)
+      tmean.m.q1 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
+      tmean.m.q2 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
+      if (start.month != 1) tmean.m.q1 <- .shift(x=tmean.m.q1, imonth=start.month)
+      if (start.month != 1) tmean.m.q2 <- .shift(x=tmean.m.q2, imonth=start.month)
+
+      if ( !missing(tmx) & !missing(tmn)) {
+        tmx.m    <- daily2monthly(tmx, FUN=mean, na.rm=na.rm)
+        tmn.m    <- daily2monthly(tmn, FUN=mean, na.rm=na.rm)
+        tmx.m.q1 <- monthlyfunction(tmx.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
+        tmx.m.q2 <- monthlyfunction(tmx.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
+        tmn.m.q1 <- monthlyfunction(tmn.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
+        tmn.m.q2 <- monthlyfunction(tmn.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
+        if (start.month != 1) {
+          tmx.m.q1 <- .shift(x=tmx.m.q1, imonth=start.month)
+          tmx.m.q2 <- .shift(x=tmx.m.q2, imonth=start.month)
+          tmn.m.q1 <- .shift(x=tmn.m.q1, imonth=start.month)
+          tmn.m.q2 <- .shift(x=tmn.m.q2, imonth=start.month)
+        } # IF end
+      } # IF end
+    } # IF end
+
   } # IF end
 
   #######################################
