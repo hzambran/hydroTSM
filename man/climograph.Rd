@@ -44,7 +44,7 @@ variable of type 'zoo' with monthly, daily or subdaily mean temperature data.
 }
   \item{tmx}{
 variable of type 'zoo' with monthly, daily or subdaily maximum temperature data. \cr
-ONLY used (togheter with \code{tmn}) when \code{tmean}' is missing.
+ONLY used (together with \code{tmn}) when \code{tmean}' is missing.
 }
   \item{tmn}{
 variable of type 'zoo' with monthly, daily or subdaily minimum temperature data. 
