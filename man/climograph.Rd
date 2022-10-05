@@ -21,6 +21,7 @@ climograph(pcp, tmean, tmx, tmn, na.rm=TRUE,
            from, to, date.fmt="\%Y-\%m-\%d", 
            main="Climograph", pcp.label="Precipitation, [mm]", 
            tmean.label="Air temperature, [\U00B0 C]",start.month=1,
+           pcp.ylim, temp.ylim,
            pcp.col="lightblue", tmean.col="darkred", tmn.col="blue", tmx.col="red",
            pcp.labels=TRUE, tmean.labels=TRUE, tmx.labels=TRUE, tmn.labels=TRUE,
            pcp.labels.cex=0.8, temp.labels.cex=0.8,
@@ -79,6 +80,12 @@ Character used in the legend to represent the monthly average temperature (mostl
 [OPTIONAL]. Only used when the (hydrological) year of interest is different from the calendar year.
 
 numeric in [1:12] indicating the starting month of the (hydrological) year. Numeric values in [1, 12] represents months in [January, December]. By default \code{start.month=1}.
+}
+  \item{pcp.ylim}{
+[OPTIONAL] numeric of length 2 with the the range used for the precipitation axis. The second value should be larger than the first one.
+}
+  \item{temp.ylim}{
+[OPTIONAL] numeric of length 2 with the the range used for the secondary temperature axis. The second value should be larger than the first one.
 }
   \item{pcp.col}{
 Color used in the legend to represent the monthly average precipitation. 

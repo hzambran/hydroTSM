@@ -48,6 +48,9 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        tmean.label="Air temperature, [\U00B0 C]",
                        start.month=1,
 
+                       pcp.ylim, # if provided, used to define the range of the P axis
+                       temp.ylim,# if provided, used to define the range of the Temp axis
+
                        pcp.col="lightblue", 
                        tmean.col="darkred",
                        tmn.col="blue",
@@ -124,6 +127,18 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   # Checking the length of 'temp.labels.dx' and 'temp.labels.dy'
   if (length(temp.labels.dx) > 12) temp.labels.dx <- temp.labels.dx[1:12]
   if (length(temp.labels.dy) > 12) temp.labels.dy <- temp.labels.dy[1:12]
+
+  # checking 'pcp.ylim', if provided 
+  if (!missing(pcp.ylim)) {
+    if (length(pcp.ylim) != 2) stop("Invalid argument: 'length(pcp.ylim)' must be 2 !")
+    if (pcp.ylim[2] <= 1) stop("Invalid argument: 'pcp.ylim[2]' must be larger than pcp.ylim[1] !")
+  } # IF end
+
+  # checking 'temp.ylim', if provided 
+  if (!missing(temp.ylim)) {
+    if (length(temp.ylim) != 2) stop("Invalid argument: 'length(temp.ylim)' must be 2 !")
+    if (temp.ylim[2] <= 1) stop("Invalid argument: 'temp.ylim[2]' must be larger than temp.ylim[1] !")
+  } # IF end
 
   ###########################################
   ## In case 'from' and 'to' are provided  ##
@@ -299,9 +314,11 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   xlim <- c(0.5, 14.5)
 
   # Monthly precipitation as barplot
-  if (plot.pcp.probs) {
-    ylim <- range(pretty(pcp.m.avg), pretty(pcp.m.q1), pretty(pcp.m.q2))
-  } else ylim <- range(pretty(pcp.m.avg))
+  if (missing(pcp.ylim)) {
+    if (plot.pcp.probs) {
+      ylim <- range(pretty(pcp.m.avg), pretty(pcp.m.q1), pretty(pcp.m.q2))
+    } else ylim <- range(pretty(pcp.m.avg))
+  } else ylim <- pcp.ylim 
 
   par(mar = c(7,5,3,5)) # c(bottom, left, top, right)
   x <- barplot(pcp.m.avg, col=pcp.col, xlim=xlim, ylim=ylim, ylab=pcp.label, las=1, main=main)
@@ -332,16 +349,18 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
 
   # If provided, computing the ylim for the secondary temperature axis
-  if ( !missing(tmx) & !missing(tmn)) {
-    if (plot.temp.probs) {
-      ylim <- range(#pretty(tmx.m.avg), pretty(tmean.m.avg), pretty(tmn.m.avg),
-                    pretty(tmx.m.q1), pretty(tmean.m.q1), pretty(tmn.m.q1),
-                    pretty(tmx.m.q2), pretty(tmean.m.q2), pretty(tmn.m.q2)
-                   )
-    } else ylim <- range(pretty(tmx.m.avg), pretty(tmean.m.avg), pretty(tmn.m.avg))
-  } else if (plot.temp.probs) {
-           ylim <- range(pretty(tmean.m.q1), pretty(tmean.m.avg), pretty(tmean.m.q2))
-         } else ylim <- range(pretty(tmean.m.avg))
+  if (missing(temp.ylim)) {
+    if ( !missing(tmx) & !missing(tmn)) {
+      if (plot.temp.probs) {
+        ylim <- range(#pretty(tmx.m.avg), pretty(tmean.m.avg), pretty(tmn.m.avg),
+                      pretty(tmx.m.q1), pretty(tmean.m.q1), pretty(tmn.m.q1),
+                      pretty(tmx.m.q2), pretty(tmean.m.q2), pretty(tmn.m.q2)
+                     )
+      } else ylim <- range(pretty(tmx.m.avg), pretty(tmean.m.avg), pretty(tmn.m.avg))
+    } else if (plot.temp.probs) {
+             ylim <- range(pretty(tmean.m.q1), pretty(tmean.m.avg), pretty(tmean.m.q2))
+           } else ylim <- range(pretty(tmean.m.avg))
+  } else ylim <- temp.ylim 
 
 
   # Mean temperature as line
