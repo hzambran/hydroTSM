@@ -28,7 +28,7 @@ subhourly2hourly <-function(x, ...) UseMethod("subhourly2hourly")
 # Updates:                                                                     #
 ################################################################################
 subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                     start.fmt= "%H:%M:%S", tz="GMT", ...) {
+                                     start.fmt= "%H:%M:%S", tz="UTC", ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
@@ -45,7 +45,7 @@ subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Updates:                                                                     #
 ################################################################################
 subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                 start.fmt= "%H:%M:%S", tz="GMT", ...) {
+                                 start.fmt= "%H:%M:%S", tz="UTC", ...) {
 
      # testing the existence of 'na.rm' argument
      #args <- list(...)
@@ -121,10 +121,10 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
 subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                        start.fmt= "%H:%M:%S", tz="GMT", 
+                                        start.fmt= "%H:%M:%S", tz="UTC", 
                                         dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                        out.fmt="zoo",
-				                        verbose=TRUE,...) {
+				                                out.fmt="zoo",
+				                                verbose=TRUE,...) {
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))

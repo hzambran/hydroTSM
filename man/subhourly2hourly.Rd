@@ -1,7 +1,7 @@
 %%File subhourly2hourly.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2021 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2022 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{subhourly2hourly}
@@ -23,10 +23,10 @@ Generic function for transforming a Sub-DAILY time series into a DAILY one
 subhourly2hourly(x, ...)
 
 \method{subhourly2hourly}{default}(x, FUN, na.rm = TRUE, start="00:00:00", 
-                          start.fmt= "\%H:\%M:\%S", tz="GMT", ...)
+                          start.fmt= "\%H:\%M:\%S", tz="UTC", ...)
 
 \method{subhourly2hourly}{zoo}(x, FUN, na.rm = TRUE, start="00:00:00", 
-                         start.fmt= "\%H:\%M:\%S", tz="GMT", ...)
+                         start.fmt= "\%H:\%M:\%S", tz="UTC", ...)
 
 \method{subhourly2hourly}{data.frame}(x, FUN, na.rm = TRUE, start="00:00:00", 
            start.fmt= "\%H:\%M:\%S", tz="GMT",
@@ -34,7 +34,7 @@ subhourly2hourly(x, ...)
            verbose= TRUE, ...)
 
 \method{subhourly2hourly}{matrix}(x, FUN, na.rm = TRUE, start="00:00:00", 
-           start.fmt= "\%H:\%M:\%S", tz="GMT",
+           start.fmt= "\%H:\%M:\%S", tz="UTC",
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 }

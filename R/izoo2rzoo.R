@@ -36,7 +36,7 @@ izoo2rzoo <-function(x, ...) UseMethod("izoo2rzoo")
 # Updates: 23-Aug-2011                                                         #
 ################################################################################ 
 izoo2rzoo.default <- function(x, from= start(x), to= end(x), 
-                              date.fmt="%Y-%m-%d", tstep ="days", tz="GMT", ...) {
+                              date.fmt="%Y-%m-%d", tstep ="days", tz="UTC", ...) {
 
   # Checking that the user provied a valid class for 'x'   
   valid.class <- c("xts", "zoo")    
@@ -56,11 +56,11 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 #          07-May-2012                                                         #
 #          16-Oct-2012                                                         #
 #          29-May-2013                                                         #
-#          17-Jun-2022 ; 20-Jun-2022                                           #
+#          17-Jun-2022 ; 20-Jun-2022 ; 08-Oct-2022                             #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
-                          date.fmt="%Y-%m-%d", tstep ="days", tz="GMT", ... ) {
+                          date.fmt="%Y-%m-%d", tstep ="days", tz="UTC", ... ) {
 
   if (!is.zoo(x)) stop("Invalid argument: 'x' must be of class 'zoo'")
       

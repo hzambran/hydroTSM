@@ -1,7 +1,7 @@
 %%File izoo2rzoo.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2022 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{izoo2rzoo}
@@ -20,10 +20,10 @@ It takes an irregular zoo object (with non-existing values for some dates) and c
 izoo2rzoo(x, ...)
 
 \method{izoo2rzoo}{default}(x, from= start(x), to= end(x), 
-                   date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="GMT", ...)
+                   date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="UTC", ...)
      
 \method{izoo2rzoo}{zoo}(x, from= start(x), to= end(x), 
-                   date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="GMT", ...)
+                   date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="UTC", ...)
 
 }
 %- maybe also 'usage' for other objects documented here.
