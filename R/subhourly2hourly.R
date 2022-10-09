@@ -1,7 +1,7 @@
 # File subhourly2hourly.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2021-2021 Mauricio Zambrano-Bigiarini
+# Copyright 2021-2022 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -25,7 +25,7 @@ subhourly2hourly <-function(x, ...) UseMethod("subhourly2hourly")
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates:                                                                     #
+# Updates: 08-Oct-2022                                                         #
 ################################################################################
 subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
                                      start.fmt= "%H:%M:%S", tz="UTC", ...) {
@@ -42,7 +42,7 @@ subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates:                                                                     #
+# Updates: 08-Oct-2022                                                         #
 ################################################################################
 subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
                                  start.fmt= "%H:%M:%S", tz="UTC", ...) {
@@ -105,7 +105,7 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates: 23-Aug-2022                                                         #
+# Updates: 23-Aug-2022 ; 08-Oct-2022                                           #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -184,10 +184,10 @@ subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates:                                                                     #
+# Updates: 09-Oct-2022                                                         #
 ################################################################################
 subhourly2hourly.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz="GMT",
+                                   start.fmt= "%H:%M:%S", tz="UTC",
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                   out.fmt="zoo",
                                    verbose=TRUE,...) {

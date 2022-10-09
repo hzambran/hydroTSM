@@ -1,7 +1,7 @@
 %% File hip.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2022 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{hip}
@@ -17,7 +17,7 @@ Given any starting and ending date/time objects, it generates:  \cr
 2) the amount of hours between the two date/time objects 
 }
 \usage{
-hip(from, to, date.fmt="\%Y-\%m-\%d \%H", out.type = "seq", tz="GMT")
+hip(from, to, date.fmt="\%Y-\%m-\%d \%H", out.type = "seq", tz="UTC")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

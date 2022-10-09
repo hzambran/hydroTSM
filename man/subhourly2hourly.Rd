@@ -29,7 +29,7 @@ subhourly2hourly(x, ...)
                          start.fmt= "\%H:\%M:\%S", tz="UTC", ...)
 
 \method{subhourly2hourly}{data.frame}(x, FUN, na.rm = TRUE, start="00:00:00", 
-           start.fmt= "\%H:\%M:\%S", tz="GMT",
+           start.fmt= "\%H:\%M:\%S", tz="UTC",
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 

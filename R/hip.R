@@ -9,12 +9,12 @@
 ################################################################################       
 # Purpose: Given any starting and ending date/time objects, it generates:      #
 #        1) a vector with all the hours between the two dates, OR              #
-#	 2) the amount of hours between the two date/time objects                  #
+#	 2) the amount of hours between the two date/time objects                    #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 2008                                                                #
 # Updates: 29-May-2013                                                         #
-#          07-Jul-2022                                                         #
+#          07-Jul-2022 ; 09-Oct-2022                                           #
 ################################################################################
 
 # 'from'    : Character indicating the starting date/time object for computing the number of hours.
@@ -30,7 +30,7 @@
 #             System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). 
 #             See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
 #             This argument can be used when working with subdaily zoo objects to force using the local time zone instead of GMT as time zone.
-hip <- function(from, to, date.fmt="%Y-%m-%d %H", out.type="seq", tz="GMT") {
+hip <- function(from, to, date.fmt="%Y-%m-%d %H", out.type="seq", tz="UTC") {
 
      # Checking 'out.type'
      if (is.na(match(out.type, c("seq", "nmbr"))))
