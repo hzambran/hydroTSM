@@ -4,7 +4,7 @@ NEWS/ChangeLog for hydroTSM
         o new function  : 'subhourly2hourly' for aggregating sub-hourly values into hourly ones.
         o new function  : 'monthlycurve' to plot monthly variation of streamflow (and optionally precipitation) values, with uncertainty bound around mean values.
 
-        o 'hip'         :   -) new argument 'tz' to allow the user to specify the desired time zone. By default, "tz='GMT'", while previous versions implicitly used "tz=''" (local time zone)
+        o 'hip'         :   -) new argument 'tz' to allow the user to specify the desired time zone. By default, "tz='UTC'", while previous versions implicitly used "tz=''" (local time zone)
 
         o 'hydroplot'   :   -) now works correctly with zoo objects that have multiple columns, and separate (internal) functions are provided for zoo and data.frame objects.
                             -) 'from' argument has a default value of NULL
@@ -25,7 +25,7 @@ NEWS/ChangeLog for hydroTSM
                             -) new argument 'temp.labels.cex' to specify the relative scaling of the monthly air temperature values (mean, maximum, minimum) shown in the climograph
                             -) new arguments 'temp.labels.dx' and 'temp.labels.dy' to specify the position of air temperature labels
                             -) new argument 'plot.pcp.probs' to decide whether to show uncertainty values around the monthly mean precipitation values
-                            -) new argument 'pcp.probs' to define the quantile values used to show uncertainty values around the monthlyy mean precipitation values
+                            -) new argument 'pcp.probs' to define the quantile values used to show uncertainty values around the monthly mean precipitation values
                             -) new argument 'plot.temp.probs' to decide whether to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
                             -) new argument 'temp.probs' to define the quantile values used to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
                             -) new argument 'temp.probs.col' to define the colors used to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
@@ -34,7 +34,10 @@ NEWS/ChangeLog for hydroTSM
         o 'subdaily2daily': -) new argument 'start.fmt' to indicate the format used to provide 'start'
                             -) new argument 'tz' to indicate the time zone used for both 'start' argument and the datetimes of the object
         o 'daily2annual'  : -) for zoo objects, dates are correctly given in the output when FUN=min or FUN=max (e.g. for getting the date of the annual maximum or minimum)
-        o 'izoo2rzoo'     : -) new argument 'tz' to correctly handle subdaily zoo objects (e.g., forcing GMT as time zone instead of the local time zone).
+        o 'izoo2rzoo'     : -) improved handling of sub-daily time series
+                            -) new argument 'tz' to correctly handle sub-daily zoo objects (e.g., forcing UTC as time zone instead of the local time zone).
+                            -) default value for 'date.fmt' argument was changed from "%Y-%m-%d" to missing (it is automatically detected based on the sampling frequency of 'x')
+                            -) default value for 'tstep' argument was changed from "days" to missing (it is automatically detected based on the sampling frequency of 'x')
         o 'hydrokrige'    : -) flagged as 'deprecated' (in the future it will be improved and moved into a different package)
         o NAMESPACE file:   -) 'hydroplot', 'sname2plot' and 'hypsometric' are now exported S3 methods
 
