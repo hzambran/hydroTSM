@@ -20,10 +20,10 @@ It takes an irregular zoo object (with non-existing values for some dates) and c
 izoo2rzoo(x, ...)
 
 \method{izoo2rzoo}{default}(x, from= start(x), to= end(x), 
-                   date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="UTC", ...)
+                   date.fmt, tstep, tz="UTC", ...)
      
 \method{izoo2rzoo}{zoo}(x, from= start(x), to= end(x), 
-                   date.fmt= "\%Y-\%m-\%d", tstep= "days", tz="UTC", ...)
+                   date.fmt, tstep, tz="UTC", ...)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -40,11 +40,13 @@ Character indicating the ending date for creating the regularly spaced zoo objec
 It has to be in the format indicated by \code{date.fmt}.
 }
   \item{date.fmt}{
-character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}} 
+character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}}.
+By default, \code{date.fmt} is missing, and it is automatically set to \kbd{\%Y-\%m-\%d} when \code{time(x)} is \code{Date} object, and set to \kbd{\%Y-\%m-\%d \%H:\%M:\%S} when \code{x} is a sub-daily zoo object.
 }
   \item{tstep}{
 character, indicating the time step used for creating the time sequence going from \code{from} to \code{to} that will be used as \code{time(x)} \cr
-Valid values are (but not limited to) \kbd{days}, \kbd{months}, \kbd{years}, \kbd{hours}
+Valid values are (but not limited to) \kbd{days}, \kbd{months}, \kbd{years}, \kbd{hours}.
+By default, \code{tstep} is missing, and it is automatically set to \kbd{"days"} when \code{time(x)} is \code{Date} object (i.e., \code{x} is a daily/monthly/annual object), and set to \kbd{"hours"} when \code{x} is a sub-daily zoo object.
 }
   \item{tz}{
 specification of the desired time zone yo be used. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
@@ -125,14 +127,26 @@ x      <- zoo(values, dates)
 # removing values from 02:00 to 05:00 (not present at all in 'x', not even NA !)
 x <- x[-c(2:5)]
 
-# Adding missing values (NA in this case) from 02:00 to 05:00, using GMT as time zone
-# The argument 'tz' could have been ommited in this example, becuase GMT is its default value 
-y <-  izoo2rzoo(x, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", tstep="hours", tz="GMT")
+# Adding missing values (NA in this case) from 02:00 to 05:00, using UTC as time zone
+# The argument 'tz' could have been ommited in this example, becuase UTC is its default value 
+y <-  izoo2rzoo(x)
 time(y)
 
 #  Adding missing values (NA in this case) from 02:00 to 05:00, using local time zone
-y <-  izoo2rzoo(x, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", tstep="hours", tz="")
+y <-  izoo2rzoo(x, tz="")
 time(y)
+
+##
+## Example 5: Extending hourly data to a date before 'start(x)'
+dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00")
+x  <- zoo(0:20, dt)
+y  <- izoo2rzoo(x, from="2020-12-31")
+
+##
+## Example 6: Extending hourly data to a date after 'end(x)'
+dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00")
+x  <- zoo(0:20, dt)
+y  <- izoo2rzoo(x, from="2020-01-02 12:00:00")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
