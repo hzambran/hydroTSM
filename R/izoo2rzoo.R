@@ -141,7 +141,6 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
       to <- as.POSIXct(to, format=date.fmt, tz=tz)
     } else to <- as.Date(to, format=date.fmt)
 
-
   # Creating a regular time series with NA's in all dates in [from, to]
   dates  <- seq(from=from, to=to, by= tstep)
   na.zoo <- zoo(rep(NA, length(dates)), dates)
