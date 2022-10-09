@@ -78,9 +78,11 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
     } # ELSE end
 
   # Automatic detection of 'date.fmt'
-  if ( missing(date.fmt) & subdaily.ts ) {
-    date.fmt <- "%Y-%m-%d %H:%M:%S"
-  } else date.fmt <- "%Y-%m-%d"
+  if ( missing(date.fmt) ) {
+    if ( subdaily.ts ) {
+      date.fmt <- "%Y-%m-%d %H:%M:%S"
+    } else date.fmt <- "%Y-%m-%d"
+  } # IF end
       
   ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
            grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |
