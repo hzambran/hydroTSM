@@ -42,7 +42,7 @@ subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates: 08-Oct-2022                                                         #
+# Updates: 08-Oct-2022 ; 09-Oct-2022                                           #
 ################################################################################
 subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
                                  start.fmt= "%H:%M:%S", tz="UTC", ...) {
@@ -83,8 +83,8 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
     # Removing subdaily time attibute, but not the dates
     if (NCOL(h) == 1) {
-      h <- zoo(as.numeric(h), as.POSIXct(time(h), format="%Y-%m-%d %H") ) 
-    } else h <- zoo(coredata(h), as.POSIXct(time(h), format="%Y-%m-%d %H") ) 
+      h <- zoo(as.numeric(h), as.POSIXct(time(h), format="%Y-%m-%d %H", tz=tz) ) 
+    } else h <- zoo(coredata(h), as.POSIXct(time(h), format="%Y-%m-%d %H", tz=tz) ) 
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
@@ -189,7 +189,7 @@ subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 subhourly2hourly.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz="UTC",
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                   out.fmt="zoo",
+				                           out.fmt="zoo",
                                    verbose=TRUE,...) {
 
    x <- as.data.frame(x)
@@ -197,7 +197,7 @@ subhourly2hourly.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00",
    subhourly2hourly.data.frame(x=x, FUN=FUN, na.rm=na.rm, start=start, 
                                start.fmt=start.fmt, tz=tz,
                                dates=dates, date.fmt=date.fmt,
-			                   out.fmt=out.fmt,
+			                         out.fmt=out.fmt,
                                verbose=verbose,...)
 
 } # 'subhourly2hourly.matrix  ' END
