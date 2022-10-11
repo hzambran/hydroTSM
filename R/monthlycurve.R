@@ -16,7 +16,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                            #
 ###################################################################################
 # Started: 26-Jul-2022                                                            #
-# Updates: 22-Sep-2022                                                            #
+# Updates: 22-Sep-2022 ; 11-Oct-2022                                              #
 ###################################################################################
 # 'q'        : object of type 'zoo' with monthly, daily or subdaily streamflow data.
 #              If q is a monthly zoo object, it must have 12 elments and it should be 
@@ -176,24 +176,26 @@ monthlycurve <- function(q,
     if (start.month != 1) pcp.m.q2  <- .shift(x=pcp.m.q2 , imonth=start.month)
   } # IF end
 
-  ##############################################################################
-  # Definining the plotting area (2 rows and 1 column, 
-  # where the lower window has a height 3 time larger than the upper window
-  ##############################################################################
+  
   # the next line is required just in case a previous plot modified the graphical 'layout'
   par(mfrow=c(1,1)) 
 
+  ##############################################################################
+  # Definining the plotting area (1 column, 2 rows), where the lower row has 
+  # a height 3 times larger than the upper window, AND plotting the monthly 
+  # precipitation
+  ##############################################################################
   if ( !missing(pcp) ) {
     par(mar=c(3, 4.1, 3, 1.5)) # default  c(5.1, 4.1, 4.1, 2.1)
     layout(matrix(c(1,2), 2, 1, byrow = TRUE), widths=5, heights=c(1,3))  
  
     ylim <- range(pretty(pcp.m.q1), pretty(pcp.m.q2))
-    barplot(pcp.m.med, ylim=rev(ylim), xlab="", ylab=pcp.ylab, axes=TRUE, col=pcp.col, names.arg=month.names, main=main)
+    x <- barplot(pcp.m.med, ylim=rev(ylim), xlab="", ylab=pcp.ylab, axes=TRUE, col=pcp.col, names.arg=month.names, main=main)
     #axis(side=1, at=lx, labels=month.names, line=0.02, outer=TRUE, pos=1)
 
     # Adding error bars
     if (plot.pcp.probs) 
-      graphics::arrows(x0 = pcp.m.med, y0 = pcp.m.q2, y1 = pcp.m.q1, angle=90, code=3, length=0.1)
+      graphics::arrows(x0 = x, y0 = pcp.m.q2, y1 = pcp.m.q1, angle=90, code=3, length=0.1)
   } # IF end
 
 
