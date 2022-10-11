@@ -27,9 +27,10 @@ subdaily2daily <-function(x, ...) UseMethod("subdaily2daily")
 # Started: 09-Apr-2013                                                         #
 # Updates: 06-Dec-2019                                                         #
 #          27-May-2021                                                         #
+#          11-Oct-2022                                                         # 
 ################################################################################
 subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz="GMT", ...) {
+                                   start.fmt= "%H:%M:%S", tz="UTC", ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
@@ -47,9 +48,10 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 #          29-Nov-2015 ; 01-Dec-2015                                           #
 #          06-Dec-2019 ; 18-Dec-2019                                           #
 #          27-May-2021                                                         #
+#          11-Oct-2022                                                         #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz="GMT", ...) {
+                                   start.fmt= "%H:%M:%S", tz="UTC", ...) {
 
      # testing the existence of 'na.rm' argument
      #args <- list(...)
@@ -115,7 +117,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Started: 09-Apr-2013                                                         #
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
-#          23-Aug-2022                                                         #
+#          23-Aug-2022 ; 11-Oct-2022                                           #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -131,10 +133,10 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
 subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                      start.fmt= "%H:%M:%S", tz="GMT", 
+                                      start.fmt= "%H:%M:%S", tz="UTC", 
                                       dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                      out.fmt="zoo",
-				                      verbose=TRUE,...) {
+				                              out.fmt="zoo",
+				                              verbose=TRUE,...) {
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
@@ -198,9 +200,9 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 #          27-May-2021                                                         #
 ################################################################################
 subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz="GMT",
+                                   start.fmt= "%H:%M:%S", tz="UTC",
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                   out.fmt="zoo",
+				                           out.fmt="zoo",
                                    verbose=TRUE,...) {
 
    x <- as.data.frame(x)
@@ -208,7 +210,7 @@ subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00",
    subdaily2daily.data.frame(x=x, FUN=FUN, na.rm=na.rm, start=start, 
                              start.fmt=start.fmt, tz=tz,
                              dates=dates, date.fmt=date.fmt,
-			                 out.fmt=out.fmt,
+			                       out.fmt=out.fmt,
                              verbose=verbose,...)
 
 } # 'subdaily2daily.matrix  ' END
