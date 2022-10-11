@@ -57,7 +57,7 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 #          07-May-2012                                                         #
 #          16-Oct-2012                                                         #
 #          29-May-2013                                                         #
-#          17-Jun-2022 ; 20-Jun-2022 ; 08-Oct-2022 ; 09-Oct-2022               #
+#          17-Jun-2022 ; 20-Jun-2022 ; 08-Oct-2022 ; 09-Oct-2022 ; 11-Oct-2022 #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
@@ -68,14 +68,21 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   # sampling frequency of 'x'           
   x.freq <- sfreq(x)
         
-  # Cheking if 'x is a sub-daily zoo object
+  # Cheking if 'x is a sub-daily zoo object  
   if (x.freq %in% c("minute","hourly") ) {
     subdaily.ts <- TRUE
-    tstep <- "hours"
-  } else {
-      subdaily.ts <- FALSE
-      tstep <- "days"
-    } # ELSE end
+  } else subdaily.ts <- FALSE
+
+  # Defining the 'tstep' value
+  switch(x.freq,
+         minute = {tstep <- "min"},
+         hourly = {tstep <- "hours"},
+         daily = {tstep <- "days"},
+         weeekly = {tstep <- "weeks"},
+         monthky = {tstep <- "months"},
+         quarterly = {tstep <- "quarters"},
+         annual = {tstep <- "years"}
+         )
 
   # Automatic detection of 'date.fmt'
   if ( missing(date.fmt) ) {

@@ -46,7 +46,7 @@ By default, \code{date.fmt} is missing, and it is automatically set to \kbd{\%Y-
   \item{tstep}{
 character, indicating the time step used for creating the time sequence going from \code{from} to \code{to} that will be used as \code{time(x)} \cr
 Valid values are (but not limited to) \kbd{days}, \kbd{months}, \kbd{years}, \kbd{hours}.
-By default, \code{tstep} is missing, and it is automatically set to \kbd{"days"} when \code{time(x)} is \code{Date} object (i.e., \code{x} is a daily/monthly/annual object), and set to \kbd{"hours"} when \code{x} is a sub-daily zoo object.
+By default, \code{tstep} is missing, and it is automatically set to \kbd{"minues"} when \code{sfreq(x)} is \kbd{min}, to \kbd{"hours"} when \code{sfreq(x)} is \kbd{hourly}, to \kbd{"days"} when \code{sfreq(x)} is \kbd{daily}, to \kbd{"weeks"} when \code{sfreq(x)} is \kbd{weekly}, to \kbd{"months"} when \code{sfreq(x)} is \kbd{monthly}, to \kbd{"quarters"} when \code{sfreq(x)} is \kbd{quarterly}, and to \kbd{"years"} when \code{sfreq(x)} is \kbd{annual}.
 }
   \item{tz}{
 specification of the desired time zone yo be used. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
