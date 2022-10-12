@@ -37,7 +37,7 @@ izoo2rzoo <-function(x, ...) UseMethod("izoo2rzoo")
 #          09-Oct-2022                                                         #
 ################################################################################ 
 izoo2rzoo.default <- function(x, from= start(x), to= end(x), 
-                              date.fmt, tstep, tz="UTC", ...) {
+                              date.fmt, tstep, tz, ...) {
 
   # Checking that the user provied a valid class for 'x'   
   valid.class <- c("xts", "zoo")    
@@ -61,7 +61,7 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
-                          date.fmt, tstep, tz="UTC", ... ) {
+                          date.fmt, tstep, tz, ... ) {
 
   if (!is.zoo(x)) stop("Invalid argument: 'x' must be of class 'zoo'")
 
@@ -72,6 +72,9 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   if (x.freq %in% c("minute","hourly") ) {
     subdaily.ts <- TRUE
   } else subdaily.ts <- FALSE
+
+  if (missing(from)) message("missing from")
+  message("time(from):", time(from))
 
   # Defining the 'tstep' value
   switch(x.freq,
@@ -90,6 +93,10 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
       date.fmt <- "%Y-%m-%d %H:%M:%S"
     } else date.fmt <- "%Y-%m-%d"
   } # IF end
+
+  # Automatic detection of 'tz'
+  if (missing(tz))
+   tz <- format(time(x), "%Z")[1]
       
   ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
            grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |
@@ -111,7 +118,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
 
   # If 'to' was given as Date, but 'x' is sub-daily
   if (!missing(to)) {
-    if (to < from ) stop("Invalid argument: 'to < start(x)' |OR 'to < from' !")
+    if (to < from ) stop("Invalid argument: 'to < start(x)' | OR 'to < from' !")
 
     if ( subdaily.date.fmt & !(grepl(":", to, fixed=TRUE) ) )
       to <- paste(to, "00:00:00")

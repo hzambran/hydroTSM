@@ -20,10 +20,10 @@ It takes an irregular zoo object (with non-existing values for some dates) and c
 izoo2rzoo(x, ...)
 
 \method{izoo2rzoo}{default}(x, from= start(x), to= end(x), 
-                   date.fmt, tstep, tz="UTC", ...)
+                   date.fmt, tstep, tz, ...)
      
 \method{izoo2rzoo}{zoo}(x, from= start(x), to= end(x), 
-                   date.fmt, tstep, tz="UTC", ...)
+                   date.fmt, tstep, tz, ...)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -46,11 +46,12 @@ By default, \code{date.fmt} is missing, and it is automatically set to \kbd{\%Y-
   \item{tstep}{
 character, indicating the time step used for creating the time sequence going from \code{from} to \code{to} that will be used as \code{time(x)} \cr
 Valid values are (but not limited to) \kbd{days}, \kbd{months}, \kbd{years}, \kbd{hours}.
-By default, \code{tstep} is missing, and it is automatically set to \kbd{"minues"} when \code{sfreq(x)} is \kbd{min}, to \kbd{"hours"} when \code{sfreq(x)} is \kbd{hourly}, to \kbd{"days"} when \code{sfreq(x)} is \kbd{daily}, to \kbd{"weeks"} when \code{sfreq(x)} is \kbd{weekly}, to \kbd{"months"} when \code{sfreq(x)} is \kbd{monthly}, to \kbd{"quarters"} when \code{sfreq(x)} is \kbd{quarterly}, and to \kbd{"years"} when \code{sfreq(x)} is \kbd{annual}.
+By default, \code{tstep} is missing, and it is automatically set to \kbd{"minutes"} when \code{sfreq(x)} is \kbd{min}, to \kbd{"hours"} when \code{sfreq(x)} is \kbd{hourly}, to \kbd{"days"} when \code{sfreq(x)} is \kbd{daily}, to \kbd{"weeks"} when \code{sfreq(x)} is \kbd{weekly}, to \kbd{"months"} when \code{sfreq(x)} is \kbd{monthly}, to \kbd{"quarters"} when \code{sfreq(x)} is \kbd{quarterly}, and to \kbd{"years"} when \code{sfreq(x)} is \kbd{annual}.
 }
   \item{tz}{
-specification of the desired time zone yo be used. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
-This argument can be used when working with subdaily zoo objects to force using the local time zone instead of GMT as time zone.
+character, with the specification of the desired time zone yo be used. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
+This argument can be used when working with sub-daily zoo objects to force using the local time zone instead of UTC as time zone.
 }
   \item{\dots}{
 further arguments passed to or from other methods
