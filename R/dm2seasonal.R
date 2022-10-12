@@ -49,6 +49,7 @@ dm2seasonal.default <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 ################################################################################
 # Started: 08-Aug-2011                                                         #
 # Updates: 08-Aug-2011                                                         #
+#          12-Oct-2022                                                         #
 ################################################################################
 dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
 
@@ -94,18 +95,18 @@ dm2seasonal.zoo <- function(x, season, FUN, na.rm=TRUE, out.fmt="%Y", ...) {
   # instead of with Jan/91 and Feb/91
   if ( (season == "DJF") | (season == "DJFM") ) {
   
-	syears            <- as.numeric(format( time(s), "%Y" ))
-	dec.index         <- which(format(time(s), "%m") == 12)
-	dec.years         <- syears[dec.index]
-	dec.years         <- dec.years + 1
-	syears[dec.index] <- dec.years
+	  syears            <- as.numeric(format( time(s), "%Y" ))
+	  dec.index         <- which(format(time(s), "%m") == 12)
+	  dec.years         <- syears[dec.index]
+	  dec.years         <- dec.years + 1
+	  syears[dec.index] <- dec.years
 
-	s.a <- aggregate( s, by= syears, FUN=FUN, na.rm= na.rm)
+	  s.a <- aggregate( s, by= syears, FUN=FUN, na.rm= na.rm)
 
-	# Removing the last value of december, because it is outside of the analysis period
-	if ( (is.matrix(x)) | (is.data.frame(x)) ) {
-	  s.a <- s.a[1:(nrow(s.a)-1), ]
-	} else s.a <- s.a[1:(length(s.a)-1)]
+  	# Removing the last value of december, because it is outside of the analysis period
+	  if ( (is.matrix(s.a)) | (is.data.frame(s.a)) ) {
+	    s.a <- s.a[1:(nrow(s.a)-1), ]
+	  } else s.a <- s.a[1:(length(s.a)-1)]
 			
   } else  s.a <- aggregate( s, by= format( time(s), "%Y" ), FUN=FUN, na.rm= na.rm )	
 
