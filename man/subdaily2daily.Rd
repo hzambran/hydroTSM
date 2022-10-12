@@ -23,18 +23,18 @@ Generic function for transforming a Sub-DAILY time series into a DAILY one
 subdaily2daily(x, ...)
 
 \method{subdaily2daily}{default}(x, FUN, na.rm = TRUE, start="00:00:00", 
-                       start.fmt= "\%H:\%M:\%S", tz="UTC", ...)
+                       start.fmt= "\%H:\%M:\%S", tz, ...)
 
 \method{subdaily2daily}{zoo}(x, FUN, na.rm = TRUE, start="00:00:00", 
-                       start.fmt= "\%H:\%M:\%S", tz="UTC", ...)
+                       start.fmt= "\%H:\%M:\%S", tz, ...)
 
 \method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, start="00:00:00", 
-           start.fmt= "\%H:\%M:\%S", tz="UTC",
+           start.fmt= "\%H:\%M:\%S", tz,
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 
 \method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, start="00:00:00", 
-           start.fmt= "\%H:\%M:\%S", tz="UTC",
+           start.fmt= "\%H:\%M:\%S", tz,
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 }
@@ -65,7 +65,9 @@ It is useful when the daily values start at a time different from \code{"00:00:0
 character indicating the format in which the time is provided in \code{start}, By default \code{date.fmt=\%H:\%M:\%S}. See \code{format} in \code{\link[base]{as.POSIXct}}.
 }
   \item{tz}{
-character, indicating the time zone specification to be used for both \code{start} and \code{dates}. System-specific, but \kbd{"GMT"} is UTC (Universal Time Coordinated), the dault, and \kbd{""} is the current time zone.
+character, with the specification of the desired time zone yo be used. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
+This argument can be used to force using the local time zone instead of UTC as time zone.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each column of \code{x} (e.g., gauging station) \cr

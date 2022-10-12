@@ -30,7 +30,7 @@ subdaily2daily <-function(x, ...) UseMethod("subdaily2daily")
 #          11-Oct-2022                                                         # 
 ################################################################################
 subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz="UTC", ...) {
+                                   start.fmt= "%H:%M:%S", tz, ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
@@ -51,28 +51,32 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 #          11-Oct-2022                                                         #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz="UTC", ...) {
+                                   start.fmt= "%H:%M:%S", tz, ...) {
 
-     # testing the existence of 'na.rm' argument
-     #args <- list(...)
-     #exist <- "na.rm" %in% names(args)
-     #exist
+    # testing the existence of 'na.rm' argument
+    #args <- list(...)
+    #exist <- "na.rm" %in% names(args)
+    #exist
 
-     # Checking that the user provied a valid class for 'x'   
-     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
+    # Checking that the user provied a valid class for 'x'   
+    if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
 
-     # Checking the user provide a valid value for 'FUN'
-     if (missing(FUN))
-       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
+    # Checking the user provide a valid value for 'FUN'
+    if (missing(FUN))
+      stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
-     # Transforming the original time into a POSIXct object
-     time.old <- time(x)
+    # Automatic detection of 'tz'
+    if (missing(tz))
+      tz <- format(time(x), "%Z")[1]
 
-     # Converting the new staring time provided by the user into a POSIXct object
-     start <- as.POSIXct(start, format=start.fmt, tz=tz)
+    # Transforming the original time into a POSIXct object
+    time.old <- time(x)
 
-     # normal staring time for a day
-     nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
+    # Converting the new staring time provided by the user into a POSIXct object
+    start <- as.POSIXct(start, format=start.fmt, tz=tz)
+
+    # normal staring time for a day
+    nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
 
     # time difference between the desired starting time 'strat' and the "normal"
     # starting time 'nstart', [s]
@@ -84,29 +88,31 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
     # Changing the time in 'x' in 'delta' seconds
     time(x)  <- time.new
      
+    # Making sure that the time serie is complete before aggregation
+    #if ( (format(start(x), "%H:%M:%S") != "00:00:00") | (format(end(x), "%H:%M:%S") != "00:00:00"))
+    st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00")
+    et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59")
+    x <- izoo2rzoo(x, from=st, to=et, tz=tz)
 
-     # 'as.numeric' is necessary for being able to change the names to the output
-     d <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
+    # 'as.numeric' is necessary for being able to change the names to the output
+    d <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
 
-#     # Daily aggregation. 
-#     d <- apply.daily(x=x, FUN=FUN, na.rm=na.rm) # xts::apply.daily
+    # Removing subdaily time attibute, but not the dates
+    if (NCOL(d) == 1) {
+      d <- zoo(as.numeric(d), as.Date(time(d), format="%Y-%m-%d") ) 
+    } else d <- zoo(coredata(d), as.Date(time(d), format="%Y-%m-%d") ) 
 
-     # Removing subdaily time attibute, but not the dates
-     if (NCOL(d) == 1) {
-       d <- zoo(as.numeric(d), as.Date(time(d), format="%Y-%m-%d") ) 
-     } else d <- zoo(coredata(d), as.Date(time(d), format="%Y-%m-%d") ) 
-
-     # Replacing the NaNs by 'NA.
-     # mean(NA:NA, na.rm=TRUE) == NaN
-     nan.index <- which(is.nan(d))
-     if ( length(nan.index) > 0 ) d[nan.index] <- NA
+    # Replacing the NaNs by 'NA.
+    # mean(NA:NA, na.rm=TRUE) == NaN
+    nan.index <- which(is.nan(d))
+    if ( length(nan.index) > 0 ) d[nan.index] <- NA
   
-     # Replacing all the Inf and -Inf by NA's
-     # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
-     inf.index <- which(is.infinite(d))
-     if ( length(inf.index) > 0 ) d[inf.index] <- NA      
+    # Replacing all the Inf and -Inf by NA's
+    # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
+    inf.index <- which(is.infinite(d))
+    if ( length(inf.index) > 0 ) d[inf.index] <- NA      
 
-     return(d)
+    return(d)
 
 } # 'subdaily2daily.zoo' end
 
@@ -133,7 +139,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
 subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                      start.fmt= "%H:%M:%S", tz="UTC", 
+                                      start.fmt= "%H:%M:%S", tz, 
                                       dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                              out.fmt="zoo",
 				                              verbose=TRUE,...) {
@@ -200,7 +206,7 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 #          27-May-2021                                                         #
 ################################################################################
 subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz="UTC",
+                                   start.fmt= "%H:%M:%S", tz,
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                           out.fmt="zoo",
                                    verbose=TRUE,...) {
