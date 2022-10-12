@@ -73,9 +73,6 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
     subdaily.ts <- TRUE
   } else subdaily.ts <- FALSE
 
-  if (missing(from)) message("missing from")
-  message("time(from):", time(from))
-
   # Defining the 'tstep' value
   switch(x.freq,
          minute = {tstep <- "min"},
