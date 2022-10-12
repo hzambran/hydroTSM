@@ -186,12 +186,13 @@ monthlycurve <- function(q,
   # precipitation
   ##############################################################################
   if ( !missing(pcp) ) {
-    par(mar=c(3, 4.1, 3, 1.5)) # default  c(5.1, 4.1, 4.1, 2.1)
+    par(mar=c(3, 4.1, 3, 1.5), xpd=TRUE) # default  c(5.1, 4.1, 4.1, 2.1)
     layout(matrix(c(1,2), 2, 1, byrow = TRUE), widths=5, heights=c(1,3))  
  
     ylim <- range(pretty(pcp.m.q1), pretty(pcp.m.q2))
     x <- barplot(pcp.m.med, ylim=rev(ylim), xlab="", ylab=pcp.ylab, axes=TRUE, col=pcp.col, names.arg=month.names, main=main)
     #axis(side=1, at=lx, labels=month.names, line=0.02, outer=TRUE, pos=1)
+    if (labels) text(x, -7, cex=labels.cex, adj=0.5, labels= round(pcp.m.med,1), col="black")
 
     # Adding error bars
     if (plot.pcp.probs) 
