@@ -5,14 +5,14 @@
 # Distributed under GPL 2 or later
 
 ################################################################################
-#                            subdaily2daily                                    #
+#                            subhourly2hourly                                    #
 ################################################################################
-# This function transform a SUB-DAILY time series into a DAILY one
+# This function transform a SUB-HOURLY time series into a HOURLY one
 
-# 'x'   : usb-daily values that will be converted into daily ones.
+# 'x'   : sub-hourly values that will be converted into hourly ones.
 #         class(x) must be 'xts'
-# 'FUN' : Function that have to be applied for transforming from sub-daily into 
-#         daily time step. E.g., for precipitation FUN MUST be "sum"
+# 'FUN' : Function that have to be applied for transforming from sub-hourly into 
+#         hourly time step. E.g., for precipitation FUN MUST be "sum"
 #         For temperature and flow time series, FUN MUST be "mean"
 # 'na.rm': Logical. Should missing values be removed?
 #          TRUE : the monthly and annual values  are computed considering only those values different from NA
@@ -25,15 +25,14 @@ subhourly2hourly <-function(x, ...) UseMethod("subhourly2hourly")
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates: 08-Oct-2022                                                         #
+# Updates: 08-Oct-2022 ; 15-Oct-2022                                           #
 ################################################################################
-subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                     start.fmt= "%H:%M:%S", tz="UTC", ...) {
+subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
 
-  subhourly2hourly.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
+  subhourly2hourly.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
 
 } # 'subhourly2hourly.default' end
 
@@ -42,10 +41,9 @@ subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates: 08-Oct-2022 ; 09-Oct-2022                                           #
+# Updates: 08-Oct-2022 ; 09-Oct-2022 ; 15-Oct-2022                             #
 ################################################################################
-subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                 start.fmt= "%H:%M:%S", tz="UTC", ...) {
+subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, ...) {
 
      # testing the existence of 'na.rm' argument
      #args <- list(...)
@@ -57,34 +55,10 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
      # Checking the user provide a valid value for 'FUN'
      if (missing(FUN))
-       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
-
-     # Transforming the original time into a POSIXct object
-     time.old <- time(x)
-
-     # Converting the new staring time provided by the user into a POSIXct object
-     start <- as.POSIXct(start, format=start.fmt, tz=tz)
-
-     # normal staring time for a day
-     nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
-
-    # time difference between the desired starting time 'strat' and the "normal"
-    # starting time 'nstart', [s]
-    delta <- difftime(start, nstart, units="secs")
-
-    # Computing teh time difference between 'start' and the "normal" starting time, [s]
-    time.new <- as.POSIXct(time.old, tz=tz) - delta
-
-    # Changing the time in 'x' in 'delta' seconds
-    time(x)  <- time.new     
+       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-hourly values")   
 
     # 'as.numeric' is necessary for being able to change the names to the output
     h <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d %H"), FUN=FUN, na.rm= na.rm, ...)
-
-    # Removing subdaily time attibute, but not the dates
-    if (NCOL(h) == 1) {
-      h <- zoo(as.numeric(h), as.POSIXct(time(h), format="%Y-%m-%d %H", tz=tz) ) 
-    } else h <- zoo(coredata(h), as.POSIXct(time(h), format="%Y-%m-%d %H", tz=tz) ) 
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
@@ -105,7 +79,7 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates: 23-Aug-2022 ; 08-Oct-2022                                           #
+# Updates: 23-Aug-2022 ; 08-Oct-2022 ; 15-Oct-2022                             #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -120,11 +94,9 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 #             ONLY required when class(dates)=="factor" or "numeric"
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
-subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                        start.fmt= "%H:%M:%S", tz="UTC", 
+subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, 
                                         dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                                out.fmt="zoo",
-				                                verbose=TRUE,...) {
+				                                out.fmt="zoo", verbose=TRUE,...) {
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
@@ -146,7 +118,7 @@ subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
   # The column with dates is then substracted form 'x' for easening the further computations
   if ( TRUE && ( inherits(dates, "numeric") ) ) {
     tmp   <- dates
-    dates <- as.POSIXct(x[, dates], format= date.fmt, tz=tz) 
+    dates <- as.POSIXct(x[, dates], format= date.fmt) 
     x     <- x[-tmp]
   }  # IF end
 
@@ -165,7 +137,7 @@ subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
   
   ##############################################################################
   
-  z <- subhourly2hourly.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
+  z <- subhourly2hourly.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
     
   if (out.fmt == "numeric") {
      snames      <- colnames(z)
@@ -184,20 +156,16 @@ subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 30-Jun-2021                                                         #
-# Updates: 09-Oct-2022                                                         #
+# Updates: 09-Oct-2022 ; 15-Oct-2022                                           #
 ################################################################################
-subhourly2hourly.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz="UTC",
-                                   dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                           out.fmt="zoo",
-                                   verbose=TRUE,...) {
+subhourly2hourly.matrix  <- function(x, FUN, na.rm=TRUE,
+                                     dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
+				                             out.fmt="zoo", verbose=TRUE,...) {
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
-   subhourly2hourly.data.frame(x=x, FUN=FUN, na.rm=na.rm, start=start, 
-                               start.fmt=start.fmt, tz=tz,
+   subhourly2hourly.data.frame(x=x, FUN=FUN, na.rm=na.rm,
                                dates=dates, date.fmt=date.fmt,
-			                         out.fmt=out.fmt,
-                               verbose=verbose,...)
+			                         out.fmt=out.fmt, verbose=verbose,...)
 
 } # 'subhourly2hourly.matrix  ' END

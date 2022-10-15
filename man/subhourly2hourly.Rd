@@ -14,27 +14,23 @@
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Sub-daily -> Daily
+Sub-hourly -> Hourly
 }
 \description{
-Generic function for transforming a Sub-DAILY time series into a DAILY one
+Generic function for transforming a sub-HOURLY time series into an HOURLY one
 }
 \usage{
 subhourly2hourly(x, ...)
 
-\method{subhourly2hourly}{default}(x, FUN, na.rm = TRUE, start="00:00:00", 
-                          start.fmt= "\%H:\%M:\%S", tz="UTC", ...)
+\method{subhourly2hourly}{default}(x, FUN, na.rm = TRUE, ...)
 
-\method{subhourly2hourly}{zoo}(x, FUN, na.rm = TRUE, start="00:00:00", 
-                         start.fmt= "\%H:\%M:\%S", tz="UTC", ...)
+\method{subhourly2hourly}{zoo}(x, FUN, na.rm = TRUE, ...)
 
-\method{subhourly2hourly}{data.frame}(x, FUN, na.rm = TRUE, start="00:00:00", 
-           start.fmt= "\%H:\%M:\%S", tz="UTC",
+\method{subhourly2hourly}{data.frame}(x, FUN, na.rm = TRUE,
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 
-\method{subhourly2hourly}{matrix}(x, FUN, na.rm = TRUE, start="00:00:00", 
-           start.fmt= "\%H:\%M:\%S", tz="UTC",
+\method{subhourly2hourly}{matrix}(x, FUN, na.rm = TRUE,
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 }
@@ -50,22 +46,7 @@ Function that have to be applied for transforming from sub-hourly to hourly time
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
 -) \kbd{TRUE} : the hourly values  are computed considering only those values different from NA \cr
--) \kbd{FALSE}: if there is AT LEAST one NA sub-hourly value within a day, the corresponing hourly value(s) will be NA as well
-}
-  \item{start}{
-character, indicating the starting time used for aggregating sub-hourly time series into hourly ones. It MUST be provided in the format specified by \code{start.fmt}. \cr
-This value is used to define the time when a new day begins. \cr
--) All the values of \code{x} with a time attribute before \code{start} are considered as belonging to the day before the one indicated in the time attribute of those values. \cr
--) All the values of \code{x} with a time attribute equal to \code{start} are considered to be equal to \code{"00:00:00"} in the output zoo object. \cr
--) All the values of \code{x} with a time attribute after \code{start} are considered as belonging to the same day as the one indicated in the time attribute of those values. \cr
-
-It is useful when the daily values start at a time different from \code{"00:00:00"}. Use with caution. See examples.
-}
-  \item{start.fmt}{
-character indicating the format in which the time is provided in \code{start}, By default \code{date.fmt=\%H:\%M:\%S}. See \code{format} in \code{\link[base]{as.POSIXct}}.
-}
-  \item{tz}{
-character, indicating the time zone specification to be used for both \code{start} and \code{dates}. System-specific, but \kbd{"GMT"} is UTC (Universal Time Coordinated), the dault, and \kbd{""} is the current time zone.
+-) \kbd{FALSE}: if there is AT LEAST one NA sub-hourly value within a day, the corresponding hourly value(s) will be NA as well
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each column of \code{x} (e.g., gauging station) \cr
@@ -107,7 +88,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{subdaily2daily}}, \code{\link{subdaily2monthly}}, \code{\link{subdaily2annual}}, \code{\link{subdaily2seasonal}}, \code{\link{as.POSIXct}}, \code{\link{dm2seasonal}}, \code{\link{monthlyfunction}}, \code{\link{seasonalfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}
+\code{\link{subhourly2nminutes}},, \code{\link{subdaily2daily}}, \code{\link{subdaily2monthly}}, \code{\link{subdaily2annual}}, \code{\link{subdaily2seasonal}}, \code{\link{as.POSIXct}}, \code{\link{dm2seasonal}}, \code{\link{monthlyfunction}}, \code{\link{seasonalfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}
 }
 \examples{
 ## Creating a 15-min time sequence and counting its length
@@ -121,8 +102,9 @@ x <- zoo( rep(1, ndt), dt)
 ## sub-hourly to hourly
 h1 <- subhourly2hourly(x, FUN=sum, na.rm=TRUE)
 
-## sub-hourly to hourly, considering that the new day starts at 08:00:00
-h2 <- subhourly2hourly(x, FUN=sum, na.rm=TRUE, start="08:00:00")
+## Aggregation of 3 sub-hourly ts (i.e., a zoo matrix) into an hourly one
+X  <- cbind(x, x, x)
+h2 <- subhourly2hourly(X, FUN=sum, na.rm=TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
