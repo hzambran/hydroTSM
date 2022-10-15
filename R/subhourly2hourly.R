@@ -45,20 +45,26 @@ subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, ...) {
 ################################################################################
 subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, ...) {
 
-     # testing the existence of 'na.rm' argument
-     #args <- list(...)
-     #exist <- "na.rm" %in% names(args)
-     #exist
+    # testing the existence of 'na.rm' argument
+    #args <- list(...)
+    #exist <- "na.rm" %in% names(args)
+    #exist
 
-     # Checking that the user provied a valid class for 'x'   
-     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
+    # Checking that the user provied a valid class for 'x'   
+    if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
 
-     # Checking the user provide a valid value for 'FUN'
-     if (missing(FUN))
-       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-hourly values")   
+    # Checking the user provide a valid value for 'FUN'
+    if (missing(FUN))
+      stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-hourly values")   
+
+    # Getting the time zone of 'x'
+    ltz <- format(time(x), "%Z")[1]
 
     # 'as.numeric' is necessary for being able to change the names to the output
     h <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d %H"), FUN=FUN, na.rm= na.rm, ...)
+
+    # Restoring time(x) to a complete POSIX format
+    h <- zoo(coredata(h), as.POSIXct(time(h), format="%Y-%m-%d %H", tz=ltz ))
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN

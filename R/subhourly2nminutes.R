@@ -45,29 +45,32 @@ subhourly2nminutes.default <- function(x, nminutes, FUN, na.rm=TRUE, ...) {
 ################################################################################
 subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, ...) {
 
-     # testing the existence of 'na.rm' argument
-     #args <- list(...)
-     #exist <- "na.rm" %in% names(args)
-     #exist
+    # testing the existence of 'na.rm' argument
+    #args <- list(...)
+    #exist <- "na.rm" %in% names(args)
+    #exist
 
-     # Checking that the user provied a valid class for 'x'   
-     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
+    # Checking that the user provied a valid class for 'x'   
+    if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
 
-     # Checking that the user provied a sub-hourly 'x' object
-     if ( !(sfreq(x) == "minute" ) ) stop("Invalid argument: 'x' is not a sub-hourly ts !!")
+    # Checking that the user provied a sub-hourly 'x' object
+    if ( !(sfreq(x) == "minute" ) ) stop("Invalid argument: 'x' is not a sub-hourly ts !!")
 
-     # Checking the user provide a valid value for 'FUN'
-     if (missing(FUN))
-       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
+    # Checking the user provide a valid value for 'FUN'
+    if (missing(FUN))
+      stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
-     # Getting the amount of minutes between each 'x' value
-     x.nmin <- as.numeric(time(x)[2]-time(x)[1])
+    # Getting the amount of minutes between each 'x' value
+    x.nmin <- as.numeric(time(x)[2]-time(x)[1])
 
-     # Checking that the amount of minutes used for aggregation ('nminutes') is provided and larger than 'x.nmin'
-     if (missing(nminutes)) {
-      stop("Missing argument: 'nminutes' must be provided !")
-     } else if ( nminutes <= x.nmin) 
-              stop("Invalid argument: 'nminutes' must be larger than the time frequency of 'x' !!")
+    # Checking that the amount of minutes used for aggregation ('nminutes') is provided and larger than 'x.nmin'
+    if (missing(nminutes)) {
+     stop("Missing argument: 'nminutes' must be provided !")
+    } else if ( nminutes <= x.nmin) 
+             stop("Invalid argument: 'nminutes' must be larger than the time frequency of 'x' !!")
+
+    # Getting the time zone of 'x'
+    ltz <- format(time(x), "%Z")[1]
 
     lstart <- start(x)
     lend   <- end(x)
@@ -76,8 +79,8 @@ subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, ...) {
     # temporal aggregation from 'x.nmin' minutes to 'nminutes' minutes
     h <- aggregate(x, by= function(tt) cut(tt, breaks=temp), FUN=FUN, na.rm= na.rm, ...)
 
-    # getting the time of the output object
-    htime <- time(h)
+    # Restoring time(x) to a complete POSIX format
+    h <- zoo(coredata(h), as.POSIXct(time(h), format="%Y-%m-%d %H:%M", tz=ltz ))
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
