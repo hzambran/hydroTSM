@@ -61,7 +61,11 @@ subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, ...) {
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
     # Getting the amount of minutes between each 'x' value
-    x.nmin <- as.numeric(time(x)[2]-time(x)[1])
+    x.nmin       <- time(x)[2]-time(x)[1]
+    x.nmin.units <- units(x.nmin)
+    if (x.nmin.units == "secs") {
+      x.nmin <- as.numeric(x.nmin/60)
+    } else x.nmin <- as.numeric(x.nmin)
 
     # Checking that the amount of minutes used for aggregation ('nminutes') is provided and larger than 'x.nmin'
     if (missing(nminutes)) {
