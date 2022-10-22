@@ -27,7 +27,7 @@ subhourly2nminutes <-function(x, ...) UseMethod("subhourly2nminutes")
 # Started: 15-Oct-2022                                                         #
 # Updates:                                                                     #
 ################################################################################
-subhourly2nminutes.default <- function(x, nminutes, FUN, na.rm=TRUE, ...) {
+subhourly2nminutes.default <- function(x, nminutes, FUN, na.rm=TRUE, start, ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
@@ -43,7 +43,7 @@ subhourly2nminutes.default <- function(x, nminutes, FUN, na.rm=TRUE, ...) {
 # Started: 30-Jun-2021                                                         #
 # Updates: 08-Oct-2022 ; 09-Oct-2022                                           #
 ################################################################################
-subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, ...) {
+subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, start, ...) {
 
     # testing the existence of 'na.rm' argument
     #args <- list(...)
@@ -73,6 +73,11 @@ subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, ...) {
      stop("Missing argument: 'nminutes' must be provided !")
     } else if ( nminutes <= x.nmin) 
              stop("Invalid argument: 'nminutes' must be larger than the time frequency of 'x' !!")
+
+    lstart <- start(x)
+    if ( !missing(start) )
+      if (start < lstart) 
+        x <- izoo2rzoo(x, from=lstart)
 
     # Getting the time zone of 'x'
     ltz <- format(time(x), "%Z")[1]
@@ -121,7 +126,7 @@ subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, ...) {
 #             ONLY required when class(dates)=="factor" or "numeric"
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
-subhourly2nminutes.data.frame <- function(x, nminutes, FUN, na.rm=TRUE, 
+subhourly2nminutes.data.frame <- function(x, nminutes, FUN, na.rm=TRUE, start, 
                                           dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                                  out.fmt="zoo", verbose=TRUE,...) {
 
@@ -185,7 +190,7 @@ subhourly2nminutes.data.frame <- function(x, nminutes, FUN, na.rm=TRUE,
 # Started: 15-Oct-2022                                                         #
 # Updates:                                                                     #
 ################################################################################
-subhourly2nminutes.matrix  <- function(x, nminutes, FUN, na.rm=TRUE,
+subhourly2nminutes.matrix  <- function(x, nminutes, FUN, na.rm=TRUE, start,
                                        dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                               out.fmt="zoo",
                                        verbose=TRUE,...) {
