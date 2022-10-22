@@ -40,7 +40,8 @@ NEWS/ChangeLog for hydroTSM
                             -) default value for 'date.fmt' argument was changed from "%Y-%m-%d" to missing (it is automatically detected based on the sampling frequency of 'x')
                             -) default value for 'tstep' argument was changed from "days" to missing (it is automatically detected based on the sampling frequency of 'x')
         o 'hydrokrige'    : -) flagged as 'deprecated' (in the future it will be improved and moved into a different package)
-        o NAMESPACE file:   -) 'hydroplot', 'sname2plot' and 'hypsometric' are now exported S3 methods
+        o 'season2names'  : fixed typo: 'autumm' -> 'autumn' (thanks to Belinda Wilson !)
+        o NAMESPACE file  : -) 'hydroplot', 'sname2plot' and 'hypsometric' are now exported S3 methods
 
 
 0.6-0   11-Mar-2020
