@@ -25,8 +25,11 @@ monthlycurve(q, pcp, na.rm=TRUE, from, to, date.fmt="\%Y-\%m-\%d",
              plot.pcp.probs=TRUE, pcp.probs=c(0.25, 0.75), 
              pcp.col="lightskyblue1", pcp.alpha=0.8, pcp.ylab="P, [mm]",
              xlab="Month", ylab="Q, [m3/s]", labels=TRUE, labels.cex=0.8,
-             labels.dx=c(rep(-0.2,6), rep(0.2,6)), 
-             labels.dy=rep(-median(q, na.rm=TRUE)/10, 12)
+             labels.q.dx=c(rep(-0.2,6), rep(0.2,6)), 
+             labels.q.dy=rep(-median(q, na.rm=TRUE)/10, 12),
+             labels.pcp.dy=ifelse(missing(pcp), NA, 
+                             -median(daily2monthly(pcp, FUN=sum, na.rm=TRUE), 
+                              na.rm=TRUE)/10)
              )
 
 }
@@ -115,17 +118,21 @@ logical. Should monthly streamflow values to be shown above the lines?. By defau
   \item{labels.cex}{
 numeric giving the amount by which plotting characters used to show the numeric values of monthly streamflow values are scaled relative to the default. 
 }
-  \item{labels.dx}{
-numeric of length 12 giving the amount of horizontal coordinate positions that have to be used to shift the labels of monthly streamflow values. \cr
+  \item{labels.q.dx}{
+numeric of length 12 giving the amount of horizontal coordinate positions that have to be used to horizontally shift the labels of monthly streamflow values. \cr
 It is only used when \code{labels=TRUE}. \cr
 Lengths smaller than 12 are recycled and larger lengths are not used.
 }
-  \item{labels.dy}{
-numeric of length 12 giving the amount of vertical coordinate positions that have to be used to shift the labels of monthly streamflow values. \cr
+  \item{labels.q.dy}{
+numeric of length 12 giving the amount of vertical coordinate positions that have to be used to vertically shift the labels of monthly streamflow values. \cr
 It is only used when \code{labels=TRUE}. \cr
 Lengths smaller than 12 are recycled and larger lengths are not used.
 }
-
+  \item{labels.pcp.dy}{
+numeric of length 12 giving the amount of vertical coordinate positions that have to be used to vertically shift the labels of monthly precipitation values. \cr
+It is only used when \code{labels=TRUE}. \cr
+Lengths smaller than 12 are recycled and larger lengths are not used.
+}
 }
 %%\details{
 %%  ~~ If necessary, more details than the description above ~~

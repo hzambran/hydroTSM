@@ -58,8 +58,9 @@ monthlycurve <- function(q,
                          
                          labels=TRUE,
                          labels.cex=0.8,
-                         labels.dx=c(rep(-0.2,6), rep(0.2,6)),
-                         labels.dy=rep(-median(q, na.rm=TRUE)/10, 12)
+                         labels.q.dx=c(rep(-0.2,6), rep(0.2,6)),
+                         labels.q.dy=rep(-median(q, na.rm=TRUE)/10, 12),
+                         labels.pcp.dy=ifelse(missing(pcp), NA, -median(daily2monthly(pcp, FUN=sum, na.rm=TRUE), na.rm=TRUE)/10)
                          ) {
 
   .plotbands <- function(x, lband, uband, col="", border=NA) {
@@ -176,8 +177,8 @@ monthlycurve <- function(q,
 
   ##############################################################################
   # Definining the plotting area (1 column, 2 rows), where the lower row has 
-  # a height 3 times larger than the upper window, AND plotting the monthly 
-  # precipitation
+  # a height 3 times larger than the upper window, AND 
+  # Plotting the Monthly Precipitation in the upper panel
   ##############################################################################
   if ( !missing(pcp) ) {
     par(mar=c(3, 4.1, 3, 1.5), xpd=TRUE) # default  c(5.1, 4.1, 4.1, 2.1)
@@ -186,7 +187,7 @@ monthlycurve <- function(q,
     ylim <- range(pretty(pcp.m.q1), pretty(pcp.m.q2))
     x <- barplot(pcp.m.med, ylim=rev(ylim), xlab="", ylab=pcp.ylab, axes=TRUE, col=pcp.col, names.arg=month.names, main=main)
     #axis(side=1, at=lx, labels=month.names, line=0.02, outer=TRUE, pos=1)
-    if (labels) text(x, -7, cex=labels.cex, adj=0.5, labels= round(pcp.m.med,1), col="black")
+    if (labels) text(x, labels.pcp.dy, cex=labels.cex, adj=0.5, labels= round(pcp.m.med,1), col="black")
 
     # Adding error bars
     if (plot.pcp.probs) 
@@ -216,6 +217,6 @@ monthlycurve <- function(q,
   grid()
   lines(lx, q.m.med, xlim=xlim, ylim=ylim, col= q.col, type = "o", lwd=3, pch=15, cex=1.4)
   axis(side=1, at=lx, labels=month.names)
-  if (labels) text(lx+labels.dx, q.m.med+labels.dy, cex=labels.cex, adj=0.5, labels= round(q.m.med,1), col="black" )
+  if (labels) text(lx+labels.q.dx, q.m.med+labels.q.dy, cex=labels.cex, adj=0.5, labels= round(q.m.med,1), col="black" )
  
 } # 'monthlycurve' END
