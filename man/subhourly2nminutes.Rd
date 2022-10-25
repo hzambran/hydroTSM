@@ -22,17 +22,19 @@ Generic function for aggregating a sub-hourly time series into a "n-minutes' one
 \usage{
 subhourly2nminutes(x, ...)
 
-\method{subhourly2nminutes}{default}(x, nminutes, FUN, na.rm = TRUE, ...)
+\method{subhourly2nminutes}{default}(x, nminutes, FUN, na.rm=TRUE, 
+                                     from=start(x), ...)
 
-\method{subhourly2nminutes}{zoo}(x, nminutes, FUN, na.rm = TRUE, ...)
+\method{subhourly2nminutes}{zoo}(x, nminutes, FUN, na.rm=TRUE, 
+                                 from=start(x), ...)
 
-\method{subhourly2nminutes}{data.frame}(x, nminutes, FUN, na.rm = TRUE,
-        dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
-        verbose= TRUE, ...)
+\method{subhourly2nminutes}{data.frame}(x, nminutes, FUN, na.rm=TRUE, 
+        from=start(x), dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", 
+        out.fmt="zoo", verbose= TRUE, ...)
 
-\method{subhourly2nminutes}{matrix}(x, nminutes, FUN, na.rm = TRUE,
-        dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
-        verbose= TRUE, ...)
+\method{subhourly2nminutes}{matrix}(x, nminutes, FUN, na.rm=TRUE, 
+        from=start(x), dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", 
+        out.fmt="zoo", verbose= TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -50,7 +52,12 @@ Function that have to be applied for aggregating from sub-hourly into n-minutes 
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
 -) \kbd{TRUE} : the hourly values  are computed considering only those values different from NA \cr
--) \kbd{FALSE}: if there is AT LEAST one NA sub-hourly value within a day, the corresponing hourly value(s) will be NA as well
+-) \kbd{FALSE}: if there is AT LEAST one NA sub-hourly value within a day, the corresponding hourly value(s) will be NA as well
+}
+  \item{from}{
+POSIX object indicating the starting time used to carry out the temporal aggregation.  \cr
+When \code{from > start(x)} then \code{x} is subsetted to the starting DateTime defined by \code{from}. \cr
+When \code{from < start(x)} then \code{x} is extended backwards with NAs to the starting DateTime defined by \code{from}.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each column of \code{x} (e.g., gauging station) \cr
