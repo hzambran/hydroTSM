@@ -11,7 +11,7 @@
 #               winter = DJF: December, January, February                      #
 #               spring = MAM: March, April, May                                #
 #               summer = JJA: June, July, August                               #
-#               autumm = SON: September, October, November                     #
+#               autumn = SON: September, October, November                     #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
@@ -19,7 +19,7 @@
 # Updates: 09-Aug-2011                                                         #
 #          05-Apr-2013                                                         #
 #          10-Mar-2020                                                         #
-#          22-Oct-2022                                                         #
+#          22-Oct-2022 ; 25-Oct-2022                                           #
 ################################################################################
 
 # 'x'       : vector with the dates that have to be transformed. class(x) must be "Date"
@@ -68,7 +68,7 @@ time2season <- function(x, out.fmt="months", type="default") {
     seasons[winter] <- "winter"
     seasons[spring] <- "spring"
     seasons[summer] <- "summer"
-    seasons[autumm] <- "autumn"
+    seasons[autumn] <- "autumn"
     
  } else { # out.fmt == "months"
  
