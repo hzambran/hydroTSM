@@ -16,7 +16,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                            #
 ###################################################################################
 # Started: 26-Jul-2022                                                            #
-# Updates: 22-Sep-2022 ; 11-Oct-2022                                              #
+# Updates: 22-Sep-2022 ; 11-Oct-2022 ; 25-Oct-2022                                #
 ###################################################################################
 # 'q'        : object of type 'zoo' with monthly, daily or subdaily streamflow data.
 #              If q is a monthly zoo object, it must have 12 elments and it should be 
@@ -102,9 +102,6 @@ monthlycurve <- function(q,
   if (!missing(from)) { 
      from <- as.Date(from, format=date.fmt)
 
-     if (from < dates.q[1])
-       stop("Invalid argument: 'from' is lower than the first date in 'q' !")
-
      q <- window(q, start=from)
 
      if (!missing(pcp)) pcp <- window(pcp, start=from)
@@ -113,9 +110,6 @@ monthlycurve <- function(q,
   # Checking the validity of the 'to' argument
   if (!missing(to)) { 
      to <- as.Date(to, format=date.fmt)
-
-     if (to > dates.q[length(q)])
-       stop("Invalid argument: 'to' is greater than the last date in 'x' !")
 
      q <- window(q, end=to)
 
@@ -222,6 +216,6 @@ monthlycurve <- function(q,
   grid()
   lines(lx, q.m.med, xlim=xlim, ylim=ylim, col= q.col, type = "o", lwd=3, pch=15, cex=1.4)
   axis(side=1, at=lx, labels=month.names)
-  if (labels) text(lx+labels.dx, q.m.med+labels.dy, cex=labels.cex, adj=0.5, labels= round(q.m.med,1), col=q.col )
+  if (labels) text(lx+labels.dx, q.m.med+labels.dy, cex=labels.cex, adj=0.5, labels= round(q.m.med,1), col="black" )
  
 } # 'monthlycurve' END
