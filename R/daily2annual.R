@@ -96,7 +96,9 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
   years  <- format( dates, "%Y")
 
   # Computing Annual time series
-  tmp <- aggregate(x, by=years, FUN, na.rm= na.rm)
+  if (missing(na.rm)) {
+    tmp <- aggregate(x, by=years, FUN, ...)
+  } else tmp <- aggregate(x, by=years, FUN, na.rm=na.rm, ...)
 
   # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN
