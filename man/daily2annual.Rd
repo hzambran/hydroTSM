@@ -93,8 +93,11 @@ further arguments passed to or from other methods.
 %%  ~~ If necessary, more details than the description above ~~
 %%}
 \value{
-a zoo object with annual time frequency, where the time attribute has the format defined in \code{out.fmt}. \cr
-When \code{out.fmt="\%Y-\%m-\%d"} the time attribute of the output zoo object will use the 1st of January of each year to create a full Date object from the corresponding year of each element of the output object (e.g., fi the year is \kbd{2022}, the time attribute will be \kbd{2022-01-01}). The only exception occurrs when \code{FUN=max} or \code{FUN=min}, where the time attribute of each element will correspond to the actual date where the annual maximum/minimum occurs (which is very useful for identifying the date of the annual maximum or the annual minimum of a time series)
+When \code{FUN!=max} and \code{FUN!=min} the output is a zoo object with annual time frequency, where the time attribute has the format defined in \code{out.fmt}. \cr
+When \code{FUN!=max} and \code{FUN!=min} and \code{out.fmt="\%Y-\%m-\%d"} the time attribute of the output zoo object will use the 1st of January of each year to create a full Date object from the corresponding year of each element of the output object (e.g., fi the year is \kbd{2022}, the time attribute will be \kbd{2022-01-01}). The only exception occurrs when \code{FUN=max} or \code{FUN=min}, where the time attribute of each element will correspond to the actual date where the annual maximum/minimum occurs (which is very useful for identifying the date of the annual maximum or the annual minimum of a time series). \cr
+
+When \code{FUN=max} or \code{FUN=min} and \code{x} is a single time series, the output is a zoo object with annual time frequency, where the time attribute has the same class than \code{time(x)}, and the date(time) value corresponds to the date(time) where the maximum/minimum value actually occurs. \cr
+When \code{FUN=max} or \code{FUN=min} and \code{x} has two or more time series, the output is a list object where each element has an annual time frequency. The time attribute of each list element has the same class than \code{time(x)}, and the date(time) value of each list element corresponds to the date(time) where the maximum/minimum value actually occurs. \cr
 }
 %%\references{
 %% ~put references to the literature/web site here ~
@@ -144,7 +147,7 @@ subdaily2annual(x, FUN=mean, na.rm=TRUE)
 ## Ex5: Loading the monthly time series of precipitation within the Ebro River basin
 data(EbroPPtsMonthly)
 
-# computing the annual values for the first 10 gauging station in 'EbroPPtsMonthly'
+# computing the annual values for the first 10 gauging stations in 'EbroPPtsMonthly'
 a <- monthly2annual(EbroPPtsMonthly[,1:11], FUN=sum, dates=1)
 
 # same as before, but with a nicer format of years
