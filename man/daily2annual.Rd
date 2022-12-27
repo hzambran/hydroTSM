@@ -51,7 +51,8 @@ zoo, xts, data.frame or matrix object, with (sub)daily/monthly time series. \cr
 Measurements at several gauging stations can be stored in a data.frame or matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
 }
   \item{FUN}{
-Function that have to be applied for aggregating from (sub)daily/monthly into annual time step (e.g., for precipitation \code{FUN=sum} and for temperature and streamflows ts, \code{FUN=mean}).
+Function that have to be applied for aggregating from (sub)daily/monthly into annual time step (e.g., for precipitation \code{FUN=sum} and for temperature and streamflows ts, \code{FUN=mean}). \cr
+When \code{FUN=max} or \code{FUN=min} the date(time) where the maximum/minimum value actually occurs is returned in the output object, otherwise, a generic 1st of january of each year is returned.
 }
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
@@ -116,12 +117,12 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
-## Aggregating from dDaily to Annual precipitation time series
+## Aggregating from Daily to Annual precipitation time series
 daily2annual(x, FUN=sum, na.rm=TRUE)
 
 ######################
-## Ex2: Getting the annual maximum and minimum values, including the date where this annual 
-##      maximum and minimum values actually occurs
+## Ex2: Getting the annual maximum value, including the date where this annual 
+##      maximum actually occurs
 daily2annual(x, FUN=max)
 
 
