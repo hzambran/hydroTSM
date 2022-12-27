@@ -47,7 +47,7 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 #          04-Jun-2012                                                         #
 #          08-Apr-2013                                                         #
 #          21-Jul-2015                                                         #
-#          21-May-2022 ; 25-May-2022                                           #
+#          21-May-2022 ; 25-May-2022 ; 23-Dic-2022 ; 27-Dec-2022               #
 ################################################################################
 daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 
@@ -240,8 +240,6 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
        z <- as.data.frame(matrix(data = NA, nrow = nyears*nstations, ncol = 3,
                            byrow = TRUE, dimnames = NULL) )
        colnames(z) <- field.names
-
-       y = x
 
        for (j in 1:nstations) {
 
