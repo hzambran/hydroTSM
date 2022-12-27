@@ -54,11 +54,8 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 
   get.dates <- function(x, years, fun, fn.name) {
 
-    lget.minmax.date <- function(i, juliandays, years) {
-      lorigin <- c(month=1, day=1, year=years[i])
-      ldate <- chron::month.day.year(jul=juliandays[i], origin.=lorigin)
-      return( as.Date( paste0(ldate[["year"]], "-", ldate[["month"]], "-", ldate[["day"]]) ) )
-    } # 'lget.minmax.date' END
+    is.subdaily <- ( (inherits(time(x), "POSIXct")) | (inherits(time(x), "POSIXlt")) )
+    is.POISXct  <- inherits(time(x), "POSIXct")
 
     years.unique <- as.numeric(unique(years))
     nyears       <- length(years.unique)
@@ -66,13 +63,29 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
     if ( (fn.name=="max") | (fn.name=="min")) {
 
       if (fn.name=="max") {
-        dates.julian <- aggregate(x, by=years, FUN=which.max)
-      } else dates.julian <- aggregate(x, by=years, FUN=which.min)
+        datetimes.pos <- aggregate(x, by=years, FUN=which.max)
+      } else datetimes.pos <- aggregate(x, by=years, FUN=which.min)
 
-      dates <- sapply(1:nyears, FUN=lget.minmax.date, juliandays=dates.julian, years=years.unique)
-    } else dates <- paste0(years.unique, "-01-01")
+      datetimes.pos <- as.numeric(datetimes.pos)
 
-    return( as.Date(dates) )
+      # Getting the datetime where the min/max value occurs for each year in 'x'.
+      # this is a list object
+      datetimes <- sapply(1:nyears, function(i, x, datetimes.pos) { 
+                 all.dates.inyear <- time(extract( x, trgt=years.unique[i]))
+                 all.dates.inyear[datetimes.pos[i]]
+               }, x=x, datetimes.pos=datetimes.pos, simplify=FALSE)   
+
+      # unblisting (and preserving datetime attrribute)
+      datetimes <- do.call("c", datetimes)
+
+    } else if (is.subdaily) {
+        datetimes <- paste0(years.unique, "-01-01 00:00:00")
+        if (is.POISXct) {
+          datetimes <- as.POSIXct(datetimes)
+        } else datetimes <- as.POSIXlt(datetimes)
+      } else datetimes <- as.Date(paste0(years.unique, "-01-01"))
+
+    return( datetimes )
     
   } # 'get.dates' END
 
@@ -117,13 +130,15 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
   if (out.fmt == "%Y-%m-%d") {
     if (NCOL(tmp) == 1) {
       ldates <- get.dates(x, years=years, fun=FUN, fn.name=fn.name)
-      out    <- zoo(tmp, ldates)
+      out    <- zoo::zoo(tmp, ldates)
     } else { # NCOL(tmp) > 1
-        out   <- vector("list", NCOL(tmp))
-        for (i in 1:NCOL(tmp)) {
-          ldates   <-  get.dates(x[,i], years=years, fun=FUN)
-          out[[i]] <-  zoo(tmp[,i], ldates)
-        } # FOR end       
+        if ( (fn.name=="max") | (fn.name=="min")) {
+          out   <- vector("list", NCOL(tmp))
+          for (i in 1:NCOL(tmp)) {
+            ldates   <-  get.dates(x[,i], years=years, fun=FUN, fn.name=fn.name)
+            out[[i]] <-  zoo(tmp[,i], ldates)
+          } # FOR end       
+        } else out <- tmp
       } # ELSE end
 
   } else out <- tmp
