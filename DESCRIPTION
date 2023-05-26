@@ -1,7 +1,7 @@
 Package: hydroTSM
 Type: Package
 Title: Time Series Management, Analysis and Interpolation for Hydrological Modelling
-Version: 0.6-19
+Version: 0.6-20
 Authors@R: c( person("Mauricio Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X")) )
 Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail.com>
 Description: S3 functions for management, analysis, interpolation and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks. The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimise each function as much as possible, functionality has had priority over speed). Bugs / comments / questions / collaboration of any kind are very welcomed, and in particular, datasets that can be included in this package for academic purposes.
@@ -16,4 +16,4 @@ BugReports: https://github.com/hzambran/hydroTSM/issues
 LazyLoad: yes
 NeedsCompilation: no
 Repository: CRAN
-Packaged: Tue 27 Dec 2022 10:35:02 AM -03; hzambran
+Packaged: Thu 25 May 2023 08:51:06 PM -04; hzambran
