@@ -46,7 +46,7 @@ subdaily2monthly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Apr-2013                                                         #
-# Updates: 25-May-2033                                                         # 
+# Updates: 25-May-2023                                                         # 
 ################################################################################
 subdaily2monthly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
                                  start.fmt= "%H:%M:%S", tz, ...) {
@@ -80,8 +80,7 @@ subdaily2monthly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
     # Automatic detection of 'tz'
-    if (missing(tz))
-      tz <- format(time(x), "%Z")[1]
+    if (missing(tz)) tz <- ""
 
     # Transforming the original time into a POSIXct object
     time.old <- time(x)
@@ -134,7 +133,7 @@ subdaily2monthly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Apr-2013                                                         #
-# Updates: 25-May-2033                                                         # 
+# Updates: 25-May-2023                                                         # 
 ################################################################################
 subdaily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
                                         start.fmt= "%H:%M:%S", tz, 
@@ -142,23 +141,60 @@ subdaily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 				                                out.fmt="zoo",
 				                                verbose=TRUE,...) {
 
-  fun <- match.fun(FUN)
+   # Checking that the user provide a valid value for 'FUN'
+  if (missing(FUN))
+      stop("Missing argument value: 'FUN' must contain a valid function for aggregating the values !!")
+
+  # Checking that the user provied a valid argument for 'out.fmt'
+  if (is.na(match( out.fmt, c("numeric", "zoo") ) ) )
+      stop("Invalid argument: 'out.fmt' must be in c('numeric', 'zoo')")
+
+  # Checking that the user provied a valid argument for 'dates'
+  if (missing(dates)) {
+      stop("Missing argument: 'dates' must be provided")
+  } else
+     # Checking that the user provied a valid argument for 'dates'
+     if ( !( inherits(dates, "numeric") | inherits(dates, "factor") | inherits(dates, "POSIXt")) )
+         stop("Invalid argument: 'class(dates)' must be in c('numeric', 'factor', 'POSIXct', 'POSIXt') !")
 
   # Automatic detection of 'tz'
-  if (missing(tz))
-    tz <- format(time(x), "%Z")[1]
+  if (missing(tz)) tz <- ""
 
-  d <- subdaily2daily.data.frame(x=x, FUN=fun, na.rm=na.rm, 
-                                 start=start, start.fmt=start.fmt, tz=tz, 
-                                 dates=dates, date.fmt=date.fmt, 
-                                 out.fmt=out.fmt, 
-                                 verbose=verbose, ...)
+  # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
+  # The column with dates is then substracted form 'x' for easening the further computations
+  if ( TRUE && ( inherits(dates, "numeric") ) ) {
+    tmp   <- dates
+    dates <- as.POSIXct(x[, dates], format= date.fmt, tz=tz) 
+    x     <- x[-tmp]
+  }  # IF end
 
-  daily2monthly.data.frame(x=d, FUN=fun, na.rm=na.rm,
-                           dates=dates, date.fmt=date.fmt,
-	                         out.type=out.type,
-	                         out.fmt=out.fmt,
-				                   verbose=verbose, ...)
+  # If 'dates' is a factor, it have to be converted into 'Date' class,
+  # using the date format  specified by 'date.fmt'
+  if ( TRUE && ( inherits(dates, "factor") ) ) dates <- as.POSIXct(dates, format= date.fmt) 
+
+  # If 'dates' is already of Date class, the following line verifies that
+  # the number of days in 'dates' be equal to the number of element in the
+  # time series corresponding to the 'st.name' station
+  if ( (TRUE && ( inherits(dates, "POSIXt") ) ) & (length(dates) != nrow(x) ) )
+     stop("Invalid argument: 'length(dates)' must be equal to 'nrow(x)'")
+     
+  # Transforming 'x' into a zoo object
+  x <- zoo::zoo(x, dates)
+  
+
+  ##############################################################################
+  
+  z <- subdaily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
+    
+  if (out.fmt == "numeric") {
+     snames      <- colnames(z)
+     dates.lab   <- as.character(time(z))
+     z           <- coredata(z)
+     colnames(z) <- snames
+     rownames(z) <- dates.lab        
+  } # IF end
+
+  return( z )
 
 } # 'subdaily2monthly.data.frame' end
 
@@ -167,7 +203,7 @@ subdaily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Apr-2013                                                         #
-# Updates: 25-May-2033                                                         # 
+# Updates: 25-May-2023                                                         # 
 ################################################################################
 subdaily2monthly.matrix <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
                                     start.fmt= "%H:%M:%S", tz, 
@@ -175,22 +211,31 @@ subdaily2monthly.matrix <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 				                            out.fmt="zoo",
 				                            verbose=TRUE,...) {
 
-  fun <- match.fun(FUN)
+  # Checking that the user provide a valid value for 'FUN'
+  if (missing(FUN))
+      stop("Missing argument value: 'FUN' must contain a valid function for aggregating the values !!")
+
+  # Checking that the user provied a valid argument for 'out.fmt'
+  if (is.na(match( out.fmt, c("numeric", "zoo") ) ) )
+      stop("Invalid argument: 'out.fmt' must be in c('numeric', 'zoo')")
+
+  # Checking that the user provied a valid argument for 'dates'
+  if (missing(dates)) {
+      stop("Missing argument: 'dates' must be provided")
+  } else
+     # Checking that the user provied a valid argument for 'dates'
+     if ( !( inherits(dates, "numeric") | inherits(dates, "factor") | inherits(dates, "POSIXt")) )
+         stop("Invalid argument: 'class(dates)' must be in c('numeric', 'factor', 'POSIXct', 'POSIXt') !")
 
   # Automatic detection of 'tz'
-  if (missing(tz))
-    tz <- format(time(x), "%Z")[1]
+  if (missing(tz)) tz <- ""
 
-  d <- subdaily2daily.matrix(x=x, FUN=fun, na.rm=na.rm, 
-                             start=start, start.fmt=start.fmt, tz=tz, 
-                             dates=dates, date.fmt=date.fmt, 
-                             out.fmt=out.fmt, 
-                             verbose=verbose, ...)
-
-  daily2monthly.matrix(x=d, FUN=fun, na.rm=na.rm,
-                       dates=dates, date.fmt=date.fmt,
-	                     out.type=out.type,
-				               out.fmt=out.fmt,
-				               verbose=verbose, ...)
+   x <- as.data.frame(x)
+   #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
+   subdaily2monthly.data.frame(x=x, FUN=FUN, na.rm=na.rm, start=start, 
+                             start.fmt=start.fmt, tz=tz,
+                             dates=dates, date.fmt=date.fmt,
+			                       out.fmt=out.fmt,
+                             verbose=verbose,...)
 
 } # 'subdaily2monthly.matrix' end
