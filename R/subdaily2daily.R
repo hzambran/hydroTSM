@@ -124,6 +124,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
 #          23-Aug-2022 ; 11-Oct-2022                                           #
+#          25-May-2023                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -159,6 +160,9 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
      # Checking that the user provied a valid argument for 'dates'
      if (FALSE && (class(dates) %in% c("numeric", "factor", "POSIXct", "POSIXt")) )
          stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'POSIXct', 'POSIXt'")
+
+  # Automatic detection of 'tz'
+  if (missing(tz)) tz <- ""
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
