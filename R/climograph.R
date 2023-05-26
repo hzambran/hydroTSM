@@ -21,7 +21,7 @@
 #          08-May-2017 ; 09-May-2017                                           #
 #          10-Mar-2020 ; 07-Nov-2020                                           #
 #          May-2022    ; 20-Jun-2022 ; 22-Aug-2022 ; 05-Oct-2022               #
-#          25-May-2023                                                         #
+#          25-May-2023 ; 26-May-2023                                           #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
 #              precipitation data
@@ -62,6 +62,10 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        tmn.labels=TRUE,
                        pcp.labels.cex=0.8,
                        temp.labels.cex=0.8,
+
+                       pcp.labels.dx=c(rep(ifelse(plot.pcp.probs, -0.25,  0.0),6), 
+                                       rep(ifelse(plot.pcp.probs, -0.25,  0.0),6)),
+                       pcp.labels.dy=rep(2, 12),
                        temp.labels.dx=c(rep(-0.2,6), rep(0.2,6)),
                        temp.labels.dy=rep(-0.4, 12),
 
@@ -378,8 +382,8 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                                        angle=90, code=3, length=0.1) )
 
   grid()
-  ifelse(plot.pcp.probs, deltax <- 0.25, deltax <- 0.0)
-  if (pcp.labels) text(x-deltax, pcp.m.avg+2, cex=pcp.labels.cex, adj=0.5, 
+  #ifelse(plot.pcp.probs, deltax <- 0.25, deltax <- 0.0)
+  if (pcp.labels) text(x+pcp.labels.dx, pcp.m.avg+pcp.labels.dy, cex=pcp.labels.cex, adj=0.5, 
                        labels= round(pcp.m.avg,1), col="black" )
 
 
