@@ -1,7 +1,7 @@
 # File izoo2rzoo.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2009-2022 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2023 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################ 
@@ -21,10 +21,10 @@
 # from      : starting date for the merged output
 # to	      : ending date for the merged output
 # tstep     : time step in which are stored the values of 'x'
-# tz        : specification of the desired time zone yo be used. 
+# tz        : specification of the time zone used for 'time(x)', 'from', 'to'
 #             System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). 
 #             See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
-#             This argument can be used when working with subdaily zoo objects to force using the local time zone instead of GMT as time zone.
+#             This argument can be used when working with subdaily zoo objects to force using UTC instead of the local time zone
 
 izoo2rzoo <-function(x, ...) UseMethod("izoo2rzoo")
 
@@ -59,6 +59,7 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 #          29-May-2013                                                         #
 #          17-Jun-2022 ; 20-Jun-2022 ; 08-Oct-2022 ; 09-Oct-2022 ; 11-Oct-2022 #
 #          12-Oct-2022                                                         #
+#          25-May-2023                                                         #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
@@ -94,8 +95,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   } # IF end
 
   # Automatic detection of 'tz'
-  if (missing(tz))
-   tz <- format(time(x), "%Z")[1]
+  if (missing(tz)) tz <- ""
       
   ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
            grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |

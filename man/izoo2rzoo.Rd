@@ -49,9 +49,9 @@ Valid values are (but not limited to) \kbd{days}, \kbd{months}, \kbd{years}, \kb
 By default, \code{tstep} is missing, and it is automatically set to \kbd{"minutes"} when \code{sfreq(x)} is \kbd{min}, to \kbd{"hours"} when \code{sfreq(x)} is \kbd{hourly}, to \kbd{"days"} when \code{sfreq(x)} is \kbd{daily}, to \kbd{"weeks"} when \code{sfreq(x)} is \kbd{weekly}, to \kbd{"months"} when \code{sfreq(x)} is \kbd{monthly}, to \kbd{"quarters"} when \code{sfreq(x)} is \kbd{quarterly}, and to \kbd{"years"} when \code{sfreq(x)} is \kbd{annual}.
 }
   \item{tz}{
-character, with the specification of the desired time zone yo be used. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
-If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
-This argument can be used when working with sub-daily zoo objects to force using the local time zone instead of UTC as time zone.
+character, with the specification of the time zone used for \code{time(x)}, \code{from}, \code{to}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+If \code{tz} is missing (the default), it is automatically set to the current time zone, which usually coincide with the time zone used in \code{time(x)}. \cr
+This argument can be used when working with sub-daily zoo objects to force using UTC instead of the local time zone
 }
   \item{\dots}{
 further arguments passed to or from other methods
