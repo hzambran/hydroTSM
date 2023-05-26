@@ -60,15 +60,15 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 ## Creating a dummy 15-min zoo object, with 1 as the only value in each time period
 dt  <- seq( from=as.POSIXct("2021-06-30 00:15"), to=as.POSIXct("2021-06-30 23:45"), by="15 min" )
 ndt <- length(dt)
-sh <- zoo( rep(1, ndt), dt)
-sfreq(sh)
+shr <- zoo( rep(1, ndt), dt)
+sfreq(shr)
 
 
 ## Ex2: hourly data 
 ## Loading the time series of HOURLY streamflows for the station Karamea at Gorge
 data(KarameaAtGorgeQts)
-x <- KarameaAtGorgeQts
-sfreq(x)
+hr <- KarameaAtGorgeQts
+sfreq(hr)
 
 
 ## Ex3: Daily data
