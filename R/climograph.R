@@ -21,6 +21,7 @@
 #          08-May-2017 ; 09-May-2017                                           #
 #          10-Mar-2020 ; 07-Nov-2020                                           #
 #          May-2022    ; 20-Jun-2022 ; 22-Aug-2022 ; 05-Oct-2022               #
+#          25-May-2023                                                         #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
 #              precipitation data
@@ -84,6 +85,7 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     polygon(t, bands, col=col, border=border)
   } # .plotbands END
 
+
   .shift <- function(x, imonth) {
     L <- length(x)
     if (imonth>L) stop("[ Invalid value: 'imonth' can not be larger than ", L, " !]")
@@ -101,12 +103,19 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     return(out)
   } # .shift END
 
+
   if (missing(pcp)) {
     stop("Missing argument: 'pcp' must be provided !")
-  } else 
+  } else {
       # Checking that 'pcp' is a zoo object
       if ( !is.zoo(pcp) ) stop("Invalid argument: 'class(pcp)' must be in c('zoo', 'xts')")
 
+      # Checking that 'pcp' is a subdaily or monthly object
+      if ( sfreq(pcp) %in% c("quarterly", "annual")) stop("Invalid argument: 'sfreq(pcp)' must be in c('minute', 'hourly', 'daily', 'weekly')")
+    } # ELSE end
+
+
+  # Checking that 'tmean' is provided, and if not, it computes it using 'tmx' and 'tmn'  
   if (missing(tmean)) {
     if ( (missing(tmx)) & missing(tmn) ) {
       stop("Missing argument: 'tmean' | ('tmx' & 'tmn') must be provided !")
@@ -115,14 +124,24 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
         if ( !is.zoo(tmx) ) stop("Invalid argument: 'class(tmx)' must be in c('zoo', 'xts')")
         if ( !is.zoo(tmn) ) stop("Invalid argument: 'class(tmn)' must be in c('zoo', 'xts')")
 
+        # Checking that 'tmx' is a subdaily or monthly object
+        if ( sfreq(tmx) %in% c("quarterly", "annual")) stop("Invalid argument: 'sfreq(tmx)' must be in c('minute', 'hourly', 'daily', 'weekly')")
+        # Checking that 'tmn' is a subdaily or monthly object
+        if ( sfreq(tmn) %in% c("quarterly", "annual")) stop("Invalid argument: 'sfreq(tmn)' must be in c('minute', 'hourly', 'daily', 'weekly')")
+
         # Computing 'tmean'
         if ( all.equal(time(tmn), time(tmx)) ) {
           tmean <- (tmx+tmn)/2
         } else stop("Invalid argument: 'time(tmn) != time(tmx)' !")
       } # ELSE end
-  } else 
+  } else {
       # Checking that 'tmean'is a zoo object
       if ( !is.zoo(tmean) ) stop("Invalid argument: 'class(tmean)' must be in c('zoo', 'xts')")
+
+      # Checking that 'tmean' is a subdaily or monthly object
+      if ( sfreq(tmean) %in% c("quarterly", "annual")) stop("Invalid argument: 'sfreq(tmean)' must be in c('minute', 'hourly', 'daily', 'weekly')")
+    } # ELSE end
+
 
   # Checking the length of 'temp.labels.dx' and 'temp.labels.dy'
   if (length(temp.labels.dx) > 12) temp.labels.dx <- temp.labels.dx[1:12]
@@ -156,6 +175,8 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
      pcp   <- window(pcp, start=from)
      tmean <- window(tmean, start=from)
+     if ( !missing(tmx) ) tmx <- window(tmx, start=from)
+     if ( !missing(tmn) ) tmn <- window(tmn, start=from)
    } # ELSE end
 
   # Checking the validity of the 'to' argument
@@ -169,10 +190,12 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
      pcp   <- window(pcp, end=to)
      tmean <- window(tmean, end=to)
+     if ( !missing(tmx) ) tmx <- window(tmx, end=to)
+     if ( !missing(tmn) ) tmn <- window(tmn, end=to)
    } # ELSE end
 
 
-  # Detecting if 'pcp' and 'tmean', 'tmx' 'tmn' are already mean monthly values
+  # Detecting if 'pcp' and 'tmean', 'tmx' 'tmn' are already mean monthly values (i.e., 12 values)
   pcp.is.mean.monthly   <- FALSE
   tmean.is.mean.monthly <- FALSE
   tmx.is.mean.monthly   <- FALSE
@@ -252,15 +275,17 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
     nyears <- yip(from=from, to=to, date.fmt="%Y-%m-%d", out.type="nmbr")
 
+    # Computing mean monthly values of 'pcp'
     if ( (sfreq(pcp) != "monthly") | ( (sfreq(pcp) == "monthly") & ( length(pcp) > 12) ) )
       pcp.m.avg <- monthlyfunction(pcp, FUN=sum, na.rm=na.rm) / nyears
       if (start.month != 1) pcp.m.avg <- .shift(x=pcp.m.avg, imonth=start.month)
 
+    # Computing mean monthly values of 'tmean'
     if ( (sfreq(tmean) != "monthly") | ( (sfreq(tmean) == "monthly") & ( length(tmean) > 12) ) )
       tmean.m.avg <- monthlyfunction(tmean, FUN=mean, na.rm=na.rm)
       if (start.month != 1) tmean.m.avg <- .shift(x=tmean.m.avg, imonth=start.month)
 
-    # If provided, computing monthly values of tmx and tmn
+    # If provided, computing mean monthly values of 'tmx' and 'tmn'
     if ( !missing(tmx) & !missing(tmn)) {
       if ( (sfreq(tmx) != "monthly") | ( (sfreq(tmx) == "monthly") & ( length(tmx) > 12) ) ) {
         tmx.m.avg <- monthlyfunction(tmx, FUN=mean, na.rm=na.rm)
@@ -274,7 +299,9 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     } # IF end
 
     if (plot.pcp.probs) {
-      pcp.m    <- daily2monthly(pcp, FUN=sum, na.rm=na.rm)
+      if ( sfreq(pcp) == "monthly" ) {
+        pcp.m <- pcp
+      } else pcp.m <- daily2monthly(pcp, FUN=sum, na.rm=na.rm) # 'subdaily2monthly' is a wrapper to 'daily2monthly'
       pcp.m.q1 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[1], na.rm=na.rm)
       pcp.m.q2 <- monthlyfunction(pcp.m, FUN=quantile, probs=pcp.probs[2], na.rm=na.rm)
       if (start.month != 1) pcp.m.q1 <- .shift(x=pcp.m.q1, imonth=start.month)
@@ -284,15 +311,23 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     if (plot.temp.probs) {
       temp.probs.col <- grDevices::adjustcolor(temp.probs.col, alpha.f=temp.probs.alpha)
 
-      tmean.m    <- daily2monthly(tmean, FUN=mean, na.rm=na.rm)
+      if ( sfreq(tmean) == "monthly" ) {
+        tmean.m <- tmean
+      } else tmean.m <- daily2monthly(tmean, FUN=mean, na.rm=na.rm)  # 'subdaily2monthly' is a wrapper to 'daily2monthly'
       tmean.m.q1 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
       tmean.m.q2 <- monthlyfunction(tmean.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
       if (start.month != 1) tmean.m.q1 <- .shift(x=tmean.m.q1, imonth=start.month)
       if (start.month != 1) tmean.m.q2 <- .shift(x=tmean.m.q2, imonth=start.month)
 
       if ( !missing(tmx) & !missing(tmn)) {
-        tmx.m    <- daily2monthly(tmx, FUN=mean, na.rm=na.rm)
-        tmn.m    <- daily2monthly(tmn, FUN=mean, na.rm=na.rm)
+        if ( sfreq(tmx) == "monthly") {
+          tmx.m <- tmx
+        } else tmx.m <- daily2monthly(tmx, FUN=mean, na.rm=na.rm) # 'subdaily2monthly' is a wrapper to 'daily2monthly'
+
+        if ( sfreq(tmn) == "monthly") {
+          tmn.m <- tmn
+        } else tmn.m <- daily2monthly(tmn, FUN=mean, na.rm=na.rm) # 'subdaily2monthly' is a wrapper to 'daily2monthly'
+
         tmx.m.q1 <- monthlyfunction(tmx.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
         tmx.m.q2 <- monthlyfunction(tmx.m, FUN=quantile, probs=temp.probs[2], na.rm=na.rm)
         tmn.m.q1 <- monthlyfunction(tmn.m, FUN=quantile, probs=temp.probs[1], na.rm=na.rm)
