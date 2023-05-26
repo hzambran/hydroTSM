@@ -1,7 +1,7 @@
 # File subdaily2daily.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2013-2019 Mauricio Zambrano-Bigiarini
+# Copyright 2013-2023 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -208,12 +208,16 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Started: 09-Apr-2013                                                         #
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
+#          25-May-2023                                                         #
 ################################################################################
 subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz,
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                           out.fmt="zoo",
                                    verbose=TRUE,...) {
+
+   # Automatic detection of 'tz'
+   if (missing(tz)) tz <- ""
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
