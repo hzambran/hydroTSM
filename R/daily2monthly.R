@@ -112,9 +112,9 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 # 'verbose'      : logical; if TRUE, progress messages are printed
 daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
                                      dates=1, date.fmt="%Y-%m-%d",
-				     out.type="data.frame",
-				     out.fmt="numeric",
-				     verbose=TRUE,...) {
+				                             out.type="data.frame",
+				                             out.fmt="numeric",
+				                             verbose=TRUE,...) {
   
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
@@ -207,21 +207,21 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
                                   format(round(100*j/nstations,2), width=6, justify="left"),
                                   "%" )
 
-	    # Computing the monthly values
-	    m     <- daily2monthly.zoo(x= x[,j], FUN=FUN, na.rm=na.rm)
-            dates <- time(m)
+	        # Computing the monthly values
+	        m     <- daily2monthly.zoo(x= x[,j], FUN=FUN, na.rm=na.rm)
+          dates <- time(m)
             
-	    if (out.fmt == "numeric") m <- coredata(m)
+	        if (out.fmt == "numeric") m <- coredata(m)
 
-	# Putting the annual/monthly values in the output data.frame
-        # The first column of 'x' corresponds to the Year
-        row.ini <- (j-1)*nmonths + 1
-        row.fin <-  j*nmonths
+	        # Putting the annual/monthly values in the output data.frame
+          # The first column of 'x' corresponds to the Year
+          row.ini <- (j-1)*nmonths + 1
+          row.fin <-  j*nmonths
 
-        z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeated 'nmonths' times
-        z[row.ini:row.fin, 2] <- format(as.Date(dates), "%Y") # zoo::as.Date
-        z[row.ini:row.fin, 3] <- format(as.Date(dates), "%b") # zoo::as.Date
-        z[row.ini:row.fin, 4] <- m
+          z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeated 'nmonths' times
+          z[row.ini:row.fin, 2] <- format(as.Date(dates), "%Y") # zoo::as.Date
+          z[row.ini:row.fin, 3] <- format(as.Date(dates), "%b") # zoo::as.Date
+          z[row.ini:row.fin, 4] <- m
 
         } # FOR end
         
@@ -241,16 +241,16 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
 ################################################################################
 daily2monthly.matrix  <- function(x, FUN, na.rm=TRUE,
                                   dates=1, date.fmt="%Y-%m-%d",
-				  out.type="data.frame",
-				  out.fmt="numeric",
+				                          out.type="data.frame",
+				                          out.fmt="numeric",
                                   verbose=TRUE,...) {
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
    daily2monthly.data.frame(x=x, FUN=FUN, na.rm=na.rm,
                             dates=dates, date.fmt=date.fmt,
-			    out.type=out.type,
-			    out.fmt=out.fmt,
+			                      out.type=out.type,
+			                      out.fmt=out.fmt,
                             verbose=verbose,...)
 
 } # 'daily2monthly.matrix  ' END
