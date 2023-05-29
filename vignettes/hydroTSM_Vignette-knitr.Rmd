@@ -5,23 +5,22 @@ author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
 date: " version 0.8, DD-MMM-2022"
 output:
-  pdf_document:
-    number_sections: yes
   html_document:
     df_print: paged
+  pdf_document:
+    number_sections: yes
 vignette: |
   %\VignetteIndexEntry{Tutorial for Introductory Analysis of Daily Precipitation Data with `hydroTSM`} 
   %\VignetteKeyword{hydrology}
   %\VignetteKeyword{hydrological modelling}
-  %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::knitr} 
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-       
 
 # Installation
 
