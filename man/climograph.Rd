@@ -20,17 +20,20 @@ Function to draw a climograph based on precipitation and temperature data.
 climograph(pcp, tmean, tmx, tmn, na.rm=TRUE,  
            from, to, date.fmt="\%Y-\%m-\%d", 
            main="Climograph", pcp.label="Precipitation, [mm]", 
-           tmean.label="Air temperature, [\U00B0 C]",start.month=1,
-           pcp.ylim, temp.ylim,
-           pcp.col="lightblue", tmean.col="darkred", tmn.col="blue", tmx.col="red",
+           tmean.label="Air temperature, [\U00B0 C]",start.month=1, pcp.solid.thr,
+           pcp.ylim, temp.ylim,pcp.col="lightblue", pcp.solid.col="skyblue2", 
+           tmean.col="darkred", tmn.col="blue", tmx.col="red",
            pcp.labels=TRUE, tmean.labels=TRUE, tmx.labels=TRUE, tmn.labels=TRUE,
            pcp.labels.cex=0.8, temp.labels.cex=0.8,
+           pcp.labels.dx=c(rep(ifelse(plot.pcp.probs, -0.25,  0.0),6), 
+                           rep(ifelse(plot.pcp.probs, -0.25,  0.0),6)),
+           pcp.labels.dy=rep(2, 12),
            temp.labels.dx=c(rep(-0.2,6), rep(0.2,6)), temp.labels.dy=rep(-0.4, 12),
-           lat, lon,
            plot.pcp.probs=TRUE, pcp.probs=c(0.25, 0.75),
            plot.temp.probs=TRUE, temp.probs=c(0.25, 0.75), 
            temp.probs.col=c("#3399FF", "#FF9966", "#FFCC66"),
-           temp.probs.alpha=0.3
+           temp.probs.alpha=0.3,
+           lat, lon
            )
 
 }
@@ -81,6 +84,12 @@ Character used in the legend to represent the monthly average temperature (mostl
 
 numeric in [1:12] indicating the starting month of the (hydrological) year. Numeric values in [1, 12] represents months in [January, December]. By default \code{start.month=1}.
 }
+  \item{pcp.solid.thr}{
+[OPTIONAL]. Only used when using (sub)daily precipitation and temperature are gives as input data. \cr
+numeric, indicating the temperature, in degrees Celsius, used to discriminate between solid and liquid precipitation. \cr
+
+When daily \code{tmean <= pcp.solid.thr} the precipitation for that day is considered as solid precipitation.
+}
   \item{pcp.ylim}{
 [OPTIONAL] numeric of length 2 with the the range used for the precipitation axis. The second value should be larger than the first one.
 }
@@ -89,6 +98,9 @@ numeric in [1:12] indicating the starting month of the (hydrological) year. Nume
 }
   \item{pcp.col}{
 Color used in the legend to represent the monthly average precipitation. 
+}
+  \item{pcp.solid.col}{
+Color used in the legend to represent the monthly average solid precipitation. 
 }
   \item{tmean.col}{
 Color used in the legend to represent the monthly average temperature. 
@@ -119,22 +131,26 @@ It is only used when \code{pcp.labels=TRUE}.
 numeric giving the amount by which plotting characters used to show the numeric values of monthly air temperature values (mean, maximum, minimum) are scaled relative to the default.   \cr
 It is only used when \code{tmean.labels=TRUE} or \code{tmx.labels=TRUE} or \code{tmn.labels=TRUE}.
 }
+  \item{pcp.labels.dx}{
+numeric of length 12 giving the amount of horizontal coordinate positions that have to be used to shift the labels of monthly precipitation values. \cr
+It is only used when \code{pcp.labels=TRUE}. \cr
+Lengths smaller than 12 are recycled and larger lengths are not used.
+}
+  \item{pcp.labels.dy}{
+numeric of length 12 giving the amount of vertical coordinate positions that have to be used to shift the labels of monthly precipitation values. \cr
+It is only used when \code{pcp.labels=TRUE}. \cr
+Lengths smaller than 12 are recycled and larger lengths are not used.
+}
   \item{temp.labels.dx}{
 numeric of length 12 giving the amount of horizontal coordinate positions that have to be used to shift the labels of monthly air temperature values (mean, maximum, minimum). \cr
 It is only used when \code{tmean.labels=TRUE} or \code{tmx.labels=TRUE} or \code{tmn.labels=TRUE}. \cr
-Lengths smaller than 12 are recycled and larger lenghts are not used.
+Lengths smaller than 12 are recycled and larger lengths are not used.
 }
   \item{temp.labels.dy}{
 numeric of length 12 giving the amount of vertical coordinate positions that have to be used to shift the labels of monthly air temperature values (mean, maximum, minimum). \cr
 It is only used when \code{tmean.labels=TRUE} or \code{tmx.labels=TRUE} or \code{tmn.labels=TRUE}. \cr
 Lengths smaller than 12 are recycled and larger lengths are not used.
 }
-  \item{lat}{
-[OPTIONAL] numeric or character used to show the latitude for which the climograph was plotted for.
-} 
-  \item{lon}{
-[OPTIONAL] numeric or character used to show the longitude for which the climograph was plotted for.
-} 
   \item{plot.pcp.probs}{
 logical used to decide whether to show uncertainty values around the monthly mean precipitation values. By default \code{plot.pcp.probs=TRUE}. \cr 
 When \code{plot.pcp.probs=TRUE} the \code{pcp.probs} argument is used to define the values of the lower an upper uncertainty bounds.
@@ -160,6 +176,12 @@ If \code{tmx} and \code{tmn} are not provided by the user, the second element of
 } 
   \item{temp.probs.alpha}{
 numeric of length 1, with the factor used to modify the opacity of \code{temp.probs.col}. Typically in [0,1], with 0 indicating a completely transparent colour and 1 indicating no transparency.
+} 
+  \item{lat}{
+[OPTIONAL] numeric or character used to show the latitude for which the climograph was plotted for.
+} 
+  \item{lon}{
+[OPTIONAL] numeric or character used to show the longitude for which the climograph was plotted for.
 } 
 }
 %%\details{

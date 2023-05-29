@@ -21,7 +21,7 @@
 #          08-May-2017 ; 09-May-2017                                           #
 #          10-Mar-2020 ; 07-Nov-2020                                           #
 #          May-2022    ; 20-Jun-2022 ; 22-Aug-2022 ; 05-Oct-2022               #
-#          25-May-2023 ; 26-May-2023                                           #
+#          25-May-2023 ; 26-May-2023 ; 27-May-2023                             #
 ################################################################################
 # 'pcp'      : variable of type 'zoo' with monthly, daily or subdaily          
 #              precipitation data
@@ -37,6 +37,13 @@
 # 'na.rm'    : Logical. Should missing values be removed?
 #              TRUE : the monthly values  are computed considering only those values in 'x' different from NA
 #              FALSE: if there is AT LEAST one NA within a month, the FUN and monthly values are NA
+# 'pcp.solid.thr' :[OPTIONAL]. Only used when using (sub)daily precipitation and 
+#                   temperature are gives as input data. \cr
+#                  numeric, indicating the temperature, in degrees Celsius, used to 
+#                  discriminate between solid and liquid precipitation. \cr
+#                  When daily \code{tmean <= pcp.solid.thr} the precipitation for that
+#                  day is considered as solid precipitation.
+
 # 'pcp.labels'  : logical. Should monthly precipitation values to be shown above the bars?
 # 'tmean.labels': logical. Should monthly mean temperature values to be shown above the lines?
 # 'tmx.labels'  : logical. Should monthly maximum temperature values to be shown above the lines?
@@ -49,13 +56,17 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        tmean.label="Air temperature, [\U00B0 C]",
                        start.month=1,
 
+                       pcp.solid.thr, 
+
                        pcp.ylim, # if provided, used to define the range of the P axis
                        temp.ylim,# if provided, used to define the range of the Temp axis
 
                        pcp.col="lightblue", 
+                       pcp.solid.col="skyblue2",
                        tmean.col="darkred",
                        tmn.col="blue",
                        tmx.col="red",
+
                        pcp.labels=TRUE,
                        tmean.labels=TRUE,
                        tmx.labels=TRUE,
@@ -69,9 +80,6 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        temp.labels.dx=c(rep(-0.2,6), rep(0.2,6)),
                        temp.labels.dy=rep(-0.4, 12),
 
-                       lat, # [OPTIONAL] numeric or character used to show the latitude for which the climograph was plotted for
-                       lon, # [OPTIONAL] numeric or character used to show the longitude for which the climograph was plotted for
-
                        plot.pcp.probs=TRUE,
                        pcp.probs=c(0.25, 0.75),
 
@@ -79,7 +87,10 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
                        temp.probs=c(0.25, 0.75),
 
                        temp.probs.col=c("#3399FF", "#FF9966", "#FFCC66"), # color of tmn, tmean, tmx
-                       temp.probs.alpha=0.3
+                       temp.probs.alpha=0.3,
+
+                       lat, # [OPTIONAL] numeric or character used to show the latitude for which the climograph was plotted for
+                       lon  # [OPTIONAL] numeric or character used to show the longitude for which the climograph was plotted for
                        ) {
 
 
@@ -147,6 +158,18 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     } # ELSE end
 
 
+  # Computing (sub)daily solid precipitation, only when 'pcp.solid.thr' is provided
+  pcp.solid.exists <- FALSE
+  if ( !missing(pcp.solid.thr) & !(sfreq(pcp) %in% c("monthly", "quarterly", "annual") ) & 
+       !(sfreq(tmean) %in% c("monthly", "quarterly", "annual") ) ) {
+  
+    pcp.solid.exists       <- TRUE
+    pcp.solid              <- pcp*NA # it keeps the time and all the elements are made equal to NA
+    solid.index            <- which(tmean <= pcp.solid.thr)
+    pcp.solid[solid.index] <- pcp[solid.index]
+  } # IF end
+
+
   # Checking the length of 'temp.labels.dx' and 'temp.labels.dy'
   if (length(temp.labels.dx) > 12) temp.labels.dx <- temp.labels.dx[1:12]
   if (length(temp.labels.dy) > 12) temp.labels.dy <- temp.labels.dy[1:12]
@@ -177,10 +200,12 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
      if (from < dates.temp[1])
        stop("Invalid argument: 'from' is lower than the first date in 'tmean' !")
 
-     pcp   <- window(pcp, start=from)
+     pcp   <- window(pcp  , start=from)
      tmean <- window(tmean, start=from)
-     if ( !missing(tmx) ) tmx <- window(tmx, start=from)
-     if ( !missing(tmn) ) tmn <- window(tmn, start=from)
+
+     if (pcp.solid.exists) pcp.solid <- window(pcp.solid, start=from)
+     if ( !missing(tmx) )  tmx       <- window(tmx      , start=from)
+     if ( !missing(tmn) )  tmn       <- window(tmn      , start=from)
    } # ELSE end
 
   # Checking the validity of the 'to' argument
@@ -192,10 +217,12 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
      if (to > dates.temp[length(pcp)])
        stop("Invalid argument: 'to' is greater than the last date in 'tmean' !")
 
-     pcp   <- window(pcp, end=to)
+     pcp   <- window(pcp  , end=to)
      tmean <- window(tmean, end=to)
-     if ( !missing(tmx) ) tmx <- window(tmx, end=to)
-     if ( !missing(tmn) ) tmn <- window(tmn, end=to)
+
+     if (pcp.solid.exists) pcp.solid <- window(pcp.solid, end=to)
+     if ( !missing(tmx) )  tmx       <- window(tmx      , end=to)
+     if ( !missing(tmn) )  tmn       <- window(tmn      , end=to)
    } # ELSE end
 
 
@@ -271,7 +298,7 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
   
   ###########################################
-  ## In case 'pcp', 'tmean' ('tmx' and 'tmn') are not average monthly values
+  ## In case 'pcp', 'tmean' ('tmx' and 'tmn') were not given as average monthly values
   if ( (!pcp.is.mean.monthly) & (!tmean.is.mean.monthly) ) {
 
     from <- time(pcp)[1]
@@ -282,24 +309,38 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
     # Computing mean monthly values of 'pcp'
     if ( (sfreq(pcp) != "monthly") | ( (sfreq(pcp) == "monthly") & ( length(pcp) > 12) ) )
       pcp.m.avg <- monthlyfunction(pcp, FUN=sum, na.rm=na.rm) / nyears
-      if (start.month != 1) pcp.m.avg <- .shift(x=pcp.m.avg, imonth=start.month)
+
+    # Computing mean monthly values of 'pcp.solid', only if it exists
+    if (pcp.solid.exists){
+      if ( (sfreq(pcp.solid) != "monthly") | ( (sfreq(pcp.solid) == "monthly") & ( length(pcp.solid) > 12) ) )
+        pcp.solid.m.avg <- monthlyfunction(pcp.solid, FUN=sum, na.rm=na.rm) / nyears
+    } # IF end
 
     # Computing mean monthly values of 'tmean'
     if ( (sfreq(tmean) != "monthly") | ( (sfreq(tmean) == "monthly") & ( length(tmean) > 12) ) )
       tmean.m.avg <- monthlyfunction(tmean, FUN=mean, na.rm=na.rm)
-      if (start.month != 1) tmean.m.avg <- .shift(x=tmean.m.avg, imonth=start.month)
 
     # If provided, computing mean monthly values of 'tmx' and 'tmn'
     if ( !missing(tmx) & !missing(tmn)) {
-      if ( (sfreq(tmx) != "monthly") | ( (sfreq(tmx) == "monthly") & ( length(tmx) > 12) ) ) {
+      if ( (sfreq(tmx) != "monthly") | ( (sfreq(tmx) == "monthly") & ( length(tmx) > 12) ) ) 
         tmx.m.avg <- monthlyfunction(tmx, FUN=mean, na.rm=na.rm)
-        if (start.month != 1) tmx.m.avg <- .shift(x=tmx.m.avg, imonth=start.month)
+
+      if ( (sfreq(tmn) != "monthly") | ( (sfreq(tmn) == "monthly") & ( length(tmn) > 12) ) )
+        tmn.m.avg <- monthlyfunction(tmn, FUN=mean, na.rm=na.rm)
+    } # IF end
+
+    # Shifting the monthly values when 'start.month != 1'
+    if (start.month != 1) {
+
+      pcp.m.avg         <- .shift(x=pcp.m.avg      , imonth=start.month)
+      if (pcp.solid.exists) 
+        pcp.solid.m.avg <- .shift(x=pcp.solid.m.avg, imonth=start.month)
+      tmean.m.avg       <- .shift(x=tmean.m.avg    , imonth=start.month)
+      if ( !missing(tmx) & !missing(tmn)) {
+         tmx.m.avg <- .shift(x=tmx.m.avg, imonth=start.month)
+         tmn.m.avg <- .shift(x=tmn.m.avg, imonth=start.month)
       } # IF end
 
-      if ( (sfreq(tmn) != "monthly") | ( (sfreq(tmn) == "monthly") & ( length(tmn) > 12) ) ) {
-        tmn.m.avg <- monthlyfunction(tmn, FUN=mean, na.rm=na.rm)
-        if (start.month != 1) tmn.m.avg <- .shift(x=tmn.m.avg, imonth=start.month)
-      } # IF end
     } # IF end
 
     if (plot.pcp.probs) {
@@ -361,6 +402,14 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
 
   par(mar = c(7,5,3,5)) # c(bottom, left, top, right)
   x <- barplot(pcp.m.avg, col=pcp.col, xlim=xlim, ylim=ylim, ylab=pcp.label, las=1, main=main)
+  if (pcp.solid.exists)
+    barplot(pcp.solid.m.avg, col=pcp.solid.col, xlim=xlim, ylim=ylim, ylab=pcp.label, las=1, main=main, add=TRUE)
+  # if (pcp.solid.exists){
+  #   pcp.total.m.avg <- cbind(pcp.solid.m.avg, pcp.m.avg)
+  #   x <- barplot(pcp.total.m.avg, col=c(pcp.solid.col, pcp.col), xlim=xlim, ylim=ylim, ylab=pcp.label, las=1, main=main)
+  # } else {
+  #     x <- barplot(pcp.m.avg, col=pcp.col, xlim=xlim, ylim=ylim, ylab=pcp.label, las=1, main=main)
+  #   } # ELSE end
 
   #legend with lat and lon if they are provided
   legend.text.lab <- c("", "")
@@ -456,16 +505,23 @@ climograph <- function(pcp, tmean, tmx, tmn, na.rm=TRUE,
   # Outter box and legend
   box()
   par(xpd=TRUE)
-  if ( !missing(tmx) & !missing(tmn)) {
-    legend("bottom", legend = c("Prec.", "Tmn", "Tmean", "Tmx"), bty="n",
-           pch=c(15, 15, 15, 15), lty=c(NA, 1, 1, 1), cex=1.2, col=c(pcp.col, tmn.col,
-           tmean.col, tmx.col), ncol=4, inset=c(0.5, -0.2),
+  if ( pcp.solid.exists & !missing(tmx) & !missing(tmn) ) {
+    legend("bottom", legend = c("Prec. (total)", "Prec. (solid)", "Tmn", "Tmean", "Tmx"), bty="n",
+           pch=c(15, 15, 15, 15, 15), lty=c(NA, NA, 1, 1, 1), cex=1.2, 
+           col=c(pcp.col, pcp.solid.col, tmn.col, tmean.col, tmx.col), ncol=5, inset=c(0.5, -0.2),
            #lty = 1:2, xjust = 1, yjust = 1,
            title = "")
   } else
-      legend("bottom", legend = c("Precipitation", "Temperature"), bty="n",
-             pch=c(15, 15), lty=c(NA, 1), cex=1.2, col=c(pcp.col, tmean.col), ncol=2, 
-             #lty = 1:2, xjust = 1, yjust = 1,
-             inset=c(0.5, -0.2), title = "")
+      if ( !missing(tmx) & !missing(tmn)) {
+        legend("bottom", legend = c("Prec.", "Tmn", "Tmean", "Tmx"), bty="n",
+               pch=c(15, 15, 15, 15), lty=c(NA, 1, 1, 1), cex=1.2, col=c(pcp.col, tmn.col,
+               tmean.col, tmx.col), ncol=4, inset=c(0.5, -0.2),
+               #lty = 1:2, xjust = 1, yjust = 1,
+               title = "")
+      } else
+          legend("bottom", legend = c("Precipitation", "Temperature"), bty="n",
+                 pch=c(15, 15), lty=c(NA, 1), cex=1.2, col=c(pcp.col, tmean.col), ncol=2, 
+                 #lty = 1:2, xjust = 1, yjust = 1,
+                 inset=c(0.5, -0.2), title = "")
   
 } # 'climograph' END
