@@ -34,10 +34,9 @@ subdaily2monthly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !")
 
   # Automatic detection of 'tz'
-  if (missing(tz))
-    tz <- format(time(x), "%Z")[1]
+  if (missing(tz)) tz <- ""
 
-  subdaily2monthly.zoo(x=x, FUN=fun, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
+  subdaily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
 
 } # 'subdaily2monthly.default' end
 
