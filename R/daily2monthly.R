@@ -44,6 +44,7 @@ daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
 # Started: 09-Aug-2011                                                         #
 # Updates: 09-Aug-2011                                                         #
 #          08-Apr-2013                                                         #
+#          20-Jun-2023                                                         #
 ################################################################################
 daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 
@@ -60,7 +61,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
   months <- as.Date( as.yearmon( time(x) ) ) # zoo::as.Date ; zoo::as.yearmon
 
   # Generating a Monthly time series 
-  tmp <- aggregate( x, by=months, FUN, na.rm= na.rm ) 
+  tmp <- aggregate( x, by=months, FUN, ..., na.rm= na.rm ) 
   
   # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN
@@ -88,6 +89,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, ... ) {
 #          04-Jun-2012                                                         #
 #          29-May-2013                                                         #
 #          23-Aug-2022                                                         #
+#          20-Jun-2023                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -114,7 +116,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
                                      dates=1, date.fmt="%Y-%m-%d",
 				                             out.type="data.frame",
 				                             out.fmt="numeric",
-				                             verbose=TRUE,...) {
+				                             verbose=TRUE, ...) {
   
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
@@ -208,7 +210,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE,
                                   "%" )
 
 	        # Computing the monthly values
-	        m     <- daily2monthly.zoo(x= x[,j], FUN=FUN, na.rm=na.rm)
+	        m     <- daily2monthly.zoo(x= x[,j], FUN=FUN, ..., na.rm=na.rm)
           dates <- time(m)
             
 	        if (out.fmt == "numeric") m <- coredata(m)

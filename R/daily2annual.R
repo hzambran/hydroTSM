@@ -48,6 +48,7 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",...) {
 #          08-Apr-2013                                                         #
 #          21-Jul-2015                                                         #
 #          21-May-2022 ; 25-May-2022 ; 23-Dic-2022 ; 27-Dec-2022               #
+#          20-Jun-2023                                                         #
 ################################################################################
 daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 
@@ -111,7 +112,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
   # Computing Annual time series
   if (missing(na.rm)) {
     tmp <- aggregate(x, by=years, FUN, ...)
-  } else tmp <- aggregate(x, by=years, FUN, na.rm=na.rm, ...)
+  } else tmp <- aggregate(x, by=years, FUN, ..., na.rm=na.rm)
 
   # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN
@@ -156,6 +157,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 #          04-Jun-2012                                                         #
 #          29-May-2013                                                         #      
 #          22-Aug-2022                                                         #
+#          20-Jun-2023                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -180,7 +182,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, out.fmt="%Y-%m-%d", ...) {
 daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
                                     dates=1, date.fmt="%Y-%m-%d",
                                     out.type="data.frame",
-                                    verbose=TRUE,...) {
+                                    verbose=TRUE, ...) {
                                     
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
@@ -218,7 +220,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
   ##############################################################################
   if (out.type == "data.frame") {
   
-    z <- daily2annual.zoo(x=x, FUN=FUN, na.rm=na.rm, out.fmt=out.fmt, ...)
+    z <- daily2annual.zoo(x=x, FUN=FUN, ..., na.rm=na.rm, out.fmt=out.fmt)
     
   } else if (out.type == "db") { 
 
@@ -240,7 +242,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
        # Computing the amount of years with data within 'x'
        ndays    <- length(dates) # number of days in the period
        tmp      <- vector2zoo(rep(0, ndays), dates)
-       tmp      <- daily2annual.zoo(x= tmp, FUN=FUN, na.rm=na.rm, out.fmt="%Y-%m-%d")
+       tmp      <- daily2annual.zoo(x= tmp, FUN=FUN, ..., na.rm=na.rm, out.fmt="%Y-%m-%d")
        nyears   <- length(tmp) #number of years in the period
 
        # Generating a string vector with the years effectively within 'x'
@@ -265,7 +267,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, out.fmt="%Y",
                                  "%" )
 
           # Computing the annual values
-          a <- daily2annual.zoo(x= x[,j], FUN=FUN, na.rm=na.rm, out.fmt="%Y-%m-%d")
+          a <- daily2annual.zoo(x= x[,j], FUN=FUN, ..., na.rm=na.rm, out.fmt="%Y-%m-%d")
 
           # Putting the annual/monthly values in the output data.frame
           # The first column of 'x' corresponds to the Year
