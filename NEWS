@@ -35,6 +35,8 @@ NEWS/ChangeLog for hydroTSM
         o 'subdaily2daily': -) new argument 'start.fmt' to indicate the format used to provide 'start'
                             -) new argument 'tz' to indicate the time zone used for both 'start' argument and the datetimes of the object
         o 'daily2annual'  : -) for zoo objects, dates are correctly given in the output when FUN=min or FUN=max (e.g. for getting the date of the annual maximum or minimum)
+                            -) the '...' argument is now passed to FUN (thanks to Marfa Saldivia !))
+        o 'daily2monthly' : -) the '...' argument is now passed to FUN (thanks to Marfa Saldivia !))
         o 'izoo2rzoo'     : -) improved handling of sub-daily time series
                             -) new argument 'tz' to correctly handle sub-daily zoo objects (e.g., forcing UTC as time zone instead of the local time zone).
                             -) default value for 'date.fmt' argument was changed from "%Y-%m-%d" to missing (it is automatically detected based on the sampling frequency of 'x')
