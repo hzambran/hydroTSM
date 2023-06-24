@@ -191,16 +191,14 @@ mspplot <- function(x,
 
   # 6.4)Polygon with the catchment, for being put over the interpolations
 	# Reading the SubCATCHMENTS of the CATCHMENT
-	#require(maptools) #it is necessary for usign the function "readShapePoly"
 	if (inherits(subcatchments, "character") ) {
 
-           if (requireNamespace("maptools", quietly = TRUE)) {
+       if (!requireNamespace("maptools", quietly = TRUE)) stop( "Missing package: You need the 'maptools' package for reading the '", basename(subcatchments), "' shapefile")
 	     if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]" )
-	     SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar) #maptools::readShapePoly
+	     SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
 	     # Number of Subcatchmnets
 	     nSub <- nrow(SubCatchments.shp@data)
 	     if (verbose) message("[Subcatchments found:", nSub )
-	   } else stop( "Missing package: You need the 'maptools' package for reading the '", basename(subcatchments), "' shapefile")
 
 	} else {	#  If the user already provided 'subcatchments' as an 'SpatialPolygonsDataFrame' object
 

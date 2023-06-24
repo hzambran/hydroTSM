@@ -306,12 +306,12 @@ hydrokrige.default <- function(x.ts, x.gis,
      if ( inherits(subcatchments, "character") ) {
 
        # Reading the SubCATCHMENTS of the CATCHMENT
-       #require(maptools) #it is necessary for usign the function "readShapePoly"
 
        if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]")
 
        # Reading the Shapefile with the subcatchments
-       SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar) # maptools::readShapePoly
+       if (!requireNamespace("maptools", quietly = TRUE)) stop("'maptools' required")
+       SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
 
        # Number of Subcatchmnets
        nSub <- nrow(SubCatchments.shp@data)
@@ -1246,14 +1246,12 @@ hydrokrige.data.frame <- function( x.ts, x.gis,
      if ( inherits(subcatchments, "character") ) {
 
        # Reading the SubCATCHMENTS of the CATCHMENT
-       if (requireNamespace("maptools", quietly = TRUE)) { #it is necessary for usign the function "readShapePoly"
+       if (!requireNamespace("maptools", quietly = TRUE)) stop("Missing package: You need 'maptools' for reading the '", basename(subcatchments), "' shapefile")
 
-         if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]")
+       if (verbose) message("[reading GIS Subcatchments in: '", basename(subcatchments), "'...]")
 
-         # Reading the Shapefile with the subcatchments
-         SubCatchments.shp <- readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar) # maptools::readShapePoly
-       
-       } else stop("Missing package: You need 'maptools' for reading the '", basename(subcatchments), "' shapefile")
+       # Reading the Shapefile with the subcatchments
+       SubCatchments.shp <- maptools::readShapePoly(subcatchments, proj4string=p4s, IDvar= IDvar)
 
      } else  { #  # If the user provided 'subcatchments' already as an 'SpatialPolygonsDataFrame' object
 
