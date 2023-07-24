@@ -61,31 +61,6 @@ sname2ts(EbroPPtsMonthly, sname="P9001", dates=1, var.type="Precipitation",
 ## Ex3) Monthly and annual plots
 sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", pfreq="ma")
 
-#######
-## Ex4) IDW interpolation and plot
-
-## Loading the spatial data corresponding to 'EbroPPtsMonthly'
-data(EbroPPgis)
-
-## Loading the shapefile (polygon) with the subcatchments
-data(EbroCatchmentsCHE)
-
-## Selecting the first day of 'EbroPPtsMonthly' for all the stations
-x.ts <- as.numeric(EbroPPtsMonthly[1, 2:ncol(EbroPPtsMonthly)])
-
-## Setting the name of the gauging stations
-names(x.ts) <- colnames(EbroPPtsMonthly[1,2:ncol(EbroPPtsMonthly)])
-
-# Computing the interpolated values and plotting them
-# Probably you will need to resize your window
-\dontrun{
-x.idw <- hydrokrige(x.ts= x.ts, x.gis=EbroPPgis, 
-                    X="EAST_ED50" , Y="NORTH_ED50" , sname="ID", 
-                    bname= "CHE_BASIN_NAME", elevation="ELEVATION",
-                    type= "both",
-                    subcatchments= EbroCatchmentsCHE,
-                    cell.size= 1000)
-}
 
 #######
 ## Ex5)  Mean monthly values of streamflows
