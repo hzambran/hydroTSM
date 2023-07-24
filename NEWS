@@ -44,6 +44,8 @@ NEWS/ChangeLog for hydroTSM
         o 'hydrokrige'    : -) flagged as 'deprecated' (in the future it will be improved and moved into a different package)
         o 'season2names'  : fixed typo: 'autumm' -> 'autumn' (thanks to Belinda Wilson !)
         o NAMESPACE file  : -) 'hydroplot', 'sname2plot' and 'hypsometric' are now exported S3 methods
+        o sp, gstat, automap, maptools, rgdal: removed from DESCRIPTION and NAMESPACE files, due to CRAN warning about the retirement (archiving) of rgdal, rgeos and maptools during October 2023
+        o Removed functions: hydrokrige, mspplot, gists2spt, because of the removal of sp, gstat, automap, maptools, rgdal packages from from DESCRIPTION and NAMESPACE files. These functions should be available in other spatial R packages (e.g., terra)
 
 
 0.6-0   11-Mar-2020
