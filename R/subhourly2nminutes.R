@@ -50,17 +50,17 @@ subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, from=start(x), 
     #exist <- "na.rm" %in% names(args)
     #exist
 
-    # Checking that the user provied a valid class for 'x'   
+    # Checking that the user provided a valid class for 'x'   
     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
 
-    # Checking that the user provied a sub-hourly 'x' object
+    # Checking that the user provided a sub-hourly 'x' object
     if ( !(sfreq(x) == "minute" ) ) stop("Invalid argument: 'x' is not a sub-hourly ts !!")
 
     # Checking the user provide a valid value for 'FUN'
     if (missing(FUN))
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
-    # Getting the amount of minutes between each 'x' value, which might be irregulary spaced
+    # Getting the amount of minutes between each 'x' value, which might be irregularly spaced
     x.nmin       <- diff(time(x))
     x.nmin.units <- units(x.nmin)
     x.nmin       <- min(x.nmin)
@@ -136,20 +136,20 @@ subhourly2nminutes.data.frame <- function(x, nminutes, FUN, na.rm=TRUE, from=sta
   if (missing(FUN))
       stop("Missing argument value: 'FUN' must contain a valid function for aggregating the values !!")
 
-  # Checking that the user provied a valid argument for 'out.fmt'
+  # Checking that the user provided a valid argument for 'out.fmt'
   if (is.na(match( out.fmt, c("numeric", "zoo") ) ) )
       stop("Invalid argument: 'out.fmt' must be in c('numeric', 'zoo')")
 
-  # Checking that the user provied a valid argument for 'dates'
+  # Checking that the user provided a valid argument for 'dates'
   if (missing(dates)) {
       stop("Missing argument: 'dates' must be provided")
   } else
-     # Checking that the user provied a valid argument for 'dates'
+     # Checking that the user provided a valid argument for 'dates'
      if (FALSE && (class(dates) %in% c("numeric", "factor", "POSIXct", "POSIXt")) )
          stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'POSIXct', 'POSIXt'")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
-  # The column with dates is then substracted form 'x' for easening the further computations
+  # The column with dates is then substracted form 'x' for easing the further computations
   if ( TRUE && ( inherits(dates, "numeric") ) ) {
     tmp   <- dates
     dates <- as.POSIXct(x[, dates], format= date.fmt) 
