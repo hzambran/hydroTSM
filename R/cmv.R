@@ -1,54 +1,64 @@
-# File gmd.R
+# File cmv.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
 # Copyright 2023-2023 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
-#                         gmd: Get Missing Data                                #
+#                         cmv: Count Missing Data                              #
 ################################################################################
-# This function get the amount/percentage of missing data in a zoo object, 
+# This function counts the percentage/amount of missing data in a zoo object, 
 # using a user-defined temporal scale
 
 # 'x'       : zoo object to be analised
-# 'tscale'  : character witht he temporal scale to be used for analysing the mssing data.
-#             Possible values for 'tscale' are: 
-#             -) "hourly"  : the amount/percentage of missing values will be given for each 
-#                            hour and ,therefore, the expected time frequency of 'x' must 
-#                            be sub-hourly.
-#             -) "daily"   : the amount/percentage of missing values will be given for each 
-#                            day and, therefore, the expected time frequency of 'x' must 
-#                            be sub-daily (i.e., hourly or sub-hourly).
-#             -) "monthly" : the amount/percentage of missing values will be given for each 
-#                            month and, therefore, the expected time frequency of 'x' must 
-#                            be sub-monthly (i.e., daily, hourly or sub-hourly).
-#             -) "seasonal": the amount/percentage of missing values will be given for each 
-#                            weather season (see ?time2season) and, therefore, the expected 
-#                            time frequency of 'x' must be sub-seasonal (i.e., monthly, daily, 
-#                            hourly or sub-hourly).
-#             -) "annual"  : the amount/percentage of missing values will be given for each 
-#                            year and, therefore, the expected time frequency of 'x' must 
-#                            be sub-annual (i.e., seasonal, monthly, daily, hourly or sub-hourly).
-# 'out.type': character indicating if the Should missing values be removed?
-#             Possible values for 'out'type' are: out.type=c("percentage", "amount")
-# 'dec'     : integer indicating the amount of decimal places included in the output. 
-#             It is only used when "out.type=='percentage'"
+# 'tscale'  : character with the temporal scale to be used for analysing the mssing data.
+#             Valid values for 'tscale' are: 
+#             -) "hourly"   : the percentage/amount of missing values will be given for each 
+#                             hour and ,therefore, the expected time frequency of 'x' must 
+#                             be sub-hourly.
+#             -) "daily"    : the percentage/amount of missing values will be given for each 
+#                             day and, therefore, the expected time frequency of 'x' must 
+#                             be sub-daily (i.e., hourly or sub-hourly).
+#             -) "weekly"   : the percentage/amount of missing values will be given for each 
+#                             week (starting on Monday) and, therefore, the expected time 
+#                             frequency of 'x' must be sub-weekly (i.e., daily, (sub)hourly).
+#             -) "monthly"  : the percentage/amount of missing values will be given for each 
+#                             month and, therefore, the expected time frequency of 'x' must 
+#                             be sub-monthly (i.e., daily, hourly or sub-hourly).
+#             -) "quarterly": the percentage/amount of missing values will be given for each 
+#                             quarter and, therefore, the expected time frequency of 'x' must 
+#                             be sub-quarterly (i.e., monthly, daily, hourly or sub-hourly).
+#             -) "seasonal" : the percentage/amount of missing values will be given for each 
+#                             weather season (see ?time2season) and, therefore, the expected 
+#                             time frequency of 'x' must be sub-seasonal (i.e., monthly, daily, 
+#                             hourly or sub-hourly).
+#             -) "annual"   : the percentage/amount of missing values will be given for each 
+#                             year and, therefore, the expected time frequency of 'x' must 
+#                             be sub-annual (i.e., seasonal, monthly, daily, hourly or sub-hourly).
+# 'out.type'                : character indicating how should be returned the missing values 
+#                             for each temporal scale. Valid values for 'out'type' are: 
+#             -) "percentage": the missing values are returned as an real value, representing
+#                              the percentage of missing values in each temporal scale. 
+#             -) "amount"    : the missing values are returned as an integer value, representing
+#                              the absolute amount of missing values in each temporal scale. 
+# 'dec'                     : integer indicating the amount of decimal places included in the output. 
+#                             It is only used when "out.type=='percentage'"
 
-gmd <-function(x, ...) UseMethod("gmd")
+cmv <-function(x, ...) UseMethod("cmv")
 
 
 ################################################################################
-#                              gmd.default                                     #
+#                              cmv.default                                     #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates:                                                                     #
+# Updates: 28-Jul-2023                                                         #
 ################################################################################
-gmd.default <- function(x, 
-	                    tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                    out.type=c("percentage", "amount"),
-	                    dec=3) {
+cmv.default <- function(x, 
+	                      tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
+	                      out.type=c("percentage", "amount"),
+	                      dec=3, ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !")
@@ -59,24 +69,24 @@ gmd.default <- function(x,
   # checking 'out.type'
   out.type <- match.arg(out.type)
 
-  gmd.zoo(x, tscale=tscale, out.type=out.type, dec=dec)
+  cmv.zoo(x, tscale=tscale, out.type=out.type, dec=dec)
      
-} # 'gmd.default' end
+} # 'cmv.default' end
 
 
 
 ################################################################################
-#                              gmd.zoo                                         #
+#                              cmv.zoo                                         #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates:                                                                     #
+# Updates: 28-Jul-2023                                                         #
 ################################################################################
-gmd.zoo <- function(x, 
+cmv.zoo <- function(x, 
 	                tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
 	                out.type=c("percentage", "amount"),
-	                dec=3) {
+	                dec=3, ...) {
   # checking 'tscale'
   tscale <- match.arg(tscale)
 
@@ -145,17 +155,17 @@ gmd.zoo <- function(x,
 
   return(out)
 
-} # 'gmd' END
+} # 'cmv.zoo' END
 
 
 
 ################################################################################
-#                              gmd.data.frame                                  #
+#                              cmv.data.frame                                  #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates:                                                                     #
+# Updates: 28-Jul-2023                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -169,11 +179,11 @@ gmd.zoo <- function(x,
 # 'date.fmt': character indicating the format in which the dates are stored in 'dates'.
 #             ONLY required when class(dates)=="factor" or "numeric"
 # 'verbose' : logical; if TRUE, progress messages are printed
-gmd.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                       out.type=c("percentage", "amount"),
-	                       dec=3,
+cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
+	                         out.type=c("percentage", "amount"),
+	                         dec=3,
                            dates=1, 
-                           date.fmt="%Y-%m-%d") {
+                           date.fmt="%Y-%m-%d", ...) {
                                     
   # Checking that the user provied a valid argument for 'dates'
   if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
@@ -205,27 +215,27 @@ gmd.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "
           }, error = function(msg){return(NA)}
           )
   
-  gmd.zoo(x=x, tscale=tscale, out.type=out.type, dec=dec)
+  cmv.zoo(x=x, tscale=tscale, out.type=out.type, dec=dec)
 
- } #'gmd.data.frame' END
+ } #'cmv.data.frame' END
 
 
 ################################################################################
-#                                gmd.matrix                                    #
+#                                cmv.matrix                                    #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates:                                                                     #
+# Updates: 28-Jul-2023                                                         #
 ################################################################################
-gmd.matrix  <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                    out.type=c("percentage", "amount"),
-	                    dec=3,
+cmv.matrix  <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
+	                      out.type=c("percentage", "amount"),
+	                      dec=3,
                         dates=1, 
-                        date.fmt="%Y-%m-%d") {
+                        date.fmt="%Y-%m-%d", ...) {
 
    x <- as.data.frame(x)
-   gmd.data.frame(x=x, tscale=tscale, out.type=out.type, dec=dec,
+   cmv.data.frame(x=x, tscale=tscale, out.type=out.type, dec=dec,
                   dates=dates, date.fmt=date.fmt)
 
-} # 'gmd.matrix  ' END
+} # 'cmv.matrix  ' END
