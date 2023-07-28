@@ -28,29 +28,34 @@ Generic function for transforming a DAILY (sub-daily or weekly) regular time ser
 daily2monthly(x, ...)
 subdaily2monthly(x, ...)
 
-\method{daily2monthly}{default}(x, FUN, na.rm = TRUE, ...)
+\method{daily2monthly}{default}(x, FUN, na.rm=TRUE, na.rm.thr=0, ...)
 
-\method{daily2monthly}{zoo}(x, FUN, na.rm = TRUE, ...)
+\method{daily2monthly}{zoo}(x, FUN, na.rm=TRUE, na.rm.thr=0, ...)
 
-\method{daily2monthly}{data.frame}(x, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
-        out.type = "data.frame", out.fmt="numeric", verbose = TRUE, ...)
+\method{daily2monthly}{data.frame}(x, FUN, na.rm=TRUE, na.rm.thr=0, dates=1, 
+        date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", out.fmt="numeric", 
+        verbose=TRUE, ...)
 
-\method{daily2monthly}{matrix}(x, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
-        out.type = "data.frame", out.fmt="numeric", verbose = TRUE, ...)
+\method{daily2monthly}{matrix}(x, FUN, na.rm=TRUE, na.rm.thr=0, dates=1, 
+        date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", out.fmt="numeric", 
+        verbose=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-zoo, xts, data.frame or matrix object, with daily/monthly time series. \cr
+zoo, data.frame or matrix object, with daily/monthly time series. \cr
 Measurements at several gauging stations can be stored in a data.frame or matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
 }
   \item{FUN}{
-Function that have to be applied for transforming from daily to annual time step. (e.g., for precipitation \code{FUN=sum} and for temperature and streamflow ts, \code{FUN=mean}). \cr
+Function that have to be applied for transforming from daily to monthly time step. (e.g., for precipitation \code{FUN=sum} and for temperature and streamflow ts, \code{FUN=mean}). \cr
 }
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
--) \kbd{TRUE} : the monthly and annual values  are computed considering only those values different from NA \cr
--) \kbd{FALSE}: if there is AT LEAST one NA within a year, the monthly values are NA 
+-) \kbd{TRUE} : the monthly values are computed only for months with a percentage of missing values less than \code{na.rm.thr} \cr
+-) \kbd{FALSE}: if there is AT LEAST one NA within a month, the corresponing monthly values in the output object will be \code{NA}.
+}
+  \item{na.rm.thr}{
+Numeric in [0, 1]. It is used to define the maximum percentage of missing values of \code{x}in each month to keep the monthly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given month is larger or equal than \code{na.rm.thr} the corresponding monthly value will be \code{NA}. \cr
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates for each gauging station \cr
@@ -101,25 +106,63 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{subhourly2hourly}}, \code{\link{daily2annual}}, \code{\link{subdaily2daily}}, \code{\link{monthlyfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
+\code{\link{cmv}}, \code{\link{subhourly2hourly}}, \code{\link{daily2annual}}, \code{\link{subdaily2daily}}, \code{\link{monthlyfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
 }
 \examples{
 ######################
-## Ex1: Loading the DAILY precipitation data at SanMartino
+## Ex1: Compuation of monthly values removing any missing value in 'x'
+
+# Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
-## Daily to monthly
+# Subsetting 'x' to its first three months (Jan/1921 - Mar/1921)
+x <- window(x, end="1921-03-31")
+
+## Transforming into NA the 10% of values in 'x'
+set.seed(10) # for reproducible results
+n           <- length(x)
+n.nas       <- round(0.1*n, 0)
+na.index    <- sample(1:n, n.nas)
+x[na.index] <- NA
+
+## Daily to monthly, removing any missing value in 'x'
 m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
 
 ######################
-## Ex2: Loading the time series of HOURLY streamflows for the station Karamea at Gorge
+## Ex2: Compuation of monthly values only when the percentage of NAs in each month is lower than a user-defined percentage (10% in this example).
+
+# Loading the DAILY precipitation data at SanMartino
+data(SanMartinoPPts)
+x <- SanMartinoPPts
+
+# Subsetting 'x' to its first three months (Jan/1921 - Mar/1921)
+x <- window(x, end="1921-03-31")
+
+## Transforming into NA the 10% of values in 'x'
+set.seed(10) # for reproducible results
+n           <- length(x)
+n.nas       <- round(0.1*n, 0)
+na.index    <- sample(1:n, n.nas)
+x[na.index] <- NA
+
+## Daily to monthly, only for months with less than 10% of missing values
+m2 <- daily2monthly(x, FUN=sum, na.rm=TRUE, na.rm.thr=0.1)
+
+# Verifying that the second and third month of 'x' had 10% or more of missing values
+cmv(x, tscale="month")
+
+######################
+## Ex3: Loading the HOURLY streamflows for the station Karamea at Gorge
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
 # Sub-daily to monthly ts
 subdaily2monthly(x, FUN=mean, na.rm=TRUE)
 }
+
+
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{manip}
