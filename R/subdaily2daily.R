@@ -28,14 +28,16 @@ subdaily2daily <-function(x, ...) UseMethod("subdaily2daily")
 # Updates: 06-Dec-2019                                                         #
 #          27-May-2021                                                         #
 #          11-Oct-2022                                                         # 
+#          30-Jul-2023                                                         #
 ################################################################################
-subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+subdaily2daily.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz, ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
 
-  subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
+  subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, 
+                     start=start, start.fmt=start.fmt, tz=tz, ...)
 
 } # 'subdaily2daily.default' end
 
@@ -49,8 +51,9 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 #          06-Dec-2019 ; 18-Dec-2019                                           #
 #          27-May-2021                                                         #
 #          11-Oct-2022                                                         #
+#          30-Jul-2023                                                         #
 ################################################################################
-subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz, ...) {
 
     # testing the existence of 'na.rm' argument
@@ -97,6 +100,26 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
     # 'as.numeric' is necessary for being able to change the names to the output
     d <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
 
+
+    # Removing annual values in the output object for days with 
+    # more than 'na.rm.max' percentage of NAs in a given day
+    if ( na.rm & (na.rm.max != 0) ) {
+
+      # Checking that 'na.rm.max' is in [0, 1]
+      if ( (na.rm.max <0) | (na.rm.max <0) )
+        stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+
+      # Computing the percentage of missing values in each day
+      na.pctg <- cmv(x, tscale="daily")
+
+      # identifying days with a percentage of missing values higher than 'na.rm.max'
+      na.pctg.index <- which( na.pctg >= na.rm.max)
+
+      # Setting as NA all the days with a percentage of missing values higher than 'na.rm.max'
+      tmp[na.pctg.index] <- NA 
+    } # IF end
+
+
     # Removing subdaily time attibute, but not the dates
     if (NCOL(d) == 1) {
       d <- zoo(as.numeric(d), as.Date(time(d), format="%Y-%m-%d") ) 
@@ -124,7 +147,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
 #          23-Aug-2022 ; 11-Oct-2022                                           #
-#          25-May-2023                                                         #
+#          25-May-2023 ; 30-Jul-2023                                           #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -139,7 +162,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 #             ONLY required when class(dates)=="factor" or "numeric"
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
-subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                       start.fmt= "%H:%M:%S", tz, 
                                       dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                              out.fmt="zoo",
@@ -187,7 +210,8 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
   
   ##############################################################################
   
-  z <- subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
+  z <- subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, 
+                          start=start, start.fmt=start.fmt, tz=tz, ...)
     
   if (out.fmt == "numeric") {
      snames      <- colnames(z)
@@ -209,8 +233,9 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
 #          25-May-2023                                                         #
+#          30-Jul-2023                                                         #
 ################################################################################
-subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz,
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                           out.fmt="zoo",
@@ -221,8 +246,8 @@ subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
-   subdaily2daily.data.frame(x=x, FUN=FUN, na.rm=na.rm, start=start, 
-                             start.fmt=start.fmt, tz=tz,
+   subdaily2daily.data.frame(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, 
+                             start=start, start.fmt=start.fmt, tz=tz,
                              dates=dates, date.fmt=date.fmt,
 			                       out.fmt=out.fmt,
                              verbose=verbose,...)
