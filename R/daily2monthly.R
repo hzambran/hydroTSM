@@ -80,7 +80,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.thr=0, ... ) {
 
     # Setting as NA all the monhts with a percentage of missing values higher than 'na.rm.thr'
     tmp[na.pctg.index] <- NA 
-  } 
+  } # IF end
   
   # Replacing the NaNs by 'NA.
   # mean(NA:NA, na.rm=TRUE) == NaN
