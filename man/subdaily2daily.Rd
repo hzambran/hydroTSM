@@ -1,7 +1,7 @@
 %%File subdaily2daily.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
-%%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2022 Mauricio Zambrano-Bigiarini
+%%                                 https://CRAN.R-project.org/package=hydroTSM
+%% Copyright 2008-2023 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{subdaily2daily}
@@ -42,19 +42,24 @@ subdaily2daily(x, ...)
 \arguments{
   \item{x}{
 zoo, data.frame or matrix object, with sub-daily time series. \cr
-Measurements at several gauging stations can be stored in a data.frame or matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} should correspond to the ID of each station (starting by a letter).
+Measurements at several gauging stations can be stored in a data.frame or matrix object, and in that case, each column of \code{x} represents the time series measured in each gauging station, and the column names of \code{x} should correspond to the ID of each station (starting by a letter).
 }
-  \item{FUN}{
-Function that have to be applied for transforming from sub-daily to daily time step. (e.g., for precipitation \code{FUN=sum} and for temperature and streamflow ts, \code{FUN=mean}). \cr
+ \item{FUN}{
+Function that have to be applied for aggregating from sub-daily into daily time step (e.g., for precipitation \code{FUN=sum} and for temperature and streamflows ts \code{FUN=mean}). \cr
+
+\code{FUN} MUST accept the \code{na.rm} argument, because \code{na.rm} is passed to \code{FUN}.
 }
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
--) \kbd{TRUE} : the daily values  are computed considering only those values different from NA \cr
--) \kbd{FALSE}: if there is AT LEAST one NA sub-daily value within a day, the corresponing daily value(s) will be NA as well
+-) \kbd{TRUE} : the daily values are computed only for days with a percentage of missing values less than \code{na.rm.max} \cr
+-) \kbd{FALSE}: if there is AT LEAST one NA within a day, the corresponing daily value in the output object will be \code{NA}.
+}
+  \item{na.rm.max}{
+Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each day to keep the daily aggregated value in the output object of this function. In other words, if the percentage of missing values in a given day is larger or equal than \code{na.rm.max} the corresponding daily value will be \code{NA}.
 }
   \item{start}{
 character, indicating the starting time used for aggregating sub-daily time series into daily ones. It MUST be provided in the format specified by \code{start.fmt}. \cr
-This value is used to define the time when a new day begins. \cr
+This value is used to define the time when a new day begins (e.g., for some rain gauge stations). \cr
 -) All the values of \code{x} with a time attribute before \code{start} are considered as belonging to the day before the one indicated in the time attribute of those values. \cr
 -) All the values of \code{x} with a time attribute equal to \code{start} are considered to be equal to \code{"00:00:00"} in the output zoo object. \cr
 -) All the values of \code{x} with a time attribute after \code{start} are considered as belonging to the same day as the one indicated in the time attribute of those values. \cr
@@ -87,7 +92,7 @@ character, for selecting if the result will be a matrix/data.frame or a zoo obje
 logical; if TRUE, progress messages are printed 
 }
   \item{\dots}{
-further arguments passed to or from other methods.
+arguments additional to \code{na.rm} passed to \code{FUN}.
 }
 }
 %%\details{
