@@ -29,12 +29,12 @@ daily2monthly <- function(x, ...) UseMethod("daily2monthly")
 #          08-Apr-013                                                          #
 #          28-Jul-2023                                                         #
 ################################################################################
-daily2monthly.default <- function(x, FUN, na.rm=TRUE, ... ) {
+daily2monthly.default <- function(x, FUN, na.rm=TRUE, na.rm.thr=0, ... ) {
 
      # Checking that 'x' is a zoo object
      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
 
-     daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm,...)
+     daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.thr=0, ...)
 
 } # 'daily2monthly.default' end
 
@@ -62,7 +62,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.thr=0, ... ) {
   months <- as.Date( as.yearmon( time(x) ) ) # zoo::as.Date ; zoo::as.yearmon
 
   # Computing the Monthly time series 
-  tmp <- aggregate( x, by=months, FUN, ..., na.rm= na.rm ) 
+  tmp <- aggregate( x, by=months, FUN, na.rm= na.rm, ... ) 
 
   # Removing monthly values in the output object for months with 
   # more than 'na.rm.thr' percentage of NAs in a given month
@@ -177,7 +177,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.thr=0,
   ##############################################################################
   if (out.type == "data.frame") {
   
-    z <- daily2monthly.zoo(x=x, FUN=FUN, ..., na.rm=na.rm, na.rm.thr=na.rm.thr)
+    z <- daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.thr=na.rm.thr, ...)
     
     if (out.fmt == "numeric") {
        snames      <- colnames(z)
