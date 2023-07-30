@@ -34,15 +34,15 @@ daily2annual(x, ...)
 subdaily2annual(x, ...)
 monthly2annual(x, ...)
 
-\method{daily2annual}{default}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", ...)
+\method{daily2annual}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", ...)
 
-\method{daily2annual}{zoo}(x, FUN, na.rm = TRUE, out.fmt = "\%Y-\%m-\%d", ...)
+\method{daily2annual}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y-\%m-\%d", ...)
 
-\method{daily2annual}{data.frame}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", dates=1, 
+\method{daily2annual}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 
-\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, out.fmt = "\%Y", dates=1, 
-        date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
+\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", 
+        dates=1, date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
