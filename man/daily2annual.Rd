@@ -47,17 +47,23 @@ monthly2annual(x, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-zoo, xts, data.frame or matrix object, with (sub)daily/monthly time series. \cr
+zoo, data.frame or matrix object, with (sub)daily/monthly time series. \cr
 Measurements at several gauging stations can be stored in a data.frame or matrix object, and in that case, each column of \code{x} represent the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
 }
   \item{FUN}{
-Function that have to be applied for aggregating from (sub)daily/monthly into annual time step (e.g., for precipitation \code{FUN=sum} and for temperature and streamflows ts, \code{FUN=mean}). \cr
-When \code{FUN=max} or \code{FUN=min} the date(time) where the maximum/minimum value actually occurs is returned in the output object, otherwise, a generic 1st of january of each year is returned.
+Function that have to be applied for aggregating from (sub)daily/monthly into annual time step (e.g., for precipitation \code{FUN=sum} and for temperature and streamflows ts \code{FUN=mean}). \cr
+
+\code{FUN} MUST accept the \code{na.rm} argument, because \code{na.rm} is passed to \code{FUN}. \cr
+
+When \code{FUN=max} or \code{FUN=min} the date(time) where the maximum/minimum value actually occurs is returned in the output object, otherwise, a generic 1st of january for each year is returned.
 }
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
--) \kbd{TRUE} : the monthly and annual values  are computed considering only those values different from NA \cr
--) \kbd{FALSE}: if there is AT LEAST one NA within a year, the corresponding annual value is NA.
+-) \kbd{TRUE} : the annual values are computed only for years with a percentage of missing values less than \code{na.rm.thr} \cr
+-) \kbd{FALSE}: if there is AT LEAST one NA within a year, the corresponing annual values in the output object will be \code{NA}.
+}
+  \item{na.rm.thr}{
+Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each year to keep the yearly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given year is larger or equal than \code{na.rm.thr} the corresponding annual value will be \code{NA}.
 }
   \item{out.fmt}{
 Character indicating the date format for the output zoo object. See \code{format} in \code{\link[base]{as.Date}}. Possible values are: \cr
@@ -86,7 +92,7 @@ Character that defines the desired type of output. Valid values are: \cr
 logical; if TRUE, progress messages are printed 
 }
   \item{\dots}{
-further arguments passed to or from other methods.
+arguments additional to \code{na.rm} passed to \code{FUN}.
 }
 }
 %%\details{
