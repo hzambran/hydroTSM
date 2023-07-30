@@ -32,9 +32,9 @@ daily2monthly <- function(x, ...) UseMethod("daily2monthly")
 daily2monthly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
      # Checking that 'x' is a zoo object
-     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
+     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !")
 
-     daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=0, ...)
+     daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, ...)
 
 } # 'daily2monthly.default' end
 
