@@ -35,7 +35,7 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="%Y",.
      # Checking that 'x' is a zoo object
      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !")
 
-     daily2annual.zoo(x=x, FUN=FUN, na.rm=na.rm, out.fmt=out.fmt, ...)
+     daily2annual.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, out.fmt=out.fmt, ...)
      
 } # 'daily2annual.default' end
 
@@ -130,7 +130,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="%Y-%m-%d"
     # identifying years with a percentage of missing values higher than 'na.rm.max'
     na.pctg.index <- which( na.pctg >= na.rm.max)
 
-    # Setting as NA all the monhts with a percentage of missing values higher than 'na.rm.max'
+    # Setting as NA all the years with a percentage of missing values higher than 'na.rm.max'
     tmp[na.pctg.index] <- NA 
   } # IF end
 
