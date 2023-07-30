@@ -29,12 +29,12 @@ daily2monthly <- function(x, ...) UseMethod("daily2monthly")
 #          08-Apr-013                                                          #
 #          28-Jul-2023                                                         #
 ################################################################################
-daily2monthly.default <- function(x, FUN, na.rm=TRUE, na.rm.thr=0, ... ) {
+daily2monthly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
      # Checking that 'x' is a zoo object
      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be in c('zoo', 'xts')")
 
-     daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.thr=0, ...)
+     daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=0, ...)
 
 } # 'daily2monthly.default' end
 
@@ -47,7 +47,7 @@ daily2monthly.default <- function(x, FUN, na.rm=TRUE, na.rm.thr=0, ... ) {
 #          08-Apr-2013                                                         #
 #          20-Jun-2023 ; 28-Jul-2023                                           #
 ################################################################################
-daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.thr=0, ... ) {
+daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
   # Checking the user provide a valid value for 'FUN'
   if (missing(FUN))
@@ -65,20 +65,20 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.thr=0, ... ) {
   tmp <- aggregate( x, by=months, FUN, na.rm= na.rm, ... ) 
 
   # Removing monthly values in the output object for months with 
-  # more than 'na.rm.thr' percentage of NAs in a given month
-  if ( na.rm & (na.rm.thr != 0) ) {
+  # more than 'na.rm.max' percentage of NAs in a given month
+  if ( na.rm & (na.rm.max != 0) ) {
 
-    # Checking that 'na.rm.thr' is in [0, 1]
-    if ( (na.rm.thr <0) | (na.rm.thr <0) )
-      stop("Invalid argument: 'na.rm.thr' must be in [0, 1] !")
+    # Checking that 'na.rm.max' is in [0, 1]
+    if ( (na.rm.max <0) | (na.rm.max <0) )
+      stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
 
     # Computing the percentage of missing values in each month
     na.pctg <- cmv(x, tscale="monthly")
 
-    # identifying months with a percentage of missing values higher than 'na.rm.thr'
-    na.pctg.index <- which( na.pctg >= na.rm.thr)
+    # identifying months with a percentage of missing values higher than 'na.rm.max'
+    na.pctg.index <- which( na.pctg >= na.rm.max)
 
-    # Setting as NA all the monhts with a percentage of missing values higher than 'na.rm.thr'
+    # Setting as NA all the monhts with a percentage of missing values higher than 'na.rm.max'
     tmp[na.pctg.index] <- NA 
   } # IF end
   
@@ -131,7 +131,7 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.thr=0, ... ) {
 #                              The fourth colum stores the numerical values corresponding to the year and month specified in the two previous fields.
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
-daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.thr=0,
+daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
                                      dates=1, date.fmt="%Y-%m-%d",
 				                             out.type="data.frame",
 				                             out.fmt="numeric",
@@ -177,7 +177,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.thr=0,
   ##############################################################################
   if (out.type == "data.frame") {
   
-    z <- daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.thr=na.rm.thr, ...)
+    z <- daily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, ...)
     
     if (out.fmt == "numeric") {
        snames      <- colnames(z)
@@ -229,7 +229,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.thr=0,
                                   "%" )
 
 	        # Computing the monthly values
-	        m     <- daily2monthly.zoo(x= x[,j], FUN=FUN, ..., na.rm=na.rm, na.rm.thr=na.rm.thr)
+	        m     <- daily2monthly.zoo(x= x[,j], FUN=FUN, ..., na.rm=na.rm, na.rm.max=na.rm.max)
           dates <- time(m)
             
 	        if (out.fmt == "numeric") m <- coredata(m)
@@ -261,7 +261,7 @@ daily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.thr=0,
 #          29-May-2013                                                         #
 #          28-Jul-2023                                                         #
 ################################################################################
-daily2monthly.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.thr=0,
+daily2monthly.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
                                   dates=1, date.fmt="%Y-%m-%d",
 				                          out.type="data.frame",
 				                          out.fmt="numeric",
@@ -270,7 +270,7 @@ daily2monthly.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.thr=0,
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
    daily2monthly.data.frame(x=x, FUN=FUN, na.rm=na.rm, 
-                            na.rm.thr=na.rm.thr,
+                            na.rm.max=na.rm.max,
                             dates=dates, date.fmt=date.fmt,
 			                      out.type=out.type,
 			                      out.fmt=out.fmt,

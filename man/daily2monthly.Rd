@@ -1,7 +1,7 @@
 %%File daily2monthly.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2023 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{(sub)daily2monthly}
@@ -28,15 +28,15 @@ Generic function for transforming a DAILY (sub-daily or weekly) regular time ser
 daily2monthly(x, ...)
 subdaily2monthly(x, ...)
 
-\method{daily2monthly}{default}(x, FUN, na.rm=TRUE, na.rm.thr=0, ...)
+\method{daily2monthly}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
 
-\method{daily2monthly}{zoo}(x, FUN, na.rm=TRUE, na.rm.thr=0, ...)
+\method{daily2monthly}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
 
-\method{daily2monthly}{data.frame}(x, FUN, na.rm=TRUE, na.rm.thr=0, dates=1, 
+\method{daily2monthly}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", out.fmt="numeric", 
         verbose=TRUE, ...)
 
-\method{daily2monthly}{matrix}(x, FUN, na.rm=TRUE, na.rm.thr=0, dates=1, 
+\method{daily2monthly}{matrix}(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", out.fmt="numeric", 
         verbose=TRUE, ...)
 }
@@ -53,11 +53,11 @@ Function that have to be applied for transforming from daily to monthly time ste
 }
   \item{na.rm}{
 Logical. Should missing values be removed? \cr
--) \kbd{TRUE} : the monthly values are computed only for months with a percentage of missing values less than \code{na.rm.thr} \cr
+-) \kbd{TRUE} : the monthly values are computed only for months with a percentage of missing values less than \code{na.rm.max} \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a month, the corresponing monthly values in the output object will be \code{NA}.
 }
-  \item{na.rm.thr}{
-Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given month is larger or equal than \code{na.rm.thr} the corresponding monthly value will be \code{NA}.
+  \item{na.rm.max}{
+Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given month is larger or equal than \code{na.rm.max} the corresponding monthly value will be \code{NA}.
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates for each gauging station \cr
@@ -149,7 +149,7 @@ na.index    <- sample(1:n, n.nas)
 x[na.index] <- NA
 
 ## Daily to monthly, only for months with less than 10% of missing values
-m2 <- daily2monthly(x, FUN=sum, na.rm=TRUE, na.rm.thr=0.1)
+m2 <- daily2monthly(x, FUN=sum, na.rm=TRUE, na.rm.max=0.1)
 
 # Verifying that the second and third month of 'x' had 10% or more of missing values
 cmv(x, tscale="month")

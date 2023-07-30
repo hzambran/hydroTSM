@@ -37,7 +37,7 @@ NEWS/ChangeLog for hydroTSM
                             -) new argument 'temp.probs.alpha' to define the transparency level applied to 'temp.probs.col'
                             -) new arguments 'lat' and 'lon' to define and show the latitude and longitude, respectively, for which the climograph was plotted.
 
-        o '(sub)daily2monthly': -) new argument 'na.rm.thr' to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object.
+        o '(sub)daily2monthly': -) new argument 'na.rm.max' to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object.
 
         o 'subdaily2daily'    : -) new argument 'start.fmt' to indicate the format used to provide 'start'
                                 -) new argument 'tz' to indicate the time zone used for both 'start' argument and the datetimes of the object
