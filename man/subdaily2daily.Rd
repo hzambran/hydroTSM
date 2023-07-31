@@ -114,9 +114,15 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{subhourly2hourly}}, \code{\link{subdaily2monthly}}, \code{\link{subdaily2annual}}, \code{\link{subdaily2seasonal}}, \code{\link{as.POSIXct}}, \code{\link{dm2seasonal}}, \code{\link{monthlyfunction}}, \code{\link{seasonalfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}
+\code{\link{subhourly2hourly}}, \code{\link{subdaily2monthly}}, 
+\code{\link{subdaily2annual}}, \code{\link{subdaily2seasonal}}, 
+\code{\link{as.POSIXct}}, \code{\link{dm2seasonal}}, \code{\link{monthlyfunction}}, 
+\code{\link{seasonalfunction}}, \code{\link{hydroplot}}, 
+\code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}
 }
 \examples{
+## Ex1: Computation of daily values, removing any missing value in 'x'
+
 ## Loading the time series of hourly streamflows for the station Karamea at Gorge
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
@@ -124,14 +130,32 @@ x <- KarameaAtGorgeQts
 # Plotting the hourly streamflow values
 plot(x)
 
-## sub-daily to daily
-d1 <- subdaily2daily(x, FUN=sum, na.rm=TRUE)
+# Subsetting 'x' to its first three days (01/Jan/1980 - 03/Jan/1980)
+x <- window(x, end="1980-01-03 23:59:00")
 
-# Plotting the daily streamflow values
-plot(d1)
+## Transforming into NA the 10% of values in 'x'
+set.seed(10) # for reproducible results
+n           <- length(x)
+n.nas       <- round(0.1*n, 0)
+na.index    <- sample(1:n, n.nas)
+x[na.index] <- NA
 
-## sub-daily to daily, considering that the new day starts at 08:00:00
-d2 <- subdaily2daily(x, FUN=sum, na.rm=TRUE, start="08:00:00")
+## Agreggating from Sub-Daily to Daily, removing any missing value in 'x'
+( d1 <- subdaily2daily(x, FUN=mean, na.rm=TRUE) )
+
+
+## Ex2: Computation of daily values, removing any missing value in 'x' and
+##      considering that the new day starts at 08:00:00 local time
+( d2 <- subdaily2daily(x, FUN=sum, na.rm=TRUE, start="08:00:00") )
+
+## Ex3: Computation of daily values, removing any missing value in 'x' and
+##      considering that the new day starts at 08:00:00 UTC
+( d3 <- subdaily2daily(x, FUN=sum, na.rm=TRUE, start="08:00:00", tz="UTC") )
+
+######################
+## Ex4: Compuation of daily values only when the percentage of NAs in each
+#       day is lower than a user-defined percentage (10% in this example).
+( d4 <- subdaily2daily(x, FUN=mean, na.rm=TRUE, na.rm.max=0.1) )
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
