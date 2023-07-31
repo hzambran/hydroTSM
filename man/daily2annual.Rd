@@ -122,27 +122,64 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \examples{
 ######################
-## Ex1: Loading the DAILY precipitation data at SanMartino
+## Ex1: Computation of annual values, removing any missing value in 'x'
+
+# Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
-## Aggregating from Daily to Annual precipitation time series
-daily2annual(x, FUN=sum, na.rm=TRUE)
+# Subsetting 'x' to its first three months (Jan/1921 - Mar/1921)
+x <- window(x, end="1921-03-31")
+
+## Transforming into NA the 10% of values in 'x'
+set.seed(10) # for reproducible results
+n           <- length(x)
+n.nas       <- round(0.1*n, 0)
+na.index    <- sample(1:n, n.nas)
+x[na.index] <- NA
+
+## Agreggating from Daily to Annual, removing any missing value in 'x'
+( a <- daily2annual(x, FUN=sum, na.rm=TRUE) )
 
 ######################
-## Ex2: Getting the annual maximum value, including the date where this annual 
+## Ex2: Compuation of annual values only when the percentage of NAs in each
+#       year is lower than a user-defined percentage (10% in this example).
+
+# Loading the DAILY precipitation data at SanMartino
+data(SanMartinoPPts)
+x <- SanMartinoPPts
+
+# Subsetting 'x' to its first three months (Jan/1921 - Mar/1921)
+x <- window(x, end="1921-03-31")
+
+## Transforming into NA the 10% of values in 'x'
+set.seed(10) # for reproducible results
+n           <- length(x)
+n.nas       <- round(0.1*n, 0)
+na.index    <- sample(1:n, n.nas)
+x[na.index] <- NA
+
+## Daily to annual, only for months with less than 10% of missing values
+( a2 <- daily2annual(x, FUN=sum, na.rm=TRUE, na.rm.max=0.1) )
+
+# Verifying that the second and third month of 'x' had 10% or more of missing values
+cmv(x, tscale="year")
+
+
+######################
+## Ex3: Getting the annual maximum value, including the date where this annual 
 ##      maximum actually occurs
 daily2annual(x, FUN=max)
 
 
 ######################
-## Ex3: Monthly to Annual (same result as )
+## Ex4: Monthly to Annual (same result as )
 m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
 monthly2annual(m, FUN=sum, na.rm=TRUE)
 
 
 ######################
-## Ex4: Loading the time series of HOURLY streamflows for the station Karamea at Gorge
+## Ex5: Loading the time series of HOURLY streamflows for the station Karamea at Gorge
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
@@ -150,7 +187,7 @@ x <- KarameaAtGorgeQts
 subdaily2annual(x, FUN=mean, na.rm=TRUE)
 
 ############
-## Ex5: Loading the monthly time series of precipitation within the Ebro River basin
+## Ex6: Loading the monthly time series of precipitation within the Ebro River basin
 data(EbroPPtsMonthly)
 
 # computing the annual values for the first 10 gauging stations in 'EbroPPtsMonthly'

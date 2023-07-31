@@ -112,7 +112,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \examples{
 ######################
-## Ex1: Compuation of monthly values removing any missing value in 'x'
+## Ex1: Computation of monthly values, removing any missing value in 'x'
 
 # Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
@@ -128,11 +128,12 @@ n.nas       <- round(0.1*n, 0)
 na.index    <- sample(1:n, n.nas)
 x[na.index] <- NA
 
-## Daily to monthly, removing any missing value in 'x'
+## Agreggating from Daily to Monthly, removing any missing value in 'x'
 m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
 
 ######################
-## Ex2: Compuation of monthly values only when the percentage of NAs in each month is lower than a user-defined percentage (10% in this example).
+## Ex2: Computation of monthly values only when the percentage of NAs in each
+#       month is lower than a user-defined percentage (10% in this example).
 
 # Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
