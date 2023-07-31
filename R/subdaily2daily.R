@@ -54,7 +54,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00
 #          30-Jul-2023 ; 31-Jul-2023                                           #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz, ...) {
+                               start.fmt= "%H:%M:%S", tz, ...) {
 
     # testing the existence of 'na.rm' argument
     #args <- list(...)
