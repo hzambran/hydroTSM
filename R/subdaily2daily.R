@@ -51,7 +51,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00
 #          06-Dec-2019 ; 18-Dec-2019                                           #
 #          27-May-2021                                                         #
 #          11-Oct-2022                                                         #
-#          30-Jul-2023                                                         #
+#          30-Jul-2023 ; 31-Jul-2023                                           #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz, ...) {
@@ -69,8 +69,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
     # Automatic detection of 'tz'
-    if (missing(tz))
-      tz <- format(time(x), "%Z")[1]
+    if (missing(tz)) tz <- ""
 
     # Transforming the original time into a POSIXct object
     time.old <- time(x)
@@ -93,12 +92,12 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
      
     # Making sure that the time serie is complete before aggregation
     #if ( (format(start(x), "%H:%M:%S") != "00:00:00") | (format(end(x), "%H:%M:%S") != "00:00:00"))
-    st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00")
-    et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59")
+    st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
+    et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
     x <- izoo2rzoo(x, from=st, to=et, tz=tz)
 
     # 'as.numeric' is necessary for being able to change the names to the output
-    d <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
+    tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
 
 
     # Removing annual values in the output object for days with 
@@ -121,21 +120,21 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
 
 
     # Removing subdaily time attibute, but not the dates
-    if (NCOL(d) == 1) {
-      d <- zoo(as.numeric(d), as.Date(time(d), format="%Y-%m-%d") ) 
-    } else d <- zoo(coredata(d), as.Date(time(d), format="%Y-%m-%d") ) 
+    if (NCOL(tmp) == 1) {
+      tmp <- zoo(as.numeric(tmp), as.Date(time(tmp), format="%Y-%m-%d") ) 
+    } else tmp <- zoo(coredata(tmp), as.Date(time(tmp), format="%Y-%m-%d") ) 
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
-    nan.index <- which(is.nan(d))
-    if ( length(nan.index) > 0 ) d[nan.index] <- NA
+    nan.index <- which(is.nan(tmp))
+    if ( length(nan.index) > 0 ) tmp[nan.index] <- NA
   
     # Replacing all the Inf and -Inf by NA's
     # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
-    inf.index <- which(is.infinite(d))
-    if ( length(inf.index) > 0 ) d[inf.index] <- NA      
+    inf.index <- which(is.infinite(tmp))
+    if ( length(inf.index) > 0 ) tmp[inf.index] <- NA      
 
-    return(d)
+    return(tmp)
 
 } # 'subdaily2daily.zoo' end
 
@@ -165,8 +164,8 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
 subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                       start.fmt= "%H:%M:%S", tz, 
                                       dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                              out.fmt="zoo",
-				                              verbose=TRUE,...) {
+				                      out.fmt="zoo",
+				                      verbose=TRUE,...) {
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
@@ -238,7 +237,7 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00
 subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz,
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                           out.fmt="zoo",
+				                   out.fmt="zoo",
                                    verbose=TRUE,...) {
 
    # Automatic detection of 'tz'
@@ -249,7 +248,7 @@ subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00
    subdaily2daily.data.frame(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, 
                              start=start, start.fmt=start.fmt, tz=tz,
                              dates=dates, date.fmt=date.fmt,
-			                       out.fmt=out.fmt,
+			                 out.fmt=out.fmt,
                              verbose=verbose,...)
 
 } # 'subdaily2daily.matrix  ' END
