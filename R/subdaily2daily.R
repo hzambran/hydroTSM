@@ -9,15 +9,44 @@
 ################################################################################
 # This function transform a SUB-DAILY time series into a DAILY one
 
-# 'x'   : usb-daily values that will be converted into daily ones.
-#         class(x) must be 'xts'
-# 'FUN' : Function that have to be applied for transforming from sub-daily into 
-#         daily time step. E.g., for precipitation FUN MUST be "sum"
-#         For temperature and flow time series, FUN MUST be "mean"
-# 'na.rm': Logical. Should missing values be removed?
-#          TRUE : the monthly and annual values  are computed considering only those values different from NA
-#          FALSE: if there is AT LEAST one NA within a year, the monthly and annual values are NA
-
+# 'x'        : usb-daily values that will be converted into daily ones.
+#              class(x) must be 'xts'
+# 'FUN'      : Function that have to be applied for transforming from sub-daily into 
+#              daily time step. E.g., for precipitation FUN MUST be "sum"
+#              For temperature and flow time series, FUN MUST be "mean"
+# 'na.rm'    : Logical. Should missing values be removed?
+#              TRUE : the monthly and annual values  are computed considering only those 
+#                     values different from NA
+#              FALSE: if there is AT LEAST one NA within a year, the monthly and annual 
+#                     values are NA
+# 'start'    : character, indicating the starting time used for aggregating sub-daily time 
+#              series into daily ones. 
+#              It MUST be provided in the format specified by \code{start.fmt}. \cr
+#              This value is used to define the time when a new day begins (e.g., for some 
+#              rain gauge stations). \cr
+#              -) All the values of \code{x} with a time attribute before \code{start} are
+#                 considered as belonging to the day before the one indicated in the time 
+#                 attribute of those values. \cr
+#              -) All the values of \code{x} with a time attribute equal to \code{start} 
+#                 are considered to be equal 
+#                 to \code{"00:00:00"} in the output zoo object. \cr
+#              -) All the values of \code{x} with a time attribute after \code{start} are 
+#                 considered as belonging to the same day as the one indicated in the time 
+#                 attribute of those values. \cr
+#              It is useful when the daily values start at a time different from
+#              \code{"00:00:00"}. Use with caution. See examples.
+# 'start.fmt': character indicating the format in which the time is provided in \code{start}.
+#              By default \code{date.fmt=\%H:\%M:\%S}. See \code{format} in 
+#              \code{\link[base]{as.POSIXct}}.
+# 'tz'       : character, with the specification of the time zone used in both 
+#              \code{x} and \code{start}. 
+#              System-specific (see time zones), but \code{""} is the current time zone,
+#              and \code{"GMT"} is UTC (Universal Time, Coordinated). 
+#              See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+#              If \code{tz} is missing (the default), it is automatically set to the
+#              time zone used in \code{time(x)}. \cr
+#              This argument can be used to force using the local time zone or any other 
+#              time zone instead of UTC as time zone.
 subdaily2daily <-function(x, ...) UseMethod("subdaily2daily")
 
 
@@ -28,13 +57,17 @@ subdaily2daily <-function(x, ...) UseMethod("subdaily2daily")
 # Updates: 06-Dec-2019                                                         #
 #          27-May-2021                                                         #
 #          11-Oct-2022                                                         # 
-#          30-Jul-2023                                                         #
+#          30-Jul-2023 ; 03-Aug-2023                                           #
 ################################################################################
 subdaily2daily.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz, ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
+
+  # Automatic detection of 'tz'
+  #if (missing(tz)) tz <- ""
+  if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
   subdaily2daily.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, 
                      start=start, start.fmt=start.fmt, tz=tz, ...)
@@ -51,7 +84,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00
 #          06-Dec-2019 ; 18-Dec-2019                                           #
 #          27-May-2021                                                         #
 #          11-Oct-2022                                                         #
-#          30-Jul-2023 ; 31-Jul-2023                                           #
+#          30-Jul-2023 ; 31-Jul-2023 ; 03-Aug-2023                             #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                start.fmt= "%H:%M:%S", tz, ...) {
@@ -69,7 +102,8 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
     # Automatic detection of 'tz'
-    if (missing(tz)) tz <- ""
+    #if (missing(tz)) tz <- ""
+    if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
     # Transforming the original time into a POSIXct object
     time.old <- time(x)
@@ -91,10 +125,9 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
     time(x)  <- time.new
      
     # Making sure that the time serie is complete before aggregation
-    #if ( (format(start(x), "%H:%M:%S") != "00:00:00") | (format(end(x), "%H:%M:%S") != "00:00:00"))
-    st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
-    et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
-    x <- izoo2rzoo(x, from=st, to=et, tz=tz)
+    #st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
+    #et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
+    #x <- izoo2rzoo(x, from=st, to=et, tz=tz)
 
     # 'as.numeric' is necessary for being able to change the names to the output
     tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
@@ -146,7 +179,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
 #          23-Aug-2022 ; 11-Oct-2022                                           #
-#          25-May-2023 ; 30-Jul-2023                                           #
+#          25-May-2023 ; 30-Jul-2023 ; 03-Aug-2023                             #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -184,7 +217,8 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00
          stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'POSIXct', 'POSIXt'")
 
   # Automatic detection of 'tz'
-  if (missing(tz)) tz <- ""
+  #if (missing(tz)) tz <- ""
+  if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
@@ -232,23 +266,24 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
 #          25-May-2023                                                         #
-#          30-Jul-2023                                                         #
+#          30-Jul-2023 ; 03-Aug-2023                                           #
 ################################################################################
-subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
-                                   start.fmt= "%H:%M:%S", tz,
+subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0, 
+                                   start="00:00:00", start.fmt= "%H:%M:%S", tz,
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                   out.fmt="zoo",
+				                           out.fmt="zoo",
                                    verbose=TRUE,...) {
 
    # Automatic detection of 'tz'
-   if (missing(tz)) tz <- ""
+   #if (missing(tz)) tz <- ""
+   if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
    subdaily2daily.data.frame(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, 
                              start=start, start.fmt=start.fmt, tz=tz,
                              dates=dates, date.fmt=date.fmt,
-			                 out.fmt=out.fmt,
+			                       out.fmt=out.fmt,
                              verbose=verbose,...)
 
 } # 'subdaily2daily.matrix  ' END
