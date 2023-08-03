@@ -70,9 +70,9 @@ It is useful when the daily values start at a time different from \code{"00:00:0
 character indicating the format in which the time is provided in \code{start}, By default \code{date.fmt=\%H:\%M:\%S}. See \code{format} in \code{\link[base]{as.POSIXct}}.
 }
   \item{tz}{
-character, with the specification of the desired time zone yo be used. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+character, with the specification of the time zone used in both \code{x} and \code{start}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
 If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
-This argument can be used to force using the local time zone instead of UTC as time zone.
+This argument can be used to force using the local time zone or any other time zone instead of UTC as time zone.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each column of \code{x} (e.g., gauging station) \cr
