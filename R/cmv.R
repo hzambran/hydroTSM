@@ -43,6 +43,35 @@
 #                              the absolute amount of missing values in each temporal scale. 
 # 'dec'                     : integer indicating the amount of decimal places included in the output. 
 #                             It is only used when "out.type=='percentage'"
+# 'start'    : character, indicating the starting time used for aggregating sub-daily time 
+#              series into daily ones. 
+#              It MUST be provided in the format specified by \code{start.fmt}. \cr
+#              This value is used to define the time when a new day begins (e.g., for some 
+#              rain gauge stations). \cr
+#              -) All the values of \code{x} with a time attribute before \code{start} are
+#                 considered as belonging to the day before the one indicated in the time 
+#                 attribute of those values. \cr
+#              -) All the values of \code{x} with a time attribute equal to \code{start} 
+#                 are considered to be equal 
+#                 to \code{"00:00:00"} in the output zoo object. \cr
+#              -) All the values of \code{x} with a time attribute after \code{start} are 
+#                 considered as belonging to the same day as the one indicated in the time 
+#                 attribute of those values. \cr
+#              It is useful when the daily values start at a time different from
+#              \code{"00:00:00"}. Use with caution. See examples.
+# 'start.fmt': character indicating the format in which the time is provided in \code{start}.
+#              By default \code{date.fmt=\%H:\%M:\%S}. See \code{format} in 
+#              \code{\link[base]{as.POSIXct}}.
+# 'tz'       : character, with the specification of the time zone used in both 
+#              \code{x} and \code{start}. 
+#              System-specific (see time zones), but \code{""} is the current time zone,
+#              and \code{"GMT"} is UTC (Universal Time, Coordinated). 
+#              See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+#              If \code{tz} is missing (the default), it is automatically set to the
+#              time zone used in \code{time(x)}. \cr
+#              This argument can be used to force using the local time zone or any other 
+#              time zone instead of UTC as time zone.
+
 
 cmv <-function(x, ...) UseMethod("cmv")
 
@@ -53,12 +82,14 @@ cmv <-function(x, ...) UseMethod("cmv")
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates: 28-Jul-2023                                                         #
+# Updates: 28-Jul-2023 ; 03-Aug-2023                                           #
 ################################################################################
 cmv.default <- function(x, 
 	                      tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
 	                      out.type=c("percentage", "amount"),
-	                      dec=3, ...) {
+	                      dec=3, 
+                        start="00:00:00", start.fmt= "%H:%M:%S", tz,
+                        ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !")
@@ -81,17 +112,50 @@ cmv.default <- function(x,
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates: 28-Jul-2023                                                         #
+# Updates: 28-Jul-2023 ; 03-Aug-2023                                           #
 ################################################################################
 cmv.zoo <- function(x, 
-	                tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                out.type=c("percentage", "amount"),
-	                dec=3, ...) {
+	                  tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
+	                  out.type=c("percentage", "amount"),
+	                  dec=3,
+                    start="00:00:00", start.fmt= "%H:%M:%S", tz,
+                    ...) {
   # checking 'tscale'
   tscale <- match.arg(tscale)
 
   # checking 'out.type'
   out.type <- match.arg(out.type)
+
+  # checking 'dec'
+  if (  ( abs(dec) - round(dec) ) > 1e-5 ) 
+    stop("Invalid argument: 'dec' must be integer !")
+
+  # Automatic detection of 'tz'
+  #if (missing(tz)) tz <- ""
+  if (missing(tz)) tz <- format(time(x), "%Z")[1]
+
+  # Analysis of days different from 00:00 to 23:59 hrs
+    if ( start != "00:00:00" ) {
+      # Storing the original time
+      time.old <- time(x)
+
+      # Converting the new starting time provided by the user into a POSIXct object
+      start <- as.POSIXct(start, format=start.fmt, tz=tz)
+
+      # normal staring time for a day
+      nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
+
+      # time difference between the desired starting time 'strat' and the "normal"
+      # starting time 'nstart', [s]
+      delta <- difftime(start, nstart, units="secs")
+
+      # Computing teh time difference between 'start' and the "normal" starting time, [s]
+      #time.new <- as.POSIXct(time.old, tz=tz) - delta
+      time.new <- time.old - delta
+
+      # Changing the time in 'x' in 'delta' seconds
+      time(x)  <- time.new
+    } # IF end
 
   # Checking that the time frequency of 'x' is compatible with 'tscale'
   if ( tscale == "hourly") {
@@ -165,7 +229,7 @@ cmv.zoo <- function(x,
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates: 28-Jul-2023                                                         #
+# Updates: 28-Jul-2023 ; 03-Aug-2023                                           #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -182,6 +246,7 @@ cmv.zoo <- function(x,
 cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
 	                         out.type=c("percentage", "amount"),
 	                         dec=3,
+                           start="00:00:00", start.fmt= "%H:%M:%S", tz,
                            dates=1, 
                            date.fmt="%Y-%m-%d", ...) {
                                     
@@ -215,7 +280,7 @@ cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "
           }, error = function(msg){return(NA)}
           )
   
-  cmv.zoo(x=x, tscale=tscale, out.type=out.type, dec=dec)
+  cmv.zoo(x=x, tscale=tscale, out.type=out.type, dec=dec, start=start, start.fmt=start.fmt, tz=tz)
 
  } #'cmv.data.frame' END
 
@@ -226,16 +291,18 @@ cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates: 28-Jul-2023                                                         #
+# Updates: 28-Jul-2023 ; 03-Aug-2023                                           #
 ################################################################################
 cmv.matrix  <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
 	                      out.type=c("percentage", "amount"),
 	                      dec=3,
+                        start="00:00:00", start.fmt= "%H:%M:%S", tz,
                         dates=1, 
                         date.fmt="%Y-%m-%d", ...) {
 
    x <- as.data.frame(x)
    cmv.data.frame(x=x, tscale=tscale, out.type=out.type, dec=dec,
+                  start=start, start.fmt=start.fmt, tz=tz,
                   dates=dates, date.fmt=date.fmt)
 
 } # 'cmv.matrix  ' END
