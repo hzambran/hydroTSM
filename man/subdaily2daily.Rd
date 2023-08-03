@@ -146,17 +146,20 @@ x[na.index] <- NA
 
 ## Ex2: Computation of daily values, removing any missing value in 'x' and
 ##      considering that the new day starts at 08:00:00 local time
-( d2 <- subdaily2daily(x, FUN=sum, na.rm=TRUE, start="08:00:00") )
+( d2 <- subdaily2daily(x, FUN=mean, na.rm=TRUE, start="08:00:00") )
 
 ## Ex3: Computation of daily values, removing any missing value in 'x' and
-##      considering that the new day starts at 08:00:00 UTC
-( d3 <- subdaily2daily(x, FUN=sum, na.rm=TRUE, start="08:00:00", tz="UTC") )
+##      considering that the new day starts at 08:00:00, and forcing 
+#       UTC both for 'x' and 'start'
+( d3 <- subdaily2daily(x, FUN=mean, na.rm=TRUE, start="08:00:00", tz="UTC") )
 
 ######################
 ## Ex4: Compuation of daily values only when the percentage of NAs in each
 #       day is lower than a user-defined percentage (10% in this example).
 ( d4 <- subdaily2daily(x, FUN=mean, na.rm=TRUE, na.rm.max=0.1) )
 }
+
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{manip}
