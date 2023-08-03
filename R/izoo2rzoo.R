@@ -35,14 +35,15 @@ izoo2rzoo <-function(x, ...) UseMethod("izoo2rzoo")
 # Started: XX-XX-2009                                                          #
 # Updates: 23-Aug-2011                                                         #
 #          09-Oct-2022                                                         #
+#          03-Aug-2023                                                         #
 ################################################################################ 
 izoo2rzoo.default <- function(x, from= start(x), to= end(x), 
                               date.fmt, tstep, tz, ...) {
 
   # Checking that the user provied a valid class for 'x'   
   valid.class <- c("xts", "zoo")    
-  if (length(which(!is.na(match(class(x), valid.class )))) <= 0)  
-     stop("Invalid argument: 'class(x)' must be in c('xts', 'zoo')")
+  if ( !is.zoo(x) )  
+     stop("Invalid argument: 'class(x)' must be 'zoo' !")
 
   izoo2rzoo.zoo(x=x, from=from, to=to, date.fmt=date.fmt, tstep=tstep, tz=tz, ...)
 
@@ -59,13 +60,13 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 #          29-May-2013                                                         #
 #          17-Jun-2022 ; 20-Jun-2022 ; 08-Oct-2022 ; 09-Oct-2022 ; 11-Oct-2022 #
 #          12-Oct-2022                                                         #
-#          25-May-2023                                                         #
+#          25-May-2023 ; 03-Aug-2023                                           #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
                           date.fmt, tstep, tz, ... ) {
 
-  if (!is.zoo(x)) stop("Invalid argument: 'x' must be of class 'zoo'")
+  if (!is.zoo(x)) stop("Invalid argument: 'x' must be of class 'zoo' !")
 
   # sampling frequency of 'x'           
   x.freq <- sfreq(x)
@@ -95,7 +96,8 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   } # IF end
 
   # Automatic detection of 'tz'
-  if (missing(tz)) tz <- ""
+  #if (missing(tz)) tz <- ""
+  if (missing(tz)) tz <- format(time(x), "%Z")[1]
       
   ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
            grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |
