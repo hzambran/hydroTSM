@@ -22,19 +22,19 @@ Generic function for transforming a Sub-DAILY time series into a DAILY one
 \usage{
 subdaily2daily(x, ...)
 
-\method{subdaily2daily}{default}(x, FUN, na.rm = TRUE, start="00:00:00", 
-                       start.fmt= "\%H:\%M:\%S", tz, ...)
+\method{subdaily2daily}{default}(x, FUN, na.rm = TRUE, na.rm.max=0,
+                       start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
 
-\method{subdaily2daily}{zoo}(x, FUN, na.rm = TRUE, start="00:00:00", 
-                       start.fmt= "\%H:\%M:\%S", tz, ...)
+\method{subdaily2daily}{zoo}(x, FUN, na.rm = TRUE, na.rm.max=0,
+                       start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
 
-\method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, start="00:00:00", 
-           start.fmt= "\%H:\%M:\%S", tz,
+\method{subdaily2daily}{data.frame}(x, FUN, na.rm = TRUE, na.rm.max=0,
+           start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 
-\method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, start="00:00:00", 
-           start.fmt= "\%H:\%M:\%S", tz,
+\method{subdaily2daily}{matrix}(x, FUN, na.rm = TRUE, na.rm.max=0,
+           start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 }
