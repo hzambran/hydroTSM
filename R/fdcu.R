@@ -1,7 +1,7 @@
 # File fdcu.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2008-2017 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2023 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -48,7 +48,7 @@ fdcu <-function(x, lband, uband, ...) UseMethod("fdcu")
 fdcu.default <- function (x,
                           lband,
                           uband,
-                          sim,
+                          sim=NULL,
                           lQ.thr=0.7,
                           hQ.thr=0.2,
                           plot=TRUE,
@@ -80,13 +80,13 @@ fdcu.default <- function (x,
 
 
      #checking that the user provided 'x'
-     if (missing(x))  stop("Missing argument: 'x' must be provided")
+     if (missing(x))  stop("Missing argument: 'x' must be provided !")
 
      #checking that the user provided 'lband'
-     if (missing(lband))  stop("Missing argument: 'lband' must be provided")
+     if (missing(lband))  stop("Missing argument: 'lband' must be provided !")
 
      #checking that the user provided 'uband'
-     if (missing(uband))  stop("Missing argument: 'uband' must be provided")
+     if (missing(uband))  stop("Missing argument: 'uband' must be provided !")
 
      # Function for finding the position of 'Q' within 'x'
      Qposition <- function(x, Q) {
@@ -124,7 +124,7 @@ fdcu.default <- function (x,
         if (verbose) message("[Warning: all 'uband' equal to zero will not be plotted]" )
        } # IF end
 
-       if (!missing(sim)) {
+       if (!is.null(sim)) {
             if (length(sim.zero.index) > 0 ) {
             sim <- sim[-sim.zero.index]
             if (verbose) message("[Warning: all 'sim' equal to zero will not be plotted]" )
@@ -138,12 +138,12 @@ fdcu.default <- function (x,
 	 x.sort     <- sort(x, decreasing=TRUE)
 	 lband.sort <- sort(lband, decreasing=TRUE)
 	 uband.sort <- sort(uband, decreasing=TRUE)
-     if (!missing(sim)) { sim.sort <- sort(sim, decreasing=TRUE) }
+     if (!is.null(sim)) { sim.sort <- sort(sim, decreasing=TRUE) }
 
 	 fdc.x     <- fdc(x.sort, log=log, plot=FALSE,...)
 	 fdc.lband <- fdc(lband.sort, log=log, plot=FALSE)
 	 fdc.uband <- fdc(uband.sort, log=log, plot=FALSE)
-     if (!missing(sim)) { fdc.sim <- fdc(sim.sort, log=log, plot=FALSE) }
+     if (!is.null(sim)) { fdc.sim <- fdc(sim.sort, log=log, plot=FALSE) }
 
 	 #na.index <- which(is.na(x))
 
@@ -183,7 +183,7 @@ fdcu.default <- function (x,
          points(fdc.x, x.sort, cex=cex, col=col[1], pch=pch[1])
 
          # Ploting the SIMulated values over the polygon
-         if (!missing(sim)) {
+         if (!is.null(sim)) {
            lines(fdc.sim, sim.sort, cex=cex, col=col[2], pch=pch[2], lwd=lwd[2], lty=lty[2])
            points(fdc.sim, sim.sort, cex=cex, col=col[2], pch=pch[2])
          } # IF end
@@ -212,7 +212,7 @@ fdcu.default <- function (x,
              if (leg.pos=="auto")
                ifelse (log=="y", leg.pos.x <- "bottomleft", leg.pos.x <- "topright")
 
-             if (!missing(sim)) { #Legend with the OBS + simulations + 95PPU
+             if (!is.null(sim)) { #Legend with the OBS + simulations + 95PPU
               legend(x=leg.pos.x, legend=leg.txt,  #inset=0.03,
                      bty="n", cex =leg.cex, col=c(col[1], col[2], bands.col), 
                      lwd=c(lwd[1], lwd[2], 0), lty=c(lty[1], lty[2], 0), 
@@ -273,7 +273,7 @@ fdcu.default <- function (x,
 fdcu.matrix <- function (x,
                          lband,
                          uband,
-                         sim,
+                         sim=NULL,
                          lQ.thr=0.7,
                          hQ.thr=0.2,
                          plot=TRUE,
@@ -305,6 +305,19 @@ fdcu.matrix <- function (x,
                          ...) {
   n <- ncol(x)
 
+  if ( missing(ylim) ) {
+    ylim <- range(lband, uband, na.rm=TRUE)
+  } else {
+         # In case 'ylim' is 'NA'
+         if ( is.na(ylim[1]) ) { ylim[1] <- range(x, na.rm=TRUE)[1] }
+         if ( is.na(ylim[2]) ) { ylim[2] <- range(x, na.rm=TRUE)[2] }
+    } # ELSE end
+
+  # Logarithmic scale can NOT start in zero
+  if (log=="y") { ylim <- c(0.01, ylim[2]) }
+
+
+
   j <- 1 # starting column for the analysis
 
   if (verbose) message( paste("Column: ", format(j, width=10, justify="left"),
@@ -314,11 +327,11 @@ fdcu.matrix <- function (x,
                       "%", sep="") )
 
   # Computing and plotting the Flow duration Curve for the first column
-  if (missing(sim)) {
+  if (is.null(sim)) {
 
       sim.exists <- FALSE
       fdcu(x=x[,1], lband=lband[,1], uband=uband[,1], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
-           plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[1,], pch=pch[1,],
+           plot=TRUE, main=main, xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, xat=xat, log=log, col=col[1,], pch=pch[1,],
            lwd=lwd[1,], lty=lty[1,], cex=cex[1], cex.axis=cex.axis, cex.lab=cex.lab, 
            verbose, leg.txt=NULL, leg.cex=leg.cex, leg.pos=leg.pos, thr.shw=thr.shw, border=border[1],
            bands.col= bands.col[1], bands.density=bands.density[1], bands.angle=bands.angle[1], new=TRUE, ...)
@@ -326,7 +339,7 @@ fdcu.matrix <- function (x,
 
     sim.exists <- TRUE
     fdcu(x=x[,1], lband=lband[,1], uband=uband[,1], sim=sim[,1], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
-           plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[1,], pch=pch[1,],
+           plot=TRUE, main=main, xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, xat=xat, log=log, col=col[1,], pch=pch[1,],
            lwd=lwd[1,], lty=lty[1,], cex=cex[1], cex.axis=cex.axis, cex.lab=cex.lab,
            verbose, leg.txt=NULL, leg.cex=leg.cex, leg.pos=leg.pos, thr.shw=thr.shw, border=border[1],
            bands.col= bands.col[1], bands.density=bands.density[1], bands.angle=bands.angle[1], new=TRUE, ...)
@@ -344,13 +357,13 @@ fdcu.matrix <- function (x,
             if (!sim.exists) {
               # Computing and plotting the Flow duration Curve for the first vector
               fdcu(x=x[,j], lband=lband[,j], uband=uband[,j], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
-                   plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[j,], pch=pch[j,],
+                   plot=TRUE, main=main, xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, xat=xat, log=log, col=col[j,], pch=pch[j,],
                    lwd=lwd[j,], lty=lty[j,], cex=cex[j], cex.axis=cex.axis, cex.lab=cex.lab, 
                    verbose, leg.txt=NULL, leg.cex=leg.cex, leg.pos=leg.pos, thr.shw=FALSE, border=border[j],
                    bands.col= bands.col[j], bands.density=bands.density[j], bands.angle=bands.angle[j], new=FALSE, ...)
             } else {
               fdcu(x=x[,j], lband=lband[,j], uband=uband[,j], sim=sim[,j], lQ.thr=lQ.thr, hQ.thr=hQ.thr,
-                   plot=TRUE, main=main, xlab= xlab, ylab=ylab, yat=yat, xat=xat, log=log, col=col[j,], pch=pch[j,],
+                   plot=TRUE, main=main, xlab= xlab, ylab=ylab, ylim=ylim, yat=yat, xat=xat, log=log, col=col[j,], pch=pch[j,],
                    lwd=lwd[j,], lty=lty[j,], cex=cex[j], cex.axis=cex.axis, cex.lab=cex.lab, 
                    verbose, leg.txt=NULL, leg.cex=leg.cex, leg.pos=leg.pos, thr.shw=FALSE, border=border[j],
                    bands.col= bands.col[j], bands.density=bands.density[j], bands.angle=bands.angle[j], new=FALSE, ...)
@@ -400,7 +413,7 @@ fdcu.matrix <- function (x,
         if (leg.pos=="auto")
           ifelse (log=="y", leg.pos.x <- "bottomleft", leg.pos.x <- "topright")
 
-        if (!missing(sim)) { #Legend with the OBS + SIMs + 95PPU
+        if (!is.null(sim)) { #Legend with the OBS + SIMs + 95PPU
           legend(x=leg.pos.x, legend=leg.txt,  inset=0.01,
                  bty="n", cex=leg.cex, col=c(col[1,1], col[,2], bands.col), 
                  lwd=c(3*lwd[1,1], 3*lwd[,2], 0), lty=c(lty[1,1], lty[,2], 0),
@@ -421,7 +434,7 @@ fdcu.matrix <- function (x,
 fdcu.data.frame <- function(x,
                          lband,
                          uband,
-                         sim,
+                         sim=NULL,
                          lQ.thr=0.7,
                          hQ.thr=0.2,
                          plot=TRUE,
@@ -454,6 +467,18 @@ fdcu.data.frame <- function(x,
 
    x <- as.data.frame(x)
 
+   if ( missing(ylim) ) {
+    ylim <- range(lband, uband, na.rm=TRUE)
+   } else {
+       # In case 'ylim' is 'NA'
+       if ( is.na(ylim[1]) ) { ylim[1] <- range(x, na.rm=TRUE)[1] }
+       if ( is.na(ylim[2]) ) { ylim[2] <- range(x, na.rm=TRUE)[2] }
+     } # ELSE end
+
+   # Logarithmic scale can NOT start in zero
+   if (log=="y") { ylim <- c(0.01, ylim[2]) }
+
+
    NextMethod("fdcu", x,
                 lband,
                 uband,
@@ -485,3 +510,125 @@ fdcu.data.frame <- function(x,
                 ...)
 
 } # 'fdcu.data.frame' END
+
+################################################################################
+# fdc.zoo: Computation and/or Plot of Multiple Flow Duration Curves,           #
+#             mainly for comparison                                            #
+################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                         #
+# Started: 03-Aug-2023                                                         #
+# Updates:                                                                     #
+################################################################################
+fdcu.zoo <- function (x,
+                      lband,
+                      uband,
+                      sim=NULL,
+                      lQ.thr=0.7,
+                      hQ.thr=0.2,
+                      plot=TRUE,
+                      log="y",
+                      main="Flow Duration Curve",
+                      xlab="% Time flow equalled or exceeded",
+                      ylab="Q, [m3/s]",
+                      ylim,
+                      yat=c(0.01, 0.1, 1), 
+                      xat=c(0.01, 0.025, 0.05),
+                      col=matrix(c(rep("black", NCOL(x)), 
+                                 palette("default")[2:(NCOL(x)+1)]), byrow=FALSE, ncol=2),
+                      pch=matrix(rep(c(1, 15), NCOL(x)), byrow=TRUE, ncol=2),
+                      lwd=matrix(rep(c(1, 0.8), NCOL(x)), byrow=TRUE, ncol=2),
+                      lty=matrix(rep(c(1, 3), NCOL(x)), byrow=TRUE, ncol=2),
+                      cex=rep(0.1, NCOL(x)),
+                      cex.axis=1.2,
+                      cex.lab=1.2,
+                      leg.txt=c("OBS", colnames(x), "95PPU"),
+                      leg.cex=1,
+                      leg.pos="auto",
+                      verbose= TRUE,
+                      thr.shw=TRUE,
+                      border=rep(NA, NCOL(x)),
+                      bands.col=rep("lightcyan", NCOL(x)),
+                      bands.density=rep(NULL, NCOL(x)),
+                      bands.angle=rep(45, NCOL(x)),
+                      new=TRUE,
+                      ...) {
+
+  x <- coredata(x)
+
+  if ( missing(ylim) ) {
+    ylim <- range(lband, uband, na.rm=TRUE)
+  } else {
+         # In case 'ylim' is 'NA'
+         if ( is.na(ylim[1]) ) { ylim[1] <- range(x, na.rm=TRUE)[1] }
+         if ( is.na(ylim[2]) ) { ylim[2] <- range(x, na.rm=TRUE)[2] }
+    } # ELSE end
+
+  # Logarithmic scale can NOT start in zero
+  if (log=="y") { ylim <- c(0.01, ylim[2]) }
+
+
+  if ( is.matrix(x) | is.data.frame(x) ) {  
+    fdcu.matrix(x,
+                lband,
+                uband,
+                sim,
+                lQ.thr=lQ.thr,
+                hQ.thr=hQ.thr,
+                plot=plot,
+                log=log,
+                main=main,
+                xlab=xlab,
+                ylab=ylab,
+                ylim=ylim,
+                yat=yat,
+                xat=xat,
+                col=col,
+                pch=pch,
+                lty=lty,
+                cex=cex,
+                cex.axis=cex.axis, 
+                cex.lab=cex.lab,
+                leg.txt=leg.txt,
+                leg.cex=leg.cex, 
+                leg.pos=leg.pos,
+                verbose= verbose,
+                border=border,
+                bands.col=bands.col,
+                bands.density=bands.density,
+                bands.angle=bands.angle,
+                new=new,
+                ...)
+  } else fdc.default(x,
+                     lband,
+                     uband,
+                     sim,
+                     lQ.thr=lQ.thr,
+                     hQ.thr=hQ.thr,
+                     plot=plot,
+                     log=log,
+                     main=main,
+                     xlab=xlab,
+                     ylab=ylab,
+                     ylim=ylim,
+                     yat=yat,
+                     xat=xat,
+                     col=col,
+                     pch=pch,
+                     lty=lty,
+                     cex=cex,
+                     cex.axis=cex.axis, 
+                     cex.lab=cex.lab,
+                     leg.txt=leg.txt,
+                     leg.cex=leg.cex, 
+                     leg.pos=leg.pos,
+                     verbose= verbose,
+                     border=border,
+                     bands.col=bands.col,
+                     bands.density=bands.density,
+                     bands.angle=bands.angle,
+                     new=new,
+                     ...)
+  
+  
+} # 'fdc.zoo' END
+
