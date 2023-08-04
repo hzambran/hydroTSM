@@ -41,7 +41,7 @@ monthly2annual(x, ...)
 \method{daily2annual}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 
-\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", 
+\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, na.rm.max=0, out.fmt="\%Y", 
         dates=1, date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -163,7 +163,7 @@ x[na.index] <- NA
 ( a2 <- daily2annual(x, FUN=sum, na.rm=TRUE, na.rm.max=0.1) )
 
 # Verifying that the second and third month of 'x' had 10% or more of missing values
-cmv(x, tscale="year")
+cmv(x, tscale="annual")
 
 
 ######################
