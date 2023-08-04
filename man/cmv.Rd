@@ -24,20 +24,24 @@ cmv(x, ...)
 
 \method{cmv}{default}(x, tscale=c("hourly", "daily", "weekly", 
                       "monthly", "quarterly", "seasonal", "annual"),
-                      out.type=c("percentage", "amount"), dec=3, ...)
+                      out.type=c("percentage", "amount"), dec=3, 
+                      start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
 
 \method{cmv}{zoo}(x, tscale=c("hourly", "daily", "weekly", 
                   "monthly", "quarterly", "seasonal", "annual"),
-                  out.type=c("percentage", "amount"), dec=3, ...)
+                  out.type=c("percentage", "amount"), dec=3, 
+                  start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
 
 \method{cmv}{data.frame}(x, tscale=c("hourly", "daily", "weekly", 
                          "monthly", "quarterly", "seasonal", "annual"),
                          out.type=c("percentage", "amount"), dec=3, 
+                         start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, 
                          dates=1, date.fmt="\%Y-\%m-\%d", ...)
 
 \method{cmv}{matrix}(x, tscale=c("hourly", "daily", "weekly", 
                      "monthly", "quarterly", "seasonal", "annual"),
-                     out.type=c("percentage", "amount"), dec=3,
+                     out.type=c("percentage", "amount"), dec=3, 
+                     start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
                      dates=1, date.fmt="\%Y-\%m-\%d", ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -61,6 +65,23 @@ If \kbd{annual}: the percentage/amount of missing values will be given for each 
 \item{dec}{
 integer indicating the amount of decimal places included in the output. \cr
 It is only used when \code{out.type=='percentage'}.
+}
+  \item{start}{
+character, indicating the starting time used for aggregating sub-daily time series into daily ones. It MUST be provided in the format specified by \code{start.fmt}. \cr
+This value is used to define the time when a new day begins (e.g., for some rain gauge stations). \cr
+-) All the values of \code{x} with a time attribute before \code{start} are considered as belonging to the day before the one indicated in the time attribute of those values. \cr
+-) All the values of \code{x} with a time attribute equal to \code{start} are considered to be equal to \code{"00:00:00"} in the output zoo object. \cr
+-) All the values of \code{x} with a time attribute after \code{start} are considered as belonging to the same day as the one indicated in the time attribute of those values. \cr
+
+It is useful when the daily values start at a time different from \code{"00:00:00"}. Use with caution. See examples.
+}
+  \item{start.fmt}{
+character indicating the format in which the time is provided in \code{start}, By default \code{date.fmt=\%H:\%M:\%S}. See \code{format} in \code{\link[base]{as.POSIXct}}.
+}
+  \item{tz}{
+character, with the specification of the time zone used in both \code{x} and \code{start}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
+This argument can be used to force using the local time zone or any other time zone instead of UTC as time zone.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each column of \code{x} (e.g., gauging station). \cr
