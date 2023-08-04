@@ -9,6 +9,7 @@
 \alias{fdcu.data.frame}
 \alias{fdcu.default}
 \alias{fdcu.matrix}
+\alias{fdcu.zoo}
 \alias{fdcu}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
@@ -20,7 +21,7 @@ Computes and plots the Flow Duration Curve (\acronym{FDC}) for the streamflows g
 \usage{
 fdcu(x, lband, uband, ...)
 
-\method{fdcu}{default}(x, lband, uband, sim, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
+\method{fdcu}{default}(x, lband, uband, sim=NULL, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
      ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
      col=c("black", "red"), pch=c(1, 15), lwd=c(1, 0.8), lty=c(1, 3), cex=0.2, 
@@ -28,7 +29,7 @@ fdcu(x, lband, uband, ...)
      leg.cex=1, leg.pos="auto", verbose= TRUE, thr.shw=TRUE, border=NA, 
      bands.col="lightcyan", bands.density=NULL, bands.angle=45, new=TRUE, ...)
 
-\method{fdcu}{matrix}(x, lband, uband, sim, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
+\method{fdcu}{matrix}(x, lband, uband, sim=NULL, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
      ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
      col=matrix(c(rep("black", ncol(x)), 
@@ -42,7 +43,7 @@ fdcu(x, lband, uband, ...)
      bands.col=rep("lightcyan", ncol(x)), bands.density=rep(NULL, ncol(x)), 
      bands.angle=rep(45, ncol(x)), new=TRUE, ...)
 
-\method{fdcu}{data.frame}(x, lband, uband, sim, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
+\method{fdcu}{data.frame}(x, lband, uband, sim=NULL, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
      ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
      col=matrix(c(rep("black", ncol(x)), 
@@ -55,6 +56,20 @@ fdcu(x, lband, uband, ...)
      verbose= TRUE, thr.shw=TRUE, border=rep(NA, ncol(x)), 
      bands.col=rep("lightcyan", ncol(x)), bands.density=rep(NULL, ncol(x)), 
      bands.angle=rep(45, ncol(x)), new=TRUE, ...)
+
+%% \method{fdcu}{zoo}(x, lband, uband, sim=NULL, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
+%%      main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
+%%      ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
+%%      col=matrix(c(rep("black", NCOL(x)), 
+%%      palette("default")[2:(NCOL(x)+1)]), byrow=FALSE, ncol=2),
+%%      pch=matrix(rep(c(1, 15), NCOL(x)), byrow=TRUE, ncol=2),
+%%      lwd=matrix(rep(c(1, 0.8), NCOL(x)), byrow=TRUE, ncol=2),
+%%      lty=matrix(rep(c(1, 3), NCOL(x)), byrow=TRUE, ncol=2),                        
+%%      cex=rep(0.1, NCOL(x)), cex.axis=1.2, cex.lab=1.2,
+%%      leg.txt=c("OBS", colnames(x), "95PPU"), leg.cex=1, leg.pos="auto", 
+%%      verbose= TRUE, thr.shw=TRUE, border=rep(NA, NCOL(x)), 
+%%      bands.col=rep("lightcyan", NCOL(x)), bands.density=rep(NULL, NCOL(x)), 
+%%      bands.angle=rep(45, NCOL(x)), new=TRUE, ...)
 
 }
 %- maybe also 'usage' for other objects documented here.

@@ -340,7 +340,7 @@ fdc.data.frame <- function(x,
 
 
 ################################################################################
-# fdc.matrix: Computation and/or Plot of Multiple Flow Duration Curves,        #
+# fdc.zoo: Computation and/or Plot of Multiple Flow Duration Curves,           #
 #             mainly for comparison                                            #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
