@@ -3,7 +3,7 @@ citHeader("To cite hydroTSM in publications use:")
 year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
 vers <- paste("R package version", meta$Version)
 
-citEntry(entry = "manual",
+bibentry(bibtype = "Manual",
 	title = "{hydroTSM}: Time Series Management, Analysis and Interpolation for Hydrological Modelling",
 	author = person("Mauricio Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X")),
 	year = year,
