@@ -511,124 +511,124 @@ fdcu.data.frame <- function(x,
 
 } # 'fdcu.data.frame' END
 
-################################################################################
-# fdc.zoo: Computation and/or Plot of Multiple Flow Duration Curves,           #
-#             mainly for comparison                                            #
-################################################################################
-# Author : Mauricio Zambrano-Bigiarini                                         #
-# Started: 03-Aug-2023                                                         #
-# Updates:                                                                     #
-################################################################################
-fdcu.zoo <- function (x,
-                      lband,
-                      uband,
-                      sim=NULL,
-                      lQ.thr=0.7,
-                      hQ.thr=0.2,
-                      plot=TRUE,
-                      log="y",
-                      main="Flow Duration Curve",
-                      xlab="% Time flow equalled or exceeded",
-                      ylab="Q, [m3/s]",
-                      ylim,
-                      yat=c(0.01, 0.1, 1), 
-                      xat=c(0.01, 0.025, 0.05),
-                      col=matrix(c(rep("black", NCOL(x)), 
-                                 palette("default")[2:(NCOL(x)+1)]), byrow=FALSE, ncol=2),
-                      pch=matrix(rep(c(1, 15), NCOL(x)), byrow=TRUE, ncol=2),
-                      lwd=matrix(rep(c(1, 0.8), NCOL(x)), byrow=TRUE, ncol=2),
-                      lty=matrix(rep(c(1, 3), NCOL(x)), byrow=TRUE, ncol=2),
-                      cex=rep(0.1, NCOL(x)),
-                      cex.axis=1.2,
-                      cex.lab=1.2,
-                      leg.txt=c("OBS", colnames(x), "95PPU"),
-                      leg.cex=1,
-                      leg.pos="auto",
-                      verbose= TRUE,
-                      thr.shw=TRUE,
-                      border=rep(NA, NCOL(x)),
-                      bands.col=rep("lightcyan", NCOL(x)),
-                      bands.density=rep(NULL, NCOL(x)),
-                      bands.angle=rep(45, NCOL(x)),
-                      new=TRUE,
-                      ...) {
+# ################################################################################
+# # fdc.zoo: Computation and/or Plot of Multiple Flow Duration Curves,           #
+# #             mainly for comparison                                            #
+# ################################################################################
+# # Author : Mauricio Zambrano-Bigiarini                                         #
+# # Started: 03-Aug-2023                                                         #
+# # Updates:                                                                     #
+# ################################################################################
+# fdcu.zoo <- function (x,
+#                       lband,
+#                       uband,
+#                       sim=NULL,
+#                       lQ.thr=0.7,
+#                       hQ.thr=0.2,
+#                       plot=TRUE,
+#                       log="y",
+#                       main="Flow Duration Curve",
+#                       xlab="% Time flow equalled or exceeded",
+#                       ylab="Q, [m3/s]",
+#                       ylim,
+#                       yat=c(0.01, 0.1, 1), 
+#                       xat=c(0.01, 0.025, 0.05),
+#                       col=matrix(c(rep("black", NCOL(x)), 
+#                                  palette("default")[2:(NCOL(x)+1)]), byrow=FALSE, ncol=2),
+#                       pch=matrix(rep(c(1, 15), NCOL(x)), byrow=TRUE, ncol=2),
+#                       lwd=matrix(rep(c(1, 0.8), NCOL(x)), byrow=TRUE, ncol=2),
+#                       lty=matrix(rep(c(1, 3), NCOL(x)), byrow=TRUE, ncol=2),
+#                       cex=rep(0.1, NCOL(x)),
+#                       cex.axis=1.2,
+#                       cex.lab=1.2,
+#                       leg.txt=c("OBS", colnames(x), "95PPU"),
+#                       leg.cex=1,
+#                       leg.pos="auto",
+#                       verbose= TRUE,
+#                       thr.shw=TRUE,
+#                       border=rep(NA, NCOL(x)),
+#                       bands.col=rep("lightcyan", NCOL(x)),
+#                       bands.density=rep(NULL, NCOL(x)),
+#                       bands.angle=rep(45, NCOL(x)),
+#                       new=TRUE,
+#                       ...) {
 
-  x <- coredata(x)
+#   x <- coredata(x)
 
-  if ( missing(ylim) ) {
-    ylim <- range(lband, uband, na.rm=TRUE)
-  } else {
-         # In case 'ylim' is 'NA'
-         if ( is.na(ylim[1]) ) { ylim[1] <- range(x, na.rm=TRUE)[1] }
-         if ( is.na(ylim[2]) ) { ylim[2] <- range(x, na.rm=TRUE)[2] }
-    } # ELSE end
+#   if ( missing(ylim) ) {
+#     ylim <- range(lband, uband, na.rm=TRUE)
+#   } else {
+#          # In case 'ylim' is 'NA'
+#          if ( is.na(ylim[1]) ) { ylim[1] <- range(x, na.rm=TRUE)[1] }
+#          if ( is.na(ylim[2]) ) { ylim[2] <- range(x, na.rm=TRUE)[2] }
+#     } # ELSE end
 
-  # Logarithmic scale can NOT start in zero
-  if (log=="y") { ylim <- c(0.01, ylim[2]) }
+#   # Logarithmic scale can NOT start in zero
+#   if (log=="y") { ylim <- c(0.01, ylim[2]) }
 
 
-  if ( is.matrix(x) | is.data.frame(x) ) {  
-    fdcu.matrix(x,
-                lband,
-                uband,
-                sim,
-                lQ.thr=lQ.thr,
-                hQ.thr=hQ.thr,
-                plot=plot,
-                log=log,
-                main=main,
-                xlab=xlab,
-                ylab=ylab,
-                ylim=ylim,
-                yat=yat,
-                xat=xat,
-                col=col,
-                pch=pch,
-                lty=lty,
-                cex=cex,
-                cex.axis=cex.axis, 
-                cex.lab=cex.lab,
-                leg.txt=leg.txt,
-                leg.cex=leg.cex, 
-                leg.pos=leg.pos,
-                verbose= verbose,
-                border=border,
-                bands.col=bands.col,
-                bands.density=bands.density,
-                bands.angle=bands.angle,
-                new=new,
-                ...)
-  } else fdc.default(x,
-                     lband,
-                     uband,
-                     sim,
-                     lQ.thr=lQ.thr,
-                     hQ.thr=hQ.thr,
-                     plot=plot,
-                     log=log,
-                     main=main,
-                     xlab=xlab,
-                     ylab=ylab,
-                     ylim=ylim,
-                     yat=yat,
-                     xat=xat,
-                     col=col,
-                     pch=pch,
-                     lty=lty,
-                     cex=cex,
-                     cex.axis=cex.axis, 
-                     cex.lab=cex.lab,
-                     leg.txt=leg.txt,
-                     leg.cex=leg.cex, 
-                     leg.pos=leg.pos,
-                     verbose= verbose,
-                     border=border,
-                     bands.col=bands.col,
-                     bands.density=bands.density,
-                     bands.angle=bands.angle,
-                     new=new,
-                     ...)
+#   if ( is.matrix(x) | is.data.frame(x) ) {  
+#     fdcu.matrix(x,
+#                 lband,
+#                 uband,
+#                 sim,
+#                 lQ.thr=lQ.thr,
+#                 hQ.thr=hQ.thr,
+#                 plot=plot,
+#                 log=log,
+#                 main=main,
+#                 xlab=xlab,
+#                 ylab=ylab,
+#                 ylim=ylim,
+#                 yat=yat,
+#                 xat=xat,
+#                 col=col,
+#                 pch=pch,
+#                 lty=lty,
+#                 cex=cex,
+#                 cex.axis=cex.axis, 
+#                 cex.lab=cex.lab,
+#                 leg.txt=leg.txt,
+#                 leg.cex=leg.cex, 
+#                 leg.pos=leg.pos,
+#                 verbose= verbose,
+#                 border=border,
+#                 bands.col=bands.col,
+#                 bands.density=bands.density,
+#                 bands.angle=bands.angle,
+#                 new=new,
+#                 ...)
+#   } else fdc.default(x,
+#                      lband,
+#                      uband,
+#                      sim,
+#                      lQ.thr=lQ.thr,
+#                      hQ.thr=hQ.thr,
+#                      plot=plot,
+#                      log=log,
+#                      main=main,
+#                      xlab=xlab,
+#                      ylab=ylab,
+#                      ylim=ylim,
+#                      yat=yat,
+#                      xat=xat,
+#                      col=col,
+#                      pch=pch,
+#                      lty=lty,
+#                      cex=cex,
+#                      cex.axis=cex.axis, 
+#                      cex.lab=cex.lab,
+#                      leg.txt=leg.txt,
+#                      leg.cex=leg.cex, 
+#                      leg.pos=leg.pos,
+#                      verbose= verbose,
+#                      border=border,
+#                      bands.col=bands.col,
+#                      bands.density=bands.density,
+#                      bands.angle=bands.angle,
+#                      new=new,
+#                      ...)
   
   
-} # 'fdc.zoo' END
+# } # 'fdc.zoo' END
 
