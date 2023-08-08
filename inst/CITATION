@@ -5,7 +5,7 @@ vers <- paste("R package version", meta$Version)
 
 citEntry(entry = "manual",
 	title = "{hydroTSM}: Time Series Management, Analysis and Interpolation for Hydrological Modelling",
-	author = personList(person("Zambrano-Bigiarini, Mauricio", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X"))),
+	author = person("Mauricio Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X")),
 	year = year,
 	note = paste(vers, ". doi:10.5281/zenodo.83964"),
 	url = "https://github.com/hzambran/hydroTSM",
