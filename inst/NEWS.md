@@ -4,13 +4,15 @@ NEWS/ChangeLog for hydroTSM
 # Changes in version 0.7-0 (under-development)
 
 ## New functions
-        o 'subhourly2hourly' for aggregating sub-hourly values into hourly ones.
+        o 'subhourly2hourly'  : for aggregating sub-hourly values into hourly ones.
 
-        o 'subhourly2nminutes' for aggregating sub-hourly values into n-minutes ones.
+        o 'subhourly2nminutes': for aggregating sub-hourly values into n-minutes ones.
 
-        o 'monthlycurve' to plot monthly variation of streamflow (and optionally precipitation) values, with uncertainty bound around mean values.
+        o 'daily2weekly'      : for aggregating (sub)daily values into weekly ones.
 
-        o 'cmv' to compute the percentage/amounth of missing values in a zoo object, using a user-defined temporal scale.
+        o 'monthlycurve'      : for plotting monthly variation of streamflow (and optionally precipitation) values, with uncertainty bound around mean values.
+
+        o 'cmv'               : to compute the percentage/amounth of missing values in a zoo object, using a user-defined temporal scale.
 
 ## New features
         o 'hip'         :   -) new argument 'tz' to allow the user to specify the desired time zone. 
