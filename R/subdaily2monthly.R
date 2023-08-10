@@ -33,8 +33,8 @@ subdaily2monthly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !")
 
-  # Automatic detection of 'tz'
-  if (missing(tz)) tz <- ""
+  # if (missing(tz)) tz <- ""
+    if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
   subdaily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
 
@@ -79,34 +79,46 @@ subdaily2monthly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
     # Automatic detection of 'tz'
-    if (missing(tz)) tz <- ""
+    #if (missing(tz)) tz <- ""
+    if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
-    # Transforming the original time into a POSIXct object
-    time.old <- time(x)
+    # Analysis of days different from 00:00 to 23:59 hrs
+    if ( start != "00:00:00" ) {
+      # Storing the original time
+      time.old <- time(x)
 
-    # Converting the new staring time provided by the user into a POSIXct object
-    start <- as.POSIXct(start, format=start.fmt, tz=tz)
+      # Converting the new starting time provided by the user into a POSIXct object
+      start <- as.POSIXct(start, format=start.fmt, tz=tz)
 
-    # normal staring time for a day
-    nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
+      # normal staring time for a day
+      nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
 
-    # time difference between the desired starting time 'strat' and the "normal"
-    # starting time 'nstart', [s]
-    delta <- difftime(start, nstart, units="secs")
+      # time difference between the desired starting time 'strat' and the "normal"
+      # starting time 'nstart', [s]
+      delta <- difftime(start, nstart, units="secs")
 
-    # Computing teh time difference between 'start' and the "normal" starting time, [s]
-    time.new <- as.POSIXct(time.old, tz=tz) - delta
+      # Computing teh time difference between 'start' and the "normal" starting time, [s]
+      #time.new <- as.POSIXct(time.old, tz=tz) - delta
+      time.new <- time.old - delta
 
-    # Changing the time in 'x' in 'delta' seconds
-    time(x)  <- time.new
+      # Changing the time in 'x' in 'delta' seconds
+      time(x)  <- time.new
+    } # IF end
+
      
     # Making sure that the time serie is complete before aggregation
-    #if ( (format(start(x), "%H:%M:%S") != "00:00:00") | (format(end(x), "%H:%M:%S") != "00:00:00"))
-    st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00")
-    et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59")
-    x <- izoo2rzoo(x, from=st, to=et, tz=tz)
+    # This is useful when the first element of 'x' is not given at the time defined by 'start'.
+    # For example, if the first element of 'x' starts at 08:00:00 hrs, but 'start=00:00:00', 
+    # what happens with all the values from 00:00:00 to 07:59:59 hrs?
+    # The following lines of code makes sure that the missing elements in a day are actually 
+    # considered as missing
 
-    # 'as.numeric' is necessary for being able to change the names to the output
+    st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
+    et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
+    x  <- izoo2rzoo(x, from=st, to=et, tz=tz)
+
+
+    # Computing the Monthly time series 
     m <- aggregate(x, by= function(tt) format(tt, "%Y-%m"), FUN=FUN, na.rm= na.rm, ...)
 
     # Removing subdaily time attibute, but not the dates
