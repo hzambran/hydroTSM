@@ -139,7 +139,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
     et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
     x  <- izoo2rzoo(x, from=st, to=et, tz=tz)
 
-    # 'as.numeric' is necessary for being able to change the names to the output
+    # Computing the Daily time series 
     tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
 
 
