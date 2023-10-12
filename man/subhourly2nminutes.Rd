@@ -23,17 +23,17 @@ Generic function for aggregating a sub-hourly time series into a "n-minutes' one
 subhourly2nminutes(x, ...)
 
 \method{subhourly2nminutes}{default}(x, nminutes, FUN, na.rm=TRUE, 
-                                     from=start(x), ...)
+                                     from=start(x), to=end(x), ...)
 
 \method{subhourly2nminutes}{zoo}(x, nminutes, FUN, na.rm=TRUE, 
-                                 from=start(x), ...)
+                                 from=start(x), to=end(x), ...)
 
 \method{subhourly2nminutes}{data.frame}(x, nminutes, FUN, na.rm=TRUE, 
-        from=start(x), dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", 
+        from=start(x), to=end(x), dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", 
         out.fmt="zoo", verbose= TRUE, ...)
 
 \method{subhourly2nminutes}{matrix}(x, nminutes, FUN, na.rm=TRUE, 
-        from=start(x), dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", 
+        from=start(x), to=end(x), dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", 
         out.fmt="zoo", verbose= TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -56,8 +56,13 @@ Logical. Should missing values be removed? \cr
 }
   \item{from}{
 POSIX object indicating the starting time used to carry out the temporal aggregation.  \cr
-When \code{from > start(x)} then \code{x} is subsetted to the starting DateTime defined by \code{from}. \cr
-When \code{from < start(x)} then \code{x} is extended backwards with NAs to the starting DateTime defined by \code{from}.
+When \code{from > start(x)} then \code{x} is cut in time to the starting DateTime defined by \code{from}. \cr
+When \code{from < start(x)} then \code{x} is extended backward with NAs to the starting DateTime defined by \code{from}.
+}
+  \item{to}{
+POSIX object indicating the ending time used to carry out the temporal aggregation.  \cr
+When \code{to < end(x)} then \code{x} is cut in time to the ending DateTime defined by \code{to}. \cr
+When \code{to > end(x)} then \code{x} is extended forward with NAs to the ending DateTime defined by \code{from}.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each column of \code{x} (e.g., gauging station) \cr
