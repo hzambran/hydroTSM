@@ -24,10 +24,10 @@ subdaily2weekly <-function(x, ...) UseMethod("subdaily2weekly")
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
-# Started: 09-Apr-2013                                                         #
-# Updates: 25-May-2033                                                         # 
+# Started: 11-Oct-2023                                                         #
+# Updates:                                                                     # 
 ################################################################################
-subdaily2weekly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+subdaily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                     start.fmt= "%H:%M:%S", tz, ...) {
 
   # Checking that 'x' is a zoo object
@@ -45,10 +45,10 @@ subdaily2weekly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
-# Started: 09-Aug-2023                                                         #
+# Started: 11-Oct-2023                                                         #
 # Updates:                                                                     # 
 ################################################################################
-subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                 start.fmt= "%H:%M:%S", tz, ...) {
 
   # testing the existence of 'na.rm' argument
@@ -120,35 +120,54 @@ subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
 
     # Computing the Weekly time series 
-    m <- aggregate(x, by= function(tt) format(tt, "%Y-%W"), FUN=FUN, na.rm= na.rm, ...)
+    tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%W"), FUN=FUN, na.rm= na.rm, ...)
 
-    # Removing subdaily time attibute, but not the dates
-    if (NCOL(m) == 1) {
-      m <- zoo(as.numeric(m), as.yearmon(time(m), format="%Y-%W") ) 
-    } else m <- zoo(coredata(m), as.yearmon(time(m), format="%Y-%W") ) 
+    # Removing weekly values in the output object for weeks with 
+    # more than 'na.rm.max' percentage of NAs in a given week
+    if ( na.rm & (na.rm.max != 0) ) {
+
+      # Checking that 'na.rm.max' is in [0, 1]
+      if ( (na.rm.max < 0) | (na.rm.max > 1) )
+        stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+
+      # Computing the percentage of missing values in each week
+      na.pctg <- cmv(x, tscale="weekly")
+
+      # identifying weeks with a percentage of missing values higher than 'na.rm.max'
+      na.pctg.index <- which( na.pctg >= na.rm.max)
+
+      # Setting as NA all the weeks with a percentage of missing values higher than 'na.rm.max'
+      tmp[na.pctg.index] <- NA 
+    } # IF end
+
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
-    nan.index <- which(is.nan(m))
-    if ( length(nan.index) > 0 ) m[nan.index] <- NA
+    nan.index <- which(is.nan(tmp))
+    if ( length(nan.index) > 0 ) tmp[nan.index] <- NA
   
     # Replacing all the Inf and -Inf by NA's
     # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
-    inf.index <- which(is.infinite(m))
-    if ( length(inf.index) > 0 ) m[inf.index] <- NA      
+    inf.index <- which(is.infinite(tmp))
+    if ( length(inf.index) > 0 ) tmp[inf.index] <- NA   
 
-    return(m)
+    # Removing subdaily time attibute, but not the dates
+    if (NCOL(tmp) == 1) {
+      tmp <- zoo(as.numeric(tmp), as.yearmon(time(tmp), format="%Y-%W") ) 
+    } else tmp <- zoo(coredata(tmp), as.yearmon(time(tmp), format="%Y-%W") )    
+
+    return(tmp)
 } # 'subdaily2weekly.zoo' end
 
 
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
-# Started: 09-Aug-2023                                                         #
+# Started: 11-Oct-2023                                                         #
 # Updates:                                                                     # 
 ################################################################################
-subdaily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                       start.fmt= "%H:%M:%S", tz, 
+subdaily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, 
+                                       start="00:00:00", start.fmt= "%H:%M:%S", tz, 
                                        dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                               out.fmt="zoo",
 				                               verbose=TRUE,...) {
@@ -196,7 +215,8 @@ subdaily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
   ##############################################################################
   
-  z <- subdaily2weekly.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
+  z <- subdaily2weekly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, 
+                           start=start, start.fmt=start.fmt, tz=tz, ...)
     
   if (out.fmt == "numeric") {
      snames      <- colnames(z)
@@ -214,10 +234,10 @@ subdaily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
-# Started: 09-Aug-2023                                                         #
+# Started: 11-Oct-2023                                                         #
 # Updates:                                                                     # 
 ################################################################################
-subdaily2weekly.matrix <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
+subdaily2weekly.matrix <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                    start.fmt= "%H:%M:%S", tz, 
                                    dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                           out.fmt="zoo",
@@ -244,8 +264,8 @@ subdaily2weekly.matrix <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
-   subdaily2weekly.data.frame(x=x, FUN=FUN, na.rm=na.rm, start=start, 
-                              start.fmt=start.fmt, tz=tz,
+   subdaily2weekly.data.frame(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, 
+                              start=start, start.fmt=start.fmt, tz=tz,
                               dates=dates, date.fmt=date.fmt,
 			                        out.fmt=out.fmt,
                               verbose=verbose,...)
