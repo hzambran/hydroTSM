@@ -43,7 +43,7 @@ subhourly2nminutes.default <- function(x, nminutes, FUN, na.rm=TRUE,
 ################################################################################
 # Started: 15-Oct-2022                                                         #
 # Updates: 25-Oct-2022                                                         #
-#          29-Ago-2023                                                         #
+#          29-Ago-2023 ; 11-Oct-2023                                           #
 ################################################################################
 subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, 
                                    from=start(x), to=end(x), ...) {
@@ -87,8 +87,8 @@ subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE,
     lend <- end(x)
     if ( !missing(to) ) {
       if (to > lend) {
-        x <- izoo2rzoo(x, to=lend)
-      } else x <- window(x, end=lend)
+        x <- izoo2rzoo(x, to=to)
+      } else x <- window(x, end=to)
     } # IF end
 
     # Getting the time zone of 'x'
