@@ -4,29 +4,23 @@
 %% Copyright 2023-2023 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
-\name{(sub)daily2weekly}
+\name{daily2weekly}
 \Rdversion{1.1}
 \alias{daily2weekly}
 \alias{daily2weekly.default}
 \alias{daily2weekly.zoo}
 \alias{daily2weekly.data.frame}
 \alias{daily2weekly.matrix}
-\alias{subdaily2weekly}
-\alias{subdaily2weekly.default}
-\alias{subdaily2weekly.zoo}
-\alias{subdaily2weekly.data.frame}
-\alias{subdaily2weekly.matrix}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-(sub)Daily -> Weekly
+Daily -> Weekly
 }
 \description{
 Generic function for transforming a DAILY (or sub-daily) regular time series into a WEEKLY one
 }
 \usage{
 daily2weekly(x, ...)
-subdaily2weekly(x, ...)
 
 \method{daily2weekly}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
 
