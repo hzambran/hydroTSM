@@ -5,7 +5,7 @@
 # Distributed under GPL 2 or later
 
 ################################################################################
-#          daily2weekly                                                       #
+#          daily2weekly                                                        #
 ################################################################################
 # This function transform a (sub)DAILY regular time series into a MONTHLY one
 
@@ -40,8 +40,8 @@ daily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
-# Started: 09-Aug-2011                                                         #
-# Updates:                                                                     #
+# Started: 09-Aug-2023                                                         #
+# Updates: 11-Oct-2023                                                                    #
 ################################################################################
 daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
@@ -65,7 +65,7 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
   if ( na.rm & (na.rm.max != 0) ) {
 
     # Checking that 'na.rm.max' is in [0, 1]
-    if ( (na.rm.max <0) | (na.rm.max <0) )
+    if ( (na.rm.max < 0) | (na.rm.max > 1) )
       stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
 
     # Computing the percentage of missing values in each week
@@ -88,7 +88,10 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
   inf.index <- which(is.infinite(tmp))
   if ( length(inf.index) > 0 ) tmp[inf.index] <- NA 
 
-  if (NCOL(tmp) == 1) tmp <- zoo(as.numeric(tmp), time(tmp))
+  # Removing subdaily time attibute, but not the dates
+  if (NCOL(tmp) == 1) {
+    tmp <- zoo(as.numeric(tmp), as.yearmon(time(tmp), format="%Y-%W") ) 
+  } else tmp <- zoo(coredata(tmp), as.yearmon(time(tmp), format="%Y-%W") )    
 
   return(tmp)
 
@@ -99,7 +102,7 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
-# Started: 09-Aug-2011                                                         #
+# Started: 09-Aug-2023                                                         #
 # Updates:                                                                     #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
@@ -248,7 +251,7 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
-# Started: 09-Aug-2011                                                         #
+# Started: 09-Aug-2023                                                         #
 # Updates:                                                                     #
 ################################################################################
 daily2weekly.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
