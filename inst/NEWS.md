@@ -10,6 +10,8 @@ NEWS/ChangeLog for hydroTSM
 
         o 'daily2weekly'      : for aggregating (sub)daily values into weekly ones.
 
+        o 'subdaily2weekly'   : for aggregating subdaily values into weekly ones, with optional sarting time for a day.
+
         o 'monthlycurve'      : for plotting monthly variation of streamflow (and optionally precipitation) values, with uncertainty bound around mean values.
 
         o 'cmv'               : to compute the percentage/amounth of missing values in a zoo object, using a user-defined temporal scale.
