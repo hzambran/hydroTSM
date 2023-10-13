@@ -115,5 +115,9 @@ S3method(subhourly2nminutes, default)
 S3method(subhourly2nminutes, zoo)
 S3method(subhourly2nminutes, data.frame)
 S3method(subhourly2nminutes, matrix)
-S3method(hypsometric, SpatialGridDataFrame)
+S3method(weeklyfunction, default)
+S3method(weeklyfunction, zoo)
+S3method(weeklyfunction, data.frame)
+S3method(weeklyfunction, matrix) 
+
 
