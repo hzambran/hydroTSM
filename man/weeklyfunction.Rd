@@ -123,69 +123,36 @@ Due to the fact that \code{FUN} is applied over all the elements in \code{x} bel
 \code{\link{annualfunction}}, \code{\link{seasonalfunction}}, \code{\link{dm2seasonal}}, \code{\link{daily2monthly}}, \code{\link{daily2annual}}
 }
 \examples{
-## Loading daily streamflows (3 years) at the station 
-## Oca en Ona (Ebro River basin, Spain)
+## Ex1: Computation of mean WEEKLY values from DAILY ts, removing any missing value in 'x'
+
+# Loading DAILY streamflows (3 years) at the station 
+# Oca en Ona (Ebro River basin, Spain)
 data(OcaEnOnaQts)
 x <- OcaEnOnaQts
 
-## Mean monthly streamflows at station 'x'
+## Mean WEEKLY streamflows at station 'x'
 weeklyfunction(x, FUN=mean, na.rm=TRUE)
 
+######################
+## Ex2: Computation of mean WEEKLY values from HOURLY ts, removing any missing value in 'x'
 
-############################
-## Boxplot of monthly values
+# Loading HOURLY streamflows for the station Karamea at Gorge
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
 
-## Daily to Monthly
-m <- daily2monthly(x, FUN=mean, na.rm=TRUE)
+## Mean WEEKLY streamflows at station 'x'. Each day starts at 00:00:00
+weeklyfunction(x, FUN=mean, na.rm=TRUE)
 
-## Median of the monthly values at the station
-weeklyfunction(m, FUN=median, na.rm=TRUE)
+######################
+## Ex3: Computation of mean WEEKLY values from HOURLY ts, removing any missing value in 'x'
+##      and starting each day at 08:00:00
 
-## Vector with the three-letter abbreviations of the month names
-cmonth <- format(time(m), "\%b")
+# Loading HOURLY streamflows for the station Karamea at Gorge
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
 
-## Creating ordered monthly factors
-months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
-
-## Boxplot of the monthly values
-boxplot( coredata(m) ~ months, col="lightblue", main="Monthly streamflows, [m3/s]")
-
-
-##############################
-##############################
-## Loading the monthly time series of precipitation within the Ebro River basin.
-data(EbroPPtsMonthly)
-x <- EbroPPtsMonthly
-
-## Dates of 'x'
-dates <- as.Date(x[,1])
-
-## Monthly precipitation of all the stations in 'x'
-\dontrun{
-
-## Sum of the monthly values in each station of 'x'
-z <- zoo( x[, 2:ncol(x)], dates)
-
-# Amount of years in 'x' (needed for computing the average)
-nyears <- yip(from=start(z), to=end(z), out.type="nmbr" )
-
-m <- weeklyfunction(z, FUN=sum)
-
-
-## Another way of computing the sum of the monthly values in each station of 'x'
-## This way is usefult for posteriori boxplots
-m2 <- weeklyfunction(x, FUN=sum, dates=1, out.type="db")
-
-## Average monthly precipitation in each station of 'x'
-m2$Value <- m2$Value / nyears 
-
-## Creating monthly factors
-m2$Month <- factor(m2$Month, levels=month.abb)
-
-## boxplot of the monthly values in all stations
-boxplot(Value ~ Month, m2, col="lightyellow", main="Monthly Precipitation, [mm/month]")
-}
-
+## Mean WEEKLY streamflows at station 'x'. Each day starts at 00:00:00
+weeklyfunction(x, FUN=mean, na.rm=TRUE, start="00:00:00")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

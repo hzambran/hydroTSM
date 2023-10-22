@@ -118,7 +118,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \examples{
 ######################
-## Ex1: Computation of weekly values, removing any missing value in 'x'
+## Ex1: Computation of WEEKLY values from DAILY ts, removing any missing value in 'x'
 
 # Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
@@ -138,7 +138,7 @@ x[na.index] <- NA
 m <- daily2weekly(x, FUN=sum, na.rm=TRUE)
 
 ######################
-## Ex2: Computation of Weekly values only when the percentage of NAs in each
+## Ex2: Computation of WEEKLY values only when the percentage of NAs in each
 #       month is lower than a user-defined percentage (10% in this example).
 
 # Loading the DAILY precipitation data at SanMartino
@@ -162,7 +162,8 @@ m2 <- daily2weekly(x, FUN=sum, na.rm=TRUE, na.rm.max=0.1)
 cmv(x, tscale="month")
 
 ######################
-## Ex3: Loading the HOURLY streamflows for the station Karamea at Gorge
+## Ex3: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'
+#       Loading the HOURLY streamflows for the station Karamea at Gorge
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
