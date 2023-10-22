@@ -92,23 +92,23 @@ weeklyfunction.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
 
      
 
-     # Replacing the NaNs by 'NA.
-     # NaN's are obtained when using the FUN=mean with complete NA values
-     nan.index          <- which(is.nan(totals))
-     if ( length(nan.index) > 0 )  totals[ nan.index] <- NA
+    # Replacing the NaNs by 'NA.
+    # NaN's are obtained when using the FUN=mean with complete NA values
+    nan.index          <- which(is.nan(totals))
+    if ( length(nan.index) > 0 )  totals[ nan.index] <- NA
      
-     # Replacing all the Inf and -Inf by NA's
-     # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
-     inf.index <- which(is.infinite(totals))
-     if ( length(inf.index) > 0 ) totals[inf.index] <- NA
+    # Replacing all the Inf and -Inf by NA's
+    # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
+    inf.index <- which(is.infinite(totals))
+    if ( length(inf.index) > 0 ) totals[inf.index] <- NA
 
-     # Giving meaningful names to the output
-     if ( (is.matrix(x)) | (is.data.frame(x)) ) {
-       totals <- t(totals) # For having the months' names as column names
-       colnames(totals) <- levels(months)
-     } #IF end
+    # Giving meaningful names to the output
+    if ( (is.matrix(x)) | (is.data.frame(x)) ) {
+      totals <- t(totals) # For having the months' names as column names
+      colnames(totals) <- levels(months)
+    } #IF end
 
-     return(totals)
+    return(totals)
 
 } # 'weeklyfunction.zoo' end
  
@@ -205,38 +205,41 @@ weeklyfunction.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00
         # Computing the numeric index of the resulting months
         month.index <- unique(as.numeric(format( time(x), "%m" )))
      
-        # Amount of different months belonging to the desired period
-        nmonths <- length(month.index)
-        
-        # Total amount of months belonging to the desired period
-        totalmonths <- nmonths*nyears
+        # Computing the amount of weeks with data within the desired period
+        ndays   <- length(dates) # number of days in the period
+        tmp     <- vector2zoo(rep(0,ndays), dates)
+        tmp     <- weeklyfunction.default(x= tmp, FUN=FUN, na.rm=na.rm)
+        nweeks  <- length(tmp)
 
         # Creating a vector with the names of the field that will be used for storing the results
-        field.names <- c("StationID", "Year", "Month", "Value" )
+        field.names <- c("StationID", "Year", "Week", "Value" )
 
         # Creating the data.frame that will store the computed averages for each subcatchment
-        z <- as.data.frame(matrix(data = NA, nrow = totalmonths*nstations, ncol = 4, byrow = TRUE, dimnames = NULL) )
+        z <- as.data.frame(matrix(data = NA, nrow = nweeks*nstations, ncol = 4,
+                           byrow = TRUE, dimnames = NULL) )
+        colnames(z) <- field.names
+
         
         for (j in 1:nstations) {
 
-            if (verbose) message( "[ Station: ", format(snames[j], width=10, justify="left"),
-                                  " : ", format(j, width=3, justify="left"), "/",
-                                  nstations, " => ",
-                                  format(round(100*j/nstations,2), width=6, justify="left"),
-                                  "% ]" )
+          if (verbose) message( "[ Station: ", format(snames[j], width=10, justify="left"),
+                                " : ", format(j, width=3, justify="left"), "/",
+                                nstations, " => ",
+                                format(round(100*j/nstations,2), width=6, justify="left"),
+                                "% ]" )
 
-	    # Computing the annual values
-	    tmp <- weeklyfunction.default(x= x[,j], FUN=FUN, na.rm=na.rm, ...)
+	        # Computing the annual values
+	        tmp <- weeklyfunction.default(x= x[,j], FUN=FUN, na.rm=na.rm, ...)
 
-	    # Putting the annual/monthly values in the output data.frame
-            # The first column of 'x' corresponds to the Year
-            row.ini <- (j-1)*totalmonths + 1
-            row.fin <-  j*totalmonths
+	        # Putting the annual/monthly values in the output data.frame
+          # The first column of 'x' corresponds to the Year
+          row.ini <- (j-1)*nweeks + 1
+          row.fin <-  j*nweeks
 
-            z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeted 'totalmonths' times
-            z[row.ini:row.fin, 2] <- rep(Starting.Year:Ending.Year, each=nmonths)
-            z[row.ini:row.fin, 3] <- month.abb[month.index]
-            z[row.ini:row.fin, 4] <- tmp
+          z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeted 'nweeks' times
+          z[row.ini:row.fin, 2] <- rep(Starting.Year:Ending.Year, each=nweeks)
+          z[row.ini:row.fin, 3] <- time(tmp)
+          z[row.ini:row.fin, 4] <- tmp
 
         } # FOR end
         

@@ -41,7 +41,7 @@ daily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Aug-2023                                                         #
-# Updates: 11-Oct-2023                                                                    #
+# Updates: 11-Oct-2023 ; 22-Oct-2023                                           #
 ################################################################################
 daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
@@ -90,8 +90,8 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
   # Removing subdaily time attibute, but not the dates
   if (NCOL(tmp) == 1) {
-    tmp <- zoo(as.numeric(tmp), as.yearmon(time(tmp), format="%Y-%W") ) 
-  } else tmp <- zoo(coredata(tmp), as.yearmon(time(tmp), format="%Y-%W") )    
+    tmp <- zoo(as.numeric(tmp), weeks ) 
+  } else tmp <- zoo(coredata(tmp), weeks )    
 
   return(tmp)
 
@@ -103,7 +103,7 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Aug-2023                                                         #
-# Updates:                                                                     #
+# Updates: 22-Oct-2023                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -176,10 +176,10 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
     
     if (out.fmt == "numeric") {
        snames      <- colnames(z)
-       months.lab  <- format(time(z), "%b-%Y")
+       weeks.lab  <- format(time(z), "%b-%Y")
        z           <- coredata(z)
        colnames(z) <- snames
-       rownames(z) <- months.lab        
+       rownames(z) <- weeks.lab        
     } # IF end
     
   } else if (out.type == "db") {  
@@ -199,17 +199,17 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
           # Amount of Years belonging to the desired period
           nyears <- Ending.Year - Starting.Year + 1
 
-          # Computing the amount of months with data within the desired period
+          # Computing the amount of weeks with data within the desired period
           ndays   <- length(dates) # number of days in the period
           tmp     <- vector2zoo(rep(0,ndays), dates)
           tmp     <- daily2weekly.default(x= tmp, FUN=FUN, na.rm=na.rm)
-          nmonths <- length(tmp)
+          nweeks  <- length(tmp)
 
           # Creating a vector with the names of the field that will be used for storing the results
-          field.names <- c("StationID", "Year", "Month", "Value" )
+          field.names <- c("StationID", "Year", "Week", "Value" )
 
           # Creating the data.frame that will store the computed averages for each subcatchment
-          z <- as.data.frame(matrix(data = NA, nrow = nmonths*nstations, ncol = 4,
+          z <- as.data.frame(matrix(data = NA, nrow = nweeks*nstations, ncol = 4,
                             byrow = TRUE, dimnames = NULL) )
           colnames(z) <- field.names
 
@@ -223,21 +223,21 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
                                   format(round(100*j/nstations,2), width=6, justify="left"),
                                   "%" )
 
-	        # Computing the monthly values
-	        m     <- daily2weekly.zoo(x= x[,j], FUN=FUN, ..., na.rm=na.rm, na.rm.max=na.rm.max)
-          dates <- time(m)
+	        # Computing the weekly values
+	        w     <- daily2weekly.zoo(x= x[,j], FUN=FUN, ..., na.rm=na.rm, na.rm.max=na.rm.max)
+          dates <- time(w)
             
-	        if (out.fmt == "numeric") m <- coredata(m)
+	        if (out.fmt == "numeric") w <- coredata(w)
 
 	        # Putting the annual/monthly values in the output data.frame
           # The first column of 'x' corresponds to the Year
-          row.ini <- (j-1)*nmonths + 1
-          row.fin <-  j*nmonths
+          row.ini <- (j-1)*nweeks + 1
+          row.fin <-  j*nweeks
 
-          z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeated 'nmonths' times
+          z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeated 'nweeks' times
           z[row.ini:row.fin, 2] <- format(as.Date(dates), "%Y") # zoo::as.Date
           z[row.ini:row.fin, 3] <- format(as.Date(dates), "%b") # zoo::as.Date
-          z[row.ini:row.fin, 4] <- m
+          z[row.ini:row.fin, 4] <- w
 
         } # FOR end
         
