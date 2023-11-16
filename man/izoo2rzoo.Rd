@@ -147,7 +147,7 @@ y  <- izoo2rzoo(x, from="2020-12-31")
 ## Example 6: Extending hourly data to a date after 'end(x)'
 dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00")
 x  <- zoo(0:20, dt)
-y  <- izoo2rzoo(x, from="2020-01-02 12:00:00")
+y  <- izoo2rzoo(x, from="2021-01-02 12:00:00")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
