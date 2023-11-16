@@ -1,7 +1,7 @@
 %%File izoo2rzoo.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2022 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2023 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{izoo2rzoo}
@@ -148,6 +148,25 @@ y  <- izoo2rzoo(x, from="2020-12-31")
 dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00")
 x  <- zoo(0:20, dt)
 y  <- izoo2rzoo(x, from="2021-01-02 12:00:00")
+
+##
+## Ex7: Extending hourly data to a date before 'start(x)'. 
+##      Hourly values are given at HH:15 hours instead of HH:00 hours.
+
+
+## Loading the time series of hourly streamflows for the station Karamea at Gorge
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
+
+# Plotting the hourly streamflow values
+plot(x)
+
+# Subsetting 'x' to its first three days 
+# (01/Jan/1980 08:15:00 - 03/Jan/1980 23:15:00)
+x <- window(x, end="1980-01-03 23:59:00")
+
+# Adding NA hourly data since 1979-12-31 21:15:00
+izoo2rzoo(x, from="1979-12-31 21:15:00")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
