@@ -96,10 +96,10 @@ dates <- c("1964-02-25", "1964-02-26", "1964-02-27", "1964-02-28", "1964-03-01",
 dates <- as.Date(dates)
 
 ## From 'numeric' to 'zoo' class
-x <- zoo(x, dates) # Feb 29th is still not present in 'x'
+( x <- zoo(x, dates) ) # Feb 29th is still not present in 'x'
 
 ## Adding a missing value (NA in this case) for Feb 29th
-y <- izoo2rzoo(x)
+( y <- izoo2rzoo(x) )
 
 ## checking the new length
 length(y) # 1 element more than the original 'x' (Feb 29th)
@@ -108,15 +108,15 @@ length(y) # 1 element more than the original 'x' (Feb 29th)
 ##
 ## Example 2: Extending the original 'x' object from February 1st to the end of 
 #  March, assigning 'NA' to the days in which 'x' do not have a value.
-y <- izoo2rzoo(x, from="1964-02-01", to="1964-03-31")
+( y <- izoo2rzoo(x, from="1964-02-01", to="1964-03-31") )
 
 
 ##
 ## Example 3: Working with a zoo matrix
-Y <- cbind(x,x)
+( Y <- cbind(x,x) )
 
 # Adding a missing value (NA in this case) for Feb 29th in all the columns of Y
-rY <- izoo2rzoo(Y, from="1964-02-25", to="1964-03-05")
+( rY <- izoo2rzoo(Y, from="1964-02-25", to="1964-03-05") )
 
 
 ##
@@ -128,38 +128,37 @@ x      <- zoo(values, dates)
 # removing values from 02:00 to 05:00 (not present at all in 'x', not even NA !)
 x <- x[-c(2:5)]
 
-# Adding missing values (NA in this case) from 02:00 to 05:00, using UTC as time zone
-# The argument 'tz' could have been ommited in this example, becuase UTC is its default value 
+# Adding missing values (NA in this case) from 02:00 to 05:00
 y <-  izoo2rzoo(x)
 time(y)
 
-#  Adding missing values (NA in this case) from 02:00 to 05:00, using local time zone
-y <-  izoo2rzoo(x, tz="")
-time(y)
 
 ##
-## Example 5: Extending hourly data to a date before 'start(x)'
+## Example 5: Extending hourly data to a DateTime before 'start(x)'
 dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00")
 x  <- zoo(0:20, dt)
-y  <- izoo2rzoo(x, from="2020-12-31")
+y  <- izoo2rzoo(x, from="2020-12-31") # 00:00:00 is ommited
 
 ##
-## Example 6: Extending hourly data to a date after 'end(x)'
+## Example 6: Extending hourly data to a DateTime after 'end(x)'
 dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00")
 x  <- zoo(0:20, dt)
-y  <- izoo2rzoo(x, from="2021-01-02 12:00:00")
+( y  <- izoo2rzoo(x, to="2021-01-02 12:00:00") )
 
 ##
-## Ex7: Extending hourly data to a date before 'start(x)'. 
-##      Hourly values are given at HH:15 hours instead of HH:00 hours.
+## Example 7: Extending hourly data to a DateTime before 'start(x)'.
+dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00")
+x  <- zoo(0:20, dt)
+( y  <- izoo2rzoo(x, from="2020-12-31 20:00:00") )
+
+##
+## Ex8: Extending hourly data to a date before 'start(x)'. However, this hourly 
+##      values are given at HH:15:00 hours instead of HH:00:00 hours.
 
 
 ## Loading the time series of hourly streamflows for the station Karamea at Gorge
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
-
-# Plotting the hourly streamflow values
-plot(x)
 
 # Subsetting 'x' to its first three days 
 # (01/Jan/1980 08:15:00 - 03/Jan/1980 23:15:00)

@@ -84,7 +84,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00
 #          06-Dec-2019 ; 18-Dec-2019                                           #
 #          27-May-2021                                                         #
 #          11-Oct-2022                                                         #
-#          30-Jul-2023 ; 31-Jul-2023 ; 03-Aug-2023                             #
+#          30-Jul-2023 ; 31-Jul-2023 ; 03-Aug-2023 ; 16-Nov-2023               #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                start.fmt= "%H:%M:%S", tz, ...) {
@@ -102,8 +102,8 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
     # Automatic detection of 'tz'
-    #if (missing(tz)) tz <- ""
-    if (missing(tz)) tz <- format(time(x), "%Z")[1]
+    if (missing(tz)) tz <- ""
+    #if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
     # Analysis of days different from 00:00 to 23:59 hrs
     if ( start != "00:00:00" ) {
@@ -189,7 +189,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
 #          23-Aug-2022 ; 11-Oct-2022                                           #
-#          25-May-2023 ; 30-Jul-2023 ; 03-Aug-2023                             #
+#          25-May-2023 ; 30-Jul-2023 ; 03-Aug-2023 ; 16-Nov-2023               #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -227,8 +227,8 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00
          stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'POSIXct', 'POSIXt'")
 
   # Automatic detection of 'tz'
-  #if (missing(tz)) tz <- ""
-  if (missing(tz)) tz <- format(time(x), "%Z")[1]
+  if (missing(tz)) tz <- ""
+  #if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
@@ -276,7 +276,7 @@ subdaily2daily.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00
 # Updates: 18-Dec-2019                                                         #
 #          27-May-2021                                                         #
 #          25-May-2023                                                         #
-#          30-Jul-2023 ; 03-Aug-2023                                           #
+#          30-Jul-2023 ; 03-Aug-2023  ; 16-Nov-2023                            #
 ################################################################################
 subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0, 
                                    start="00:00:00", start.fmt= "%H:%M:%S", tz,
@@ -285,8 +285,8 @@ subdaily2daily.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
                                    verbose=TRUE,...) {
 
    # Automatic detection of 'tz'
-   #if (missing(tz)) tz <- ""
-   if (missing(tz)) tz <- format(time(x), "%Z")[1]
+   if (missing(tz)) tz <- ""
+   #if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
