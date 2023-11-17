@@ -59,7 +59,7 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 #          29-May-2013                                                         #
 #          17-Jun-2022 ; 20-Jun-2022 ; 08-Oct-2022 ; 09-Oct-2022 ; 11-Oct-2022 #
 #          12-Oct-2022                                                         #
-#          25-May-2023 ; 03-Aug-2023 ; 16-Nov-2023                             #
+#          25-May-2023 ; 03-Aug-2023 ; 16-Nov-2023 ; 17-Nov-2023               #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
@@ -100,6 +100,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   if (missing(tz)) {
     missingTZ <- TRUE
     tz        <- format(time(x), "%Z")[1]    
+    tz        <- ""
   } # IF end
       
   ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
@@ -174,9 +175,6 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
       #to <- as.POSIXct(to, format=date.fmt, tz=tz)
       to <- as.POSIXct(to, format=date.fmt)
     } else to <- as.Date(to, format=date.fmt)
-
-  print(from)
-  print(to)
 
   # Creating a regular time series with NA's in all dates in [from, to]
   dates  <- seq(from=from, to=to, by= tstep)

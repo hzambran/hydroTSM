@@ -137,7 +137,7 @@ time(y)
 ## Example 5: Extending hourly data to a DateTime before 'start(x)'
 dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00")
 x  <- zoo(0:20, dt)
-y  <- izoo2rzoo(x, from="2020-12-31") # 00:00:00 is ommited
+(y  <- izoo2rzoo(x, from="2020-12-31") )# 00:00:00 is ommited
 
 ##
 ## Example 6: Extending hourly data to a DateTime after 'end(x)'
