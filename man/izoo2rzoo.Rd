@@ -190,7 +190,7 @@ x <- KarameaAtGorgeQts
 x <- window(x, end="1980-01-01 23:59:00")
 
 # Adding NA hourly data since 1979-12-31 21:15:00
-izoo2rzoo(x, from="1979-12-31 21:15:00", tz="GMT+11")
+izoo2rzoo(x, from="1979-12-31 21:15:00", tz="GMT+12")
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
