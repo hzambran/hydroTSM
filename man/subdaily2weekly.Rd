@@ -118,35 +118,26 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \examples{
 ######################
-## Ex1: Computation of WEEKLY values from DAILY ts, removing any missing value in 'x'
+## Ex1: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'
 
-# Loading the DAILY precipitation data at SanMartino
-data(SanMartinoPPts)
-x <- SanMartinoPPts
+## Loading the HOURLY streamflows for the station Karamea at Gorge
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
 
-# Subsetting 'x' to its first three weeks (Jan/1921 - Mar/1921)
-x <- window(x, end="1921-03-31")
-
-## Transforming into NA the 10% of values in 'x'
-set.seed(10) # for reproducible results
-n           <- length(x)
-n.nas       <- round(0.1*n, 0)
-na.index    <- sample(1:n, n.nas)
-x[na.index] <- NA
-
-## Agreggating from Daily to Weekly, removing any missing value in 'x'
-m <- daily2weekly(x, FUN=sum, na.rm=TRUE)
+# Sub-daily to weekly ts
+subdaily2weekly(x, FUN=mean, na.rm=TRUE)
 
 ######################
-## Ex2: Computation of WEEKLY values only when the percentage of NAs in each
-#       month is lower than a user-defined percentage (10% in this example).
+## Ex2: Computation of WEEKLY values from HOURLY ts, only when the percentage of NAs in 
+#       each week is lower than a user-defined percentage (10% in this example).
 
-# Loading the DAILY precipitation data at SanMartino
-data(SanMartinoPPts)
-x <- SanMartinoPPts
+## Loading the HOURLY streamflows for the station Karamea at Gorge
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
 
-# Subsetting 'x' to its first three weeks (Jan/1921 - Mar/1921)
-x <- window(x, end="1921-03-31")
+# Subsetting 'x' to its first three weeks 
+# (Monday 2nd December 1985 - Sunday 29th uanuary 20th 1980)
+x <- window(x, start="", end="1985-12-31 23:59:00")
 
 ## Transforming into NA the 10% of values in 'x'
 set.seed(10) # for reproducible results
@@ -156,10 +147,10 @@ na.index    <- sample(1:n, n.nas)
 x[na.index] <- NA
 
 ## Daily to Weekly, only for weeks with less than 10% of missing values
-m2 <- daily2weekly(x, FUN=sum, na.rm=TRUE, na.rm.max=0.1)
+( w2 <- subdaily2weekly(x, FUN=sum, na.rm=TRUE, na.rm.max=0.1) )
 
 # Verifying that the second and third month of 'x' had 10% or more of missing values
-cmv(x, tscale="month")
+cmv(x, tscale="weekly")
 
 ######################
 ## Ex3: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'

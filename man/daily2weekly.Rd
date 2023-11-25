@@ -123,11 +123,11 @@ na.index    <- sample(1:n, n.nas)
 x[na.index] <- NA
 
 ## Agreggating from Daily to Weekly, removing any missing value in 'x'
-m <- daily2weekly(x, FUN=sum, na.rm=TRUE)
+w <- daily2weekly(x, FUN=sum, na.rm=TRUE)
 
 ######################
 ## Ex2: Computation of Weekly values only when the percentage of NAs in each
-#       month is lower than a user-defined percentage (10% in this example).
+#       week is lower than a user-defined percentage (10% in this example).
 
 # Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
@@ -144,18 +144,38 @@ na.index    <- sample(1:n, n.nas)
 x[na.index] <- NA
 
 ## Daily to Weekly, only for weeks with less than 10% of missing values
-m2 <- daily2weekly(x, FUN=sum, na.rm=TRUE, na.rm.max=0.1)
+w2 <- daily2weekly(x, FUN=sum, na.rm=TRUE, na.rm.max=0.1)
 
-# Verifying that the second and third month of 'x' had 10% or more of missing values
-cmv(x, tscale="month")
+# Verifying that the weeks 01, 02, 06, 08, 10, 11, 12 of 'x' had 10% or more of missing values
+cmv(x, tscale="weekly")
 
 ######################
-## Ex3: Loading the HOURLY streamflows for the station Karamea at Gorge
-data(KarameaAtGorgeQts)
-x <- KarameaAtGorgeQts
+## Ex3: Computation of Weekly values in a two-column zoo object, 
+##      only when the percentage of NAs in each week is lower than a user-defined 
+##      percentage (10% in this example).
 
-# Sub-daily to weekly ts
-subdaily2weekly(x, FUN=mean, na.rm=TRUE)
+# Loading the DAILY precipitation data at SanMartino
+data(SanMartinoPPts)
+x <- SanMartinoPPts
+
+# Subsetting 'x' to its first three weeks (Jan/1921 - Mar/1921)
+x <- window(x, end="1921-03-31")
+
+## Transforming into NA the 10% of values in 'x'
+set.seed(10) # for reproducible results
+n           <- length(x)
+n.nas       <- round(0.1*n, 0)
+na.index    <- sample(1:n, n.nas)
+x[na.index] <- NA
+
+## Creating a two-column zoo object
+X <- cbind(x, y=x)
+
+## Daily to Weekly, only for weeks with less than 10% of missing values
+w2 <- daily2weekly(X, FUN=sum, na.rm=TRUE, na.rm.max=0.1)
+
+# Verifying that the weeks 01, 02, 06, 08, 10, 11, 12 of 'x' had 10% or more of missing values
+cmv(X, tscale="weekly")
 }
 
 
