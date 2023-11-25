@@ -181,7 +181,7 @@ x  <- zoo(0:20, dt)
 ##            values are given at HH:15:00 hours instead of HH:00:00 hours.
 
 ## Loading the time series of hourly streamflows for the station Karamea at Gorge
-## Time Zone for 'KarameaAtGorgeQts' data is GMT+11 (see ?KarameaAtGorgeQts)
+## Time Zone for 'KarameaAtGorgeQts' data is GMT+12 (see ?KarameaAtGorgeQts)
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
