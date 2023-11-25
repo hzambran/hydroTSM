@@ -59,7 +59,8 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 #          29-May-2013                                                         #
 #          17-Jun-2022 ; 20-Jun-2022 ; 08-Oct-2022 ; 09-Oct-2022 ; 11-Oct-2022 #
 #          12-Oct-2022                                                         #
-#          25-May-2023 ; 03-Aug-2023 ; 16-Nov-2023 ; 17-Nov-2023               #
+#          25-May-2023 ; 03-Aug-2023 ; 04-Nov-2023 ; 16-Nov-2023 ; 17-Nov-2023 #
+#          25-Nov-2023                                                         #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
@@ -125,6 +126,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
 
     if ( subdaily.date.fmt & missingTZ )
       from <- as.POSIXct(from, tz=tz)
+      #from <- as.POSIXct(from)
   } # IF end
 
   # If 'to' was given as Date, but 'x' is sub-daily
@@ -138,6 +140,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
 
     if ( subdaily.date.fmt & missingTZ )
       to <- as.POSIXct(to, tz=tz)
+      #to <- as.POSIXct(to)
   } # IF end
         
   # checking that date.fmt and the sampling frequency of 'x' are compatible 
