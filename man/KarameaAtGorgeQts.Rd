@@ -16,7 +16,8 @@ Station Number: 95102, Easting Coordinate (NZMG): 2444629.0, Northing Coordinate
 
 In November 25th, 2023, the time zone of this data sete was changed from "none" (i.e., your local time zone was used every time you loaded this dataset)
 to GMT+11, in order to avoid missing datetimes at times where daylight saving time ocurred. After this change, the initial DateTime of this dataset changed 
-from "1980-01-01 08:15:00 -03" (in my local computer) to "1980-01-01 00:15:00" (everywhere). Date values were kept the same
+from "1980-01-01 08:15:00 -03" (in my local computer) to "1980-01-01 00:15:00" (everywhere). 
+Only two NA elements were removed from the origanl dataset: the first one and the last one.
 }
 \usage{
 data(KarameaAtGorgeQts)
