@@ -53,7 +53,7 @@ character, with the specification of the time zone used for \code{from}, \code{t
 
 If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
 
-This argument can be used when working with sub-daily zoo objects to force using  time zones other than the local time zone for \code{from} and \code{to}. It should be used with caution, being well aware of the time zone of the data.
+This argument can be used when working with sub-daily zoo objects to force using  time zones other than the local time zone for \code{from} and \code{to}. It should be used with caution, being well aware of the time zone of the data. See examples.
 }
   \item{\dots}{
 further arguments passed to or from other methods
