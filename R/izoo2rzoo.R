@@ -96,11 +96,9 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   } # IF end
 
   # Automatic detection of 'tz'
-  #if (missing(tz)) tz <- ""
   missingTZ <- FALSE
   if (missing(tz)) {
     missingTZ <- TRUE
-    tz        <- format(time(x), "%Z")[1]    
     tz        <- ""
   } # IF end
       
@@ -126,7 +124,6 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
 
     if ( subdaily.date.fmt & missingTZ )
       from <- as.POSIXct(from, tz=tz)
-      #from <- as.POSIXct(from)
   } # IF end
 
   # If 'to' was given as Date, but 'x' is sub-daily
@@ -140,7 +137,6 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
 
     if ( subdaily.date.fmt & missingTZ )
       to <- as.POSIXct(to, tz=tz)
-      #to <- as.POSIXct(to)
   } # IF end
         
   # checking that date.fmt and the sampling frequency of 'x' are compatible 
@@ -170,13 +166,11 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
 
   if (subdaily.ts) {
     dt <-  try(as.POSIXct(to, format=date.fmt, tz=tz))
-    #dt <-  try(as.POSIXct(to, format=date.fmt))
   } else dt <- try(as.Date(to, format=date.fmt))
   if("try-error" %in% class(dt) || is.na(dt)) {
     stop("Invalid argument: format of 'to' is not compatible with 'date.fmt' !")
   } else if (subdaily.ts) {
       to <- as.POSIXct(to, format=date.fmt, tz=tz)
-      #to <- as.POSIXct(to, format=date.fmt)
     } else to <- as.Date(to, format=date.fmt)
 
   # Creating a regular time series with NA's in all dates in [from, to]
