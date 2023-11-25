@@ -46,7 +46,7 @@ subdaily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:0
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 11-Oct-2023                                                         #
-# Updates:                                                                     # 
+# Updates: 04-Nov-2023                                                         # 
 ################################################################################
 subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                 start.fmt= "%H:%M:%S", tz, ...) {
@@ -118,9 +118,15 @@ subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00
     et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
     x  <- izoo2rzoo(x, from=st, to=et, tz=tz)
 
+    # Weekly index for 'x'
+    dates <- time(x)
+    weeks <- format(dates, "%Y-%W")
 
     # Computing the Weekly time series 
-    tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%W"), FUN=FUN, na.rm= na.rm, ...)
+    tmp <- aggregate(x, by=weeks, FUN=FUN, na.rm= na.rm, ...)
+
+    # Getting the weekly time attribute of the aggregated output object
+    weeks.unique <- time(tmp)
 
     # Removing weekly values in the output object for weeks with 
     # more than 'na.rm.max' percentage of NAs in a given week
@@ -140,7 +146,6 @@ subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00
       tmp[na.pctg.index] <- NA 
     } # IF end
 
-
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
     nan.index <- which(is.nan(tmp))
@@ -153,8 +158,8 @@ subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00
 
     # Removing subdaily time attibute, but not the dates
     if (NCOL(tmp) == 1) {
-      tmp <- zoo(as.numeric(tmp), as.yearmon(time(tmp), format="%Y-%W") ) 
-    } else tmp <- zoo(coredata(tmp), as.yearmon(time(tmp), format="%Y-%W") )    
+      tmp <- zoo(as.numeric(tmp), weeks.unique ) 
+    } else tmp <- zoo(coredata(tmp), weeks.unique )    
 
     return(tmp)
 } # 'subdaily2weekly.zoo' end

@@ -41,7 +41,7 @@ daily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Aug-2023                                                         #
-# Updates: 11-Oct-2023 ; 22-Oct-2023                                           #
+# Updates: 11-Oct-2023 ; 22-Oct-2023 ; 04-Nov-2023                             #
 ################################################################################
 daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
@@ -59,6 +59,9 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
  
   # Computing the Weekly time series 
   tmp <- aggregate( x, by=weeks, FUN, na.rm= na.rm, ... ) 
+  
+  # Getting the weekly time attribute of the aggregated output object
+  weeks.unique <- time(tmp)
 
   # Removing weekly values in the output object for weeks with 
   # more than 'na.rm.max' percentage of NAs in a given week
@@ -90,8 +93,8 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
   # Removing subdaily time attibute, but not the dates
   if (NCOL(tmp) == 1) {
-    tmp <- zoo(as.numeric(tmp), weeks ) 
-  } else tmp <- zoo(coredata(tmp), weeks )    
+    tmp <- zoo(as.numeric(tmp), weeks.unique ) 
+  } else tmp <- zoo(coredata(tmp), weeks.unique )    
 
   return(tmp)
 
