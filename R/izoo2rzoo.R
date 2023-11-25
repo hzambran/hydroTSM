@@ -158,25 +158,25 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
           } # ELSE end
 
   if (subdaily.ts) {
-    #dt <-  try(as.POSIXct(from, format=date.fmt, tz=tz))
-    dt <-  try(as.POSIXct(from, format=date.fmt))
+    dt <-  try(as.POSIXct(from, format=date.fmt, tz=tz))
+    #dt <-  try(as.POSIXct(from, format=date.fmt))
   } else dt <- try(as.Date(from, format=date.fmt))
   if("try-error" %in% class(dt) || is.na(dt)) {
     stop("Invalid argument: format of 'from' is not compatible with 'date.fmt' !")
   } else if (subdaily.ts) {
-      #from <- as.POSIXct(from, format=date.fmt, tz=tz)
-      from <- as.POSIXct(from, format=date.fmt)
+      from <- as.POSIXct(from, format=date.fmt, tz=tz)
+      #from <- as.POSIXct(from, format=date.fmt)
     } else from <- as.Date(from, format=date.fmt)
 
   if (subdaily.ts) {
-    #dt <-  try(as.POSIXct(to, format=date.fmt, tz=tz))
-    dt <-  try(as.POSIXct(to, format=date.fmt))
+    dt <-  try(as.POSIXct(to, format=date.fmt, tz=tz))
+    #dt <-  try(as.POSIXct(to, format=date.fmt))
   } else dt <- try(as.Date(to, format=date.fmt))
   if("try-error" %in% class(dt) || is.na(dt)) {
     stop("Invalid argument: format of 'to' is not compatible with 'date.fmt' !")
   } else if (subdaily.ts) {
-      #to <- as.POSIXct(to, format=date.fmt, tz=tz)
-      to <- as.POSIXct(to, format=date.fmt)
+      to <- as.POSIXct(to, format=date.fmt, tz=tz)
+      #to <- as.POSIXct(to, format=date.fmt)
     } else to <- as.Date(to, format=date.fmt)
 
   # Creating a regular time series with NA's in all dates in [from, to]
