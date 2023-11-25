@@ -137,7 +137,7 @@ x <- KarameaAtGorgeQts
 
 # Subsetting 'x' to its first three weeks 
 # (Monday 2nd December 1985 - Sunday 29th uanuary 20th 1980)
-x <- window(x, start="", end="1985-12-31 23:59:00")
+x <- window(x, end="1985-12-31 23:59:00")
 
 ## Transforming into NA the 10% of values in 'x'
 set.seed(10) # for reproducible results
