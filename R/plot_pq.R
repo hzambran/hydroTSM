@@ -1,6 +1,7 @@
 # File plot_p_q.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
+#                                 http://www.rforge.net/hydroTSM/ 
 # Copyright 2012-2018 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
@@ -105,20 +106,20 @@ plot_pq.zoo <- function(p,
   # Checking 'na.fill'
   na.fill <- match.arg(na.fill)
 
-  # sampling frequency of 'x'           
-  x.freq <- sfreq(x)
-        
-  # Cheking if 'x is a sub-daily zoo object  
-  if (x.freq %in% c("minute","hourly") ) {
-    subdaily.ts <- TRUE
-  } else subdaily.ts <- FALSE
-
   # Checking that 'p' and 'q' have the same time index
   if ( !all.equal(time(p), time(q)) )
     stop("Invalid argument(s): 'p' and 'q' must have the same time index !")
 
+  # sampling frequency of 'x'           
+  x.freq <- sfreq(p)
+  
+  # Checking if 'x is a sub-daily zoo object  
+  if (x.freq %in% c("minute","hourly") ) {
+    subdaily.ts <- TRUE
+  } else subdaily.ts <- FALSE
+  
   ####################################################################################
-  # Lines 79-162 are taken from izoo2rzoo.R to check 'from' and 'to'
+  # Lines 125-208 are taken from izoo2rzoo.R to check 'from' and 'to'
   ####################################################################################
   x <- p
 
@@ -240,7 +241,7 @@ plot_pq.zoo <- function(p,
   ylim[2] <- ylim[2]*1.5
   plot(q, type="n", xaxt="n", xlab=xlab, ylab=ylab[2], ylim=ylim, main=main)
   drawTimeAxis(q)
-  points(q, type="o", col=cols[2], pch=q.pchs, cex=q.cex, lty=1)
+  points(q, type="o", col=cols[2], pch=q.pch, cex=q.cex, lty=1)
   grid()
 
   # Plotting P as barplot from top to bottom

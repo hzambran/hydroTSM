@@ -24,7 +24,7 @@ plot_pq(p, ...)
                 xlab="Time", ylab=c("P", "Q"), 
                 main="Precipitation and Streamflows",
                 leg.title="",  leg.text=c("P", "Q"),
-                cols=c("blue", "black"), q.pch=16, q.cex=0.3)
+                cols=c("blue", "black"), q.pch=16, q.cex=0.3, ...)
 
 }
 %- maybe also 'usage' for other objects documented here.
