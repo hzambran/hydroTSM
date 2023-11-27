@@ -119,7 +119,7 @@ plot_pq.zoo <- function(p,
   } else subdaily.ts <- FALSE
   
   ####################################################################################
-  # Lines 125-208 are taken from izoo2rzoo.R to check 'from' and 'to'
+  # Lines 126-209 are taken from izoo2rzoo.R to check 'from' and 'to'
   ####################################################################################
   x <- p
 
@@ -220,13 +220,13 @@ plot_pq.zoo <- function(p,
 
     if (length(p.na.index) > 0) {
       if (na.fill == "linear") {
-        p <- na.approx(p)
-      } else p <- na.spline(p)
+        p <- zoo::na.approx(p)
+      } else p <- zoo::na.spline(p)
     } # IF end
     if (length(q.na.index) > 0) {
       if (na.fill == "linear") {
-        q <- na.approx(q)
-      } else q <- na.spline(q)
+        q <- zoo::na.approx(q)
+      } else q <- zoo::na.spline(q)
     } # IF end
   } # IF end
 

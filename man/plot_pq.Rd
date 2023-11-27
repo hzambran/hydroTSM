@@ -14,7 +14,7 @@
  Plot precipitation and streamflow time series in the same figure.
 }
 \description{
-It takes an irregular zoo object (with non-existing values for some dates) and converts it into a regularly spaced zoo object within the time period defined by \code{from} and \code{to}, by filling the missing dates with \sQuote{NA}
+Given a time series of precipitation and streamflow, this function plots the two time series in the same figure, streamflows as a normal time series and preciitation as bars comming from the upper part of the plotting window. 
 }
 \usage{
 plot_pq(p, ...)
