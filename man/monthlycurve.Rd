@@ -157,7 +157,7 @@ If the output monthlycurve present some mixed or not legible characters, you mig
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{monthlyfunction}}
+\code{\link{plot_pq}}, \code{\link{hydroplot}}, \code{\link{climograph}}, \code{\link{fdc}}, \code{\link{fdcu}}, \code{\link{monthlyfunction}}
 }
 \examples{
 ######################
@@ -178,11 +178,8 @@ m <- monthlycurve(q, pcp=p, labels=FALSE)
 
 ## Plotting a monthlycurve without precipitation data
 m <- monthlycurve(q)
-
-
-
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{manip}
+\keyword{graphs}
 %%\keyword{ ~kwd2 }
