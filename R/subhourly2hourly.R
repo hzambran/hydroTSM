@@ -1,7 +1,7 @@
 # File subhourly2hourly.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2021-2022 Mauricio Zambrano-Bigiarini
+# Copyright 2021-2023 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -26,13 +26,14 @@ subhourly2hourly <-function(x, ...) UseMethod("subhourly2hourly")
 ################################################################################
 # Started: 30-Jun-2021                                                         #
 # Updates: 08-Oct-2022 ; 15-Oct-2022                                           #
+#          27-Nov-2023                                                         #
 ################################################################################
-subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, ...) {
+subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo'")
 
-  subhourly2hourly.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
+  subhourly2hourly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, ...)
 
 } # 'subhourly2hourly.default' end
 
@@ -42,8 +43,9 @@ subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, ...) {
 ################################################################################
 # Started: 30-Jun-2021                                                         #
 # Updates: 08-Oct-2022 ; 09-Oct-2022 ; 15-Oct-2022                             #
+#          27-Nov-2023                                                         #
 ################################################################################
-subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, ...) {
+subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
 
     # testing the existence of 'na.rm' argument
     #args <- list(...)
@@ -60,11 +62,31 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, ...) {
     # Getting the time zone of 'x'
     ltz <- format(time(x), "%Z")[1]
 
-    # 'as.numeric' is necessary for being able to change the names to the output
-    h <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d %H"), FUN=FUN, na.rm= na.rm, ...)
+    # Computing the Hourly time series 
+    tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d %H"), FUN=FUN, na.rm= na.rm, ...)
 
     # Restoring time(x) to a complete POSIX format
-    h <- zoo(coredata(h), as.POSIXct(time(h), format="%Y-%m-%d %H", tz=ltz ))
+    tmp <- zoo(coredata(tmp), as.POSIXct(time(tmp), format="%Y-%m-%d %H", tz=ltz ))
+
+
+    # Removing annual values in the output object for days with 
+    # more than 'na.rm.max' percentage of NAs in a given day
+    if ( na.rm & (na.rm.max != 0) ) {
+
+      # Checking that 'na.rm.max' is in [0, 1]
+      if ( (na.rm.max <0) | (na.rm.max <0) )
+        stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+
+      # Computing the percentage of missing values in each hour
+      na.pctg <- cmv(x, tscale="hourly", tz=tz)
+
+      # identifying hours with a percentage of missing values higher than 'na.rm.max'
+      na.pctg.index <- which( na.pctg >= na.rm.max)
+
+      # Setting as NA all the days with a percentage of missing values higher than 'na.rm.max'
+      tmp[na.pctg.index] <- NA 
+    } # IF end
+
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
@@ -86,6 +108,7 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, ...) {
 ################################################################################
 # Started: 30-Jun-2021                                                         #
 # Updates: 23-Aug-2022 ; 08-Oct-2022 ; 15-Oct-2022                             #
+#          27-Nov-2023                                                         #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -100,9 +123,9 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, ...) {
 #             ONLY required when class(dates)=="factor" or "numeric"
 # 'out.fmt' : character, for selecting if the result will be 'numeric' or 'zoo'. Valid values are: c('numeric', 'zoo')
 # 'verbose'      : logical; if TRUE, progress messages are printed
-subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, 
+subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0, 
                                         dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                                out.fmt="zoo", verbose=TRUE,...) {
+				                        out.fmt="zoo", verbose=TRUE,...) {
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
@@ -143,7 +166,7 @@ subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE,
   
   ##############################################################################
   
-  z <- subhourly2hourly.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
+  z <- subhourly2hourly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, ...)
     
   if (out.fmt == "numeric") {
      snames      <- colnames(z)
@@ -163,15 +186,16 @@ subhourly2hourly.data.frame <- function(x, FUN, na.rm=TRUE,
 ################################################################################
 # Started: 30-Jun-2021                                                         #
 # Updates: 09-Oct-2022 ; 15-Oct-2022                                           #
+#          27-Nov-2023                                                         #
 ################################################################################
-subhourly2hourly.matrix  <- function(x, FUN, na.rm=TRUE,
+subhourly2hourly.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
                                      dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
-				                             out.fmt="zoo", verbose=TRUE,...) {
+				                     out.fmt="zoo", verbose=TRUE,...) {
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
-   subhourly2hourly.data.frame(x=x, FUN=FUN, na.rm=na.rm,
+   subhourly2hourly.data.frame(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max,
                                dates=dates, date.fmt=date.fmt,
-			                         out.fmt=out.fmt, verbose=verbose,...)
+			                   out.fmt=out.fmt, verbose=verbose,...)
 
 } # 'subhourly2hourly.matrix  ' END

@@ -22,15 +22,15 @@ Generic function for transforming a sub-HOURLY time series into an HOURLY one
 \usage{
 subhourly2hourly(x, ...)
 
-\method{subhourly2hourly}{default}(x, FUN, na.rm = TRUE, ...)
+\method{subhourly2hourly}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
 
-\method{subhourly2hourly}{zoo}(x, FUN, na.rm = TRUE, ...)
+\method{subhourly2hourly}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
 
-\method{subhourly2hourly}{data.frame}(x, FUN, na.rm = TRUE,
+\method{subhourly2hourly}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0,
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 
-\method{subhourly2hourly}{matrix}(x, FUN, na.rm = TRUE,
+\method{subhourly2hourly}{matrix}(x, FUN, na.rm=TRUE, na.rm.max=0,
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
            verbose= TRUE, ...)
 }
@@ -47,6 +47,9 @@ Function that have to be applied for transforming from sub-hourly to hourly time
 Logical. Should missing values be removed? \cr
 -) \kbd{TRUE} : the hourly values  are computed considering only those values different from NA \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA sub-hourly value within a day, the corresponding hourly value(s) will be NA as well
+}
+  \item{na.rm.max}{
+Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each hour to keep the hourly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given hour is larger or equal than \code{na.rm.max} the corresponding hourly value will be \code{NA}.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each column of \code{x} (e.g., gauging station) \cr
