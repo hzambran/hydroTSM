@@ -267,4 +267,11 @@ stock.data <- read.csv(quote, as.is=TRUE)
 
 # Plot as calendar heatmap
 calendarHeat(stock.data$Date, stock.data$Adj.Close, varname="MSFT Adjusted Close")
+
+data(KarameaAtGorgeQts)
+x <- KarameaAtGorgeQts
+x <- window(x, start="1980-01-01", end="1985-12-31")
+dates <- time(x)
+values <- coredata(x)
+calendarHeat(dates=dates, values=values)
 }
