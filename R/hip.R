@@ -9,12 +9,13 @@
 ################################################################################       
 # Purpose: Given any starting and ending date/time objects, it generates:      #
 #        1) a vector with all the hours between the two dates, OR              #
-#	 2) the amount of hours between the two date/time objects                    #
+#	 2) the amount of hours between the two date/time objects                  #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 2008                                                                #
 # Updates: 29-May-2013                                                         #
 #          07-Jul-2022 ; 09-Oct-2022                                           #
+#          27-Nov-2023                                                         #
 ################################################################################
 
 # 'from'    : Character indicating the starting date/time object for computing the number of hours.
@@ -37,7 +38,7 @@ hip <- function(from, to, date.fmt="%Y-%m-%d %H", out.type="seq", tz="UTC") {
         stop("Invalid argument: 'out.type' must be of class 'seq' or 'nmbr'")
         
      # Converting 'from' into a Date object (if necessary)
-     if (is.na(match(class(from), c("POSIXct", "POSIXt")))) {
+     if ( !(is(from, "POSIXct")) | !(is(from, "POSIXt")) ) {
        from.bak <- from
        from     <- as.POSIXct(from, format=date.fmt, tz=tz)
      } # IF end
@@ -48,7 +49,7 @@ hip <- function(from, to, date.fmt="%Y-%m-%d %H", out.type="seq", tz="UTC") {
             ") is not compatible with 'date.ftm' (", date.fmt, ") !")
      
      # Converting 'to' into a Date object (if necessary)
-     if (is.na(match(class(to), c("POSIXct", "POSIXt")))) {
+     if ( !(is(to, "POSIXct")) | !(is(to, "POSIXt")) ) {
        to.bak <- to
        to     <- as.POSIXct(to, format=date.fmt, tz=tz)
      } # IF end
