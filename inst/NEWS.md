@@ -87,8 +87,7 @@ NEWS/ChangeLog for hydroTSM
         o 'season2names' : fixed typo: 'autumm' -> 'autumn' (thanks to Belinda Wilson !)
 
 ## Removed functions
-        o hydrokrige, mspplot, gists2spt: they were deleted due to CRAN warning about the retirement (archiving) of rgdal, rgeos and maptools during October 2023, which forced to remove 'sp', 'gstat', 'automap', 'maptools', 'rgdal' packages from from DESCRIPTION and NAMESPACE files. These functions should be available in other spatial R packages (e.g., terra)
-        o 'hydrokrige'        : flagged as 'deprecated' (in the future it will be improved and moved into a different package)
+        o hydrokrige, mspplot, gists2spt, hypsometric: they were deleted due to CRAN warning about the retirement (archiving) of rgdal, rgeos and maptools during October 2023, which forced to remove 'sp', 'gstat', 'automap', 'maptools', 'rgdal' packages from from DESCRIPTION and NAMESPACE files. These functions should be available in other spatial R packages (e.g., terra)
 
 ## Removed datasets
         o EbroCatchmentsCHE, EbroDEM1000m, EbroPPgis: they were deleted due to CRAN warning about the retirement (archiving) of rgdal, rgeos and maptools during October 2023, which forced to remove 'sp', 'gstat', 'automap', 'maptools', 'rgdal' packages from from DESCRIPTION and NAMESPACE files. These datasets will be available in other upcoming spatial R package developed for managing raster time series  (e.g., terra)
