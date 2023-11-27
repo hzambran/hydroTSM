@@ -82,13 +82,15 @@ cmv <-function(x, ...) UseMethod("cmv")
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates: 28-Jul-2023 ; 03-Aug-2023                                           #
+# Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #
 ################################################################################
 cmv.default <- function(x, 
-	                      tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                      out.type=c("percentage", "amount"),
-	                      dec=3, 
-                        start="00:00:00", start.fmt= "%H:%M:%S", tz,
+	                    tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
+	                    out.type=c("percentage", "amount"),
+	                    dec=3, 
+                        start="00:00:00", 
+                        start.fmt= "%H:%M:%S", 
+                        tz,
                         ...) {
 
   # Checking that 'x' is a zoo object
@@ -100,7 +102,8 @@ cmv.default <- function(x,
   # checking 'out.type'
   out.type <- match.arg(out.type)
 
-  cmv.zoo(x, tscale=tscale, out.type=out.type, dec=dec)
+  cmv.zoo(x, tscale=tscale, out.type=out.type, dec=dec,
+          start=start, start.fmt=start.fmt, ...)
      
 } # 'cmv.default' end
 
@@ -112,13 +115,15 @@ cmv.default <- function(x,
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates: 28-Jul-2023 ; 03-Aug-2023                                           #
+# Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #
 ################################################################################
 cmv.zoo <- function(x, 
-	                  tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                  out.type=c("percentage", "amount"),
-	                  dec=3,
-                    start="00:00:00", start.fmt= "%H:%M:%S", tz,
+	                tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
+	                out.type=c("percentage", "amount"),
+	                dec=3,
+                    start="00:00:00", 
+                    start.fmt= "%H:%M:%S", 
+                    tz,
                     ...) {
   # checking 'tscale'
   tscale <- match.arg(tscale)
@@ -131,8 +136,8 @@ cmv.zoo <- function(x,
     stop("Invalid argument: 'dec' must be integer !")
 
   # Automatic detection of 'tz'
-  #if (missing(tz)) tz <- ""
-  if (missing(tz)) tz <- format(time(x), "%Z")[1]
+  if (missing(tz)) tz <- ""
+  #if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
   # Analysis of days different from 00:00 to 23:59 hrs
     if ( start != "00:00:00" ) {
@@ -229,7 +234,7 @@ cmv.zoo <- function(x,
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates: 28-Jul-2023 ; 03-Aug-2023                                           #
+# Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -244,9 +249,11 @@ cmv.zoo <- function(x,
 #             ONLY required when class(dates)=="factor" or "numeric"
 # 'verbose' : logical; if TRUE, progress messages are printed
 cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                         out.type=c("percentage", "amount"),
-	                         dec=3,
-                           start="00:00:00", start.fmt= "%H:%M:%S", tz,
+	                       out.type=c("percentage", "amount"),
+	                       dec=3,
+                           start="00:00:00", 
+                           start.fmt= "%H:%M:%S", 
+                           tz,
                            dates=1, 
                            date.fmt="%Y-%m-%d", ...) {
                                     
@@ -280,7 +287,8 @@ cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "
           }, error = function(msg){return(NA)}
           )
   
-  cmv.zoo(x=x, tscale=tscale, out.type=out.type, dec=dec, start=start, start.fmt=start.fmt, tz=tz)
+  cmv.zoo(x=x, tscale=tscale, out.type=out.type, dec=dec, 
+          start=start, start.fmt=start.fmt, tz=tz)
 
  } #'cmv.data.frame' END
 
@@ -291,12 +299,14 @@ cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates: 28-Jul-2023 ; 03-Aug-2023                                           #
+# Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #
 ################################################################################
 cmv.matrix  <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                      out.type=c("percentage", "amount"),
-	                      dec=3,
-                        start="00:00:00", start.fmt= "%H:%M:%S", tz,
+	                    out.type=c("percentage", "amount"),
+	                    dec=3,
+                        start="00:00:00", 
+                        start.fmt= "%H:%M:%S", 
+                        tz,
                         dates=1, 
                         date.fmt="%Y-%m-%d", ...) {
 
