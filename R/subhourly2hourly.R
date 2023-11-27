@@ -91,15 +91,15 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
-    nan.index <- which(is.nan(h))
-    if ( length(nan.index) > 0 ) h[nan.index] <- NA
+    nan.index <- which(is.nan(tmp))
+    if ( length(nan.index) > 0 ) tmp[nan.index] <- NA
   
     # Replacing all the Inf and -Inf by NA's
     # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
-    inf.index <- which(is.infinite(h))
-    if ( length(inf.index) > 0 ) h[inf.index] <- NA      
+    inf.index <- which(is.infinite(tmp))
+    if ( length(inf.index) > 0 ) tmp[inf.index] <- NA      
 
-    return(h)
+    return(tmp)
 
 } # 'subhourly2hourly.zoo' end
 
