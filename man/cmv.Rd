@@ -14,7 +14,7 @@
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Count Missing Data
+Counting Missing Values
 }
 \description{
 Generic function for counting the percentage/amount of missing values in a zoo object, using a user-defined temporal scale.
