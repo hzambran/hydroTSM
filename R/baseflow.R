@@ -1,6 +1,8 @@
 # File baseflow.R
+# File plot_p_q.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
+#                                 http://www.rforge.net/hydroTSM/ 
 # Copyright 2012-2018 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
@@ -69,8 +71,8 @@ baseflow <- function(x,
     if (na.fill == "none") {
       stop("Invalid argument: 'x' has some NA values !!")
     } else if (na.fill == "linear") {
-        x <- na.approx(x)
-      } else x <- na.spline(x)
+        x <- zoo::na.approx(x)
+      } else x <- zoo::na.spline(x)
   } # IF end
 
   # Storing and  then removing the possible time attribute
