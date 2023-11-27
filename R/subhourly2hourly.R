@@ -60,7 +60,8 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-hourly values")   
 
     # Getting the time zone of 'x'
-    ltz <- format(time(x), "%Z")[1]
+    #ltz <- format(time(x), "%Z")[1]
+    ltz <- ""
 
     # Computing the Hourly time series 
     tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d %H"), FUN=FUN, na.rm= na.rm, ...)
@@ -78,7 +79,7 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
         stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
 
       # Computing the percentage of missing values in each hour
-      na.pctg <- cmv(x, tscale="hourly", tz=tz)
+      na.pctg <- cmv(x, tscale="hourly", tz=ltz)
 
       # identifying hours with a percentage of missing values higher than 'na.rm.max'
       na.pctg.index <- which( na.pctg >= na.rm.max)
