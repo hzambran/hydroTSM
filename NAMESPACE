@@ -9,9 +9,8 @@ importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply,
 importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts, .index)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
 importFrom("e1071", skewness, kurtosis)
-importFrom("lattice", levelplot,
-#lattice.options, lattice.getOption, trellis.currentLayout, trellis.focus, trellis.unfocus, trellis.panelArgs
-)
+importFrom("lattice", levelplot)
+#importFrom("lattice", lattice.options, lattice.getOption, trellis.currentLayout, trellis.focus, trellis.unfocus, trellis.panelArgs)
 #importFrom("grid", grid.lines, gpar)
 
 #importFrom("maptools", readShapePoly)
@@ -26,6 +25,7 @@ S3method(annualfunction, data.frame)
 S3method(annualfunction, default)
 S3method(annualfunction, matrix)
 S3method(annualfunction, zoo)
+S3method(baseflow, zoo)
 S3method(cmv, default)
 S3method(cmv, zoo) 
 S3method(cmv, data.frame) 
