@@ -20,47 +20,54 @@ NEWS/ChangeLog for hydroTSM
 
         o 'subdaily2weekly'   : for aggregating subdaily values into weekly ones, with optional sarting time for a day.
 
-        o 'cmv'               : to compute the percentage/amounth of missing values in a zoo object, using a user-defined temporal scale.
+        o 'cmv'               : to compute the percentage/amount of missing values in a zoo object, using a user-defined temporal scale.
 
 ## New features
-        o 'hip'         :   -) new argument 'tz' to allow the user to specify the desired time zone. 
-                               By default, "tz='UTC'", while previous versions implicitly used "tz=''" (local time zone)
+        o 'hip'               : -) new argument 'tz' to allow the user to specify the desired time zone. By default, "tz='UTC'", while previous versions implicitly used "tz=''" (local time zone)
 
-        o 'hydroplot'   :   -) new argument 'dates' in order to facilitate the transformation into zoo when working with data.frame objects
-                            -) 'from' argument has a default value of NULL
-                            -) 'to' argument has a default value of NULL    
+        o 'hydroplot'         : -) new argument 'dates' in order to facilitate the transformation into zoo when working with data.frame objects
+                                -) 'from' argument has a default value of NULL
+                                -) 'to' argument has a default value of NULL    
                        
-        o 'sname2plot'  :   -) 'from' argument has a default value of NULL
-                            -) 'to' argument has a default value of NULL
+        o 'sname2plot'        : -) 'from' argument has a default value of NULL
+                                -) 'to' argument has a default value of NULL
 
-        o 'climograph'  :   -) now it plots the minimum and maximum temperature when they are provided 
-                            -) new argument 'start.month' to choose the starting month for the climograph (1=Jan, 12=Dec).
-                            -) new argument 'tmn.col' to choose the color to be used to plot the minimum monthly temperature
-                            -) new argument 'tmx.col' to choose the color to be used to plot the maximum monthly temperature
-                            -) new argument 'pcp.labels' to decide whether to show the numeric values above the monthly precipitation bars
-                            -) new argument 'tmean.labels' to decide whether to show the numeric values above the monthly mean temperature lines
-                            -) new argument 'tmx.labels' to decide whether to show the numeric values above the monthly maximum temperature lines
-                            -) new argument 'tmn.labels' to decide whether to show the numeric values above the monthly minimum temperature lines
-                            -) new argument 'pcp.labels.cex' to specify the relative scaling of the monthly precipitation values shown in the climograph
-                            -) new argument 'temp.labels.cex' to specify the relative scaling of the monthly air temperature values (mean, maximum, minimum) shown in the climograph
-                            -) new arguments 'temp.labels.dx' and 'temp.labels.dy' to specify the position of air temperature labels
-                            -) new argument 'plot.pcp.probs' to decide whether to show uncertainty values around the monthly mean precipitation values
-                            -) new argument 'pcp.probs' to define the quantile values used to show uncertainty values around the monthly mean precipitation values
-                            -) new argument 'plot.temp.probs' to decide whether to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
-                            -) new argument 'temp.probs' to define the quantile values used to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
-                            -) new argument 'temp.probs.col' to define the colors used to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
-                            -) new argument 'temp.probs.alpha' to define the transparency level applied to 'temp.probs.col'
-                            -) new arguments 'lat' and 'lon' to define and show the latitude and longitude, respectively, for which the climograph was plotted.
+        o 'climograph'        :  -) now it plots the minimum and maximum temperature when they are provided 
+                                 -) new argument 'start.month' to choose the starting month for the climograph (1=Jan, 12=Dec).
+                                 -) new argument 'tmn.col' to choose the color to be used to plot the minimum monthly temperature
+                                 -) new argument 'tmx.col' to choose the color to be used to plot the maximum monthly temperature
+                                 -) new argument 'pcp.labels' to decide whether to show the numeric values above the monthly precipitation bars
+                                 -) new argument 'tmean.labels' to decide whether to show the numeric values above the monthly mean temperature lines
+                                 -) new argument 'tmx.labels' to decide whether to show the numeric values above the monthly maximum temperature lines
+                                 -) new argument 'tmn.labels' to decide whether to show the numeric values above the monthly minimum temperature lines
+                                 -) new argument 'pcp.labels.cex' to specify the relative scaling of the monthly precipitation values shown in the climograph
+                                 -) new argument 'temp.labels.cex' to specify the relative scaling of the monthly air temperature values (mean, maximum, minimum) shown in the climograph
+                                 -) new arguments 'temp.labels.dx' and 'temp.labels.dy' to specify the position of air temperature labels
+                                 -) new argument 'plot.pcp.probs' to decide whether to show uncertainty values around the monthly mean precipitation values
+                                 -) new argument 'pcp.probs' to define the quantile values used to show uncertainty values around the monthly mean precipitation values
+                                 -) new argument 'plot.temp.probs' to decide whether to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
+                                 -) new argument 'temp.probs' to define the quantile values used to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
+                                 -) new argument 'temp.probs.col' to define the colors used to show uncertainty values around the monthly mean temperature values (and also around maximum and minimum temperature, when provided) 
+                                 -) new argument 'temp.probs.alpha' to define the transparency level applied to 'temp.probs.col'
+                                 -) new arguments 'lat' and 'lon' to define and show the latitude and longitude, respectively, for which the climograph was plotted.
 
-        o '(sub)daily2monthly': -) new argument 'na.rm.max' to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object.
+        o 'izoo2rzoo'         :  -) improved handling of sub-daily time series
+                                 -) new argument 'tz' to correctly handle sub-daily zoo objects
+                                 -) default value for 'date.fmt' argument was changed from "%Y-%m-%d" to missing (it is automatically detected based on the sampling frequency of 'x')
+                                 -) default value for 'tstep' argument was changed from "days" to missing (it is automatically detected based on the sampling frequency of 'x')
+                                
+        o '(sub)daily2monthly':  -) new argument 'na.rm.max' to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object.
 
-        o 'subdaily2daily'    : -) new argument 'start.fmt' to indicate the format used to provide 'start'
-                                -) new argument 'tz' to indicate the time zone used for both 'start' argument and the datetimes of the object
-
-        o 'izoo2rzoo'         : -) improved handling of sub-daily time series
-                                -) new argument 'tz' to correctly handle sub-daily zoo objects (e.g., forcing UTC as time zone instead of the local time zone).
-                                -) default value for 'date.fmt' argument was changed from "%Y-%m-%d" to missing (it is automatically detected based on the sampling frequency of 'x')
-                                -) default value for 'tstep' argument was changed from "days" to missing (it is automatically detected based on the sampling frequency of 'x')
+        o 'subdaily2daily'    :  -) new argument 'start.fmt' to indicate the format used to provide 'start'.
+                                 -) new argument 'tz' to indicate the time zone used for both 'start' argument and the datetimes of the object.
+                                 -) new argument 'na.rm.max' to define the maximum percentage of missing values allowed in each day to keep the daily aggregated value in the output object.
+                                
+        o 'daily2annual'      :  -) new argument 'na.rm.max' to  to define the maximum percentage of missing values allowed in each year.
+        
+        o 'daily2monthly'     :  -) new argument 'na.rm.max' to  to define the maximum percentage of missing values allowed in each month.
+        
+        o 'subdaily2annual'   :  -) new argument 'na.rm.max' to  to define the maximum percentage of missing values allowed in each year to keep the yearly aggregated value in the output object.
+        
 
 ## Changes in datasets
 
@@ -68,9 +75,9 @@ NEWS/ChangeLog for hydroTSM
 
 ## Bug fixes
 
-        o 'hydroplot'    : -) now works correctly with zoo objects that have multiple columns, and separate (internal) functions are provided for zoo and data.frame objects.
+        o 'hydroplot'    : -) now it works correctly with zoo objects that have multiple columns, and separate (internal) functions are provided for zoo and data.frame objects.
      
-        o 'sname2plot'   : -) now works correctly with zoo objects that have multiple columns, and separate (internal) functions are provided for zoo and data.frame objects.
+        o 'sname2plot'   : -) now it works correctly with zoo objects that have multiple columns, and separate (internal) functions are provided for zoo and data.frame objects.
     
         o 'daily2annual' : -) for zoo objects, dates are correctly given in the output when FUN=min or FUN=max (e.g. for getting the date of the annual maximum or minimum)
                            -) the '...' argument is now passed to FUN (thanks to Marfa Saldivia !))
@@ -81,7 +88,7 @@ NEWS/ChangeLog for hydroTSM
 
 ## Removed functions
         o hydrokrige, mspplot, gists2spt: they were deleted due to CRAN warning about the retirement (archiving) of rgdal, rgeos and maptools during October 2023, which forced to remove 'sp', 'gstat', 'automap', 'maptools', 'rgdal' packages from from DESCRIPTION and NAMESPACE files. These functions should be available in other spatial R packages (e.g., terra)
-        o 'hydrokrige'        : -) flagged as 'deprecated' (in the future it will be improved and moved into a different package)
+        o 'hydrokrige'        : flagged as 'deprecated' (in the future it will be improved and moved into a different package)
 
 ## Removed datasets
         o EbroCatchmentsCHE, EbroDEM1000m, EbroPPgis: they were deleted due to CRAN warning about the retirement (archiving) of rgdal, rgeos and maptools during October 2023, which forced to remove 'sp', 'gstat', 'automap', 'maptools', 'rgdal' packages from from DESCRIPTION and NAMESPACE files. These datasets will be available in other upcoming spatial R package developed for managing raster time series  (e.g., terra)
