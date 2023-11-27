@@ -92,9 +92,9 @@ further arguments passed to or from other methods. Not used yet.
   \item{If \code{out.type="all"}}{the 3 baseflows computed after each pass of the filter are returned in a matrix or zoo object.}
 %% ...
 }
-%%\references{
-%% ~put references to the literature/web site here ~
-%%}
+\references{
+\cite{Arnold, J. G., & Allen, P. M. (1999). Automated methods for estimating baseflow and ground water recharge from streamflow records. JAWRA Journal of the American Water Resources Association, 35(2), 411--424. doi: 10.1111/j.1752-1688.1999.tb03599.x} \cr
+}
 \author{
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
