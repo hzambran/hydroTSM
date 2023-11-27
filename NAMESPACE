@@ -5,7 +5,7 @@ importFrom("utils", read.table, write.table, write.csv, write.csv2, installed.pa
 importFrom("methods", as, hasArg, is, slot) 
 importFrom("graphics", barplot, grid, axTicks, Axis, abline, axis, boxplot, hist, legend, lines, mtext, par, plot)
 
-importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply, index, "time<-")
+importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply, index, "time<-", na.approx, na.spline)
 importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts, .index)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
 importFrom("e1071", skewness, kurtosis)
@@ -80,6 +80,7 @@ S3method(monthlyfunction, default)
 S3method(monthlyfunction, zoo)
 S3method(monthlyfunction, data.frame)
 S3method(monthlyfunction, matrix) 
+S3method(plot_pq, zoo)
 S3method(seasonalfunction, default) 
 S3method(seasonalfunction, zoo) 
 S3method(seasonalfunction, data.frame)
