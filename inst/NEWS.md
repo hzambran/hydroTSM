@@ -4,6 +4,14 @@ NEWS/ChangeLog for hydroTSM
 # Changes in version 0.7-0 (under-development)
 
 ## New functions
+        o 'baseflow'          : for computing baseflow using the filter proposed by Arnold and Allen (1999). 
+
+        o 'plot_pq'           : for plotting precipitation and streamflow time series in the same figure.
+
+        o 'monthlycurve'      : for plotting monthly variation of streamflow (and optionally precipitation) values, with uncertainty bound around mean values.
+
+        o 'calendarHeat'      : for displaying time-series as a calendar heatmap
+
         o 'subhourly2hourly'  : for aggregating sub-hourly values into hourly ones.
 
         o 'subhourly2nminutes': for aggregating sub-hourly values into n-minutes ones.
@@ -11,8 +19,6 @@ NEWS/ChangeLog for hydroTSM
         o 'daily2weekly'      : for aggregating (sub)daily values into weekly ones.
 
         o 'subdaily2weekly'   : for aggregating subdaily values into weekly ones, with optional sarting time for a day.
-
-        o 'monthlycurve'      : for plotting monthly variation of streamflow (and optionally precipitation) values, with uncertainty bound around mean values.
 
         o 'cmv'               : to compute the percentage/amounth of missing values in a zoo object, using a user-defined temporal scale.
 
