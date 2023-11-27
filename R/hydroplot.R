@@ -1,6 +1,7 @@
 # File hydroplot.R
-# Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM 
-#                                 http://cran.r-project.org/web/packages/hydroTSM/
+# Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
+#                                 http://www.rforge.net/hydroTSM/ ; 
+#                                 https://cran.r-project.org/package=hydroTSM
 # Copyright 2008-2020 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
