@@ -21,19 +21,41 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 2013                                                                #
 # Updates: 16-May-2018                                                         #
+#          26-Nov-2023                                                         #
 ################################################################################
 
-# 'x'       : zoo or numeric object with streamflow records. The suggested time 
+# 'x'       : zoo object with streamflow records. The suggested time 
 #             frequency should be hourly or daily, but the algorithm will work  
 #             with any time frequency
 # 'beta'    : numeric representing the filter parameter. Default value is 0.925  
 #             as recommended by Arnold & Allen (1999)
-# 'out.type': Character indicating the type of result that is given by this function.
-#             Valid values are:
-#             -) "last" => only the baseflow computed after the third pass 
-#                          of the filter is returned
-#             -) "all " => the 3 baseflows computed after each pass of the 
-#                          filter are returned in a matrix or zoo object
+# 'from'       : Character indicating the starting date for creating the regularly 
+#                spaced zoo object. The default value corresponds to the date of 
+#                the first element of \code{x} \cr
+#                It has to be in the format indicated by \code{date.fmt}. 
+# 'to'         : Character indicating the ending date for creating the regularly 
+#                spaced zoo object. The default value corresponds to the date of 
+#                the last element of \code{x} \cr
+#                It has to be in the format indicated by \code{date.fmt}.
+# 'date.fmt'   : Character indicating the format in which the dates are stored in 
+#                \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. 
+#                See \sQuote{Details} section in \code{\link[base]{strptime}}.
+#                By default, \code{date.fmt} is missing, and it is automatically 
+#                set to \kbd{\%Y-\%m-\%d} when \code{time(x)} is \code{Date} 
+#                object, and set to \kbd{\%Y-\%m-\%d \%H:\%M:\%S} when \code{x} 
+#                is a sub-daily zoo object.
+# 'tz'         : Character, with the specification of the time zone used for 
+#                \code{from}, \code{to}. System-specific (see time zones), 
+#                but \code{""} is the current time zone, and \code{"GMT"} is 
+#                UTC (Universal Time, Coordinated). 
+#                See \code{\link[base]{Sys.timezone}} and 
+#                \code{\link[base]{as.POSIXct}}. \cr
+#                If \code{tz} is missing (the default), it is automatically set 
+#                to the time zone used in \code{time(x)}. \cr
+#                This argument can be used when working with sub-daily zoo objects
+#                to force using  time zones other than the local time zone for 
+#                \code{from} and \code{to}. It should be used with caution, 
+#                being well aware of the time zone of the data. See examples.
 # 'na.fill' : Character indicating how to fill any NA present in 'x'.
 #             Valid values are:
 #             -) "none"   => NAs are not removed, and therefore the algorithm is 
@@ -42,22 +64,48 @@
 #                            \code{\link[zoo]{na.approx}}
 #             -) "spline" => NAs are removed by spline interpolation, using 
 #                            \code{\link[zoo]{na.spline}}
+# 'out.type': Character indicating the type of result that is given by this function.
+#             Valid values are:
+#             -) "last" => only the baseflow computed after the third pass 
+#                          of the filter is returned
+#             -) "all " => the 3 baseflows computed after each pass of the 
+#                          filter are returned in a matrix or zoo object
 # 'plot'    : logical. Indicates if the baseflow should be plotted or not. 
-#             If plotted, the original 'x' values area plotted as well
+#             If plotted, the original 'x' values are plotted as well
 # 'xcol'    : character, representing the color to be used for ploting the 
 #             streamflow time series
+#             Only used when \code{plot=TRUE}.
 # 'bfcol'   : character of lenght 3, representing the color(s) to be used for 
 #             ploting the baseflow time series. The first, second and third 
 #             element are used to represent the baseflow after the third, 
 #             second and first pass of the filter, respectively.
+#             Only used when \code{plot=TRUE}.
+# 'pch'     : numeric, representing the symbols used for ploting the streamflow 
+#             time series (both, the original series and the baseflow).
+#             Only used when \code{plot=TRUE}.
+# 'cex'     : a numerical vector giving the amount by which plotting characters 
+#             and symbols should be scaled relative to the default. 
+#             This works as a multiple of par("cex"). 
+#             See \code{\link[graphics]{plot.default}}.
+#             Only used when \code{plot=TRUE}.
+# '...'     : further arguments passed to or from other methods. Not used yet.
 
-baseflow <- function(x, 
-                     beta=0.925, 
-                     out.type=c("last", "all"), 
-                     na.fill=c("none", "linear", "spline"), 
-                     plot=FALSE, 
-                     xcol="black", 
-                     bfcol=c("blue", "darkcyan", "darkorange3")) {
+baseflow <- function(x, ...) UseMethod("baseflow")
+
+baseflow.zoo <- function(x, 
+                         beta=0.925, 
+                         from=start(x), 
+                         to=end(x),
+                         date.fmt, 
+                         tz,
+                         na.fill=c("none", "linear", "spline"), 
+                         out.type=c("last", "all"), 
+                         plot=FALSE, 
+                         xcol="black", 
+                         bfcol=c("blue", "darkcyan", "darkorange3"),
+                         pch=15,
+                         cex=0.3,
+                         ...) {
 
   # Checking 'out.type'
   out.type <- match.arg(out.type)
@@ -65,11 +113,112 @@ baseflow <- function(x,
   # Checking 'na.fill'
   na.fill <- match.arg(na.fill)
 
-  # Chaecking that 'x' does not have any missing value
+  # sampling frequency of 'x'           
+  x.freq <- sfreq(x)
+  
+  # Checking if 'x is a sub-daily zoo object  
+  if (x.freq %in% c("minute","hourly") ) {
+    subdaily.ts <- TRUE
+  } else subdaily.ts <- FALSE
+
+  ####################################################################################
+  # Lines 119-202 are taken from izoo2rzoo.R to check 'from' and 'to'
+  ####################################################################################
+
+  # Automatic detection of 'date.fmt'
+  if ( missing(date.fmt) ) {
+    if ( subdaily.ts ) {
+      date.fmt <- "%Y-%m-%d %H:%M:%S"
+    } else date.fmt <- "%Y-%m-%d"
+  } # IF end
+
+  # Automatic detection of 'tz'
+  missingTZ <- FALSE
+  if (missing(tz)) {
+    missingTZ <- TRUE
+    tz        <- ""
+  } # IF end
+      
+  ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
+           grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |
+           grepl("%p", date.fmt, fixed=TRUE) | grepl("%X", date.fmt, fixed=TRUE), 
+           subdaily.date.fmt <- TRUE, subdaily.date.fmt <- FALSE )
+
+  # If the index of 'x' is character, it is converted into a Date object
+  if ( class(time(x))[1] %in% c("factor", "character") )
+    #ifelse(subdaily.date.fmt, time(x) <- as.POSIXct(time(x), format=date.fmt, tz=tz),
+    ifelse(subdaily.date.fmt, time(x) <- as.POSIXct(time(x), format=date.fmt),
+                              time(x) <- as.Date(time(x), format=date.fmt) )
+
+  # If 'from' was given as Date, but 'x' is sub-daily
+  if (!missing(from)) {
+    if (from > to) stop("Invalid argument: 'from > to' !")
+
+    if (from > end(x)) stop("Invalid argument: 'from > end(x)' !")
+
+    if ( subdaily.date.fmt & !(grepl(":", from, fixed=TRUE) ) )
+      from <- paste(from, "00:00:00")
+
+    if ( subdaily.date.fmt & missingTZ )
+      from <- as.POSIXct(from, tz=tz)
+  } # IF end
+
+  # If 'to' was given as Date, but 'x' is sub-daily
+  if (!missing(to)) {
+    if (to < from ) stop("Invalid argument: 'to < from' !")
+
+    if (to < start(x) ) stop("Invalid argument: 'to < start(x)' !")
+
+    if ( subdaily.date.fmt & !(grepl(":", to, fixed=TRUE) ) )
+      to <- paste(to, "00:00:00")
+
+    if ( subdaily.date.fmt & missingTZ )
+      to <- as.POSIXct(to, tz=tz)
+  } # IF end
+        
+  # checking that date.fmt and the sampling frequency of 'x' are compatible 
+  if ( subdaily.ts ) {
+    if (!subdaily.date.fmt) 
+      stop("Invalid argument: 'date.fmt' (", date.fmt, 
+           ") is not compatible with a sub-daily time series !!")
+  } else {
+           if (subdaily.date.fmt) {
+             #time(x) <- as.POSIXct(time(x), tz=tz)
+             time(x) <- as.POSIXct(time(x))
+             warning("'date.fmt' (", date.fmt, ") is sub-daily, while 'x' is a '", 
+                     x.freq, "' ts => 'time(x)=as.POSIXct(time(x), tz)'")
+           } # IF end    
+          } # ELSE end
+
+  if (subdaily.ts) {
+    dt <-  try(as.POSIXct(from, format=date.fmt, tz=tz))
+    #dt <-  try(as.POSIXct(from, format=date.fmt))
+  } else dt <- try(as.Date(from, format=date.fmt))
+  if("try-error" %in% class(dt) || is.na(dt)) {
+    stop("Invalid argument: format of 'from' is not compatible with 'date.fmt' !")
+  } else if (subdaily.ts) {
+      from <- as.POSIXct(from, format=date.fmt, tz=tz)
+      #from <- as.POSIXct(from, format=date.fmt)
+    } else from <- as.Date(from, format=date.fmt)
+
+  if (subdaily.ts) {
+    dt <-  try(as.POSIXct(to, format=date.fmt, tz=tz))
+  } else dt <- try(as.Date(to, format=date.fmt))
+  if("try-error" %in% class(dt) || is.na(dt)) {
+    stop("Invalid argument: format of 'to' is not compatible with 'date.fmt' !")
+  } else if (subdaily.ts) {
+      to <- as.POSIXct(to, format=date.fmt, tz=tz)
+    } else to <- as.Date(to, format=date.fmt)
+  ####################################################################################
+
+  # Selecting only those data within the time period between 'from' and 'to'
+  x <- window(x, start=from, end=to)
+
+  # Checking that 'x' does not have any missing value
   na.index <- which(is.na(x))
   if (length(na.index) > 0) {
     if (na.fill == "none") {
-      stop("Invalid argument: 'x' has some NA values !!")
+      stop("Invalid argument: 'x' has some NA values. See 'na.fill' argument !!")
     } else if (na.fill == "linear") {
         x <- zoo::na.approx(x)
       } else x <- zoo::na.spline(x)
@@ -78,15 +227,12 @@ baseflow <- function(x,
   # Storing and  then removing the possible time attribute
   HasTime <- FALSE
   if ( is.zoo(x) ) {
-    print("hola2")
     HasTime <- TRUE
     xtime   <- time(x)
-    x       <- coredata(x)
+    x       <- zoo::coredata(x)
   } # if END
 
   # Initializing some parameters of the algorithm
-  print("hola")
-  print(x)
   n  <- length(x)
   f1 <- beta
   f2 <- (1+beta) / 2
@@ -170,10 +316,10 @@ baseflow <- function(x,
       plot(x, ylab="Q", type="n", xaxt="n", xlab="Time")
       drawTimeAxis(x)
       grid()
-      points(x, type="o", col=xcol, pch=15, lty=1, cex=0.5)
+      points(x, type="o", col=xcol, pch=15, lty=1, cex=cex)
       if (out.type=="all") {
-        points(baseflow1, type="o", col=bfcol[3], pch=15, lty=1, cex=0.5)
-        points(baseflow2, type="o", col=bfcol[2], pch=15, lty=1, cex=0.5)
+        points(baseflow1, type="o", col=bfcol[3], pch=pch, lty=1, cex=cex)
+        points(baseflow2, type="o", col=bfcol[2], pch=pch, lty=1, cex=cex)
 
         legend.text <- c("Streamflow", "Baseflow 3rd pass", "Baseflow 2nd pass", "Baseflow 1st pass")
         legend.cols <- c(xcol, bfcol[1], bfcol[2], bfcol[3])
@@ -181,14 +327,14 @@ baseflow <- function(x,
           legend.text <- c("Streamflow", "Baseflow")
           legend.cols <- c(xcol, bfcol[1])
         } # ELSE end
-        points(baseflow3, type="o", col=bfcol[1], pch=15, lty=1, cex=0.5)
+        points(baseflow3, type="o", col=bfcol[1], pch=pch, lty=1, cex=cex)
     } else { # HasTime == FALSE
         plot(1:n, x, ylab="Q", type="n", xlab="Time")
         grid()
-        points(1:n, x, type="o", col=xcol, pch=15, lty=1, cex=0.5)
+        points(1:n, x, type="o", col=xcol, pch=pch, lty=1, cex=cex)
         if (out.type=="all") {
-          points(1:n, baseflow1, type="o", col=bfcol[3], pch=15, lty=1, cex=0.5)
-          points(1:n, baseflow2, type="o", col=bfcol[2], pch=15, lty=1, cex=0.5)
+          points(1:n, baseflow1, type="o", col=bfcol[3], pch=pch, lty=1, cex=cex)
+          points(1:n, baseflow2, type="o", col=bfcol[2], pch=pch, lty=1, cex=cex)
 
           legend.text <- c("Streamflow", "Baseflow 3rd pass", "Baseflow 2nd pass", "Baseflow 1st pass")
           legend.cols <- c(xcol, bfcol[1], bfcol[2], bfcol[3])
@@ -196,11 +342,11 @@ baseflow <- function(x,
             legend.text <- c("Streamflow", "Baseflow")
             legend.cols <- c(xcol, bfcol[1])
           } # ELSE end
-          points(1:n, baseflow3, type="o", col=bfcol[1], pch=15, lty=1, cex=0.5)
+          points(1:n, baseflow3, type="o", col=bfcol[1], pch=pch, lty=1, cex=cex)
       } # ELSE end
 
     legend("topright", legend = legend.text, bty="n",
-           lty=c(1,1), pch=c(15, 15), col=legend.cols,
+           lty=c(1,1), pch=c(pch, pch), col=legend.cols,
            #lty = 1:2, xjust = 1, yjust = 1,
            title = "")
   } # IF end
