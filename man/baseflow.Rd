@@ -20,11 +20,9 @@ Given a complete (without missing values) series of streamflow, this function co
 baseflow(x, ...)
 
 \method{baseflow}{zoo}(x, beta=0.925, from=start(x), to=end(x), date.fmt, tz, 
-                  na.fill=c("none", "linear", "spline"), 
-                  out.type=c("last", "all"), 
-                  plot=FALSE, xcol="black", 
-                  bfcol=c("blue", "darkcyan", "darkorange3"),
-                  pch=15, cex=0.3, ...)
+         na.fill=c("none", "linear", "spline"), out.type=c("last", "all"), 
+         plot=FALSE, xcol="black", bfcol=c("blue", "darkcyan", "darkorange3"),
+         pch=15, cex=0.3, ...)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -83,9 +81,23 @@ a numerical vector giving the amount by which plotting characters and symbols sh
 further arguments passed to or from other methods. Not used yet.
 }
 }
-%% \details{
-%% 
-%% }
+ \details{
+Although most procedures to separate baseflow from total streamflow are based on physical reasoning, some elements of all separation techniques are subjective.
+
+The digital filter technique (Nathan and McMahon, 1990) implemented in this function was originally proposed by Lyne and Hollick (1979) for signal analysis and processing. Although this technique has no true physical meaning, it is objective and reproducible. 
+
+The equation of the filter is: 
+
+q(t) = Beta*q(t-1) + [ (1+Beta)/2 ]*[ Q(t) - Q(t-1) ]
+
+where q(t) is the filtered surface runoff (quick response) at the time step t (one day), Q is the original streamflow, and Beta is the filter parameter (Beta=0.925). The value Beta=0.925 was obtained by Nathan and McMahon (1990) and Arnold et al. (1995) to give realistic results when compared to manual separation techniques.
+
+Baseflow b(t) is then computed as:
+
+b(t) = Q(t) - q(t)
+
+The filter can be passed over the streamflow data three times (forward, backward, and forward), depending on the user' selected estimates of baseflow from pilot studies. In general, each pass will result in less baseflow as a percentage of total streamflow. 
+}
 \value{
 %%  If it is a LIST, use
   \item{If \code{out.type="last"}}{(default value), only the baseflow computed after the third pass of the filter is returned.}
@@ -93,7 +105,13 @@ further arguments passed to or from other methods. Not used yet.
 %% ...
 }
 \references{
-\cite{Arnold, J. G., & Allen, P. M. (1999). Automated methods for estimating baseflow and ground water recharge from streamflow records. JAWRA Journal of the American Water Resources Association, 35(2), 411--424. doi: 10.1111/j.1752-1688.1999.tb03599.x} \cr
+\cite{Arnold, J. G., Allen, P. M., Muttiah, R., Bernhardt, G. (1995). Automated base flow separation and recession analysis techniques. Groundwater, 33(6), 1010--1018. doi:10.1111/j.1745-6584.1995.tb00046.x}.
+
+\cite{Arnold, J. G., Allen, P. M. (1999). Automated methods for estimating baseflow and ground water recharge from streamflow records. JAWRA Journal of the American Water Resources Association, 35(2), 411--424. doi:10.1111/j.1752-1688.1999.tb03599.x}.
+
+\cite{Lyne, V., Hollick, M. (1979). Stochastic time-variable rainfall-runoff modelling. Proceedings of the Hydrology and Water Resources Symposium, Perth, 10–12 September. Institution of Engineers National Conference Publication, No. 79/10, 89–-92}.
+
+\cite{Nathan, R. J., & McMahon, T. A. (1990). Evaluation of automated techniques for base flow and recession analyses. Water resources research, 26(7), 1465--1473. doi:10.1029/WR026i007p01465}.
 }
 \author{
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
@@ -110,11 +128,11 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 
 \examples{
 ######################
-## Ex1: Plotting precipitation and streamflows for the full time period of both
-##      time series.
-##      First, we load the daily Q time series for the Cauquenes en 
-##      El Arrayan catchment, where Q, [m3/s] are stored in the sixth column.
+## Ex1: Computing and plotting the baseflows for the full time period
+##      of a given time series of streamflows.
 
+## First, we load the daily Q time series for the Cauquenes en 
+## El Arrayan catchment, where Q, [m3/s] are stored in the sixth column.
 data(Cauquenes7336001)
 q <- Cauquenes7336001[, 6]
 
@@ -128,13 +146,16 @@ baseflow(q, na.fill="spline")
 baseflow(q, na.fill="spline", plot=TRUE)
 
 
+######################
 ## Ex2: Computing and plotting the daily baseflow only for a 
 ##      specific time period, from April to December 2000.
 baseflow(q, na.fill="spline", from="2000-04-01", to="2000-12-31")
 
 
-## Ex3: Computing plotting the three daily baseflows (one for each pass of the 
-##      fileter) only for a specific time period, from April to December 2000.
+######################
+## Ex3: Computing and plotting the three daily baseflows (one for each pass 
+##      of the filter) only for a specific time period, from April to December
+##      2000.
 baseflow(q, na.fill="spline", from="2000-04-01", to="2000-12-31", 
          out.type="all", plot=TRUE)
 }
