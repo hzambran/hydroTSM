@@ -7,7 +7,7 @@ importFrom("graphics", barplot, grid, axTicks, Axis, abline, axis, boxplot, hist
 importFrom("classInt", classIntervals)
 
 importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply, index, "time<-", na.approx, na.spline)
-importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts, .index)
+importFrom("xts", axTicksByTime, to.period, .index, periodicity)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
 importFrom("e1071", skewness, kurtosis)
 importFrom("lattice", levelplot)
