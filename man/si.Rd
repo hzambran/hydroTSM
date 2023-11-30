@@ -85,6 +85,69 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 }
 \examples{
 
+############################
+## Ex 1: Seasonality index for a rain gauge with equable precipitation , 
+##       but with a definite wetter season 
+
+## Loading daily precipitation data at the station San Martino di Castrozza, 
+## Trento Province, Italy, from 01/Jan/1921 to 31/Dec/1990.
+data(SanMartinoPPts)
+x <- SanMartinoPPts
+
+## Amount of years in 'x' (needed for computations)
+( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
+
+
+## Boxplot of monthly values, to look at the seasonal cycle
+
+## Daily to Monthly
+m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
+
+## Mean monthly values at the station
+monthlyfunction(m, FUN=sum, na.rm=TRUE) / nyears
+
+## Vector with the three-letter abbreviations of the month names
+cmonth <- format(time(m), "%b")
+
+## Creating ordered monthly factors
+months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
+
+## Boxplot of the monthly values of precipitation
+boxplot( coredata(m) ~ months, col="lightblue", 
+         main="Monthly precipitation, [mm]", ylab="P, [mm]")
+
+# computing seasonality index
+( si(x) )
+
+############################
+## Ex 2: Seasonality index for a rain gauge with markedly seasonal regime 
+##       with a long dry season
+
+## Loading daily precipitation data at the station Cauquenes en El Arrayan, 
+## Maule Region, Chile, from 01/Jan/1979 to 31/Dec/2020.
+data(Cauquenes7336001)
+x <- Cauquenes7336001[, 1] # P is the first column
+
+## Boxplot of monthly values, to look at the seasonal cycle
+
+## Daily to Monthly
+m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
+
+## Mean monthly values at the station
+monthlyfunction(m, FUN=sum, na.rm=TRUE) / nyears
+
+## Vector with the three-letter abbreviations of the month names
+cmonth <- format(time(m), "%b")
+
+## Creating ordered monthly factors
+months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
+
+## Boxplot of the monthly values of precipitation
+boxplot( coredata(m) ~ months, col="lightblue", 
+         main="Monthly precipitation, [mm]", ylab="P, [mm]")
+
+# computing seasonality index
+( si(x) )
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
