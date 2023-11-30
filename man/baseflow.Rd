@@ -1,4 +1,4 @@
-%%File baseflow.Rd
+%% File baseflow.Rd
 %% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 %%                                 http://www.rforge.net/hydroTSM/ ; 
 %%                                 https://cran.r-project.org/package=hydroTSM
@@ -109,7 +109,7 @@ The filter can be passed over the streamflow data three times (forward, backward
 
 \cite{Arnold, J. G., Allen, P. M. (1999). Automated methods for estimating baseflow and ground water recharge from streamflow records. JAWRA Journal of the American Water Resources Association, 35(2), 411--424. doi:10.1111/j.1752-1688.1999.tb03599.x}.
 
-\cite{Lyne, V., Hollick, M. (1979). Stochastic time-variable rainfall-runoff modelling. Proceedings of the Hydrology and Water Resources Symposium, Perth, 10–12 September. Institution of Engineers National Conference Publication, No. 79/10, 89–-92}.
+\cite{Lyne, V., Hollick, M. (1979). Stochastic time-variable rainfall-runoff modelling. Proceedings of the Hydrology and Water Resources Symposium, Perth, 10--12 September. Institution of Engineers National Conference Publication, No. 79/10, 89--92}.
 
 \cite{Nathan, R. J., & McMahon, T. A. (1990). Evaluation of automated techniques for base flow and recession analyses. Water resources research, 26(7), 1465--1473. doi:10.1029/WR026i007p01465}.
 }
