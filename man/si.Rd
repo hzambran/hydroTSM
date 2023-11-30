@@ -17,7 +17,7 @@ si
 Function to draw a si based on precipitation and temperature data. 
 }
 \usage{
-  si(x, na.rm=TRUE, from=start(x), to=end(x), date.fmt="%Y-%m-%d", start.month=1)
+  si(x, na.rm=TRUE, from=start(x), to=end(x), date.fmt="\%Y-\%m-\%d", start.month=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -84,52 +84,6 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 \code{\link{subdaily2daily}}
 }
 \examples{
-######################
-## Ex1: Loading the DAILY precipitation, maximum and minimum air temperature at 
-##      station Maquehue Temuco Ad (Chile)
-data(MaquehueTemuco)
-pcp <- MaquehueTemuco[, 1]
-tmx <- MaquehueTemuco[, 2]
-tmn <- MaquehueTemuco[, 3]
-
-## Plotting a full si
-m <- si(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
-
-## Plotting a si with uncertainty bands around mean values, 
-## but with no labels for tmx and tmn
-m <- si(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
-
-## Plotting a si with uncertainty bands around mean values, but with no labels for 
-##  tmx, tmn and pcp
-m <- si(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
-                pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
-
-## Plotting a si with no uncertainty bands around mean values
-m <- si(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, plot.pcp.probs=FALSE, plot.temp.probs=FALSE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
-
-## Plotting the most basic si: only mean values of precipiation and air temperature
-m <- si(pcp=pcp, tmean=0.5*(tmn+tmx), na.rm=TRUE, plot.pcp.probs=FALSE, 
-                plot.temp.probs=FALSE, main="Maquehue Temuco Ad (Chile)", 
-                lat=-38.770, lon=-72.637)
-
-
-## Plotting a full si, starting in April (start.month=4) instead of January (start.month=1),
-## to better represent the hydrological year in Chile (South America)
-m <- si(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
-                start.month=4, temp.labels.dx=c(rep(-0.2,4), rep(0.2,6),rep(-0.2,2)),
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
-
-
-## Plotting a full si with monthly data
-pcp.m <- daily2monthly(pcp, FUN=sum)
-tmx.m <- daily2monthly(tmx, FUN=mean)
-tmn.m <- daily2monthly(tmn, FUN=mean)
-m <- si(pcp=pcp.m, tmx=tmx.m, tmn=tmn.m, na.rm=TRUE, 
-                main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
