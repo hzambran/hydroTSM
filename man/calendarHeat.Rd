@@ -1,13 +1,13 @@
-%% File calendarHeat.Rd
+%% File calendarHeatmap.Rd
 %% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 %%                                 https://CRAN.R-project.org/package=hydroTSM
 %%                                 https://www.rforge.net/hydroRTS/ ; 
 %% Copyright 2008-2022 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
-\name{calendarHeat}
+\name{calendarHeatmap}
 \Rdversion{1.1}
-\alias{calendarHeat}
+\alias{calendarHeatmap}
 
 
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -18,27 +18,19 @@ Calendar heatmap
 Function to plot a heatmap of a daily zoo object with a calendar shape
 }
 \usage{
-calendarHeat(x,  
-             main="Calendar Heat Map",
-             col=colorRampPalette(c("red", "orange", "yellow", "white", "lightblue2", "deepskyblue", "blue3"), 
+calendarHeatmap(x,  
+                main="Calendar Heat Map",
+                col=colorRampPalette(c("red", "orange", "yellow", "white", 
+                                       "lightblue2", "deepskyblue", "blue3"), 
                                   space = "Lab")(8),  
-              cuts, cuts.dec=0, cuts.labels, 
-              cuts.style=c("fisher", "equal", "pretty", "fixed", "sd", "quantile", "kmeans", "bclust", "mzb"), 
-              legend.title="", 
-              legend.fontsize=15,
-              
-              do.png=FALSE,
-                png.fname="mypng.png",
-                png.width=1500,
-                png.height=900,
-                png.pointsize=12,
-                png.res=90,
-              do.pdf=FALSE,
-                pdf.fname="mypdf.pdf",
-                pdf.width=11,
-                pdf.height=8.5,
-                pdf.pointsize=12,
-              ...)
+                cuts, cuts.dec=0, cuts.labels, 
+                cuts.style=c("fisher", "equal", "pretty", "fixed", "sd", 
+                             "quantile", "kmeans", "bclust", "mzb"), 
+                legend.title="", legend.fontsize=15,              
+                do.png=FALSE, png.fname="mypng.png", png.width=1500, 
+                png.height=900, png.pointsize=12, png.res=90,
+                do.pdf=FALSE, pdf.fname="mypdf.pdf", pdf.width=11,
+                pdf.height=8.5, pdf.pointsize=12, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -106,16 +98,28 @@ integer, the default point size to be used. Strictly speaking, in bp, that is 1/
 further arguments passed to functions or from other methods. Not used yet.
 }
 }
-%%\details{
-%%  ~~ If necessary, more details than the description above ~~
-%%}
-%%\value{
-%%  ~Describe the value returned
+\details{
+The original function \code{calendarHeat} was developed by Paul Bleicher, as an R version of a graphic from http://stat-computing.org/dataexpo/2009/posters/wicklin-allison.pdf (not longer available).
+The original function was made available online in 2009, but then it was removed. Now it is available at \url{https://github.com/tavisrudd/r_users_group_1/blob/master/calendarHeat.R}.
+The original function has "Copyright 2009 Humedica", but it was distributed under the GPL-2 licence, as well as this new version of the function.
+
+This slighly modified verison of the function is also distributed under the GPL-2 licence, and teh main changes with respect to the original function are:
+
+1) uses a zoo object instead of a numeric and character vector, for values and dates, respectively.
+2) it allows a customisation of the mian title of the output figure
+3) it allows a customisation of the color palette.
+4) it uses a categorical legend instead of a continuos one.
+5) it is named \code{calendarHeatmap} instead of \code{calendarHeat}.
+
+
+}
+\value{
+The output of this function is a lattice figure witht eh calendar heatmap
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
-%%}
+}
 %%\references{
 %% ~put references to the literature/web site here ~
 %%}
@@ -146,10 +150,10 @@ x <- subdaily2daily(x, FUN=mean)
 x <- window(x, start="1980-01-01", end="1985-12-31")
 
 # Calendar Heatmap, 8 colours and cuts defined using Fisher method 
-calendarHeat(x)
+calendarHeatmap(x)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{manip}
-%%\keyword{ ~kwd2 }
+\keyword{graphs}
+%%keyword{manip}
