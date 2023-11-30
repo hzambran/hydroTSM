@@ -3,7 +3,7 @@ title: <center>Tutorial for Introductory Analysis of
  Daily Precipitation Data with `hydroTSM`</center>
 author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
-date: " version 0.8, DD-MMM-2022"
+date: " version 0.8, 30-Nov-2023"
 output:
   html_document:
     df_print: paged
@@ -46,7 +46,7 @@ install_github("hzambran/hydroTSM")
 library(hydroTSM)
 ```
 
-* Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to 31/Dec/1990.
+* Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, from 01/Jan/1921 to 31/Dec/1990.
 
 ```{r LoadingData}
 data(SanMartinoPPts)
@@ -54,13 +54,14 @@ data(SanMartinoPPts)
 
 *  Selecting only a 6-years time slice for the analysis
 
-```{r Window}
+```{r Window1}
 x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
 ```
 
-*  Monthly values of precipitation
-```{r daily2monthly}
-( m <- daily2monthly(x, FUN=sum) )
+*  Global view of daily precipitation values a calendar heatmap:
+
+```{r Window2}
+x <- calendarHeatmap(x)
 ```
 
 *  Dates of the daily values of 'x'
@@ -72,6 +73,7 @@ dates <- time(x)
 ```{r yip}
 ( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
 ```
+
 
 
 
@@ -103,6 +105,7 @@ dwi(x, out.unit="mpy")
 
 
 4)  Plotting the monthly precipitation values for each year, useful for identifying dry/wet months.
+
 
 ```{r matrixplot}
 # Daily zoo to monthly zoo
@@ -216,7 +219,7 @@ data(SanMartinoPPts)
 ```
 	
 Selecting only a three-year time slice for the analysis
-```{r Window2}
+```{r Window3}
 x <- window(SanMartinoPPts, start=as.Date("1988-01-01"))
 ```
 
@@ -346,7 +349,7 @@ paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
 
 # Version history
 
-* v0.8: XXX 2022
+* v0.8: Nov 2023
 * v0.7: Mar 2020
 * v0.6: Aug 2017
 * v0.5: May 2013
