@@ -18,13 +18,26 @@ Calendar heatmap
 Function to plot a heatmap of a daily zoo object with a calendar shape
 }
 \usage{
-calendarHeat(x, 
+calendarHeat(x,  
+             main="Calendar Heat Map",
              col=colorRampPalette(c("red", "orange", "yellow", "white", "lightblue2", "deepskyblue", "blue3"), 
                                   space = "Lab")(8),  
               cuts, cuts.dec=0, cuts.labels, 
               cuts.style=c("fisher", "equal", "pretty", "fixed", "sd", "quantile", "kmeans", "bclust", "mzb"), 
               legend.title="", 
               legend.fontsize=15,
+              
+              do.png=FALSE,
+                png.fname="mypng.png",
+                png.width=1500,
+                png.height=900,
+                png.pointsize=12,
+                png.res=90,
+              do.pdf=FALSE,
+                pdf.fname="mypdf.pdf",
+                pdf.width=11,
+                pdf.height=8.5,
+                pdf.pointsize=12,
               ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -88,6 +101,9 @@ numeric, the height of the device.
 }
 \item{pdf.pointsize}{
 integer, the default point size to be used. Strictly speaking, in bp, that is 1/72 of an inch, but approximately in points. Defaults to 12.
+}
+  \item{\dots}{
+further arguments passed to functions or from other methods. Not used yet.
 }
 }
 %%\details{
