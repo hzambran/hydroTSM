@@ -4,6 +4,7 @@ importFrom("grDevices", xy.coords, palette, colorRampPalette, dev.set, dev.list,
 importFrom("utils", read.table, write.table, write.csv, write.csv2, installed.packages, ls.str, modifyList, sessionInfo, setTxtProgressBar, txtProgressBar) 
 importFrom("methods", as, hasArg, is, slot) 
 importFrom("graphics", barplot, grid, axTicks, Axis, abline, axis, boxplot, hist, legend, lines, mtext, par, plot)
+importFrom("classInt", classIntervals)
 
 importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply, index, "time<-", na.approx, na.spline)
 importFrom("xts", is.xts, as.xts, to.period, axTicksByTime, apply.daily, periodicity, xts, .index)
