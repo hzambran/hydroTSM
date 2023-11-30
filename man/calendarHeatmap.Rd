@@ -18,8 +18,9 @@ Calendar heatmap
 Function to plot a heatmap of a daily zoo object with a calendar shape
 }
 \usage{
-calendarHeatmap(x,  
-                main="Calendar Heat Map",
+calendarHeatmap(x, ...)
+
+\method{calendarHeatmap}{zoo}(x, main="Calendar Heat Map",
                 col=colorRampPalette(c("red", "orange", "yellow", "white", 
                                        "lightblue2", "deepskyblue", "blue3"), 
                                   space = "Lab")(8),  
@@ -114,7 +115,7 @@ This slighly modified verison of the function is also distributed under the GPL-
 
 }
 \value{
-The output of this function is a lattice figure witht eh calendar heatmap
+The output of this function is a lattice figure with the calendar heatmap
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
@@ -126,9 +127,9 @@ The output of this function is a lattice figure witht eh calendar heatmap
 \author{
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail.com}
 }
-%\note{
-%%  ~~further notes~~
-%}
+\note{
+The maximum amount of years to be plotted is six (6).
+}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 

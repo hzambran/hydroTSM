@@ -34,7 +34,9 @@
 # Updates: 25-Nov-2023 ; 27-Nov-2023 ; 29-Nov-2023 ; 30-Nov-2023               #
 ################################################################################
 
-calendarHeatmap <- function(x,
+calendarHeatmap <- function(x, ...) UseMethod("calendarHeatmap")
+
+calendarHeatmap.zoo <- function(x,
                             #ncolors=5,
                             #color="r2g",
 
@@ -76,6 +78,14 @@ calendarHeatmap <- function(x,
     #if (class(dates) == "character" | class(dates) == "factor" ) {
     #   dates <- strptime(dates, date.fmt)
     #} # IF end
+
+    # Checking daily time frequency
+    if (sfreq(x) != "daily")
+      stop("Invalid argument: 'sfreq(x)' must be 'daily', but it is '", sfreq(x), "' !")
+
+    # Checking that the maximum amount of years is 6 
+    if (length(x) > 2191) # 365 day/year * 6 years + 1 day in a leap year
+      stop("Invalid argument: length(x)' must be less than 2191, but it is '", length(x), "' !")
 
     ######################################################################################
     # Lines 69-97 are from Mauricio Zambrano-Bigiarini

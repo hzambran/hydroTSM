@@ -27,6 +27,10 @@ S3method(annualfunction, default)
 S3method(annualfunction, matrix)
 S3method(annualfunction, zoo)
 S3method(baseflow, zoo)
+S3method(calendarHeatmap, zoo)q()
+n
+
+S3method(cmv, default)
 S3method(cmv, default)
 S3method(cmv, zoo) 
 S3method(cmv, data.frame) 
