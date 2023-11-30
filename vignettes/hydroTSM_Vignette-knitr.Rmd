@@ -5,10 +5,10 @@ author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
 date: " version 0.8, 30-Nov-2023"
 output:
-  html_document:
-    df_print: paged
   pdf_document:
     number_sections: yes
+  html_document:
+    df_print: paged
 vignette: |
   %\VignetteIndexEntry{Tutorial for Introductory Analysis of Daily Precipitation Data with `hydroTSM`} 
   %\VignetteKeyword{hydrology}
@@ -60,8 +60,8 @@ x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
 
 *  Global view of daily precipitation values a calendar heatmap:
 
-```{r Window2}
-#x <- calendarHeatmap(x)
+```{r calendarHeatmap}
+calendarHeatmap(x)
 ```
 
 *  Dates of the daily values of 'x'
