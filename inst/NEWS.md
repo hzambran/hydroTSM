@@ -22,6 +22,8 @@ NEWS/ChangeLog for hydroTSM
 
         o 'cmv'               : to compute the percentage/amount of missing values in a zoo object, using a user-defined temporal scale.
 
+        o 'si'               : to compute the seasonality index of precipitation (Walsh and Lawler, 1981).
+
 ## New features
         o 'hip'               : -) new argument 'tz' to allow the user to specify the desired time zone. By default, "tz='UTC'", while previous versions implicitly used "tz=''" (local time zone)
 
