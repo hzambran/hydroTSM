@@ -61,7 +61,7 @@ x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
 *  Global view of daily precipitation values a calendar heatmap:
 
 ```{r Window2}
-x <- calendarHeatmap(x)
+#x <- calendarHeatmap(x)
 ```
 
 *  Dates of the daily values of 'x'
