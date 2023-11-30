@@ -8,7 +8,7 @@
 \name{calendarHeatmap}
 \Rdversion{1.1}
 \alias{calendarHeatmap}
-
+\alias{calendarHeatmap.zoo}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
