@@ -40,7 +40,8 @@
 ################################################################################
 
 
-si <- function(x, from=start(x), to=end(x), date.fmt="%Y-%m-%d", start.month=1, na.rm=TRUE) {
+si <- function(x, na.rm=TRUE, from=start(x), to=end(x), 
+               date.fmt="%Y-%m-%d", start.month=1) {
 
   .shift <- function(x, imonth) {
     L <- length(x)
