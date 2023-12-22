@@ -1,7 +1,7 @@
 # File monthlycurve.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2022-2022 Mauricio Zambrano-Bigiarini
+# Copyright 2022-2023 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ###################################################################################
@@ -17,6 +17,7 @@
 ###################################################################################
 # Started: 26-Jul-2022                                                            #
 # Updates: 22-Sep-2022 ; 11-Oct-2022 ; 25-Oct-2022                                #
+#          22-Dec-2023                                                            #          
 ###################################################################################
 # 'q'        : object of type 'zoo' with monthly, daily or subdaily streamflow data.
 #              If q is a monthly zoo object, it must have 12 elments and it should be 
@@ -77,7 +78,7 @@ monthlycurve <- function(q,
     index.new <- index.old-delta
     neg <- which(index.new <=0)
     index.new[neg] <- index.new[neg]+L
-    if ( is.zoo(x) == "zoo" ) {
+    if ( is.zoo(x) ) {
       x.raw    <- zoo::coredata(x)
       x.labels <- as.character(time(x))
       out        <- x.raw[match(index.old, index.new)] 
