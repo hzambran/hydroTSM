@@ -16,7 +16,7 @@
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 09-Jun-2018                                                         #
-# Updates: 26-Nov-2023                                                         #
+# Updates: 26-Nov-2023 ; 22-Dec-2023                                           #
 ################################################################################
 
 # 'p'          : zoo object with precipitation time series, with any time frequency 
@@ -84,24 +84,62 @@ plot_pq <- function(p, ...) UseMethod("plot_pq")
 
 plot_pq.zoo <- function(p, 
                         q, 
+                        ptype=c("original", "monthly"),
+                        
+                        na.fill=c("remove", "linear", "spline"), 
+                        
                         from=start(x), 
                         to=end(x),
+
                         date.fmt, 
                         tz,
-                        na.fill=c("remove", "linear", "spline"), 
-                        xlab="Time", 
-                        ylab=c("P", "Q"), 
+
                         main="Precipitation and Streamflows",
+                        xlab=ifelse(ptype=="original", "Time", "Month"), 
+                        ylab=c("P, [mm]", "Q, [m3/s]"), 
+                        #cols=c("blue", "black"),
+                        cols=c("lightskyblue1", "blue"),
+
                         leg.title="",
                         leg.text=c("P", "Q"),
-                        cols=c("blue", "black"),
+                        
                         q.pch=16,
                         q.cex=0.3,
                         ...
                         ) {
 
   if (!is.zoo(p)) stop("Invalid argument: 'p' must be of class 'zoo' !")
-  if (!is.zoo(q)) stop("Invalid argument: 'q' must be of class 'zoo' !")
+  if (missing(q)) {
+    stop("Missing argument: 'q' must be provided !")
+  } else 
+      # Checking that 'q' is a zoo object
+      if ( !is.zoo(q) ) stop("Invalid argument: 'class(q)' must be in 'zoo'")
+
+  # Checking 'ptype'
+  ptype <- match.arg(ptype)
+
+} # 'plot_pq.zoo' END
+
+
+
+
+.plot_pq_ts.zoo <- function(p, 
+                            q, 
+                            from=start(x), 
+                            to=end(x),
+                            date.fmt, 
+                            tz,
+                            na.fill=c("remove", "linear", "spline"), 
+                            xlab="Time", 
+                            ylab=c("P", "Q"), 
+                            main="Precipitation and Streamflows",
+                            leg.title="",
+                            leg.text=c("P", "Q"),
+                            cols=c("blue", "black"),
+                            q.pch=16,
+                            q.cex=0.3,
+                            ...
+                            ) {
 
   # Checking 'na.fill'
   na.fill <- match.arg(na.fill)
