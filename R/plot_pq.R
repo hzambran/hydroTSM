@@ -17,6 +17,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 09-Jun-2018                                                         #
 # Updates: 26-Nov-2023 ; 22-Dec-2023                                           #
+#          12-Jan-2024                                                         #
 ################################################################################
 
 # 'p'          : zoo object with precipitation time series, with any time frequency 
@@ -88,13 +89,13 @@ plot_pq.zoo <- function(p,
                         
                         na.fill=c("remove", "linear", "spline"), 
                         
-                        from=start(x), 
-                        to=end(x),
+                        from=start(p), 
+                        to=end(p),
 
-                        date.fmt, 
-                        tz,
+                        date.fmt=NULL, 
+                        tz=NULL,
 
-                        main="Precipitation and Streamflows",
+                        main=ifelse(ptype=="original", "Precipitation and Streamflows", "Monthly Precipitation and Streamflows"),
                         xlab=ifelse(ptype=="original", "Time", "Month"), 
                         ylab=c("P, [mm]", "Q, [m3/s]"), 
                         #cols=c("blue", "black"),
@@ -105,64 +106,72 @@ plot_pq.zoo <- function(p,
                         
                         q.pch=16,
                         q.cex=0.3,
+                            
+                        start.month=1,
+
+                        plot.q.probs=TRUE,
+                        q.probs=c(0.25, 0.75),
+                        q.probs.col="lightskyblue1",
+                        q.probs.alpha=0.8,
+                         
+                        plot.p.probs=TRUE,
+                        p.probs=c(0.25, 0.75),
+                        p.alpha=0.8,
+                            
+                        labels=TRUE,
+                        labels.cex=0.8,
+                        labels.q.dx=c(rep(-0.2,6), rep(0.2,6)),
+                        labels.q.dy=rep(-median(q, na.rm=TRUE)/10, 12),
+                        labels.p.dy=-median(daily2monthly(p, FUN=sum, na.rm=TRUE), na.rm=TRUE)/10,
+
                         ...
                         ) {
 
-  if (!is.zoo(p)) stop("Invalid argument: 'p' must be of class 'zoo' !")
+  # Checking 'p'
+  if (missing(p)) {
+    stop("Missing argument: 'p' must be provided !")
+  } else 
+      # Checking that 'p' is a zoo object
+      if ( !is.zoo(p) ) stop("Invalid argument: 'class(p)' must be 'zoo' !")
+
+  # Checking 'q'
   if (missing(q)) {
     stop("Missing argument: 'q' must be provided !")
   } else 
       # Checking that 'q' is a zoo object
-      if ( !is.zoo(q) ) stop("Invalid argument: 'class(q)' must be in 'zoo'")
-
-  # Checking 'ptype'
-  ptype <- match.arg(ptype)
-
-} # 'plot_pq.zoo' END
-
-
-
-
-.plot_pq_ts.zoo <- function(p, 
-                            q, 
-                            from=start(x), 
-                            to=end(x),
-                            date.fmt, 
-                            tz,
-                            na.fill=c("remove", "linear", "spline"), 
-                            xlab="Time", 
-                            ylab=c("P", "Q"), 
-                            main="Precipitation and Streamflows",
-                            leg.title="",
-                            leg.text=c("P", "Q"),
-                            cols=c("blue", "black"),
-                            q.pch=16,
-                            q.cex=0.3,
-                            ...
-                            ) {
-
-  # Checking 'na.fill'
-  na.fill <- match.arg(na.fill)
+      if ( !is.zoo(q) ) stop("Invalid argument: 'class(q)' must be 'zoo' !")
 
   # Checking that 'p' and 'q' have the same time index
   if ( !all.equal(time(p), time(q)) )
     stop("Invalid argument(s): 'p' and 'q' must have the same time index !")
 
+  # Checking 'ptype'
+  ptype <- match.arg(ptype)
+
+  # Checking 'na.fill'
+  na.fill <- match.arg(na.fill)
+
   # sampling frequency of 'x'           
-  x.freq <- sfreq(p)
+  p.freq <- sfreq(p)
   
   # Checking if 'x is a sub-daily zoo object  
-  if (x.freq %in% c("minute","hourly") ) {
+  if (p.freq %in% c("minute","hourly") ) {
     subdaily.ts <- TRUE
   } else subdaily.ts <- FALSE
+
+  # Checking that 'q' and 'p' have the same dates
+  dates.q  <- time(q)
+  if (!missing(p)) {
+    dates.p <- time(p)
+    if (!all.equal(dates.q, dates.p))
+      stop("Invalid arguments: 'dates(q)' must be equal to 'dates(p)' !!")
+  } # IF end
   
   ####################################################################################
-  # Lines 126-209 are taken from izoo2rzoo.R to check 'from' and 'to'
+  # Lines 147-231 are taken from izoo2rzoo.R to check 'from' and 'to'
   ####################################################################################
-  x <- p
-
   # Automatic detection of 'date.fmt'
-  if ( missing(date.fmt) ) {
+  if ( is.null(date.fmt) ) {
     if ( subdaily.ts ) {
       date.fmt <- "%Y-%m-%d %H:%M:%S"
     } else date.fmt <- "%Y-%m-%d"
@@ -170,7 +179,7 @@ plot_pq.zoo <- function(p,
 
   # Automatic detection of 'tz'
   missingTZ <- FALSE
-  if (missing(tz)) {
+  if (is.null(tz)) {
     missingTZ <- TRUE
     tz        <- ""
   } # IF end
@@ -180,17 +189,17 @@ plot_pq.zoo <- function(p,
            grepl("%p", date.fmt, fixed=TRUE) | grepl("%X", date.fmt, fixed=TRUE), 
            subdaily.date.fmt <- TRUE, subdaily.date.fmt <- FALSE )
 
-  # If the index of 'x' is character, it is converted into a Date object
-  if ( class(time(x))[1] %in% c("factor", "character") )
-    #ifelse(subdaily.date.fmt, time(x) <- as.POSIXct(time(x), format=date.fmt, tz=tz),
-    ifelse(subdaily.date.fmt, time(x) <- as.POSIXct(time(x), format=date.fmt),
-                              time(x) <- as.Date(time(x), format=date.fmt) )
+  # If the index of 'p' is character, it is converted into a Date object
+  if ( class(time(p))[1] %in% c("factor", "character") )
+    #ifelse(subdaily.date.fmt, time(x) <- as.POSIXct(time(p), format=date.fmt, tz=tz),
+    ifelse(subdaily.date.fmt, time(p) <- as.POSIXct(time(p), format=date.fmt),
+                              time(p) <- as.Date(time(p), format=date.fmt) )
 
   # If 'from' was given as Date, but 'x' is sub-daily
   if (!missing(from)) {
     if (from > to) stop("Invalid argument: 'from > to' !")
 
-    if (from > end(x)) stop("Invalid argument: 'from > end(x)' !")
+    if (from > end(x)) stop("Invalid argument: 'from > end(p)' !")
 
     if ( subdaily.date.fmt & !(grepl(":", from, fixed=TRUE) ) )
       from <- paste(from, "00:00:00")
@@ -203,7 +212,7 @@ plot_pq.zoo <- function(p,
   if (!missing(to)) {
     if (to < from ) stop("Invalid argument: 'to < from' !")
 
-    if (to < start(x) ) stop("Invalid argument: 'to < start(x)' !")
+    if (to < start(x) ) stop("Invalid argument: 'to < start(p)' !")
 
     if ( subdaily.date.fmt & !(grepl(":", to, fixed=TRUE) ) )
       to <- paste(to, "00:00:00")
@@ -221,8 +230,8 @@ plot_pq.zoo <- function(p,
            if (subdaily.date.fmt) {
              #time(x) <- as.POSIXct(time(x), tz=tz)
              time(x) <- as.POSIXct(time(x))
-             warning("'date.fmt' (", date.fmt, ") is sub-daily, while 'x' is a '", 
-                     x.freq, "' ts => 'time(x)=as.POSIXct(time(x), tz)'")
+             warning("'date.fmt' (", date.fmt, ") is sub-daily, while 'p' is a '", 
+                     p.freq, "' ts => 'time(p)=as.POSIXct(time(p), tz)'")
            } # IF end    
           } # ELSE end
 
@@ -268,6 +277,61 @@ plot_pq.zoo <- function(p,
     } # IF end
   } # IF end
 
+
+  if (ptype=="original") {
+     .plot_pq_ts.zoo(p, q, 
+                     #ptype=ptype, na.fill=na.fill, from=from, end=end,
+                     #date.fmt=date.fmt, tz=tz,
+                     main=main, xlab=xlab, ylab=ylab, cols=cols,
+                     leg.title=leg.title, leg.text=leg.text,
+                     q.pch=q.pch, q.cex=q.cex) 
+  } else .plot_pq_monthly.zoo(p, q, 
+                              #ptype=ptype, na.fill=na.fill, from=from, end=end,
+                              #date.fmt=date.fmt, tz=tz,
+                              main=main, xlab=xlab, ylab=ylab, cols=cols,
+
+                              #leg.title=leg.title, leg.text=leg.text,
+                              #q.pch=q.pch, q.cex=q.cex,
+
+                              start.month=start.month, plot.q.probs=plot.q.probs,
+                              q.probs=q.probs, q.probs.col=q.probs.col,
+                              q.probs.alpha=q.probs.alpha,
+                         
+                              plot.p.probs=plot.p.probs,
+                              p.probs=p.probs, p.alpha=p.alpha,
+                            
+                              labels=labels, labels.cex=labels.cex,
+                              labels.q.dx=labels.q.dx,
+                              labels.q.dy=labels.q.dy,
+                              labels.p.dy=labels.p.dy
+                              )
+} # 'plot_pq.zoo' END
+
+
+
+
+.plot_pq_ts.zoo <- function(p, 
+                            q, 
+
+                            #na.fill=c("remove", "linear", "spline"), 
+                            
+                            #from=start(x), 
+                            #to=end(x),
+                            
+                            #date.fmt, 
+                            #tz,
+                            
+                            xlab="Time", 
+                            ylab=c("P", "Q"), 
+                            main="Precipitation and Streamflows",
+                            leg.title="",
+                            leg.text=c("P", "Q"),
+                            cols=c("blue", "black"),
+                            q.pch=16,
+                            q.cex=0.3,
+                            ...
+                            ) {
+
   # saving graphical parameters
   oldpars <- par(no.readonly=TRUE)
 
@@ -307,7 +371,193 @@ plot_pq.zoo <- function(p,
          lty=1, pch=pchs, col=cols, cex=1,
          title=leg.title, legend= leg.text)
 
-  # saving graphical parameters
+  # restoring original graphical parameters
   par(oldpars)
 
-} # 'plot_pq.zoo' END
+} # '.plot_pq_ts.zoo' END
+
+
+
+###################################################################################
+# .plot_pq_monthly.zoo: Function for drawing a figure with mean monthly           #
+#                       precipitation (on the top panel) and mean monthly         #
+#                       streamflows (on the bottom pannel)                        #
+###################################################################################
+# Originally this function was called 'monthlycurve', but afterwards it was       # 
+# merged with the 'plot_pq' function                                              #
+###################################################################################
+# Author : Mauricio Zambrano-Bigiarini                                            #
+###################################################################################
+# Started: 26-Jul-2022                                                            #
+# Updates: 22-Sep-2022 ; 11-Oct-2022 ; 25-Oct-2022                                #
+#          22-Dec-2023 ; 27-Dec-2023                                              #
+#          12-Jan-2024                                                            #          
+###################################################################################
+# 'q'        : object of type 'zoo' with monthly, daily or subdaily streamflow data.
+#              If q is a monthly zoo object, it must have 12 elments and it should be 
+#              named with the names of the months (levels(time(q))), otherwise, 
+#              automatic names will be asigned from Jan to Dec for each one of the 
+#              12 monthly values
+# 'date.fmt' : format in which the dates.q are stored in 'from' and 'to'.
+# 'na.rm'    : Logical. Should missing values in 'q' be removed when using FUN?. 
+#              It is also used when the optional argument 'p' is submonthly (e.g., daily, hourly), to decide whether missing values in the optional argument 'p' should be removed before aggregated into monthly scale
+#              TRUE : the monthly values  are computed considering only those values in 'q' (and 'p') different from NA
+#              FALSE: if 'q' (and 'p') has AT LEAST one NA within a month, the corresponding monthly values are NA
+
+.plot_pq_monthly.zoo <- function(p,
+                                 q, 
+                            
+                                 #na.rm=TRUE, 
+                                 #na.fill=c("remove", "linear", "spline"), 
+                            
+                                 #from, 
+                                 #to, 
+                            
+                                 #date.fmt, 
+                                 #tz,
+                            
+                                 main="Monthly Precipitation and Streamflows", 
+                                 xlab="Month",
+                                 ylab=c("P, [mm]", "Q, [m3/s]"),
+                                 cols=c("lightskyblue1", "blue"),
+                            
+                                 start.month=1,
+
+                                 plot.q.probs=TRUE,
+                                 q.probs=c(0.25, 0.75),
+                                 q.probs.col="lightskyblue1",
+                                 q.probs.alpha=0.8,
+                         
+                                 plot.p.probs=TRUE,
+                                 p.probs=c(0.25, 0.75),
+                                 p.alpha=0.8,
+                            
+                                 labels=TRUE,
+                                 labels.cex=0.8,
+                                 labels.q.dx=c(rep(-0.2,6), rep(0.2,6)),
+                                 labels.q.dy=rep(-median(q, na.rm=TRUE)/10, 12),
+                                 labels.p.dy=-median(daily2monthly(p, FUN=sum, na.rm=TRUE), na.rm=TRUE)/10
+                                 ) {
+
+  .plotbands <- function(x, lband, uband, col="", border=NA) {
+    t <- c(x, rev(x))
+    bands <- c(as.numeric(lband), rev(as.numeric(uband)))
+    polygon(t, bands, col=col, border=border)
+  } # .plotbands END
+
+  .shift <- function(x, imonth) {
+    L <- length(x)
+    if (imonth>L) stop("[ Invalid value: 'imonth' can not be larger than ", L, " !]")
+    delta <- imonth-1
+    index.old <- 1:L
+    index.new <- index.old-delta
+    neg <- which(index.new <=0)
+    index.new[neg] <- index.new[neg]+L
+    if ( is.zoo(x) ) {
+      x.raw    <- zoo::coredata(x)
+      x.labels <- as.character(time(x))
+      out        <- x.raw[match(index.old, index.new)] 
+      names(out) <- x.labels[match(index.old, index.new)] 
+    } else out <- x[match(index.old, index.new)] 
+    return(out)
+  } # .shift END
+   
+
+  # saving graphical parameters
+  oldpars <- par(no.readonly=TRUE)
+
+  ###########################################
+  ## In case 'q' is not average monthly values
+  if ( (sfreq(q) != "monthly") ) {
+    q.m    <- daily2monthly(q, FUN=mean, na.rm=TRUE)
+  } else q.m <- q
+
+  if ( (sfreq(q) != "monthly") | ( (sfreq(q) == "monthly") & ( length(q) > 12) ) ) {
+    q.m.med     <- monthlyfunction(q.m, FUN=quantile, probs=0.5, na.rm=TRUE)
+    month.names <- levels(time(q.m.med))
+  } else {
+      q.m.med     <- q
+      month.names <- levels(time(q))
+      if (is.null(month.names))
+        month.names <- month.abb
+    } # ELSE end  
+
+  q.m.q1 <- monthlyfunction(q.m, FUN=quantile, probs=q.probs[1], na.rm=TRUE)
+  q.m.q2 <- monthlyfunction(q.m, FUN=quantile, probs=q.probs[2], na.rm=TRUE)
+
+  if (start.month != 1) q.m.med     <- .shift(x=q.m.med    , imonth=start.month)
+  if (start.month != 1) q.m.q1      <- .shift(x=q.m.q1     , imonth=start.month)
+  if (start.month != 1) q.m.q2      <- .shift(x=q.m.q2     , imonth=start.month)
+  if (start.month != 1) month.names <- .shift(x=month.names, imonth=start.month)
+
+
+  ###########################################
+  ## In case 'q' is not average monthly values
+  if ( (sfreq(q) != "monthly") ) {
+    p.m <- daily2monthly(p, FUN=sum, na.rm=TRUE)
+  } else p.m <- p
+
+  if ( (sfreq(p) != "monthly") | ( (sfreq(p) == "monthly") & ( length(p) > 12) ) ) {
+    p.m.med <- monthlyfunction(p.m, FUN=quantile, probs=0.5, na.rm=TRUE)
+  } else p.m.med <- p
+
+  p.m.q1 <- monthlyfunction(p.m, FUN=quantile, probs=p.probs[1], na.rm=TRUE)
+  p.m.q2 <- monthlyfunction(p.m, FUN=quantile, probs=p.probs[2], na.rm=TRUE)
+
+  if (start.month != 1) p.m.med <- .shift(x=p.m.med, imonth=start.month)
+  if (start.month != 1) p.m.q1  <- .shift(x=p.m.q1 , imonth=start.month)
+  if (start.month != 1) p.m.q2  <- .shift(x=p.m.q2 , imonth=start.month)
+
+
+  
+  # the next line is required just in case a previous plot modified the graphical 'layout'
+  par(mfrow=c(1,1)) 
+
+  ##############################################################################
+  # Definining the plotting area (1 column, 2 rows), where the lower row has 
+  # a height 3 times larger than the upper window, AND 
+  ##############################################################################
+  par(mar=c(3, 4.1, 3, 1.5), xpd=TRUE) # default  c(5.1, 4.1, 4.1, 2.1)
+  layout(matrix(c(1,2), 2, 1, byrow = TRUE), widths=5, heights=c(1,3))  
+ 
+  ######################################################
+  # 1st Figure: Monthly Precipitation in the upper panel
+  ######################################################
+
+  ylim <- range(pretty(p.m.q1), pretty(p.m.q2))
+  x <- barplot(p.m.med, ylim=rev(ylim), xlab="", ylab=ylab[1], axes=TRUE, col=cols[1], names.arg=month.names, main=main)
+  #axis(side=1, at=lx, labels=month.names, line=0.02, outer=TRUE, pos=1)
+  if (labels) text(x, labels.p.dy, cex=labels.cex, adj=0.5, labels= round(p.m.med,1), col="black")
+
+  # Adding error bars
+  if (plot.p.probs) 
+    graphics::arrows(x0 = x, y0 = p.m.q2, y1 = p.m.q1, angle=90, code=3, length=0.1)
+
+  #######################################
+  # 2nd Figure: Drawing the monthly curve
+  #######################################
+  if (!missing(p)) {
+    par(mar=c(3, 4.1, 0.5, 1.5)) # default  c(5.1, 4.1, 4.1, 2.1)
+    main <- ""
+  } else par(mar=c(3, 4.1, 4.1, 1.5))
+  lubands.col <- grDevices::adjustcolor(q.probs.col, alpha.f=q.probs.alpha)
+  xlim <- c(0.5, 12.5)
+  ylim <- range(pretty(q.m.q1), pretty(q.m.q2))
+
+  # Monthly values as lines
+  lx   <- 1:12 
+  plot(lx, q.m.med, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab[2], type="n", axes=TRUE, xaxt="n", main=main)
+  #plot(lx, q.m.med, xlim=xlim, ylim=ylim, col= cols[2], type="o", lwd=3, pch=15, cex=1.4, axes=TRUE, xaxt="n", xlab=xlab, ylab=ylab[2])
+
+  if (plot.q.probs) 
+    .plotbands(x=lx, lband=q.m.q1, uband=q.m.q2, col=lubands.col, border=NA)
+  
+  grid()
+  lines(lx, q.m.med, xlim=xlim, ylim=ylim, col= cols[2], type = "o", lwd=3, pch=15, cex=1.4)
+  axis(side=1, at=lx, labels=month.names)
+  if (labels) text(lx+labels.q.dx, q.m.med+labels.q.dy, cex=labels.cex, adj=0.5, labels= round(q.m.med,1), col="black" )
+ 
+  # restoring original graphical parameters
+  par(oldpars)
+
+} # 'plot_pq_monthly.zoo' END

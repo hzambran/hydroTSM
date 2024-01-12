@@ -15,7 +15,7 @@
 ###################################################################################
 # Started: 26-Jul-2022                                                            #
 # Updates: 22-Sep-2022 ; 11-Oct-2022 ; 25-Oct-2022                                #
-#          22-Dec-2023                                                            #          
+#          22-Dec-2023 ; 27-Dec-2023                                              #          
 ###################################################################################
 # 'q'        : object of type 'zoo' with monthly, daily or subdaily streamflow data.
 #              If q is a monthly zoo object, it must have 12 elments and it should be 
@@ -40,12 +40,11 @@
                             date.fmt, 
                             tz,
                             
-                            main="Precipitation and Streamflows", 
+                            main="Monthly Precipitation and Streamflows", 
                             xlab="Month",
                             ylab=c("P, [mm]", "Q, [m3/s]"),
                             cols=c("lightskyblue1", "blue"),
                             
-                            FUN=mean, # function used to aggregate 'x' from a submonthly time frquency (e.g., daily, hourly) into a monthly time frequency. It must support the 'na.rm' argument
                             start.month=1,
 
                             plot.q.probs=TRUE,
@@ -61,7 +60,7 @@
                             labels.cex=0.8,
                             labels.q.dx=c(rep(-0.2,6), rep(0.2,6)),
                             labels.q.dy=rep(-median(q, na.rm=TRUE)/10, 12),
-                            labels.p.dy=ifelse(missing(p), NA, -median(daily2monthly(p, FUN=sum, na.rm=TRUE), na.rm=TRUE)/10)
+                            labels.p.dy=-median(daily2monthly(p, FUN=sum, na.rm=TRUE), na.rm=TRUE)/10
                             ) {
 
   .plotbands <- function(x, lband, uband, col="", border=NA) {
@@ -87,12 +86,11 @@
     return(out)
   } # .shift END
    
-  if (!missing(FUN))
-    FUN <- match.fun(FUN)
+
   ###########################################
   ## In case 'from' and 'to' are provided  ##
     
-   dates.q  <- time(q)
+  dates.q  <- time(q)
 
   # Checking the validity of the 'from' argument
   if (!missing(from)) { 
@@ -127,7 +125,7 @@
   to   <- time(q)[length(q)]
 
   if ( (sfreq(q) != "monthly") ) {
-    q.m    <- daily2monthly(q, FUN=FUN, na.rm=TRUE)
+    q.m    <- daily2monthly(q, FUN=mean, na.rm=TRUE)
   } else q.m <- q
 
   if ( (sfreq(q) != "monthly") | ( (sfreq(q) == "monthly") & ( length(q) > 12) ) ) {
@@ -180,7 +178,7 @@
     layout(matrix(c(1,2), 2, 1, byrow = TRUE), widths=5, heights=c(1,3))  
  
     ylim <- range(pretty(p.m.q1), pretty(p.m.q2))
-    x <- barplot(p.m.med, ylim=rev(ylim), xlab="", ylab=ylab[1], axes=TRUE, col=col[1], names.arg=month.names, main=main)
+    x <- barplot(p.m.med, ylim=rev(ylim), xlab="", ylab=ylab[1], axes=TRUE, col=cols[1], names.arg=month.names, main=main)
     #axis(side=1, at=lx, labels=month.names, line=0.02, outer=TRUE, pos=1)
     if (labels) text(x, labels.p.dy, cex=labels.cex, adj=0.5, labels= round(p.m.med,1), col="black")
 
@@ -204,13 +202,13 @@
   # Monthly values as lines
   lx   <- 1:12 
   plot(lx, q.m.med, xlim=xlim, ylim=ylim, xlab=xlab, ylab=ylab[2], type="n", axes=TRUE, xaxt="n", main=main)
-  #plot(lx, q.m.med, xlim=xlim, ylim=ylim, col= col[2], type="o", lwd=3, pch=15, cex=1.4, axes=TRUE, xaxt="n", xlab=xlab, ylab=ylab[2])
+  #plot(lx, q.m.med, xlim=xlim, ylim=ylim, col= cols[2], type="o", lwd=3, pch=15, cex=1.4, axes=TRUE, xaxt="n", xlab=xlab, ylab=ylab[2])
 
   if (plot.q.probs) 
     .plotbands(x=lx, lband=q.m.q1, uband=q.m.q2, col=lubands.col, border=NA)
   
   grid()
-  lines(lx, q.m.med, xlim=xlim, ylim=ylim, col= col[2], type = "o", lwd=3, pch=15, cex=1.4)
+  lines(lx, q.m.med, xlim=xlim, ylim=ylim, col= cols[2], type = "o", lwd=3, pch=15, cex=1.4)
   axis(side=1, at=lx, labels=month.names)
   if (labels) text(lx+labels.q.dx, q.m.med+labels.q.dy, cex=labels.cex, adj=0.5, labels= round(q.m.med,1), col="black" )
  
