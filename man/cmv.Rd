@@ -22,27 +22,27 @@ Generic function for counting the percentage/amount of missing values in a zoo o
 \usage{
 cmv(x, ...)
 
-\method{cmv}{default}(x, tscale=c("hourly", "daily", "weekly", 
-                      "monthly", "quarterly", "seasonal", "annual"),
-                      out.type=c("percentage", "amount"), dec=3, 
-                      start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
+\method{cmv}{default}(x, tscale=c("hourly", "daily", "weekly", "monthly", 
+            "quarterly", "seasonal", "annual"),
+            out.type=c("percentage", "amount"), dec=3, 
+            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
 
-\method{cmv}{zoo}(x, tscale=c("hourly", "daily", "weekly", 
-                  "monthly", "quarterly", "seasonal", "annual"),
-                  out.type=c("percentage", "amount"), dec=3, 
-                  start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
+\method{cmv}{zoo}(x, tscale=c("hourly", "daily", "weekly", "monthly", 
+            "quarterly", "seasonal", "annual"),
+            out.type=c("percentage", "amount"), dec=3, 
+            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
 
-\method{cmv}{data.frame}(x, tscale=c("hourly", "daily", "weekly", 
-                         "monthly", "quarterly", "seasonal", "annual"),
-                         out.type=c("percentage", "amount"), dec=3, 
-                         start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, 
-                         dates=1, date.fmt="\%Y-\%m-\%d", ...)
+\method{cmv}{data.frame}(x, tscale=c("hourly", "daily", "weekly", "monthly", 
+            "quarterly", "seasonal", "annual"),
+            out.type=c("percentage", "amount"), dec=3, 
+            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, 
+            dates=1, date.fmt="\%Y-\%m-\%d", ...)
 
-\method{cmv}{matrix}(x, tscale=c("hourly", "daily", "weekly", 
-                     "monthly", "quarterly", "seasonal", "annual"),
-                     out.type=c("percentage", "amount"), dec=3, 
-                     start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
-                     dates=1, date.fmt="\%Y-\%m-\%d", ...)
+\method{cmv}{matrix}(x, tscale=c("hourly", "daily", "weekly", "monthly", 
+            "quarterly", "seasonal", "annual"),
+            out.type=c("percentage", "amount"), dec=3, 
+            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
+            dates=1, date.fmt="\%Y-\%m-\%d", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -52,17 +52,15 @@ Measurements at several gauging stations can be stored in a data.frame or matrix
 }
   \item{tscale}{
 character with the temporal scale to be used for analysing the mssing data. Valid values are: \cr
-
-If \kbd{hourly}: the percentage/amount of missing values will be given for each hour and ,therefore, the expected time frequency of \code{x} must be sub-hourly. \cr
-If \kbd{daily}: the percentage/amount of missing values will be given for each day and, therefore, the expected time frequency of \code{x}  must be sub-daily (i.e., hourly or sub-hourly). \cr
-If \kbd{weekly}: the percentage/amount of missing values will be given for each week (starting on Monday) and, therefore, the expected time frequency of \code{x} must be sub-weekly (i.e., daily, (sub)hourly). \cr
-If \kbd{monthly}: the percentage/amount of missing values will be given for each month and, therefore, the expected time frequency of \code{x} must be sub-monthly (i.e., daily, hourly or sub-hourly). \cr
-If \kbd{quarterly}: the percentage/amount of missing values will be given for each quarter and, therefore, the expected time frequency of \code{x} must be sub-quarterly (i.e., monthly, daily, hourly or sub-hourly). \cr
-If \kbd{seasonal}: the percentage/amount of missing values will be given for each weather season (see ?time2season) and, therefore, the expected time frequency of \code{x} must be sub-seasonal (i.e., monthly, daily, hourly or sub-hourly). \cr
-If \kbd{annual}: the percentage/amount of missing values will be given for each year and, therefore, the expected time frequency of \code{x} must be sub-annual (i.e., seasonal, monthly, daily, hourly or sub-hourly). \cr
+-) \kbd{hourly}: the percentage/amount of missing values will be given for each hour and ,therefore, the expected time frequency of \code{x} must be sub-hourly. \cr
+-) \kbd{daily}: the percentage/amount of missing values will be given for each day and, therefore, the expected time frequency of \code{x}  must be sub-daily (i.e., hourly or sub-hourly). \cr
+-) \kbd{weekly}: the percentage/amount of missing values will be given for each week (starting on Monday) and, therefore, the expected time frequency of \code{x} must be sub-weekly (i.e., daily, (sub)hourly). \cr
+-) \kbd{monthly}: the percentage/amount of missing values will be given for each month and, therefore, the expected time frequency of \code{x} must be sub-monthly (i.e., daily, hourly or sub-hourly). \cr
+-) \kbd{quarterly}: the percentage/amount of missing values will be given for each quarter and, therefore, the expected time frequency of \code{x} must be sub-quarterly (i.e., monthly, daily, hourly or sub-hourly). \cr
+-) \kbd{seasonal}: the percentage/amount of missing values will be given for each weather season (see ?time2season) and, therefore, the expected time frequency of \code{x} must be sub-seasonal (i.e., monthly, daily, hourly or sub-hourly). \cr
+-) \kbd{annual}: the percentage/amount of missing values will be given for each year and, therefore, the expected time frequency of \code{x} must be sub-annual (i.e., seasonal, monthly, daily, hourly or sub-hourly). \cr
 }
-
-\item{dec}{
+  \item{dec}{
 integer indicating the amount of decimal places included in the output. \cr
 It is only used when \code{out.type=='percentage'}.
 }
@@ -103,9 +101,9 @@ further arguments passed to or from other methods.
 }
 }
 \details{
-The amount of missing values in each temporal scale is computed just by counting the amount of NAs in each hour / day / week / month / quarter / season / year, while the amount of missing values in each temporal scale is computed by dividing the revious number by the total number of data elements in each hour / day / week / month / quarter / season / year. \cr
+The amount of missing values in each temporal scale is computed just by counting the amount of NAs in each hour / day / week / month / quarter / season / year, while the percentage of missing values in each temporal scale is computed by dividing the previous number by the total number of data elements in each hour / day / week / month / quarter / season / year. \cr
 
-This function was developed to allow the selective removal of values when agregting from a high temporal resolution into a lower temporal resolution (e.g., from hourly to daily or from hourly to monthly), using any of the temporal aggregation functions available int his package (e.g., \code{hourly2daily}, \code{daily2monthly})
+This function was developed to allow the selective removal of values when agregting from a high temporal resolution into a lower temporal resolution (e.g., from hourly to daily or from daily to monthly), using any of the temporal aggregation functions available int his package (e.g., \code{hourly2daily}, \code{daily2monthly})
 }
 \value{
 a zoo object with the percentage/amount of missing values for each temporal scale selected by the user.

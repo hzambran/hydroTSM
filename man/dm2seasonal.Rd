@@ -32,10 +32,10 @@ subdaily2seasonal(x, ...)
 \method{dm2seasonal}{zoo}(x, season, FUN, na.rm = TRUE, out.fmt="\%Y", ...)
 
 \method{dm2seasonal}{data.frame}(x, season, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
-        out.type = "data.frame", out.fmt="\%Y", ...)
+            out.type = "data.frame", out.fmt="\%Y", ...)
         
 \method{dm2seasonal}{matrix}(x, season, FUN, na.rm = TRUE, dates=1, date.fmt = "\%Y-\%m-\%d", 
-        out.type = "data.frame", out.fmt="\%Y", ...)
+            out.type = "data.frame", out.fmt="\%Y", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
