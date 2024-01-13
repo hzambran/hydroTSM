@@ -2,7 +2,7 @@
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
 #                                 http://www.rforge.net/hydroTSM/ 
-# Copyright 2012-2018 Mauricio Zambrano-Bigiarini
+# Copyright 2023-2024 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -17,7 +17,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 09-Jun-2018                                                         #
 # Updates: 26-Nov-2023 ; 22-Dec-2023                                           #
-#          12-Jan-2024                                                         #
+#          12-Jan-2024 ; 13-Jan-2024                                           #
 ################################################################################
 
 # 'p'          : zoo object with precipitation time series, with any time frequency 
@@ -109,21 +109,22 @@ plot_pq.zoo <- function(p,
                             
                         start.month=1,
 
+                        plot.p.probs=TRUE,
+                        p.probs=c(0.25, 0.75),
+                        p.alpha=0.8,
+
                         plot.q.probs=TRUE,
                         q.probs=c(0.25, 0.75),
                         q.probs.col="lightskyblue1",
                         q.probs.alpha=0.8,
-                         
-                        plot.p.probs=TRUE,
-                        p.probs=c(0.25, 0.75),
-                        p.alpha=0.8,
                             
                         labels=TRUE,
                         labels.cex=0.8,
+                        labels.p.dy=-median(daily2monthly(p, FUN=sum, na.rm=TRUE), 
+                                     na.rm=TRUE)/10,
                         labels.q.dx=c(rep(-0.2,6), rep(0.2,6)),
                         labels.q.dy=rep(-median(q, na.rm=TRUE)/10, 12),
-                        labels.p.dy=-median(daily2monthly(p, FUN=sum, na.rm=TRUE), na.rm=TRUE)/10,
-
+                        
                         ...
                         ) {
 
@@ -199,7 +200,7 @@ plot_pq.zoo <- function(p,
   if (!missing(from)) {
     if (from > to) stop("Invalid argument: 'from > to' !")
 
-    if (from > end(x)) stop("Invalid argument: 'from > end(p)' !")
+    if (from > end(p)) stop("Invalid argument: 'from > end(p)' !")
 
     if ( subdaily.date.fmt & !(grepl(":", from, fixed=TRUE) ) )
       from <- paste(from, "00:00:00")
@@ -212,7 +213,7 @@ plot_pq.zoo <- function(p,
   if (!missing(to)) {
     if (to < from ) stop("Invalid argument: 'to < from' !")
 
-    if (to < start(x) ) stop("Invalid argument: 'to < start(p)' !")
+    if (to < start(p) ) stop("Invalid argument: 'to < start(p)' !")
 
     if ( subdaily.date.fmt & !(grepl(":", to, fixed=TRUE) ) )
       to <- paste(to, "00:00:00")
