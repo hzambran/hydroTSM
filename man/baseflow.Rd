@@ -123,7 +123,7 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{plot_pq}}, \code{\link{monthlycurve}}, \code{\link{hydroplot}}, \code{\link{fdc}}, \code{\link{fdcu}}
+\code{\link{plot_pq}}, \code{\link{hydroplot}}, \code{\link{fdc}}, \code{\link{fdcu}}
 }
 
 \examples{
