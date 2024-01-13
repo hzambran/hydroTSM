@@ -107,7 +107,7 @@ m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
 monthlyfunction(m, FUN=sum, na.rm=TRUE) / nyears
 
 ## Vector with the three-letter abbreviations of the month names
-cmonth <- format(time(m), "%b")
+cmonth <- format(time(m), "\%b")
 
 ## Creating ordered monthly factors
 months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
@@ -137,7 +137,7 @@ m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
 monthlyfunction(m, FUN=sum, na.rm=TRUE) / nyears
 
 ## Vector with the three-letter abbreviations of the month names
-cmonth <- format(time(m), "%b")
+cmonth <- format(time(m), "\%b")
 
 ## Creating ordered monthly factors
 months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
