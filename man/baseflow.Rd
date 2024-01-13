@@ -11,8 +11,8 @@
 \alias{baseflow.zoo}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
- Computation of baseflow using the filter proposed by Arnold and Allen (1999).
-}
+  Baseflow
+ }
 \description{
 Given a complete (without missing values) series of streamflow, this function computes the baseflow using the filter proposed by Arnold and Allen (1999). 
 }

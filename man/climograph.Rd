@@ -14,16 +14,17 @@
 Climograph
 }
 \description{
-Function to draw a climograph based on precipitation and temperature data. 
+Function to draw a climograph based on precipitation and air temperature data, with several options for customisation.
 }
 \usage{
 climograph(pcp, tmean, tmx, tmn, na.rm=TRUE,  
            from, to, date.fmt="\%Y-\%m-\%d", 
            main="Climograph", pcp.label="Precipitation, [mm]", 
-           tmean.label="Air temperature, [\U00B0 C]",start.month=1, pcp.solid.thr,
+           tmean.label="Air temperature, [\U00B0 C]", start.month=1, pcp.solid.thr,
            pcp.ylim, temp.ylim,pcp.col="lightblue", pcp.solid.col="skyblue2", 
            tmean.col="darkred", tmn.col="blue", tmx.col="red",
-           pcp.labels=TRUE, tmean.labels=TRUE, tmx.labels=TRUE, tmn.labels=TRUE,
+           pcp.labels=TRUE, 
+           tmean.labels=TRUE, tmx.labels=TRUE, tmn.labels=TRUE,
            pcp.labels.cex=0.8, temp.labels.cex=0.8,
            pcp.labels.dx=c(rep(ifelse(plot.pcp.probs, -0.25,  0.0),6), 
                            rep(ifelse(plot.pcp.probs, -0.25,  0.0),6)),
