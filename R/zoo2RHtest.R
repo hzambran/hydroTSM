@@ -20,6 +20,8 @@
 
 zoo2RHtest <- function(x, fname="pcp.txt", tstep.out="daily", dec=".", na="-999.0") {
 
+  .Deprecated(new="trend::snh.test", package="trend")
+
   # Checking that 'class(x)' is 'ts' or 'zoo'
   if ( is.na( match(class(x), c("zoo") ) ) )
       stop("Invalid argument: 'class(x)' must be 'zoo'")
