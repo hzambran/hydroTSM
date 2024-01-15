@@ -2,11 +2,6 @@ title: hydroTSM
 
 url: https://hzambran.github.io/hydroTSM
 
-template:
-  params:
-    bootswatch: darkly
-    ganalytics: UA-66712425-1
-
 reference:
 - title: Datasets
   desc: Datasets included in hydroTSM
