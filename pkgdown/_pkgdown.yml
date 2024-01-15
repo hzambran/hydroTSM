@@ -2,6 +2,15 @@ title: hydroTSM
 
 url: https://hzambran.github.io/hydroTSM
 
+template:
+  bootstrap: 5
+  bootswatch: materia
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, tutorials, news]
+    right: [search, github]
+
 reference:
 - title: Datasets
   desc: Datasets included in hydroTSM
