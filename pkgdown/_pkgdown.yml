@@ -3,7 +3,7 @@ title: hydroTSM
 url: https://hzambran.github.io/hydroTSM
 
 template:
-  bootstrap: 5
+  bootstrap: 3
   bootswatch: lumen
 
 navbar:
