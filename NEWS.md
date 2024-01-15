@@ -236,25 +236,24 @@ NEWS/ChangeLog for hydroTSM
         o NAMESPACE                    : functions from packages zoo and xts are now imported explicitly        	
 
 
-###################################################
-# Previous Releases (see old file 'ChangeLog)' #
-###################################################
+-- Previous Releases: see old file 'ChangeLog'
 
-0.3-6	18-Oct-2012
-0.3-5	04-Jul-2012
-0.3-4	03-May-2012
-0.3-3	07-Nov-2011
-0.3-2	15-Sep-2011
-0.3-1	14-Sep-2011
-0.3-0   01-Sep-2011
-0.2-2	14-Apr-2011
-0.2-1	30-Nov-2010
-0.2-0	10-Oct-2010
-0.1.7	05-Mar-2009 (It was never released, because it finally becomes v0.2-0)
-0.1.6	30-Nov-2009
-0.1.5	16-Nov-2009
-0.1.4	02-Nov-2009
-0.1.3	13-Oct-2009
-0.1.2	01-Oct-2009
-0.1.1	15-Sep-2009
-0.1.0	07-Sep-2009 (but the functions were developed since 2007)
+
+# version 0.3-6	 18-Oct-2012
+# version 0.3-5	 04-Jul-2012
+# version 0.3-4	 03-May-2012
+# version 0.3-3	 07-Nov-2011
+# version 0.3-2	 15-Sep-2011
+# version 0.3-1	 14-Sep-2011
+# version 0.3-0  01-Sep-2011
+# version 0.2-2	 14-Apr-2011
+# version 0.2-1	 30-Nov-2010
+# version 0.2-0	 10-Oct-2010
+# version 0.1.7	 05-Mar-2009 (It was never released, because it finally becomes v0.2-0)
+# version 0.1.6	 30-Nov-2009
+# version 0.1.5	 16-Nov-2009
+# version 0.1.4	 02-Nov-2009
+# version 0.1.3	 13-Oct-2009
+# version 0.1.2	 01-Oct-2009
+# version 0.1.1	 15-Sep-2009
+# version 0.1.0	 07-Sep-2009 (but the functions were developed since 2007)
