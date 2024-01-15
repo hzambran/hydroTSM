@@ -6,11 +6,9 @@ NEWS/ChangeLog for hydroTSM
 ## New functions
         o 'baseflow'          : for computing baseflow using the filter proposed by Arnold and Allen (1999). 
 
-        o 'plot_pq'           : for plotting precipitation and streamflow time series in the same figure.
+        o 'plot_pq'           : for plotting precipitation and streamflow time series in the same figure, or for plotting monthly variation of streamflow and precipitation values, with uncertainty bounds around median values.
 
-        o 'monthlycurve'      : for plotting monthly variation of streamflow (and optionally precipitation) values, with uncertainty bound around mean values.
-
-        o 'calendarHeat'      : for displaying time-series as a calendar heatmap
+        o 'calendarHeatmap'   : for displaying time-series as a calendar heatmap
 
         o 'subhourly2hourly'  : for aggregating sub-hourly values into hourly ones.
 
@@ -24,8 +22,20 @@ NEWS/ChangeLog for hydroTSM
 
         o 'si'               : to compute the seasonality index of precipitation (Walsh and Lawler, 1981).
 
-## New features
-        o 'hip'               : -) new argument 'tz' to allow the user to specify the desired time zone. By default, "tz='UTC'", while previous versions implicitly used "tz=''" (local time zone)
+## New features                       
+        o '(sub)daily2monthly':  -) new argument 'na.rm.max' to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object.
+
+        o 'subdaily2daily'    :  -) new argument 'na.rm.max' to define the maximum percentage of missing values allowed in each day.
+                                 -) new argument 'start.fmt' to indicate the format used in 'start'.
+                                 -) new argument 'tz' to indicate the time zone used for both 'x' and start' arguments.
+                                
+        o 'daily2annual'      :  -) new argument 'na.rm.max' to  to define the maximum percentage of missing values allowed in each year.
+        
+        o 'daily2monthly'     :  -) new argument 'na.rm.max' to  to define the maximum percentage of missing values allowed in each month.
+        
+        o 'subdaily2annual'   :  -) new argument 'na.rm.max' to  to define the maximum percentage of missing values allowed in each year.
+
+        o 'hip'               : -) new argument 'tz' to allow the user to specify the desired time zone.
 
         o 'hydroplot'         : -) new argument 'dates' in order to facilitate the transformation into zoo when working with data.frame objects
                                 -) 'from' argument has a default value of NULL
@@ -57,18 +67,6 @@ NEWS/ChangeLog for hydroTSM
                                  -) new argument 'tz' to correctly handle sub-daily zoo objects
                                  -) default value for 'date.fmt' argument was changed from "%Y-%m-%d" to missing (it is automatically detected based on the sampling frequency of 'x')
                                  -) default value for 'tstep' argument was changed from "days" to missing (it is automatically detected based on the sampling frequency of 'x')
-                                
-        o '(sub)daily2monthly':  -) new argument 'na.rm.max' to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object.
-
-        o 'subdaily2daily'    :  -) new argument 'start.fmt' to indicate the format used to provide 'start'.
-                                 -) new argument 'tz' to indicate the time zone used for both 'start' argument and the datetimes of the object.
-                                 -) new argument 'na.rm.max' to define the maximum percentage of missing values allowed in each day to keep the daily aggregated value in the output object.
-                                
-        o 'daily2annual'      :  -) new argument 'na.rm.max' to  to define the maximum percentage of missing values allowed in each year.
-        
-        o 'daily2monthly'     :  -) new argument 'na.rm.max' to  to define the maximum percentage of missing values allowed in each month.
-        
-        o 'subdaily2annual'   :  -) new argument 'na.rm.max' to  to define the maximum percentage of missing values allowed in each year to keep the yearly aggregated value in the output object.
         
 
 ## Changes in datasets

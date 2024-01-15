@@ -1,0 +1,86 @@
+title: hydroTSM
+
+url: https://hzambran.github.io/hydroTSM
+
+template:
+  bootstrap: 5
+  bootswatch: materia
+  ganalytics: UA-66712425-1
+
+navbar:
+  type: inverse
+  structure:
+    left:  [intro, reference, articles, tutorials, news]
+    right: [search, github]
+
+reference:
+- title: Datasets
+  contents:
+  - '`Cauquenes7336001`'
+  - '`EbroPPtsMonthly`'
+  - '`KarameaAtGorgeQts`'
+  - '`MaquehueTemuco`'
+  - '`OcaEnOnaQts`'
+  - '`SanMartinoPPts`'
+
+- title: Temporal aggregation
+  contents:
+    - '`annualfunction`'    
+    - '`weeklyfunction`'
+    - '`monthlyfunction`' 
+    - '`seasonalfunction`' 
+    - '`(sub)daily2annual`'
+    - '`(sub)daily2monthly`'
+    - '`daily2weekly`'
+    - '`dm2seasonal`'
+    - '`subdaily2daily`'
+    - '`subdaily2weekly`'
+    - '`subhourly2hourly`'
+    - '`subhourly2nminutes`'
+
+- title: Temporal manipulation
+  contents:
+    - '`dip`'
+    - '`diy`'
+    - '`hip`'
+    - '`mip`'
+    - '`yip`'
+
+- title: Graphical functions
+  contents:
+    - '`calendarHeatmap`'
+    - '`climograph`'
+    - '`fdc`'
+    - '`fdcu`'
+    - '`hydropairs`'
+    - '`hydroplot`'
+    - '`matrixplot`'
+    - '`plot_pq`'
+
+- title: Todas las funciones
+  contents:
+    - '`baseflow`'
+    - '`cmv`'
+    - '`drawTimeAxis`'
+    - '`dwdays`'
+    - '`dwi`'
+    - '`extract`'
+    - '`hydroTSM-package`'
+    - '`infillxy`'
+    - '`istdx`'
+    - '`izoo2rzoo`'
+    - '`ma`'
+    - '`rm1stchar`'
+    - '`sfreq`'
+    - '`si`'
+    - '`smry`'
+    - '`sname2ts`'
+    - '`stdx`'
+    - '`time2season`'
+    - '`vector2zoo`'
+    - '`zoo2RHtest`'
+
+articles:
+- title: Todos los artículos
+  desc: ~
+  contents: '`hydroTSM_Vignette-knitr`'

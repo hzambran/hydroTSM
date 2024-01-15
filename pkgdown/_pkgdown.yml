@@ -4,11 +4,11 @@ url: https://hzambran.github.io/hydroTSM
 
 template:
   bootstrap: 5
-  bootswatch: materia
+  bootswatch: lumen
 
 navbar:
   structure:
-    left:  [intro, reference, articles, tutorials, news]
+    left:  [intro, reference, articles, news]
     right: [search, github]
 
 reference:
@@ -44,23 +44,26 @@ reference:
     - '`mip`'
     - '`yip`'
 
-- title: Graphical functions
+- title: Hydrological functions
   contents:
+    - '`baseflow`'
     - '`calendarHeatmap`'
     - '`climograph`'
+    - '`dwdays`'
     - '`fdc`'
     - '`fdcu`'
     - '`hydropairs`'
     - '`hydroplot`'
     - '`matrixplot`'
     - '`plot_pq`'
+    - '`si`'
+    - '`sname2ts`'
+    - '`zoo2RHtest`'
 
-- title: Todas las funciones
+- title: Miscelaneous functions
   contents:
-    - '`baseflow`'
     - '`cmv`'
     - '`drawTimeAxis`'
-    - '`dwdays`'
     - '`dwi`'
     - '`extract`'
     - '`hydroTSM-package`'
@@ -70,13 +73,10 @@ reference:
     - '`ma`'
     - '`rm1stchar`'
     - '`sfreq`'
-    - '`si`'
     - '`smry`'
-    - '`sname2ts`'
     - '`stdx`'
     - '`time2season`'
     - '`vector2zoo`'
-    - '`zoo2RHtest`'
 
 articles:
 - title: Todos los artículos
