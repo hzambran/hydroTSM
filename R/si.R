@@ -12,7 +12,7 @@
 #          the seasonality index, as:                                          #
 #               si = (1/R) *sum(i=1, i=12, abs(xi - R/12) )                    #
 #          where:                                                              #
-#            -) xi: mena monthly precipitation for month i                     #
+#            -) xi: mean monthly precipitation for month i                     #
 #            -) R: mean annual precipitation                                   #    
 ################################################################################
 # Reference:                                                                   #
@@ -35,8 +35,8 @@
 #     >= 1.20  | Extreme, almost all rain in 1-2 months                        #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
-# Started: 2023-Nov-28                                                         #
-# Updates:                                                                     #
+# Started: 28-Nov-2023                                                         #
+# Updates: 15-Jan-2024                                                         #
 ################################################################################
 
 

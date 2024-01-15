@@ -11,10 +11,10 @@
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-si
+Seasonality Index
 }
 \description{
-Function to draw a si based on precipitation and temperature data. 
+Function to compute the seasonality index defined by Walsh and Lawler (1981) to classify the 
 }
 \usage{
   si(x, na.rm=TRUE, from=start(x), to=end(x), date.fmt="\%Y-\%m-\%d", start.month=1)
@@ -48,17 +48,24 @@ numeric in [1:12] indicating the starting month of the (hydrological) year. Nume
 }
 }
 \details{
+The seasonality index is computed as following:\cr
+
+               si = (1/R) *sum(i=1, i=12, abs(xi - R/12) ) \cr            
+where: \cr                                                   
+ -) xi: mean monthly precipitation for month i \cr
+ -) R: mean annual precipitation               \cr             
+
 This index can theoretically vary from 0 (when all months have the same rainfall) to 1.83 (when all the rainfall ocurrs in a single month).
-A qualitative classification of degrees of seasonality is the following:
------------------------------------------------------------------------------
- si values   |                    Rainfall regime                            
------------------------------------------------------------------------------
-     <= 0.19  | Very equable                                                 
-0.20 - 0.39  | Equable but with a definite wetter season                     
-0.40 - 0.59  | Rather seasonal with a short drier season                     
-0.60 - 0.79  | Seasonal                                                      
-0.80 - 0.99  | Markedly seasonal with a long drier season                    
-1.00 - 1.19  | Most rain in 3 months or less                                 
+A qualitative classification of degrees of seasonality is the following: \cr
+-------------------------------------------------------- \cr
+ si values   |                    Rainfall regime        \cr                    
+-------------------------------------------------------- \cr
+     <= 0.19 | Very equable                              \cr                    
+0.20 - 0.39  | Equable but with a definite wetter season \cr                    
+0.40 - 0.59  | Rather seasonal with a short drier season \cr                    
+0.60 - 0.79  | Seasonal                                  \cr                    
+0.80 - 0.99  | Markedly seasonal with a long drier season\cr                    
+1.00 - 1.19  | Most rain in 3 months or less             \cr                                  
     >= 1.20  | Extreme, almost all rain in 1-2 months                        
 }
 \value{
