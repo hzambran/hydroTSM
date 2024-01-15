@@ -1,7 +1,7 @@
 NEWS/ChangeLog for hydroTSM
 
 --------------------------
-# Changes in version 0.7-0 (under-development)
+# Changes in version 0.7-0  16-Jan-2024
 
 ## New functions
         o 'baseflow'          : for computing baseflow using the filter proposed by Arnold and Allen (1999). 
@@ -20,7 +20,7 @@ NEWS/ChangeLog for hydroTSM
 
         o 'cmv'               : to compute the percentage/amount of missing values in a zoo object, using a user-defined temporal scale.
 
-        o 'si'               : to compute the seasonality index of precipitation (Walsh and Lawler, 1981).
+        o 'si'                : to compute the seasonality index of precipitation (Walsh and Lawler, 1981).
 
 ## New features                       
         o '(sub)daily2monthly':  -) new argument 'na.rm.max' to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object.
