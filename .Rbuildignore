@@ -3,3 +3,6 @@ README.md
 .travis.yml
 _config.yml
 ^\.github$
+^docs$
+^pkgdown$
+^_pkgdown\.yml$
