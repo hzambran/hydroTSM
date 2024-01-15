@@ -52,11 +52,13 @@ zoo object with precipitation time series, with any time frequency.
   \item{q}{
 zoo object with streamflow time series, with any time frequency.
 }
-  \item{ptype}{Character indicating the type of plot to be produced. Valid values are: \cr
--) \kbd{original} => a time series plot with precipitation in the upper panel (as bars from the time axis) and streamflows in the lower pannel (as dotted lines) \cr
--) \kbd{monthly}  => a plot with mean monthly values of pecipitation in the upper panel (as bars from top to bottom) and streamflows in the lower panel (as bars from bottom to up). Quantiles of precipitation and streamflows are also plotted depnding on the values defined in \code{p.probs} and code{q.probs}, respectively.
+  \item{ptype}{
+Character indicating the type of plot to be produced. Valid values are: \cr
+-) \kbd{original} => a time series plot with precipitation in the upper panel (as bars from the time axis) and streamflows in the lower pannel (as dotted lines). \cr
+-) \kbd{monthly}  => a plot with mean monthly values of pecipitation in the upper panel (as bars from top to bottom) and streamflows in the lower panel (as bars from bottom to up). Quantiles of precipitation and streamflows are also plotted depending on the values defined in \code{p.probs} and \code{q.probs}, respectively.
 }
-  \item{na.fill}{Character indicating how to fill any NA present in \code{x}. Valid values are: \cr
+  \item{na.fill}{
+Character indicating how to fill any NA present in \code{x}. Valid values are: \cr
 -) \kbd{remove} => NAs are not plotted
 -) \kbd{linear} => NAs are removed by linear interpolation, using \code{\link[zoo]{na.approx}} \cr 
 -) \kbd{spline} => NAs are removed by spline interpolation, using \code{\link[zoo]{na.spline}}
