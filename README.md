@@ -1,6 +1,10 @@
 # hydroTSM
 [![Research software impact](http://depsy.org/api/package/cran/hydroTSM/badge.svg)](http://depsy.org/package/r/hydroTSM) [![CRAN](http://www.r-pkg.org/badges/version/hydroTSM)](https://cran.r-project.org/package=hydroTSM) [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html) [![monthly](http://cranlogs.r-pkg.org/badges/hydroTSM)](https://www.rpackages.io/package/hydroTSM) [![total](http://cranlogs.r-pkg.org/badges/grand-total/hydroTSM)](https://www.rpackages.io/package/hydroTSM) [![Build Status](https://travis-ci.org/hzambran/hydroTSM.svg?branch=master)](https://travis-ci.org/hzambran/hydroTSM) [![dependencies](https://tinyverse.netlify.com/badge/hydroTSM)](https://CRAN.R-project.org/package=hydroTSM)
 
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 hydroTSM provides S3 functions for management, analysis, interpolation and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks.
 
 The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimize each function as much as possible, functionality has had priority over speed).
