@@ -47,3 +47,5 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+
+      - uses: r-lib/actions/setup-tinytex@v2
