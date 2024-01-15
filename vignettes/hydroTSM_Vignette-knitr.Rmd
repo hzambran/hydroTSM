@@ -13,7 +13,7 @@ vignette: |
   %\VignetteKeyword{hydrology}
   %\VignetteKeyword{hydrological modelling}
   %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::knitr} 
+  %\VignetteEngine{knitr::rmarkdown} 
 ---
 
 ```{r setup, include = FALSE}
@@ -85,7 +85,7 @@ smry(x)
 
 -  Using the *hydroplot* function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
 
-```{r hydroplot, dev='pdf', fig.width=10, fig.height=8}
+```{r hydroplot, fig.width=10, fig.height=8}
 hydroplot(x, var.type="Precipitation", main="at San Martino", 
           pfreq = "dm", from="1987-01-01")
 ```
@@ -171,7 +171,7 @@ months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
 ```
 
 Boxplot of the monthly values
-```{r boxplotMonthly, dev='pdf'}
+```{r boxplotMonthly}
 boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation", 
          ylab="Precipitation, [mm]", xlab="Month")
 ```
@@ -197,7 +197,7 @@ Extracting the seasonal values for each year
 
 
 Plotting the time evolution of the seasonal precipitation values
-```{r hydroplot2, dev='pdf', fig.width=12, fig.height=10}
+```{r hydroplot2, fig.width=12, fig.height=10}
 hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 ```
 
@@ -221,7 +221,7 @@ x <- window(SanMartinoPPts, start=as.Date("1988-01-01"))
 ```
 
 Plotting the selected time series
-```{r hydroplot3, dev='pdf'}
+```{r hydroplot3}
 hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
 ```
 
@@ -274,7 +274,7 @@ wet.index <- which(x >= 1)
 ## 5-day total precipitation
 
 Computing the 5-day total (accumulated) precipitation \newline
-```{r x_5max, dev='pdf'}
+```{r x_5max}
 x.5max <- rollapply(data=x, width=5, FUN=sum, fill=NA, partial= TRUE, 
                     align="center")
 
@@ -419,7 +419,7 @@ print(p, position=c(0, 0, 1, .4))
 
 The second and easier way allows you to obtain the same previous figure (not shown here), but you are required to install the `gridExtra` package:
 
-```{r FAQmatrixplot2, fig.width = 8, fig.height = 7, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9), eval=FALSE}
+```{r FAQmatrixplot2, fig.width = 8, fig.height = 7, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9), eval=TRUE}
 if (!require(gridExtra)) install.packages("gridExtra")
 require(gridExtra) # also loads grid
 require(lattice)
