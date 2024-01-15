@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Mauricio Zambrano-Bigiarini<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>
 </h4>
             
-            <h4 data-toc-skip class="date">version 0.8, 30-Nov-2023</h4>
+            <h4 data-toc-skip class="date">version 0.9, 16-Jan-2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/hzambran/hydroTSM/blob/HEAD/vignettes/hydroTSM_Vignette-knitr.Rmd" class="external-link"><code>vignettes/hydroTSM_Vignette-knitr.Rmd</code></a></small>
       <div class="hidden name"><code>hydroTSM_Vignette-knitr.Rmd</code></div>
@@ -98,9 +98,7 @@
 <div class="section level2">
 <h2 id="setting-up-the-environment">Setting up the environment<a class="anchor" aria-label="anchor" href="#setting-up-the-environment"></a>
 </h2>
-<ul>
-<li>Loading the <em>hydroTSM</em> library, which contains data and functions used in this analysis.</li>
-</ul>
+<p>Loading the <em>hydroTSM</em> pacakge, which contains data and functions used in this analysis.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hzambran/hydroTSM" class="external-link">hydroTSM</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: zoo</span></span></code></pre>
@@ -109,30 +107,20 @@
 <pre><code><span><span class="co">## The following objects are masked from 'package:base':</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##     as.Date, as.Date.numeric</span></span></code></pre>
-<ul>
-<li>Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, from 01/Jan/1921 to 31/Dec/1990.</li>
-</ul>
+<p>Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, from 01/Jan/1921 to 31/Dec/1990.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>Selecting only a 6-years time slice for the analysis</li>
-</ul>
+<p>Selecting only a 6-years time slice for the analysis</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span>, start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/yearmon.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1985-01-01"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>Dates of the daily values of ‘x’</li>
-</ul>
+<p>Dates of the daily values of ‘x’</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/time.html" class="external-link">time</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>Amount of years in ‘x’ (needed for computations)</li>
-</ul>
+<p>Amount of years in ‘x’ (needed for computations)</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span> <span class="va">nyears</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yip.html">yip</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, out.type<span class="op">=</span><span class="st">"nmbr"</span> <span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 6</span></span></code></pre>
-<ul>
-<li>Global view of daily precipitation values a calendar heatmap (six years maximum):</li>
-</ul>
+<p>Global view of daily precipitation values a calendar heatmap (six years maximum), useful for visually identifying dry, normal and wet days:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calendarHeatmap.html">calendarHeatmap</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/calendarHeatmap-1.png" width="825.6"></p>
@@ -167,14 +155,14 @@
 <span>          pfreq <span class="op">=</span> <span class="st">"dm"</span>, from<span class="op">=</span><span class="st">"1987-01-01"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/hydroplot-1.png" width="960"></p>
 <ol start="2" style="list-style-type: decimal">
-<li>Amount of days with information (not ) per year</li>
+<li>Amount of days with information (not NA) per year</li>
 </ol>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dwi.html">dwi</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 1985 1986 1987 1988 1989 1990 </span></span>
 <span><span class="co">##  365  365  365  366  365  365</span></span></code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Amount of days with information (not ) per month per year</li>
+<li>Amount of days with information (not NA) per month per year</li>
 </ol>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dwi.html">dwi</a></span><span class="op">(</span><span class="va">x</span>, out.unit<span class="op">=</span><span class="st">"mpy"</span><span class="op">)</span></span></code></pre></div>
@@ -204,24 +192,51 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/matrixplot.html">matrixplot</a></span><span class="op">(</span><span class="va">M</span>, ColorRamp<span class="op">=</span><span class="st">"Precipitation"</span>, </span>
 <span>           main<span class="op">=</span><span class="st">"Monthly precipitation at San Martino st., [mm/month]"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/matrixplot-1.png" width="700"></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Computation of monthly values only when the percentage of NAs in each month is lower than a user-defined percentage (10% in this example).</li>
+</ol>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Loading the DAILY precipitation data at SanMartino</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">SanMartinoPPts</span></span>
+<span>     </span>
+<span><span class="co"># Subsetting 'y' to its first three months (Jan/1921 - Mar/1921)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">y</span>, end<span class="op">=</span><span class="st">"1921-03-31"</span><span class="op">)</span></span>
+<span>     </span>
+<span><span class="co">## Transforming into NA the 10% of values in 'y'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="co"># for reproducible results</span></span>
+<span><span class="va">n</span>           <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
+<span><span class="va">n.nas</span>       <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">*</span><span class="va">n</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">na.index</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, <span class="va">n.nas</span><span class="op">)</span></span>
+<span><span class="va">y</span><span class="op">[</span><span class="va">na.index</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span>     </span>
+<span><span class="co">## Daily to monthly, only for months with less than 10% of missing values</span></span>
+<span><span class="op">(</span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/daily2monthly.html">daily2monthly</a></span><span class="op">(</span><span class="va">y</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 1921-01-01 1921-02-01 1921-03-01 </span></span>
+<span><span class="co">##        102         NA         NA</span></span></code></pre>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Verifying that the second and third month of 'x' had 10% or more of missing values</span></span>
+<span><span class="fu"><a href="../reference/cmv.html">cmv</a></span><span class="op">(</span><span class="va">y</span>, tscale<span class="op">=</span><span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 1921-01 1921-02 1921-03 </span></span>
+<span><span class="co">##   0.065   0.107   0.129</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="annual-analysis">Annual analysis<a class="anchor" aria-label="anchor" href="#annual-analysis"></a>
 </h2>
 <p>Annual values of precipitation</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/daily2annual.html">daily2annual</a></span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 1985-01-01 1986-01-01 1987-01-01 1988-01-01 1989-01-01 1990-01-01 </span></span>
 <span><span class="co">##     1154.8     1152.8     1628.4     1207.8     1634.2     1432.4</span></span></code></pre>
 <p>Average annual precipitation</p>
 <p>Obvious way:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span> <span class="fu"><a href="../reference/daily2annual.html">daily2annual</a></span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1368.4</span></span></code></pre>
 <p>Another way (more useful for streamflows, where <code>FUN=mean</code>):</p>
 <p>The function <em>annualfunction</em> applies <code>FUN</code> twice over <code>x</code>:</p>
 <p>( i) firstly, over all the elements of <code>x</code> belonging to the same year, in order to obtain the corresponding annual values, and (ii) secondly, over all the annual values of <code>x</code> previously obtained, in order to obtain a single annual value.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/annualfunction.html">annualfunction</a></span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="va">nyears</span></span></code></pre></div>
 <pre><code><span><span class="co">##  value </span></span>
 <span><span class="co">## 1368.4</span></span></code></pre>
@@ -230,18 +245,18 @@
 <h2 id="monthly-analysis">Monthly analysis<a class="anchor" aria-label="anchor" href="#monthly-analysis"></a>
 </h2>
 <p>Median of the monthly values at station ‘x’. Not needed, just for looking at these values in the boxplot.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/monthlyfunction.html">monthlyfunction</a></span><span class="op">(</span><span class="va">m</span>, FUN<span class="op">=</span><span class="va">median</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   Jan   Feb   Mar   Apr   May   Jun   Jul   Aug   Sep   Oct   Nov   Dec </span></span>
 <span><span class="co">##  63.7  80.4  52.9 113.8 141.9 164.4 132.1 145.1  67.6  97.4 123.4  57.1</span></span></code></pre>
 <p>Vector with the three-letter abbreviations for the month names</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cmonth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/time.html" class="external-link">time</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, <span class="st">"%b"</span><span class="op">)</span></span></code></pre></div>
 <p>Creating ordered monthly factors</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">months</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cmonth</span>, levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cmonth</span><span class="op">)</span>, ordered<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Boxplot of the monthly values</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html" class="external-link">boxplot</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/coredata.html" class="external-link">coredata</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">~</span> <span class="va">months</span>, col<span class="op">=</span><span class="st">"lightblue"</span>, main<span class="op">=</span><span class="st">"Monthly Precipitation"</span>, </span>
 <span>         ylab<span class="op">=</span><span class="st">"Precipitation, [mm]"</span>, xlab<span class="op">=</span><span class="st">"Month"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/boxplotMonthly-1.png" width="700"></p>
@@ -250,29 +265,29 @@
 <h2 id="seasonal-analysis">Seasonal analysis<a class="anchor" aria-label="anchor" href="#seasonal-analysis"></a>
 </h2>
 <p>Average seasonal values of precipitation</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/seasonalfunction.html">seasonalfunction</a></span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="va">nyears</span></span></code></pre></div>
 <pre><code><span><span class="co">##      DJF      MAM      JJA      SON </span></span>
 <span><span class="co">## 213.1333 369.4000 470.8000 315.0667</span></span></code></pre>
 <p>Extracting the seasonal values for each year</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span> <span class="va">DJF</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dm2seasonal.html">dm2seasonal</a></span><span class="op">(</span><span class="va">x</span>, season<span class="op">=</span><span class="st">"DJF"</span>, FUN<span class="op">=</span><span class="va">sum</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  1985  1986  1987  1988  1989  1990 </span></span>
 <span><span class="co">## 148.2 262.2 178.2 197.6 212.0 174.6</span></span></code></pre>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span> <span class="va">MAM</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dm2seasonal.html">dm2seasonal</a></span><span class="op">(</span><span class="va">m</span>, season<span class="op">=</span><span class="st">"MAM"</span>, FUN<span class="op">=</span><span class="va">sum</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  1985  1986  1987  1988  1989  1990 </span></span>
 <span><span class="co">## 388.2 405.6 356.0 310.4 489.0 267.2</span></span></code></pre>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span> <span class="va">JJA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dm2seasonal.html">dm2seasonal</a></span><span class="op">(</span><span class="va">m</span>, season<span class="op">=</span><span class="st">"JJA"</span>, FUN<span class="op">=</span><span class="va">sum</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  1985  1986  1987  1988  1989  1990 </span></span>
 <span><span class="co">## 376.2 367.0 550.6 462.6 658.8 409.6</span></span></code></pre>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span> <span class="va">SON</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dm2seasonal.html">dm2seasonal</a></span><span class="op">(</span><span class="va">m</span>, season<span class="op">=</span><span class="st">"SON"</span>, FUN<span class="op">=</span><span class="va">sum</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  1985  1986  1987  1988  1989  1990 </span></span>
 <span><span class="co">## 187.4 152.4 534.2 207.6 223.2 585.6</span></span></code></pre>
 <p>Plotting the time evolution of the seasonal precipitation values</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/hydroplot.html">hydroplot</a></span><span class="op">(</span><span class="va">x</span>, pfreq<span class="op">=</span><span class="st">"seasonal"</span>, FUN<span class="op">=</span><span class="va">sum</span>, stype<span class="op">=</span><span class="st">"default"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/hydroplot2-1.png" width="1152"></p>
 </div>
@@ -281,51 +296,52 @@
 </h2>
 <p>Common steps for the analysis of this section:</p>
 <p>Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to 31/Dec/1990.</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span><span class="op">)</span></span></code></pre></div>
 <p>Selecting only a three-year time slice for the analysis</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span>, start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/yearmon.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1988-01-01"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Plotting the selected time series</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/hydroplot.html">hydroplot</a></span><span class="op">(</span><span class="va">x</span>,  ptype<span class="op">=</span><span class="st">"ts"</span>, pfreq<span class="op">=</span><span class="st">"o"</span>, var.unit<span class="op">=</span><span class="st">"mm"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/hydroplot3-1.png" width="700"></p>
 <div class="section level3">
+<h3 id="seasonality-index">Seasonality index<a class="anchor" aria-label="anchor" href="#seasonality-index"></a>
+</h3>
+<p>Counting and plotting the number of days in the period where precipitation is &gt; 10 [mm]:</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/si.html">si</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 0.3866742</span></span></code></pre>
+<p>According to the seasonality index defined by Walsh and Lawler (1981), a value of 0.39 corresponds to a precipitation regime that can be classified as “Equable but with a definite wetter season” (see more details with <code><a href="../reference/si.html">?si</a></code>).</p>
+</div>
+<div class="section level3">
 <h3 id="heavy-precipitation-days-r10mm">Heavy precipitation days (R10mm)<a class="anchor" aria-label="anchor" href="#heavy-precipitation-days-r10mm"></a>
 </h3>
-<p>Counting and plotting the number of days in the period where precipitation is &gt; 10 [mm]</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<p>Counting and plotting the number of days in the period where precipitation is &gt; 10 [mm]:</p>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span> <span class="va">R10mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span> <span class="va">x</span><span class="op">[</span><span class="va">x</span><span class="op">&gt;</span><span class="fl">10</span><span class="op">]</span> <span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 127</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="very-wet-days-r95p">Very wet days (R95p)<a class="anchor" aria-label="anchor" href="#very-wet-days-r95p"></a>
 </h3>
-<ul>
-<li>Identifying the wet days (daily precipitation &gt;= 1 mm):</li>
-</ul>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<p>Identifying the wet days (daily precipitation &gt;= 1 mm):</p>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wet.index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>Computing the 95th percentile of precipitation on wet days (<em>PRwn95</em>):</li>
-</ul>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<p>Computing the 95th percentile of precipitation on wet days (<em>PRwn95</em>):</p>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span> <span class="va">PRwn95</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">wet.index</span><span class="op">]</span>, probs<span class="op">=</span><span class="fl">0.95</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   95% </span></span>
 <span><span class="co">## 39.75</span></span></code></pre>
 <p><strong>Note 1</strong>: this computation was carried out for the three-year time period 1988-1990, not the 30-year period 1961-1990 commonly used.</p>
 <p><strong>Note 2</strong>: missing values are removed from the computation.</p>
-<ul>
-<li>Identifying the very wet days (daily precipitation &gt;= <em>PRwn95</em>)</li>
-</ul>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<p>Identifying the very wet days (daily precipitation &gt;= <em>PRwn95</em>):</p>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">very.wet.index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span> <span class="va">PRwn95</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1]   30   92  234  287  422  423  461  550  551  674  676  719  939  950  998</span></span>
 <span><span class="co">## [16] 1058 1061 1075</span></span></code></pre>
-<ul>
-<li>Computing the total precipitation on the very wet days:</li>
-</ul>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<p>Computing the total precipitation on the very wet days:</p>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span> <span class="va">R95p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">very.wet.index</span><span class="op">]</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1196.4</span></span></code></pre>
 <p><strong>Note 3</strong>: this computation was carried out for the three-year time period 1988-1990, not the 30-year period 1961-1990 commonly used</p>
@@ -333,16 +349,16 @@
 <div class="section level3">
 <h3 id="day-total-precipitation">5-day total precipitation<a class="anchor" aria-label="anchor" href="#day-total-precipitation"></a>
 </h3>
-<p>Computing the 5-day total (accumulated) precipitation </p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<p>Computing the 5-day total (accumulated) precipitation:</p>
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x.5max</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/rollapply.html" class="external-link">rollapply</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">x</span>, width<span class="op">=</span><span class="fl">5</span>, FUN<span class="op">=</span><span class="va">sum</span>, fill<span class="op">=</span><span class="cn">NA</span>, partial<span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                    align<span class="op">=</span><span class="st">"center"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/hydroplot.html">hydroplot</a></span><span class="op">(</span><span class="va">x.5max</span>,  ptype<span class="op">=</span><span class="st">"ts+boxplot"</span>, pfreq<span class="op">=</span><span class="st">"o"</span>, var.unit<span class="op">=</span><span class="st">"mm"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [Note: pfreq='o' =&gt; ptype has been changed to 'ts']</span></span></code></pre>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/x_5max-1.png" width="700"></p>
-<p>Maximum annual value of 5-day total precipitation</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<p>Maximum annual value of 5-day total precipitation:</p>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">x.5max.annual</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/daily2annual.html">daily2annual</a></span><span class="op">(</span><span class="va">x.5max</span>, FUN<span class="op">=</span><span class="va">max</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 1988-10-13 1989-07-03 1990-11-24 </span></span>
 <span><span class="co">##      113.2      170.8      237.2</span></span></code></pre>
@@ -354,7 +370,7 @@
 <h2 id="climograph">Climograph<a class="anchor" aria-label="anchor" href="#climograph"></a>
 </h2>
 <p>Since v0.5-0, <code>hydroTSM</code> includes a function to plot a climograph, considering not only precipitation but air temperature data as well.</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading daily ts of precipitation, maximum and minimum temperature</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MaquehueTemuco</span><span class="op">)</span></span>
 <span></span>
@@ -363,26 +379,26 @@
 <span><span class="va">tmx</span> <span class="op">&lt;-</span> <span class="va">MaquehueTemuco</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span></span>
 <span><span class="va">tmn</span> <span class="op">&lt;-</span> <span class="va">MaquehueTemuco</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span></span></code></pre></div>
 <p>Plotting a full climograph:</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/climograph.html">climograph</a></span><span class="op">(</span>pcp<span class="op">=</span><span class="va">pcp</span>, tmx<span class="op">=</span><span class="va">tmx</span>, tmn<span class="op">=</span><span class="va">tmn</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, </span>
 <span>                main<span class="op">=</span><span class="st">"Maquehue Temuco Ad (Chile)"</span>, lat<span class="op">=</span><span class="op">-</span><span class="fl">38.770</span>, lon<span class="op">=</span><span class="op">-</span><span class="fl">72.637</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/climograph2-1.png" width="800" style="display: block; margin: auto;"></p>
 <div style="page-break-after: always;"></div>
 <p>Plotting a climograph with uncertainty bands around mean values, but with no labels for tmx and tmn:</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/climograph.html">climograph</a></span><span class="op">(</span>pcp<span class="op">=</span><span class="va">pcp</span>, tmx<span class="op">=</span><span class="va">tmx</span>, tmn<span class="op">=</span><span class="va">tmn</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, tmx.labels<span class="op">=</span><span class="cn">FALSE</span>, tmn.labels<span class="op">=</span><span class="cn">FALSE</span>, </span>
 <span>                main<span class="op">=</span><span class="st">"Maquehue Temuco Ad (Chile)"</span>, lat<span class="op">=</span><span class="op">-</span><span class="fl">38.770</span>, lon<span class="op">=</span><span class="op">-</span><span class="fl">72.637</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/climograph3-1.png" width="800" style="display: block; margin: auto;"></p>
 <div style="page-break-after: always;"></div>
 <p>Plotting a climograph with uncertainty bands around mean values, but with no labels for tmx, tmn and pcp:</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/climograph.html">climograph</a></span><span class="op">(</span>pcp<span class="op">=</span><span class="va">pcp</span>, tmx<span class="op">=</span><span class="va">tmx</span>, tmn<span class="op">=</span><span class="va">tmn</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, </span>
 <span>                pcp.labels<span class="op">=</span><span class="cn">FALSE</span>, tmean.labels<span class="op">=</span><span class="cn">FALSE</span>, tmx.labels<span class="op">=</span><span class="cn">FALSE</span>, tmn.labels<span class="op">=</span><span class="cn">FALSE</span>, </span>
 <span>                main<span class="op">=</span><span class="st">"Maquehue Temuco Ad (Chile)"</span>, lat<span class="op">=</span><span class="op">-</span><span class="fl">38.770</span>, lon<span class="op">=</span><span class="op">-</span><span class="fl">72.637</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/climograph4-1.png" width="800" style="display: block; margin: auto;"></p>
 <div style="page-break-after: always;"></div>
 <p>To better represent the hydrological year in Chile (South America), the following figure will plot a full climograph starting in April (<code>start.month=4</code>) instead of January (<code>start.month=1</code>):</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/climograph.html">climograph</a></span><span class="op">(</span>pcp<span class="op">=</span><span class="va">pcp</span>, tmx<span class="op">=</span><span class="va">tmx</span>, tmn<span class="op">=</span><span class="va">tmn</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, </span>
 <span>                start.month<span class="op">=</span><span class="fl">4</span>, temp.labels.dx<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.2</span>,<span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.2</span>,<span class="fl">6</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                main<span class="op">=</span><span class="st">"Maquehue Temuco Ad (Chile)"</span>, lat<span class="op">=</span><span class="op">-</span><span class="fl">38.770</span>, lon<span class="op">=</span><span class="op">-</span><span class="fl">72.637</span><span class="op">)</span></span></code></pre></div>
@@ -400,6 +416,7 @@
 <h2 id="version-history">Version history<a class="anchor" aria-label="anchor" href="#version-history"></a>
 </h2>
 <ul>
+<li>v0.9: Jan 2024</li>
 <li>v0.8: Nov 2023</li>
 <li>v0.7: Mar 2020</li>
 <li>v0.6: Aug 2017</li>
@@ -418,9 +435,9 @@
 <h3 id="editors-gui">Editors, GUI<a class="anchor" aria-label="anchor" href="#editors-gui"></a>
 </h3>
 <ul>
+<li><p><strong>Multi-platform</strong>: <a href="https://sublime.weberup.com/" class="external-link">Sublime Text</a> (<a href="https://sublime.weberup.com/" class="external-link uri">https://sublime.weberup.com/</a>) ; <a href="https://www.rstudio.com/" class="external-link">RStudio</a> (<a href="https://www.rstudio.com/" class="external-link uri">https://www.rstudio.com/</a>)</p></li>
 <li><p><strong>GNU/Linux only</strong>: <a href="https://ess.r-project.org/" class="external-link">ESS</a> (<a href="https://ess.r-project.org/" class="external-link uri">https://ess.r-project.org/</a>)</p></li>
 <li><p><strong>Windows only</strong> : <a href="https://sourceforge.net/projects/npptor/" class="external-link">NppToR</a> (<a href="https://sourceforge.net/projects/npptor/" class="external-link uri">https://sourceforge.net/projects/npptor/</a>)</p></li>
-<li><p><strong>Multi-platform</strong>: <a href="https://sublime.weberup.com/" class="external-link">Sublime Text</a> (<a href="https://sublime.weberup.com/" class="external-link uri">https://sublime.weberup.com/</a>) ; <a href="https://www.rstudio.com/" class="external-link">RStudio</a> (<a href="https://www.rstudio.com/" class="external-link uri">https://www.rstudio.com/</a>)</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -452,9 +469,9 @@
 <div class="section level2">
 <h2 id="how-to-print-more-than-one-matrixplot-in-a-single-figure">How to print more than one <code>matrixplot</code> in a single Figure?<a class="anchor" aria-label="anchor" href="#how-to-print-more-than-one-matrixplot-in-a-single-figure"></a>
 </h2>
-<p>Beacuase <code>matrixplot</code> is based on lattice graphs, normal plotting commands included in base R does not work. Therefore, for plotting ore than 1 matrixplot ina single figure, you need to save the individual plots in an R object and then print them as you want.</p>
-<p>Int he following sequential lines of code, you can see two examples that show you how to plot two matrixplots in a single Figure:</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<p>Because <code>matrixplot</code> is based on lattice graphs, normal plotting commands included in base R does not work. Therefore, for plotting ore than 1 matrixplot in a single figure, you need to save the individual plots in an R object and then print them as you want.</p>
+<p>In the following sequential lines of code, you can see two examples that show you how to plot two matrixplots in a single Figure:</p>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hzambran/hydroTSM" class="external-link">hydroTSM</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span>, end<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/yearmon.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1960-12-31"</span><span class="op">)</span><span class="op">)</span></span>
@@ -468,10 +485,10 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p</span>, position<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">.4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hydroTSM_Vignette-knitr_files/figure-html/FAQmatrixplot1-1.png" width="800" style="display: block; margin: auto;"></p>
 <p>The second and easier way allows you to obtain the same previous figure (not shown here), but you are required to install the <code>gridExtra</code> package:</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">gridExtra</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"gridExtra"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: gridExtra</span></span></code></pre>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">gridExtra</span><span class="op">)</span> <span class="co"># also loads grid</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://lattice.r-forge.r-project.org/" class="external-link">lattice</a></span><span class="op">)</span></span>
 <span></span>
