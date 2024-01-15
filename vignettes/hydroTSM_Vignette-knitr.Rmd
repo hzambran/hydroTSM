@@ -2,12 +2,13 @@
 title: Tutorial for Introductory Analysis of Daily Precipitation Data with `hydroTSM`
 author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
-date: " version 0.8, 30-Nov-2023"
+date: " version 0.9, 16-Jan-2024"
 output:
-  pdf_document:
-    number_sections: yes
   html_document:
     df_print: paged
+    number_sections: yes
+  pdf_document:
+    number_sections: yes
 vignette: |
   %\VignetteIndexEntry{Tutorial for Introductory Analysis of Daily Precipitation Data with `hydroTSM`} 
   %\VignetteKeyword{hydrology}
@@ -40,34 +41,34 @@ install_github("hzambran/hydroTSM")
 # Setting up the environment
 
 
-* Loading the *hydroTSM* library, which contains data and functions used in this analysis.
+Loading the *hydroTSM* pacakge, which contains data and functions used in this analysis.
 ```{r LoadingPkg}
 library(hydroTSM)
 ```
 
-* Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, from 01/Jan/1921 to 31/Dec/1990.
+Loading daily precipitation data at the station San Martino di Castrozza, Trento Province, Italy, from 01/Jan/1921 to 31/Dec/1990.
 
 ```{r LoadingData}
 data(SanMartinoPPts)
 ```
 
-*  Selecting only a 6-years time slice for the analysis
+Selecting only a 6-years time slice for the analysis
 
 ```{r Window1}
 x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
 ```
 
-*  Dates of the daily values of 'x'
+Dates of the daily values of 'x'
 ```{r Dates}
 dates <- time(x)
 ```
 
-*  Amount of years in 'x' (needed for computations)
+Amount of years in 'x' (needed for computations)
 ```{r yip}
 ( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
 ```
 
-*  Global view of daily precipitation values a calendar heatmap (six years maximum):
+Global view of daily precipitation values a calendar heatmap (six years maximum), useful for visually identifying dry, normal and wet days:
 
 ```{r calendarHeatmap, fig.width=8.6, fig.height=8.7}
 calendarHeatmap(x)
@@ -90,12 +91,12 @@ hydroplot(x, var.type="Precipitation", main="at San Martino",
           pfreq = "dm", from="1987-01-01")
 ```
 
-2)  Amount of days with information (not \texttt{NA}) per year
+2)  Amount of days with information (not NA) per year
 ```{r dwi1}
 dwi(x)
 ```
 
-3)  Amount of days with information (not \texttt{NA}) per month per year
+3)  Amount of days with information (not NA) per month per year
 ```{r dwi2}
 dwi(x, out.unit="mpy")
 ```
@@ -120,12 +121,36 @@ print(matrixplot(M, ColorRamp="Precipitation",
 ```
 
 
+5) Computation of monthly values only when the percentage of NAs in each month is lower than a user-defined percentage (10% in this example).
+
+```{r Custom_daily2monthly}     
+# Loading the DAILY precipitation data at SanMartino
+data(SanMartinoPPts)
+y <- SanMartinoPPts
+     
+# Subsetting 'y' to its first three months (Jan/1921 - Mar/1921)
+y <- window(y, end="1921-03-31")
+     
+## Transforming into NA the 10% of values in 'y'
+set.seed(10) # for reproducible results
+n           <- length(y)
+n.nas       <- round(0.1*n, 0)
+na.index    <- sample(1:n, n.nas)
+y[na.index] <- NA
+     
+## Daily to monthly, only for months with less than 10% of missing values
+(m2 <- daily2monthly(y, FUN=sum, na.rm=TRUE, na.rm.max=0.1))
+     
+# Verifying that the second and third month of 'x' had 10% or more of missing values
+cmv(y, tscale="month")
+```
 
 
 # Annual analysis
 
 
 Annual values of precipitation
+
 ```{r daily2annual}
 daily2annual(x, FUN=sum, na.rm=TRUE)
 ```
@@ -161,16 +186,19 @@ monthlyfunction(m, FUN=median, na.rm=TRUE)
 ```
 
 Vector with the three-letter abbreviations for the month names
+
 ```{r cmonth}
 cmonth <- format(time(m), "%b")
 ```
 
 Creating ordered monthly factors
+
 ```{r months}
 months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
 ```
 
 Boxplot of the monthly values
+
 ```{r boxplotMonthly}
 boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation", 
          ylab="Precipitation, [mm]", xlab="Month")
@@ -197,6 +225,7 @@ Extracting the seasonal values for each year
 
 
 Plotting the time evolution of the seasonal precipitation values
+
 ```{r hydroplot2, fig.width=12, fig.height=10}
 hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 ```
@@ -226,10 +255,20 @@ hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
 ```
 
 
+## Seasonality index
+
+Counting and plotting the number of days in the period where precipitation is > 10 [mm]:
+
+```{r SeasonalityIndex}
+si(x)
+```
+
+According to the seasonality index defined by Walsh and Lawler (1981), a value of 0.39 corresponds to a precipitation regime that can be classified as "Equable but with a definite wetter season" (see more details with `?si`).
 
 ## Heavy precipitation days (R10mm)
 
-Counting and plotting the number of days in the period where precipitation is > 10 [mm]
+Counting and plotting the number of days in the period where precipitation is > 10 [mm]:
+
 ```{r R10mm}
 ( R10mm <- length( x[x>10] ) )
 ```
@@ -240,13 +279,14 @@ Counting and plotting the number of days in the period where precipitation is > 
 
 ## Very wet days (R95p)
 
-* Identifying the wet days (daily precipitation >= 1 mm):
+Identifying the wet days (daily precipitation >= 1 mm):
 ```{r wet_index}
 wet.index <- which(x >= 1)
 ```
 	
 	
-* Computing the 95th percentile of precipitation on wet days (*PRwn95*):
+Computing the 95th percentile of precipitation on wet days (*PRwn95*):
+
 ```{r PRwn95}
 ( PRwn95 <- quantile(x[wet.index], probs=0.95, na.rm=TRUE) )
 ```
@@ -256,13 +296,15 @@ wet.index <- which(x >= 1)
 **Note 2**: missing values are removed from the computation.
 
 
-* Identifying the very wet days (daily precipitation >= *PRwn95*)
+Identifying the very wet days (daily precipitation >= *PRwn95*):
+
 ```{r very_wet_index}
 (very.wet.index <- which(x >= PRwn95))
 ```
 
 
-* Computing the total precipitation on the very wet days:
+Computing the total precipitation on the very wet days:
+
 ```{r R95p}
 ( R95p <- sum(x[very.wet.index]) )
 ```
@@ -273,7 +315,8 @@ wet.index <- which(x >= 1)
 
 ## 5-day total precipitation
 
-Computing the 5-day total (accumulated) precipitation \newline
+Computing the 5-day total (accumulated) precipitation:
+
 ```{r x_5max}
 x.5max <- rollapply(data=x, width=5, FUN=sum, fill=NA, partial= TRUE, 
                     align="center")
@@ -281,7 +324,8 @@ x.5max <- rollapply(data=x, width=5, FUN=sum, fill=NA, partial= TRUE,
 hydroplot(x.5max,  ptype="ts+boxplot", pfreq="o", var.unit="mm")
 ```
 
-Maximum annual value of 5-day total precipitation
+Maximum annual value of 5-day total precipitation:
+
 ```{r (x_5max_annual}
 (x.5max.annual <- daily2annual(x.5max, FUN=max, na.rm=TRUE))
 ```
@@ -346,6 +390,7 @@ paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
 
 # Version history
 
+* v0.9: Jan 2024
 * v0.8: Nov 2023
 * v0.7: Mar 2020
 * v0.6: Aug 2017
@@ -362,11 +407,11 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 ## Editors, GUI
 
+*  **Multi-platform**: [Sublime Text](https://sublime.weberup.com/) (https://sublime.weberup.com/) ; [RStudio](https://www.rstudio.com/) (https://www.rstudio.com/)
+
 *  **GNU/Linux only**: [ESS](https://ess.r-project.org/) (https://ess.r-project.org/)
 
 *  **Windows only**  : [NppToR](https://sourceforge.net/projects/npptor/) (https://sourceforge.net/projects/npptor/)
-
-*  **Multi-platform**: [Sublime Text](https://sublime.weberup.com/) (https://sublime.weberup.com/) ; [RStudio](https://www.rstudio.com/) (https://www.rstudio.com/)
 
 
 ## Importing data
@@ -397,10 +442,10 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 ## F.A.Q.
 
 # How to print more than one `matrixplot` in a single Figure?
-Beacuase `matrixplot` is based on lattice graphs, normal plotting commands included in base R does not work. 
-Therefore, for plotting ore than 1 matrixplot ina single figure, you need to save the individual plots in an R object and then print them as you want.
+Because `matrixplot` is based on lattice graphs, normal plotting commands included in base R does not work. 
+Therefore, for plotting ore than 1 matrixplot in a single figure, you need to save the individual plots in an R object and then print them as you want.
 
-Int he following sequential lines of code, you can see two examples that show you how to plot two matrixplots in a single Figure:
+In the following sequential lines of code, you can see two examples that show you how to plot two matrixplots in a single Figure:
 
 
 ```{r FAQmatrixplot1, fig.width = 8, fig.height = 7, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9)}
