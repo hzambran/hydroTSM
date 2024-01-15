@@ -13,7 +13,6 @@ navbar:
 
 reference:
 - title: Datasets
-  desc: Datasets included in hydroTSM
   contents:
   - '`Cauquenes7336001`'
   - '`EbroPPtsMonthly`'
@@ -23,8 +22,7 @@ reference:
   - '`SanMartinoPPts`'
 
 - title: Temporal aggregation
-    desc: Functions for temporal aggregation
-    contents:
+  contents:
     - '`annualfunction`'    
     - '`weeklyfunction`'
     - '`monthlyfunction`' 
@@ -39,8 +37,7 @@ reference:
     - '`subhourly2nminutes`'
 
 - title: Temporal manipulation
-    desc: Functions for general temporal manipulation
-    contents:
+  contents:
     - '`dip`'
     - '`diy`'
     - '`hip`'
@@ -48,8 +45,7 @@ reference:
     - '`yip`'
 
 - title: Graphical functions
-    desc: Functions that produce a graphical figure
-    contents:
+  contents:
     - '`calendarHeatmap`'
     - '`climograph`'
     - '`fdc`'
@@ -60,8 +56,7 @@ reference:
     - '`plot_pq`'
 
 - title: Todas las funciones
-    desc: Datasets included in hydroTSM
-    contents:
+  contents:
     - '`baseflow`'
     - '`cmv`'
     - '`drawTimeAxis`'
