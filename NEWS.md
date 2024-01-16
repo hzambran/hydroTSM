@@ -99,6 +99,8 @@ NEWS/ChangeLog for hydroTSM
 
         o NAMESPACE file : 'hydroplot', 'sname2plot' and 'hypsometric' are now exported S3 methods
 
+        o new vignette: 'Tutorial for Introductory Analysis of Daily Streamflow Data with hydroTSM'
+
 
 # Changes in version 0.6-0   11-Mar-2020
         o Package tested against R Under development (unstable) (2020-03-10 r77920) -- "Unsuffered Consequences", following an imperative request made by CRAN.
