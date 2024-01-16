@@ -1,0 +1,265 @@
+---
+title: Tutorial for Introductory Analysis of Daily Streamflow Data with `hydroTSM`
+author:
+- Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
+date: "version 0.1, 16-Jan-2024"
+output:
+  html_document:
+    df_print: paged
+    number_sections: yes
+  pdf_document:
+    number_sections: yes
+vignette: |
+  %\VignetteIndexEntry{Tutorial for Introductory Analysis of Daily Streamflow Data with `hydroTSM`} 
+  %\VignetteKeyword{hydrology}
+  %\VignetteKeyword{hydrological modelling}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown} 
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Installation
+
+Installing the latest stable version (from [CRAN](http://cran.r-project.org/web/packages/hydroTSM/)):
+```{r installation1, eval=FALSE}
+install.packages("hydroTSM")
+```
+
+
+\noindent Alternatively, you can also try the under-development version (from  [Github](https://github.com/hzambran/hydroTSM)):
+```{r installation2, eval=FALSE}
+if (!require(devtools)) install.packages("devtools")
+library(devtools)
+install_github("hzambran/hydroTSM")
+```
+
+
+# Setting up the environment
+
+
+Loading the *hydroTSM* package, which contains data and functions used in this analysis:
+
+```{r LoadingPkg}
+library(hydroTSM)
+```
+
+Loading daily streamflow data at the station Cauquenes en el Arrayan, Maule Region, Chile, from 01/Jan/1979 to 31/Dec/2020.
+
+```{r LoadingData}
+data(Cauquenes7336001)
+```
+
+Selecting only a 30-years time slice for the analysis
+
+```{r Window1}
+x <- window(Cauquenes7336001, start="1981-01-01", end="2010-01-01")
+```
+
+Dates of the daily values of 'x':
+
+```{r Dates}
+dates <- time(x)
+```
+
+Amount of years in 'x' (needed for computations):
+
+```{r yip}
+( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
+```
+
+
+The `Cauquenes7336001` dataset stores 5 variables (in this order): P, [mm], Tmx, [degC], Tmn, [deg C], PET, [mm], Qobs, [mm], Qobs, [m3/s].
+For the rest of the analysis, only streamflows (Q, [mm]) and precipitations (P, [mm]) will be selected:
+
+```{r SelectingPyQ}
+P <- x[, 1]
+Q <- x[, 5]
+```
+
+
+# Basic exploratory data analysis (EDA)
+
+
+1)  Summary statistics of streamflows
+```{r smry}
+smry(Q)
+```
+
+2)  Amount of days with information (not NA) per year
+```{r dwi1}
+dwi(Q)
+```
+
+3)  Amount of days with information (not NA) per month per year
+```{r dwi2}
+dwi(Q, out.unit="mpy")
+```
+
+4)  Percentage of days with missing data per month
+```{r cmv}
+cmv(Q, tscale="month")
+```
+
+5) Computation of monthly values only when the percentage of NAs in each month is lower than a user-defined percentage (10% in this example).
+
+```{r Custom_daily2monthly}     
+## Daily to monthly, only for months with less than 10% of missing values
+(m2 <- daily2monthly(Q, FUN=mean, na.rm=TRUE, na.rm.max=0.1))
+```
+
+
+
+4)  Basic exploratory figures:
+
+Using the *hydroplot* function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
+
+```{r hydroplot, fig.width=10, fig.height=8}
+hydroplot(Q, var.type="Precipitation", main="at San Martino", 
+          pfreq = "dm", from="1987-01-01")
+```
+
+Plotting P and Q for the full time period of both time series:
+
+```{r plot_pq1, fig.width=10, fig.height=8}
+plot_pq(p=P, q=Q)
+```
+     
+Plotting precipitation and streamflows only for a specific time period, from April to December 2000:
+```{r plot_pq2, fig.width=10, fig.height=8}
+plot_pq(p=P, q=Q, from="2000-04-01", to="2000-12-31")
+```
+
+Plotting monthly values of precipitation and streamflows for the full time period of both time series:
+```{r plot_pq3, fig.width=10, fig.height=8}
+plot_pq(p=P, q=Q, ptye="monthly")
+```
+
+Plotting monthly values of precipitation and streamflows for the full time period of both time series, but using a hydrologic year starting on April:
+
+```{r plot_pq4, fig.width=10, fig.height=8}
+plot_pq(p=P, q=Q, ptye="monthly", start.month=4)
+```
+     
+
+
+Selecting only a six-year time period for streamflows and then plotting a calendar heatmap (six years maximum) to visually identify dry, normal and wet days:
+
+```{r calendarHeatmap, fig.width=8.6, fig.height=8.7}
+q <- window(Q, start="2005-01-01", end="2010-01-01")
+calendarHeatmap(q)
+```
+
+
+# Flow duration curve (FDC)
+
+
+Traditional flow duration curve of the 30-year daily streamflow data:
+
+```{r FDC1}
+fdc1 <- fdc(Q, log="")
+```
+
+Flow duration curve of the 30-year daily streamflow data using logarithmic scale for the `y` axis (i.e., to put focus on the low flows):
+
+```{r FDC2}
+fdc2 <- fdc(Q)
+```
+
+Please note that `log="y"` was not provided as an argument to `fdc` because it is the default value used in the function.
+
+
+Flow duration curve of the 30-year daily streamflow data using logarithmic scale for the `x` axis (i.e., to put focus on the high flows):
+
+```{r FDC3}
+fdc3 <- fdc(Q, log="x")
+```
+
+# Software details
+This tutorial was built under: 
+
+```{r echo=FALSE}
+sessionInfo()$platform
+sessionInfo()$R.version$version.string 
+paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
+```
+
+
+# Version history
+
+* v0.1: 16-Jan-2024
+
+# Appendix
+
+In order to make easier the use of \texttt{hydroTSM} for users not familiar with R, in this section a minimal set of information is provided to guide the user in the [R](https://www.r-project.org/) world.
+
+
+## Editors, GUI
+
+*  **Multi-platform**: [Sublime Text](https://sublime.weberup.com/) (https://sublime.weberup.com/) ; [RStudio](https://www.rstudio.com/) (https://www.rstudio.com/)
+
+*  **GNU/Linux only**: [ESS](https://ess.r-project.org/) (https://ess.r-project.org/)
+
+*  **Windows only**  : [NppToR](https://sourceforge.net/projects/npptor/) (https://sourceforge.net/projects/npptor/)
+
+
+## Importing data
+
+*  `?read.table`, `?write.table`: allow the user to read/write a file (in $~$table format) and create a data frame from it. Related functions are `?read.csv`, `?write.csv`, `?read.csv2`, `?write.csv2`.
+
+*  `?zoo::read.zoo`, `?zoo::write.zoo`: functions for reading and writing time series from/to text files, respectively.
+
+*  [**R Data Import/Export**](https://cran.r-project.org/doc/manuals/r-release/R-data.html): https://cran.r-project.org/doc/manuals/r-release/R-data.html
+
+*  [**foreign** R package](https://cran.r-project.org/package=foreign): read data stored in several R-external formats (dBase, Minitab, S, SAS, SPSS, Stata, Systat, Weka, ...)
+
+*  [**readxl** R package](https://cran.r-project.org/package=readxl): Import MS Excel files into R. 
+
+*  [**some examples**](https://www.statmethods.net/input/importingdata.html): https://www.statmethods.net/input/importingdata.html
+
+
+
+## Useful Websites
+
+*  [**Quick R**](https://www.statmethods.net/): https://www.statmethods.net/
+
+*  [**Time series in R**](https://cran.r-project.org/web/views/TimeSeries.html): https://cran.r-project.org/web/views/TimeSeries.html
+
+*  [**Quick reference for the `zoo` package**](https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf): https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf
+
+
+## F.A.Q.
+
+# How to print more than one `matrixplot` in a single Figure?
+Because `matrixplot` is based on lattice graphs, normal plotting commands included in base R does not work. 
+Therefore, for plotting ore than 1 matrixplot in a single figure, you need to save the individual plots in an R object and then print them as you want.
+
+In the following sequential lines of code, you can see two examples that show you how to plot two matrixplots in a single Figure:
+
+
+```{r FAQmatrixplot1, fig.width = 8, fig.height = 7, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9)}
+library(hydroTSM)
+data(SanMartinoPPts)
+x <- window(SanMartinoPPts, end=as.Date("1960-12-31"))
+m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
+M <- matrix(m, ncol=12, byrow=TRUE)
+colnames(M) <- month.abb
+rownames(M) <- unique(format(time(m), "%Y"))
+p <- matrixplot(M, ColorRamp="Precipitation", main="Monthly precipitation,")
+
+print(p, position=c(0, .6, 1, 1), more=TRUE)
+print(p, position=c(0, 0, 1, .4))
+```
+
+The second and easier way allows you to obtain the same previous figure (not shown here), but you are required to install the `gridExtra` package:
+
+```{r FAQmatrixplot2, fig.width = 8, fig.height = 7, , dpi=100, fig.align = "center", dev.args=list(pointsize = 9), eval=TRUE}
+if (!require(gridExtra)) install.packages("gridExtra")
+require(gridExtra) # also loads grid
+require(lattice)
+
+grid.arrange(p, p, nrow=2)
+```

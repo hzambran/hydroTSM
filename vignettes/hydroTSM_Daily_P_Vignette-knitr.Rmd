@@ -56,7 +56,7 @@ data(SanMartinoPPts)
 Selecting only a 6-years time slice for the analysis
 
 ```{r Window1}
-x <- window(SanMartinoPPts, start=as.Date("1985-01-01"))
+x <- window(SanMartinoPPts, start="1985-01-01")
 ```
 
 Dates of the daily values of 'x'
@@ -69,12 +69,6 @@ Amount of years in 'x' (needed for computations)
 ( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
 ```
 
-Global view of daily precipitation values a calendar heatmap (six years maximum), useful for visually identifying dry, normal and wet days:
-
-```{r calendarHeatmap, fig.width=8.6, fig.height=8.7}
-calendarHeatmap(x)
-```
-
 
 # Basic exploratory data analysis (EDA)
 
@@ -82,14 +76,6 @@ calendarHeatmap(x)
 1)  Summary statistics
 ```{r smry}
 smry(x)
-```
-
-
--  Using the *hydroplot* function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
-
-```{r hydroplot, fig.width=10, fig.height=8}
-hydroplot(x, var.type="Precipitation", main="at San Martino", 
-          pfreq = "dm", from="1987-01-01")
 ```
 
 2)  Amount of days with information (not NA) per year
@@ -103,26 +89,7 @@ dwi(x, out.unit="mpy")
 ```
 
 
-4)  Plotting the monthly precipitation values for each year, useful for identifying dry/wet months.
-
-
-```{r matrixplot}
-# Daily zoo to monthly zoo
-m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
-     
-# Creating a matrix with monthly values per year in each column
-M <- matrix(m, ncol=12, byrow=TRUE)
-colnames(M) <- month.abb
-rownames(M) <- unique(format(time(m), "%Y"))
-     
-# Plotting the monthly precipitation values
-require(lattice)
-print(matrixplot(M, ColorRamp="Precipitation", 
-           main="Monthly precipitation at San Martino st., [mm/month]"))
-```
-
-
-5) Computation of monthly values only when the percentage of NAs in each month is lower than a user-defined percentage (10% in this example).
+4) Computation of monthly values only when the percentage of NAs in each month is lower than a user-defined percentage (10% in this example).
 
 ```{r Custom_daily2monthly}     
 # Loading the DAILY precipitation data at SanMartino
@@ -144,6 +111,35 @@ y[na.index] <- NA
      
 # Verifying that the second and third month of 'x' had 10% or more of missing values
 cmv(y, tscale="month")
+```
+
+
+
+4)  Basic exploratory figures:
+
+Using the *hydroplot* function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
+
+```{r hydroplot, fig.width=10, fig.height=8}
+hydroplot(x, var.type="Precipitation", main="at San Martino", 
+          pfreq = "dm", from="1987-01-01")
+```
+
+Global view of daily precipitation values a calendar heatmap (six years maximum), useful for visually identifying dry, normal and wet days:
+
+```{r calendarHeatmap, fig.width=8.6, fig.height=8.7}
+calendarHeatmap(x)
+```
+
+Selecting only a three-month time slice for the analysis:
+
+```{r Window3}
+yy <- window(SanMartinoPPts, start="1990-10-01")
+```
+
+Plotting the selected time series:
+
+```{r hydroplot3}
+hydroplot(yy,  ptype="ts", pfreq="o", var.unit="mm")
 ```
 
 
@@ -179,32 +175,48 @@ annualfunction(x, FUN=sum, na.rm=TRUE) / nyears
 
 # Monthly analysis
 
+1) Plotting the monthly precipitation values for each year, useful for identifying dry/wet months.
 
-Median of the monthly values at station 'x'. Not needed, just for looking at these values in the boxplot.
+
+```{r matrixplot}
+# Daily zoo to monthly zoo
+m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
+     
+# Creating a matrix with monthly values per year in each column
+M <- matrix(m, ncol=12, byrow=TRUE)
+colnames(M) <- month.abb
+rownames(M) <- unique(format(time(m), "%Y"))
+     
+# Plotting the monthly precipitation values
+require(lattice)
+print(matrixplot(M, ColorRamp="Precipitation", 
+           main="Monthly precipitation at San Martino st., [mm/month]"))
+```
+
+2) Median of the monthly values at station 'x'. Not needed, just for looking at these values in the boxplot.
 
 ```{r monthlyfunction}
 monthlyfunction(m, FUN=median, na.rm=TRUE)
 ```
 
-Vector with the three-letter abbreviations for the month names
+3) Vector with the three-letter abbreviations for the month names
 
 ```{r cmonth}
 cmonth <- format(time(m), "%b")
 ```
 
-Creating ordered monthly factors
+4) Creating ordered monthly factors
 
 ```{r months}
 months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
 ```
 
-Boxplot of the monthly values
+5) Boxplot of the monthly values
 
 ```{r boxplotMonthly}
 boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation", 
          ylab="Precipitation, [mm]", xlab="Month")
 ```
-
 
 
 
@@ -245,26 +257,26 @@ Loading daily precipitation data at the station San Martino di Castrozza, Trento
 data(SanMartinoPPts)
 ```
 	
-Selecting only a three-year time slice for the analysis
-```{r Window3}
-x <- window(SanMartinoPPts, start=as.Date("1988-01-01"))
+Selecting only a 6-year time slice for the analysis
+```{r Window4}
+x <- window(SanMartinoPPts, start="1985-10-01")
 ```
 
 Plotting the selected time series
-```{r hydroplot3}
+```{r hydroplot4}
 hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
 ```
 
 
 ## Seasonality index
 
-Counting and plotting the number of days in the period where precipitation is > 10 [mm]:
+Computing the seasonality index defined by Walsh and Lawler (1981) to classify the precipitation regime of `x`:
 
 ```{r SeasonalityIndex}
 si(x)
 ```
 
-According to the seasonality index defined by Walsh and Lawler (1981), a value of 0.39 corresponds to a precipitation regime that can be classified as "Equable but with a definite wetter season" (see more details with `?si`).
+According to the seasonality index defined by Walsh and Lawler (1981), a value of 0.35 corresponds to a precipitation regime that can be classified as "Equable but with a definite wetter season" (see more details with `?si`).
 
 ## Heavy precipitation days (R10mm)
 
