@@ -1,4 +1,4 @@
-%%File si.Rd
+%% File si.Rd
 %% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 %%                                 https://CRAN.R-project.org/package=hydroTSM
 %%                                 http://www.rforge.net/hydroTSM/ ; 
@@ -14,7 +14,7 @@
 Seasonality Index
 }
 \description{
-Function to compute the seasonality index defined by Walsh and Lawler (1981) to classify the 
+Function to compute the seasonality index defined by Walsh and Lawler (1981) to classify the precipitation regime.
 }
 \usage{
   si(x, na.rm=TRUE, from=start(x), to=end(x), date.fmt="\%Y-\%m-\%d", start.month=1)
