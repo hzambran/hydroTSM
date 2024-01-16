@@ -41,7 +41,8 @@ install_github("hzambran/hydroTSM")
 # Setting up the environment
 
 
-Loading the *hydroTSM* pacakge, which contains data and functions used in this analysis.
+Loading the *hydroTSM* package, which contains data and functions used in this analysis:
+
 ```{r LoadingPkg}
 library(hydroTSM)
 ```
