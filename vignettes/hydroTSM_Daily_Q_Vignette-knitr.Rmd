@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Installation
 
-Installing the latest stable version (from [CRAN](http://cran.r-project.org/web/packages/hydroTSM/)):
+Installing the latest stable version (from [CRAN](https://cran.r-project.org/package=hydroTSM)):
 ```{r installation1, eval=FALSE}
 install.packages("hydroTSM")
 ```
@@ -199,7 +199,7 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 ## Editors, GUI
 
-*  **Multi-platform**: [Sublime Text](https://sublime.weberup.com/) (https://sublime.weberup.com/) ; [RStudio](https://www.rstudio.com/) (https://www.rstudio.com/)
+*  **Multi-platform**: [Sublime Text](https://sublime.weberup.com/) (https://sublime.weberup.com/) ; [RStudio](https://posit.co/) (https://posit.co/)
 
 *  **GNU/Linux only**: [ESS](https://ess.r-project.org/) (https://ess.r-project.org/)
 
@@ -218,7 +218,7 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 *  [**readxl** R package](https://cran.r-project.org/package=readxl): Import MS Excel files into R. 
 
-*  [**some examples**](https://www.statmethods.net/input/importingdata.html): https://www.statmethods.net/input/importingdata.html
+*  [**some examples**](https://www.statmethods.net/input/importingdata.html): https://www.statmethods.net/data-input/importingdata.html
 
 
 
@@ -226,9 +226,9 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 *  [**Quick R**](https://www.statmethods.net/): https://www.statmethods.net/
 
-*  [**Time series in R**](https://cran.r-project.org/web/views/TimeSeries.html): https://cran.r-project.org/web/views/TimeSeries.html
+*  [**Time series in R**](https://cran.r-project.org/view=TimeSeries): https://cran.r-project.org/view=TimeSeries
 
-*  [**Quick reference for the `zoo` package**](https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf): https://cran.r-project.org/web/packages/zoo/vignettes/zoo-quickref.pdf
+*  [**Quick reference for the `zoo` package**](https://cran.r-project.org/package=zoo/vignettes/zoo-quickref.pdf): https://cran.r-project.org/package=zoo/vignettes/zoo-quickref.pdf
 
 
 ## F.A.Q.
