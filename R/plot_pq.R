@@ -17,7 +17,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 # Started: 09-Jun-2018                                                         #
 # Updates: 26-Nov-2023 ; 22-Dec-2023                                           #
-#          12-Jan-2024 ; 13-Jan-2024                                           #
+#          12-Jan-2024 ; 13-Jan-2024 ; 17-Jan-2024                             #
 ################################################################################
 
 # 'p'          : zoo object with precipitation time series, with any time frequency 
@@ -98,8 +98,8 @@ plot_pq.zoo <- function(p,
                         main=ifelse(ptype=="original", "Precipitation and Streamflows", "Monthly Precipitation and Streamflows"),
                         xlab=ifelse(ptype=="original", "Time", "Month"), 
                         ylab=c("P, [mm]", "Q, [m3/s]"), 
-                        #cols=c("blue", "black"),
-                        cols=c("lightskyblue1", "blue"),
+                        p.col=ifelse(ptype=="original", "blue", "lightblue"),
+                        q.col=ifelse(ptype=="original", "black", "blue"),
 
                         leg.title="",
                         leg.text=c("P", "Q"),
@@ -278,18 +278,20 @@ plot_pq.zoo <- function(p,
     } # IF end
   } # IF end
 
+  # saving graphical parameters
+  oldpars <- par(no.readonly=TRUE)
 
   if (ptype=="original") {
      .plot_pq_ts.zoo(p, q, 
                      #ptype=ptype, na.fill=na.fill, from=from, end=end,
                      #date.fmt=date.fmt, tz=tz,
-                     main=main, xlab=xlab, ylab=ylab, cols=cols,
+                     main=main, xlab=xlab, ylab=ylab, cols=c(p.col, q.col),
                      leg.title=leg.title, leg.text=leg.text,
                      q.pch=q.pch, q.cex=q.cex) 
   } else .plot_pq_monthly.zoo(p, q, 
                               #ptype=ptype, na.fill=na.fill, from=from, end=end,
                               #date.fmt=date.fmt, tz=tz,
-                              main=main, xlab=xlab, ylab=ylab, cols=cols,
+                              main=main, xlab=xlab, ylab=ylab, cols=c(p.col, q.col),
 
                               #leg.title=leg.title, leg.text=leg.text,
                               #q.pch=q.pch, q.cex=q.cex,
@@ -306,6 +308,9 @@ plot_pq.zoo <- function(p,
                               labels.q.dy=labels.q.dy,
                               labels.p.dy=labels.p.dy
                               )
+
+   # restoring original graphical parameters
+  par(oldpars)
 } # 'plot_pq.zoo' END
 
 
@@ -334,7 +339,7 @@ plot_pq.zoo <- function(p,
                             ) {
 
   # saving graphical parameters
-  oldpars <- par(no.readonly=TRUE)
+  #oldpars <- par(no.readonly=TRUE)
 
   #par(mar=0.1 + c(5, 4, 4, 8), xpd=TRUE ) # bottom, left, top and right. Default: 0.1+ c(5, 4, 4, 2)
   par(mar=0.1 + c(7, 4, 4, 4), xpd=TRUE ) # bottom, left, top and right. Default: 0.1+ c(5, 4, 4, 2)
@@ -373,7 +378,7 @@ plot_pq.zoo <- function(p,
          title=leg.title, legend= leg.text)
 
   # restoring original graphical parameters
-  par(oldpars)
+  #par(oldpars)
 
 } # '.plot_pq_ts.zoo' END
 
@@ -392,7 +397,7 @@ plot_pq.zoo <- function(p,
 # Started: 26-Jul-2022                                                            #
 # Updates: 22-Sep-2022 ; 11-Oct-2022 ; 25-Oct-2022                                #
 #          22-Dec-2023 ; 27-Dec-2023                                              #
-#          12-Jan-2024                                                            #          
+#          12-Jan-2024 ; 17-Jan-2024                                              #          
 ###################################################################################
 # 'q'        : object of type 'zoo' with monthly, daily or subdaily streamflow data.
 #              If q is a monthly zoo object, it must have 12 elments and it should be 
@@ -420,7 +425,7 @@ plot_pq.zoo <- function(p,
                                  main="Monthly Precipitation and Streamflows", 
                                  xlab="Month",
                                  ylab=c("P, [mm]", "Q, [m3/s]"),
-                                 cols=c("lightskyblue1", "blue"),
+                                 cols=c("lightblue", "blue"),
                             
                                  start.month=1,
 

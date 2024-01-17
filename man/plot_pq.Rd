@@ -26,7 +26,8 @@ plot_pq(p, ...)
                             "Monthly Precipitation and Streamflows"),
                 xlab=ifelse(ptype=="original", "Time", "Month"), 
                 ylab=c("P, [mm]", "Q, [m3/s]"), 
-                cols=c("lightskyblue1", "blue"), 
+                p.col=ifelse(ptype=="original", "blue", "lightblue"),
+                q.col=ifelse(ptype=="original", "black", "blue"), 
                 leg.title="", leg.text=c("P", "Q"),
                 q.pch=16, q.cex=0.3,
                             
@@ -92,9 +93,11 @@ a title for the \code{x} axis. See \code{\link[graphics]{title}}.
 a two-element title for the \code{y} axis: see \code{\link[graphics]{title}}. \cr
 The first element is used for the right \code{y} axis (i.e., for precipitation). The second element is used for the left \code{y} axis (i.e., for streamflows).
 }
-  \item{cols}{
-character, representing the colors to be used for ploting the precipitation and streamflow time series.  \cr
-The first element is used for precipitation and the second element is used for streamflows.
+  \item{p.col}{
+character, representing the colors to be used for ploting the precipitation time series.  
+}
+  \item{q.col}{
+character, representing the colors to be used for ploting the streamflow time series. 
 }
   \item{leg.title}{
 a character string or length-one expression giving a title to be placed at the top of the legend. \code{\link[graphics]{legend}}.
