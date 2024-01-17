@@ -34,12 +34,12 @@ zoo or numeric object with streamflow records. The suggested time frequency shou
 numeric representing the filter parameter. Default value is 0.925 as recommended by Arnold and Allen (1999)
 }
   \item{from}{
-Character indicating the starting date for creating the regularly spaced zoo object. The default value corresponds to the date of the first element of \code{x} \cr
-It has to be in the format indicated by \code{date.fmt}. 
+Character indicating the starting date for subsetting \code{x}. It has to be in the format indicated by \code{date.fmt}. \cr
+The default value corresponds to the date of the first element of \code{x}.
 }
   \item{to}{
-Character indicating the ending date for creating the regularly spaced zoo object. The default value corresponds to the date of the last element of \code{x} \cr
-It has to be in the format indicated by \code{date.fmt}.
+Character indicating the ending date for subsetting \code{x}. It has to be in the format indicated by \code{date.fmt}. \cr
+The default value corresponds to the date of the last element of \code{x}.
 }
   \item{date.fmt}{
 character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}}.
