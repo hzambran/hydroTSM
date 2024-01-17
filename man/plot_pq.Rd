@@ -65,11 +65,11 @@ Character indicating how to fill any NA present in \code{x}. Valid values are: \
 -) \kbd{spline} => NAs are removed by spline interpolation, using \code{\link[zoo]{na.spline}}
 }
   \item{from}{
-Character indicating the starting date for creating the regularly spaced zoo object. The default value corresponds to the date of the first element of \code{x} \cr
+Character indicating the starting date for subsetting \code{p} and \code{q}. The default value corresponds to the date of the first element of \code{p} \cr
 It has to be in the format indicated by \code{date.fmt}. 
 }
   \item{to}{
-Character indicating the ending date for creating the regularly spaced zoo object. The default value corresponds to the date of the last element of \code{x} \cr
+Character indicating the ending date for subsetting \code{p} and \code{q}. The default value corresponds to the date of the last element of \code{p} \cr
 It has to be in the format indicated by \code{date.fmt}.
 }
   \item{date.fmt}{
