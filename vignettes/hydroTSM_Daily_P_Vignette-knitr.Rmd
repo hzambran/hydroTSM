@@ -130,6 +130,9 @@ Global view of daily precipitation values a calendar heatmap (six years maximum)
 calendarHeatmap(x)
 ```
 
+For each month, the previous figure is read from top to bottom. For example, January 1st 1987 was Thursday, January 31th 1987 was Saturday and November 1st 1990 was Thursday.
+
+
 Selecting only a three-month time slice for the analysis:
 
 ```{r Window3}

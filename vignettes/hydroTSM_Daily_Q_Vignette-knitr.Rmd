@@ -164,6 +164,8 @@ q <- window(Q, start="2005-01-01", end="2010-12-31")
 calendarHeatmap(q)
 ```
 
+This figure allows to easily identify periods with missing data (e.g., Apr/2008 and Aug/2009).
+For each month, this figure is read from top to bottom. For example, January 1st 2007 was Monday, January 31th 2007 was Wednesday and October 1st 2010 was Friday.
 
 # Flow duration curve (FDC)
 
