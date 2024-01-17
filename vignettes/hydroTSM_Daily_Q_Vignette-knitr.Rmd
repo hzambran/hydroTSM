@@ -56,7 +56,7 @@ data(Cauquenes7336001)
 Selecting only a 30-years time slice for the analysis
 
 ```{r Window1}
-x <- window(Cauquenes7336001, start="1981-01-01", end="2010-01-01")
+x <- window(Cauquenes7336001, start="1981-01-01", end="2010-12-31")
 ```
 
 Dates of the daily values of 'x':
@@ -102,10 +102,10 @@ dwi(Q)
 dwi(Q, out.unit="mpy")
 ```
 
-4)  Percentage of days with missing data per month:
+4) Since v0.7-0, hydroTSM allows the computation of the amount/percentage of days with missing data in different temporal scales (e.g., hourly, weekly, seasonal). By default, the `cmv` function returns the percentage of missing values in the desired temporal scale using decimal values:
 
-```{r cmv1}
-( pmd <- cmv(Q, tscale="month") )
+```{r cmv1, R.options=list(max.print=20)}
+( pmd <- cmv(Q, tscale="monthly") )
 ```
 
 Identifying months with more than 10 percent of missing data:
@@ -117,7 +117,7 @@ time(pmd[index])
 
 5) Computation of monthly values only when the percentage of NAs in each month is lower than a user-defined percentage (10% in this example).
 
-```{r Custom_daily2monthly}     
+```{r Custom_daily2monthly, R.options=list(max.print=20)}     
 ## Daily to monthly, only for months with less than 10% of missing values
 (m2 <- daily2monthly(Q, FUN=mean, na.rm=TRUE, na.rm.max=0.1))
 ```
@@ -168,12 +168,6 @@ calendarHeatmap(q)
 # Flow duration curve (FDC)
 
 
-Traditional flow duration curve of the 30-year daily streamflow data:
-
-```{r FDC1}
-fdc1 <- fdc(Q, log="")
-```
-
 Flow duration curve of the 30-year daily streamflow data using logarithmic scale for the `y` axis (i.e., to put focus on the low flows):
 
 ```{r FDC2}
@@ -189,6 +183,53 @@ Flow duration curve of the 30-year daily streamflow data using logarithmic scale
 fdc3 <- fdc(Q, log="x")
 ```
 
+Traditional flow duration curve of the 30-year daily streamflow data:
+
+```{r FDC1}
+fdc1 <- fdc(Q, log="")
+```
+
+# Baseflow
+
+Since v0.7-0, hydroTSM allows the computation of baseflow using the filter proposed by Arnold and Allen (1999), which is based on earlier work by Lyne and Hollick (1979).
+
+This first exmaple illustrates the basic usage of the `baseflow` function for computing and plotting the baseflow for the full time period of a given time series of streamflows:
+
+```{r baseflow1, eval=FALSE}
+baseflow(Q) 
+```
+The previous code did not run because the streamflow time series has some missing values. 
+You might fill in the missing values using the technique that you like the most and then call this function again.
+For this example, we will use one of the two built-in techniques already incorporated in the `baseflow` function the missing data, i.e., `na.fill="spline`:
+
+```{r baseflow2, eval=TRUE, R.options=list(max.print=20)}
+baseflow(Q, na.fill="spline") 
+```
+
+Now, we will compute and plot the daily baseflow (i.e., the value obtained after the thir pass of the filter) for the full time period:
+
+```{r baseflow3, eval=TRUE, fig.width=11, fig.height=6, R.options=list(max.print=20)}
+baseflow(Q, na.fill="spline", plot=TRUE)
+```
+
+
+You might also want to compute and plot the daily baseflow for a specific time period. For this example, from April to December 2000:
+
+```{r baseflow4, eval=TRUE, R.options=list(max.print=20)}
+baseflow(Q, na.fill="spline", from="2000-04-01", to="2000-12-31")
+```
+
+
+You might want to compute and plot the three daily baseflows (one for each pass of the filter), for a specific time period (April to December 2000):
+
+```{r baseflow5, eval=TRUE, fig.width=11, fig.height=6, R.options=list(max.print=20)}
+baseflow(Q, na.fill="spline", from="2000-04-01", to="2000-12-31", 
+         out.type="all", plot=TRUE)
+```
+
+
+         
+
 # Software details
 This tutorial was built under: 
 
@@ -201,7 +242,7 @@ paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
 
 # Version history
 
-* v0.1: 16-Jan-2024
+* v0.1: 17-Jan-2024
 
 # Appendix
 
