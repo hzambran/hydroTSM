@@ -20,7 +20,8 @@ Function to plot a heatmap of a daily zoo object with a calendar shape
 \usage{
 calendarHeatmap(x, ...)
 
-\method{calendarHeatmap}{zoo}(x, main="Calendar Heat Map",
+\method{calendarHeatmap}{zoo}(x, from, to, date.fmt="\%Y-\%m-\%d",
+                main="Calendar Heat Map",
                 col=colorRampPalette(c("red", "orange", "yellow", "white", 
                     "lightblue2", "deepskyblue", "blue3"),  space = "Lab")(8),  
                 cuts, cuts.dec=0, cuts.labels, 
@@ -36,6 +37,15 @@ calendarHeatmap(x, ...)
 \arguments{
   \item{x}{
 daily zoo object to be plotted. Its maximum amount of daily data should be less than 6 years or otherwise it will not be plotted.
+}
+  \item{from}{
+Character indicating the starting date for subsetting \code{x}. It has to be in the format indicated by \code{date.fmt}. 
+}
+  \item{to}{
+Character indicating the ending date for subsetting \code{x}. It has to be in the format indicated by \code{date.fmt}. 
+}
+  \item{date.fmt}{
+character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}}.
 }
 \item{main}{
 character, Main chart title.
