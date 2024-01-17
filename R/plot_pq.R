@@ -121,7 +121,7 @@ plot_pq.zoo <- function(p,
                         labels=TRUE,
                         labels.cex=0.8,
                         labels.p.dy=-median(daily2monthly(p, FUN=sum, na.rm=TRUE), 
-                                     na.rm=TRUE)*1.3,
+                                     na.rm=TRUE)*1.2,
                         labels.q.dx=c(rep(-0.2,6), rep(0.2,6)),
                         labels.q.dy=rep(median(q, na.rm=TRUE)*1.3, 12),
                         
