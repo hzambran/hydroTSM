@@ -127,6 +127,7 @@ x <- KarameaAtGorgeQts
 # Sub-daily to weekly ts
 subdaily2weekly(x, FUN=mean, na.rm=TRUE)
 
+\dontrun{
 ######################
 ## Ex2: Computation of WEEKLY values from HOURLY ts, only when the percentage of NAs in 
 #       each week is lower than a user-defined percentage (10% in this example).
@@ -160,6 +161,7 @@ x <- KarameaAtGorgeQts
 
 # Sub-daily to weekly ts
 subdaily2weekly(x, FUN=mean, na.rm=TRUE)
+}
 }
 
 

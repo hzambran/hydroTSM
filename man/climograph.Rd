@@ -223,6 +223,7 @@ tmn <- MaquehueTemuco[, 3]
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
+\dontrun{
 ## Plotting a climograph with uncertainty bands around mean values, 
 ## but with no labels for tmx and tmn
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE, 
@@ -250,7 +251,7 @@ m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE,
                 start.month=4, temp.labels.dx=c(rep(-0.2,4), rep(0.2,6),rep(-0.2,2)),
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
-\dontrun{
+
 ## Plotting a full climograph with monthly data
 pcp.m <- daily2monthly(pcp, FUN=sum)
 tmx.m <- daily2monthly(tmx, FUN=mean)
