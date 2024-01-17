@@ -22,6 +22,7 @@
 # Started: 2013                                                                #
 # Updates: 16-May-2018                                                         #
 #          26-Nov-2023                                                         #
+#          17-Jan-2024                                                         #
 ################################################################################
 
 # 'x'       : zoo object with streamflow records. The suggested time 
@@ -100,7 +101,7 @@ baseflow.zoo <- function(x,
                          tz,
                          na.fill=c("none", "linear", "spline"), 
                          out.type=c("last", "all"), 
-                         plot=FALSE, 
+                         plot=TRUE, 
                          xcol="black", 
                          bfcol=c("blue", "darkcyan", "darkorange3"),
                          pch=15,

@@ -2,7 +2,7 @@
 %% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 %%                                 http://www.rforge.net/hydroTSM/ ; 
 %%                                 https://cran.r-project.org/package=hydroTSM
-%% Copyright 2023-2023 Mauricio Zambrano-Bigiarini
+%% Copyright 2023-2024 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{baseflow}
@@ -21,7 +21,7 @@ baseflow(x, ...)
 
 \method{baseflow}{zoo}(x, beta=0.925, from=start(x), to=end(x), date.fmt, tz, 
          na.fill=c("none", "linear", "spline"), out.type=c("last", "all"), 
-         plot=FALSE, xcol="black", bfcol=c("blue", "darkcyan", "darkorange3"),
+         plot=TRUE, xcol="black", bfcol=c("blue", "darkcyan", "darkorange3"),
          pch=15, cex=0.3, ...)
 
 }
