@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6-34</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6-37</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@
 <span><span class="co"># S3 method for zoo</span></span>
 <span><span class="fu">baseflow</span><span class="op">(</span><span class="va">x</span>, beta<span class="op">=</span><span class="fl">0.925</span>, from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="va">date.fmt</span>, <span class="va">tz</span>, </span>
 <span>         na.fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"linear"</span>, <span class="st">"spline"</span><span class="op">)</span>, out.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"last"</span>, <span class="st">"all"</span><span class="op">)</span>, </span>
-<span>         plot<span class="op">=</span><span class="cn">FALSE</span>, xcol<span class="op">=</span><span class="st">"black"</span>, bfcol<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"darkcyan"</span>, <span class="st">"darkorange3"</span><span class="op">)</span>,</span>
+<span>         plot<span class="op">=</span><span class="cn">TRUE</span>, xcol<span class="op">=</span><span class="st">"black"</span>, bfcol<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"darkcyan"</span>, <span class="st">"darkorange3"</span><span class="op">)</span>,</span>
 <span>         pch<span class="op">=</span><span class="fl">15</span>, cex<span class="op">=</span><span class="fl">0.3</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -72,12 +72,12 @@
 <dd><p>numeric representing the filter parameter. Default value is 0.925 as recommended by Arnold and Allen (1999)</p></dd>
 
   <dt>from</dt>
-<dd><p>Character indicating the starting date for creating the regularly spaced zoo object. The default value corresponds to the date of the first element of <code>x</code> <br>
-It has to be in the format indicated by <code>date.fmt</code>.</p></dd>
+<dd><p>Character indicating the starting date for subsetting <code>x</code>. It has to be in the format indicated by <code>date.fmt</code>. <br>
+The default value corresponds to the date of the first element of <code>x</code>.</p></dd>
 
   <dt>to</dt>
-<dd><p>Character indicating the ending date for creating the regularly spaced zoo object. The default value corresponds to the date of the last element of <code>x</code> <br>
-It has to be in the format indicated by <code>date.fmt</code>.</p></dd>
+<dd><p>Character indicating the ending date for subsetting <code>x</code>. It has to be in the format indicated by <code>date.fmt</code>. <br>
+The default value corresponds to the date of the last element of <code>x</code>.</p></dd>
 
   <dt>date.fmt</dt>
 <dd><p>character indicating the format in which the dates are stored in <code>from</code> and <code>to</code>, e.g. <kbd>%Y-%m-%d</kbd>. See ‘Details’ section in <code><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strptime</a></code>.

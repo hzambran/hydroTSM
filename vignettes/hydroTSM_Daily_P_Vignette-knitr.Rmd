@@ -10,7 +10,7 @@ output:
   pdf_document:
     number_sections: yes
 vignette: |
-  %\VignetteIndexEntry{Tutorial for Introductory Analysis of Daily Precipitation Data with `hydroTSM`} 
+  %\VignetteIndexEntry{Introductory analysis of daily precipitation with hydroTSM} 
   %\VignetteKeyword{hydrology}
   %\VignetteKeyword{hydrological modelling}
   %\VignetteEncoding{UTF-8}

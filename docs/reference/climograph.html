@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6-34</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6-37</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -247,6 +247,7 @@ If <code>tmx</code> and <code>tmn</code> are not provided by the user, the secon
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">climograph</span><span class="op">(</span>pcp<span class="op">=</span><span class="va">pcp</span>, tmx<span class="op">=</span><span class="va">tmx</span>, tmn<span class="op">=</span><span class="va">tmn</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, </span>
 <span>                main<span class="op">=</span><span class="st">"Maquehue Temuco Ad (Chile)"</span>, lat<span class="op">=</span><span class="op">-</span><span class="fl">38.770</span>, lon<span class="op">=</span><span class="op">-</span><span class="fl">72.637</span><span class="op">)</span></span>
 <span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span><span class="co">## Plotting a climograph with uncertainty bands around mean values, </span></span>
 <span><span class="co">## but with no labels for tmx and tmn</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">climograph</span><span class="op">(</span>pcp<span class="op">=</span><span class="va">pcp</span>, tmx<span class="op">=</span><span class="va">tmx</span>, tmn<span class="op">=</span><span class="va">tmn</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, tmx.labels<span class="op">=</span><span class="cn">FALSE</span>, tmn.labels<span class="op">=</span><span class="cn">FALSE</span>, </span>
@@ -281,6 +282,7 @@ If <code>tmx</code> and <code>tmn</code> are not provided by the user, the secon
 <span><span class="va">tmn.m</span> <span class="op">&lt;-</span> <span class="fu"><a href="daily2monthly.html">daily2monthly</a></span><span class="op">(</span><span class="va">tmn</span>, FUN<span class="op">=</span><span class="va">mean</span><span class="op">)</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">climograph</span><span class="op">(</span>pcp<span class="op">=</span><span class="va">pcp.m</span>, tmx<span class="op">=</span><span class="va">tmx.m</span>, tmn<span class="op">=</span><span class="va">tmn.m</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, </span>
 <span>                main<span class="op">=</span><span class="st">"Maquehue Temuco Ad (Chile)"</span>, lat<span class="op">=</span><span class="op">-</span><span class="fl">38.770</span>, lon<span class="op">=</span><span class="op">-</span><span class="fl">72.637</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6-34</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6-37</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,9 +159,10 @@ character, for selecting if the result will be a matrix/data.frame or a zoo obje
 <span><span class="co"># Sub-daily to weekly ts</span></span>
 <span><span class="fu">subdaily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">mean</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span><span class="co">######################</span></span>
 <span><span class="co">## Ex2: Computation of WEEKLY values from HOURLY ts, only when the percentage of NAs in </span></span>
-<span><span class="co">#       each week is lower than a user-defined percentage (10% in this example).</span></span>
+<span><span class="co">#       each week is lower than a user-defined percentage (10</span></span>
 <span></span>
 <span><span class="co">## Loading the HOURLY streamflows for the station Karamea at Gorge</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">KarameaAtGorgeQts</span><span class="op">)</span></span>
@@ -171,17 +172,17 @@ character, for selecting if the result will be a matrix/data.frame or a zoo obje
 <span><span class="co"># (Monday 2nd December 1985 - Sunday 29th uanuary 20th 1980)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">x</span>, end<span class="op">=</span><span class="st">"1985-12-31 23:59:00"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## Transforming into NA the 10% of values in 'x'</span></span>
+<span><span class="co">## Transforming into NA the 10</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="co"># for reproducible results</span></span>
 <span><span class="va">n</span>           <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="va">n.nas</span>       <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">*</span><span class="va">n</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">na.index</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, <span class="va">n.nas</span><span class="op">)</span></span>
 <span><span class="va">x</span><span class="op">[</span><span class="va">na.index</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span></span>
-<span><span class="co">## Daily to Weekly, only for weeks with less than 10% of missing values</span></span>
+<span><span class="co">## Daily to Weekly, only for weeks with less than 10</span></span>
 <span><span class="op">(</span> <span class="va">w2</span> <span class="op">&lt;-</span> <span class="fu">subdaily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span> <span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Verifying that the second and third month of 'x' had 10% or more of missing values</span></span>
+<span><span class="co"># Verifying that the second and third month of 'x' had 10</span></span>
 <span><span class="fu"><a href="cmv.html">cmv</a></span><span class="op">(</span><span class="va">x</span>, tscale<span class="op">=</span><span class="st">"weekly"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">######################</span></span>
@@ -191,7 +192,8 @@ character, for selecting if the result will be a matrix/data.frame or a zoo obje
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">KarameaAtGorgeQts</span></span>
 <span></span>
 <span><span class="co"># Sub-daily to weekly ts</span></span>
-<span><span class="fu">subdaily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">mean</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">subdaily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">mean</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
