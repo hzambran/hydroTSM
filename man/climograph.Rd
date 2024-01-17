@@ -250,13 +250,14 @@ m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE,
                 start.month=4, temp.labels.dx=c(rep(-0.2,4), rep(0.2,6),rep(-0.2,2)),
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 
-
+\dontrun{
 ## Plotting a full climograph with monthly data
 pcp.m <- daily2monthly(pcp, FUN=sum)
 tmx.m <- daily2monthly(tmx, FUN=mean)
 tmn.m <- daily2monthly(tmn, FUN=mean)
 m <- climograph(pcp=pcp.m, tmx=tmx.m, tmn=tmn.m, na.rm=TRUE, 
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
+}
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
