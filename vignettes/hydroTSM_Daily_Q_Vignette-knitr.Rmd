@@ -1,5 +1,5 @@
 ---
-title: Tutorial for Introductory Analysis of Daily Streamflow Data with `hydroTSM`
+title: Introductory analysis of daily streamflows with hydroTSM
 author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
 date: "version 0.1, 17-Jan-2024"
@@ -160,7 +160,7 @@ plot_pq(p=P, q=Q, ptype="monthly", start.month=4)
 Selecting only a six-year time period for streamflows and then plotting a calendar heatmap (six years maximum) to visually identify dry, normal and wet days:
 
 ```{r calendarHeatmap, fig.width=8.6, fig.height=8.7}
-q <- window(Q, start="2005-01-01", end="2010-01-01")
+q <- window(Q, start="2005-01-01", end="2010-12-31")
 calendarHeatmap(q)
 ```
 
