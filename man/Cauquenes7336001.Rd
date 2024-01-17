@@ -12,7 +12,7 @@
 Hydrometeorological time series for "Cauquenes en El Arrayan" catchment
 }
 \description{
-Daily time series of precipitation, maximum air temperature, minimum air temperature, potential evapotranspiration, and observed streamflows for the catchment draining into the 'Cauquenes en El Arrayan' streamflow station (Cod.BNA: 7336001, Lat:-36.02, Lon:-72.38). This catchment is located in El Maule Region in Chile, with a pluvial regime, a total drainage area of 622.1 km2, and elevations ranging from 134 to 736 m a.s.l. Data were downloaded from the CAMELS-CL dataset (\url{https://camels.cr2.cl}) from 01/Jan/1979 to 31/Dec/2020 (including some missing values).
+Daily time series of precipitation, maximum air temperature, minimum air temperature, potential evapotranspiration, and observed streamflows for the catchment draining into the 'Cauquenes en El Arrayan' streamflow station (Cod.BNA: 7336001, Lat:-36.02, Lon:-72.38). This catchment is located in El Maule Region in Chile, with a pluvial regime, a total drainage area of 622.1 km2, and elevations ranging from 134 to 736 m a.s.l. Data were downloaded from the CAMELS-CL dataset (\url{https://camels.cr2.cl}) from 01/Jan/1979 to 31/Dec/2019 (including some missing values).
 }
 \usage{
 data(Cauquenes7336001)
