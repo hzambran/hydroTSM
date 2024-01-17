@@ -69,9 +69,12 @@ NEWS/ChangeLog for hydroTSM
                                  -) default value for 'tstep' argument was changed from "days" to missing (it is automatically detected based on the sampling frequency of 'x')
         
 
-## Changes in datasets
+## New datasets
+        o 'Cauquenes7336001'  :  Daily time series of P, Tmx, Tmn, PET and Q for the catchment draining into the 'Cauquenes en El Arrayan' streamflow station.
 
+## Changes in datasets
         o 'KarameaAtGorgeQts' : The time zone of this data sete was changed from "none" (i.e., your local time zone was used every time you loaded this dataset) to "UTC", in order to avoid missing datetimes at times where daylight saving time ocurred.
+
 
 ## Bug fixes
 
