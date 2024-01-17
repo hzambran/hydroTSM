@@ -1,8 +1,8 @@
 ---
-title: Tutorial for Introductory Analysis of Daily Precipitation Data with `hydroTSM`
+title: Introductory analysis of daily precipitation with hydroTSM
 author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
-date: " version 0.9, 16-Jan-2024"
+date: " version 0.9, 17-Jan-2024"
 output:
   html_document:
     df_print: paged
