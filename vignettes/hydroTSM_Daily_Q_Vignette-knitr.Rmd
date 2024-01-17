@@ -84,30 +84,35 @@ Q <- x[, 5]
 # Basic exploratory data analysis (EDA)
 
 
-1)  Summary statistics of streamflows
+1)  Summary statistics of streamflows:
+
 ```{r smry}
 smry(Q)
 ```
 
-2)  Amount of days with information (not NA) per year
+2)  Amount of days with information (not NA) per year:
+
 ```{r dwi1}
 dwi(Q)
 ```
 
-3)  Amount of days with information (not NA) per month per year
+3)  Amount of days with information (not NA) per month per year:
+
 ```{r dwi2}
 dwi(Q, out.unit="mpy")
 ```
 
-4)  Percentage of days with missing data per month
+4)  Percentage of days with missing data per month:
+
 ```{r cmv1}
-cmv(Q, tscale="month")
+( pmd <- cmv(Q, tscale="month") )
 ```
 
 Identifying months with more than 10 percent of missing data:
+
 ```{r cmv2}
-index <- which(cmv(Q, tscale="month") >= 0.1)
-time(Q[index])
+index <- which(pmd >= 0.1)
+time(pmd[index])
 ```
 
 5) Computation of monthly values only when the percentage of NAs in each month is lower than a user-defined percentage (10% in this example).
@@ -124,8 +129,8 @@ time(Q[index])
 Using the *hydroplot* function, which (by default) plots 9 different graphs: 3 ts plots, 3 boxplots and 3 histograms summarizing 'x'. For this example, only daily and monthly plots are produced, and only data starting on 01-Jan-1987 are plotted.
 
 ```{r hydroplot, fig.width=10, fig.height=8}
-hydroplot(Q, var.type="Precipitation", main="at San Martino", 
-          pfreq = "dm", from="1987-01-01")
+hydroplot(Q, var.type="Flow", main="at Cauquenes en el Arrayan", 
+          pfreq = "dm", from="2000-01-01")
 ```
 
 Plotting P and Q for the full time period of both time series:
