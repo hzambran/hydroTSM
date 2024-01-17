@@ -4,10 +4,10 @@ author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
 date: "version 0.1, 17-Jan-2024"
 output:
+  pdf_document:
+    number_sections: yes
   html_document:
     df_print: paged
-    number_sections: yes
-  pdf_document:
     number_sections: yes
 vignette: |
   %\VignetteIndexEntry{Introductory analysis of daily streamflows with hydroTSM} 
