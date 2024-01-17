@@ -146,13 +146,13 @@ plot_pq(p=P, q=Q, from="2000-04-01", to="2000-12-31")
 
 Plotting monthly values of precipitation and streamflows for the full time period of both time series:
 ```{r plot_pq3, fig.width=10, fig.height=8}
-plot_pq(p=P, q=Q, ptye="monthly")
+plot_pq(p=P, q=Q, ptype="monthly")
 ```
 
 Plotting monthly values of precipitation and streamflows for the full time period of both time series, but using a hydrologic year starting on April:
 
 ```{r plot_pq4, fig.width=10, fig.height=8}
-plot_pq(p=P, q=Q, ptye="monthly", start.month=4)
+plot_pq(p=P, q=Q, ptype="monthly", start.month=4)
 ```
      
 
