@@ -250,13 +250,14 @@ hydroplot(OcaEnOnaQts, pfreq="o")
 ## only the year 1962 of the original time series
 hydroplot(OcaEnOnaQts, pfreq="o", from="1962-01-01", to="1962-12-31")
 
+\dontrun{
 ## seasonal plots
 hydroplot(OcaEnOnaQts, pfreq="seasonal", FUN=mean, stype="default")
 
 ## custom season names (let's assume to be in the Southern Hemisphere)
 hydroplot(OcaEnOnaQts, pfreq="seasonal", FUN=mean, 
           stype="default", season.names=c("Summer","Autumn", "Winter","Spring"))
-
+}
 
 #############
 ## Loading the monthly time series of precipitation within the Ebro River basin.
