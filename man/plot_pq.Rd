@@ -38,9 +38,9 @@ plot_pq(p, ...)
                 q.probs.col="lightskyblue1", q.probs.alpha=0.8, 
                 labels=TRUE, labels.cex=0.8,
                 labels.p.dy=-median(daily2monthly(p, FUN=sum, na.rm=TRUE), 
-                             na.rm=TRUE)/10,
+                             na.rm=TRUE)*1.3,
                 labels.q.dx=c(rep(-0.2,6), rep(0.2,6)),
-                labels.q.dy=rep(-median(q, na.rm=TRUE)/10, 12),
+                labels.q.dy=rep(median(q, na.rm=TRUE)*1.3, 12),
                 
                 ...)
 
@@ -216,13 +216,13 @@ plot_pq(p, q, from="2000-04-01", to="2000-12-31")
 ######################
 ## Ex3: Plotting monthly values of precipitation and streamflows for the 
 ##      full time period of both time series.
-plot_pq(p, q, ptye="monthly")
+plot_pq(p, q, ptype="monthly")
 
 ######################
 ## Ex4: Plotting monthly values of precipitation and streamflows for the 
 ##      full time period of both time series, but using a hydrologic year
 ##      starting on April
-plot_pq(p, q, ptye="monthly", start.month=4)
+plot_pq(p, q, ptype="monthly", start.month=4)
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
