@@ -89,7 +89,7 @@ calendarHeatmap.zoo <- function(x,
       stop("Invalid argument: 'sfreq(x)' must be 'daily', but it is '", sfreq(x), "' !")
 
     ####################################################################################
-    # Lines 95-130 are taken and adpated from izoo2rzoo.R to check 'from' and 'to'
+    # Lines 95-132 are taken and adpated from izoo2rzoo.R to check 'from' and 'to'
     ####################################################################################
   
     # If the index of 'p' is character, it is converted into a Date object
@@ -110,7 +110,9 @@ calendarHeatmap.zoo <- function(x,
       if (from > to) stop("Invalid argument: 'from > to' !")
 
       if (from > end(x)) stop("Invalid argument: 'from > end(x)' !")
-    
+
+      # Selecting only those data starting in 'from'
+      x <- window(x, start=from)      
     } # IF end
 
     # If 'to' was given as Date, but 'x' is sub-daily
@@ -123,10 +125,10 @@ calendarHeatmap.zoo <- function(x,
       if (to < from ) stop("Invalid argument: 'to < from' !")
 
       if (to < start(x) ) stop("Invalid argument: 'to < start(x)' !")
-    } # IF end
 
-    # Selecting only those data within the time period between 'from' and 'to'
-    x <- window(x, start=from, end=to)  
+      # Selecting only those data ending in 'to'
+      x <- window(x, end=to)      
+    } # IF end    
     ####################################################################################
 
 
