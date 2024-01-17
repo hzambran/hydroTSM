@@ -218,7 +218,7 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 *  [**readxl** R package](https://cran.r-project.org/package=readxl): Import MS Excel files into R. 
 
-*  [**some examples**](https://www.statmethods.net/input/importingdata.html): https://www.statmethods.net/data-input/importingdata.html
+*  [**some examples**](https://www.statmethods.net/data-input/importingdata.html): https://www.statmethods.net/data-input/importingdata.html
 
 
 
