@@ -1,7 +1,7 @@
 NEWS/ChangeLog for hydroTSM
 
 --------------------------
-# Changes in version 0.7-0  16-Jan-2024
+# Changes in version 0.7-0  17-Jan-2024
 
 ## New functions
         o 'baseflow'          : for computing baseflow using the filter proposed by Arnold and Allen (1999). 
