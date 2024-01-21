@@ -5,7 +5,7 @@
   [![R-CMD-check](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-hydroTSM provides S3 functions for management, analysis, interpolation and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks.
+hydroTSM provides S3 functions for management, analysis and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks.
 
 The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimize each function as much as possible, functionality has had priority over speed).
 
@@ -37,7 +37,7 @@ citation("hydroTSM")
 
 To cite hydroTSM in publications use:
 
->  Mauricio Zambrano-Bigiarini. hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling. R package version 0.5-1. URL https://hzambran.github.io/hydroTSM/. DOI:10.5281/zenodo.839864
+>  Mauricio Zambrano-Bigiarini. hydroTSM: Time Series Management and Analysis for Hydrological Modelling. R package version 0.7-0. URL:https://cran.r-project.org/package=hydroTSM. doi:10.5281/zenodo.839864
 
 
 A BibTeX entry for LaTeX users is
@@ -45,8 +45,8 @@ A BibTeX entry for LaTeX users is
 >  @Manual{hydroTSM,  
 >    title = {hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling},  
 >    author = {{Mauricio Zambrano-Bigiarini}},  
->    note = {R package version 0.5-1},  
->    url = {https://hzambran.github.io/hydroTSM/},  
+>    note = {R package version 0.7-0},  
+>    url = {https://cran.r-project.org/package=hydroTSM},  
 >    doi = {10.5281/zenodo.839864},  
 >  }
 
