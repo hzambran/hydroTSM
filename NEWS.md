@@ -77,7 +77,6 @@ NEWS/ChangeLog for hydroTSM
 
 
 ## Bug fixes
-
         o 'hydroplot'    : -) now it works correctly with zoo objects that have multiple columns, and separate (internal) functions are provided for zoo and data.frame objects.
      
         o 'sname2plot'   : -) now it works correctly with zoo objects that have multiple columns, and separate (internal) functions are provided for zoo and data.frame objects.
@@ -104,6 +103,11 @@ NEWS/ChangeLog for hydroTSM
 
         o new vignette: 'Tutorial for Introductory Analysis of Daily Streamflow Data with hydroTSM'
 
+        o Github Actions are used now to test the source code against stable and development R versions on Windows, Ubuntu and MacOS.
+
+        o pkgdown is now used to created the webpage of the package: https://hzambran.github.io/hydroTSM.
+
+        o CITATION file: citEntry changed to bibentry, after notes that prevented acceptance on CRAN.
 
 # Changes in version 0.6-0   11-Mar-2020
         o Package tested against R Under development (unstable) (2020-03-10 r77920) -- "Unsuffered Consequences", following an imperative request made by CRAN.
