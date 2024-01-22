@@ -14,7 +14,7 @@ bibentry(bibtype = "Manual",
 	textVersion = paste("Zambrano-Bigiarini, M. (2024) ",
         "hydroTSM: Time Series Management and Analysis for Hydrological Modelling",
         vers,
-        ". URL:https://cran.r-project.org/package=hydroTSM"",
+        ". URL:https://cran.r-project.org/package=hydroTSM",
         ". doi:10.5281/zenodo.839565",
         ".", sep = ""))
 
