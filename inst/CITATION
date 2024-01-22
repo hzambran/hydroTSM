@@ -4,18 +4,18 @@ year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
 vers <- paste("R package version", meta$Version)
 
 bibentry(bibtype = "Manual",
-	title = "{hydroTSM}: Time Series Management, Analysis and Interpolation for Hydrological Modelling",
+	title = "{hydroTSM}: Time Series Management and Analysis for Hydrological Modelling",
 	author = person("Mauricio Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X")),
-	year = year,
-	note = paste(vers, ". doi:10.5281/zenodo.83964"),
-	url = "https://github.com/hzambran/hydroTSM",
+	year = "2024",
+	note = paste(vers, ". doi:10.5281/zenodo.839565"),
+	url = "https://cran.r-project.org/package=hydroTSM",
+    doi = "10.5281/zenodo.839565",
 
-	textVersion = paste("Mauricio Zambrano-Bigiarini. (", year, ") ",
-        "hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling",
+	textVersion = paste("Zambrano-Bigiarini, M. (2024) ",
+        "hydroTSM: Time Series Management and Analysis for Hydrological Modelling",
         vers,
-        ". URL https://github.com/hzambran/hydroTSM",
-        ". DOI:10.5281/zenodo.839565",
+        ". URL:https://cran.r-project.org/package=hydroTSM"",
+        ". doi:10.5281/zenodo.839565",
         ".", sep = ""))
 
 citFooter("I have invested an important amount of time and effort in creating hydroTSM, please cite it if you use it !")
-
