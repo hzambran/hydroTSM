@@ -53,11 +53,9 @@ A BibTeX entry for LaTeX users is
 
 
 ## Vignettes
-1. 
-[Daily precipitation](https://cran.r-project.org/package=hydroTSM/vignettes/hydroTSM_Daily_P_Vignette-knitr.pdf). Here you can find an introductory vignette showing the use of several hydroTSM functions for analysing daily precipitation data.
+1. [Daily precipitation](https://cran.r-project.org/package=hydroTSM/vignettes/hydroTSM_Daily_P_Vignette-knitr.pdf). Here you can find an introductory vignette showing the use of several hydroTSM functions for analysing daily precipitation data.
 
-2. 
-[Daily streamflows](https://cran.r-project.org/package=hydroTSM/vignettes/hydroTSM_Daily_Q_Vignette-knitr.pdf). Here you can find an introductory vignette showing the use of several hydroTSM functions for analysing daily streamflow data.
+2. [Daily streamflows](https://cran.r-project.org/package=hydroTSM/vignettes/hydroTSM_Daily_Q_Vignette-knitr.pdf). Here you can find an introductory vignette showing the use of several hydroTSM functions for analysing daily streamflow data.
 
 
 ## Related Material 
