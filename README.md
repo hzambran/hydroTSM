@@ -37,7 +37,7 @@ citation("hydroTSM")
 
 To cite hydroTSM in publications use:
 
-> Zambrano-Bigiarini, Mauricio (2024). hydroTSM: Time Series Management and Analysis for Hydrological Modelling. R package version 0.7-0. URL:https://cran.r-project.org/package=hydroTSM. doi:doi:10.5281/zenodo.839565.
+> Zambrano-Bigiarini, Mauricio (2024). hydroTSM: Time Series Management and Analysis for Hydrological Modelling. R package version 0.7-0. URL:https://cran.r-project.org/package=hydroTSM. doi:10.5281/zenodo.839565.
 
 
 A BibTeX entry for LaTeX users is

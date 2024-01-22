@@ -2,7 +2,7 @@
 title: Introductory analysis of daily streamflows with hydroTSM
 author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
-date: "version 0.1, 17-Jan-2024"
+date: "version 0.2, 21-Jan-2024"
 output:
   pdf_document:
     number_sections: yes
@@ -20,6 +20,12 @@ vignette: |
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Citation
+
+If you use *[hydroTSM](https://cran.r-project.org/package=hydroTSM)*, please cite it as Zambrano-Bigiarini (2024):
+
+Zambrano-Bigiarini, Mauricio (2024). hydroTSM: Time Series Management and Analysis for Hydrological Modelling. R package version 0.7-0. URL:https://cran.r-project.org/package=hydroTSM. doi:10.5281/zenodo.839565.
 
 
 # Installation
