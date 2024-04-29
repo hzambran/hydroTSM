@@ -12,12 +12,16 @@ Karamea at Gorge, time series of hourly streamflows
 }
 \description{
 Time series with hourly streamflows for the Karamea River(New Zealand) measured at the gauging station "Gorge", for the period 01/Jan/1980 to 31/Dec/1985.
+
 Station Number: 95102, Easting Coordinate (NZMG): 2444629.0, Northing Coordinate (NZMG): 5994427.0, Catchment Area (km2): 1160.0.
 
-In November 25th, 2023, the time zone of this data sete was changed from "none" (i.e., your local time zone was used every time you loaded this dataset)
-to GMT+12, in order to avoid missing datetimes at times where daylight saving time ocurred. After this change, the initial DateTime of this dataset changed 
-from "1980-01-01 08:15:00 -03" (in my local computer) to "1980-01-01 00:15:00" (everywhere). 
-Only two NA elements were removed from the origanl dataset: the first one and the last one.
+In November 25th, 2023 (for hydroTSM v0.7-0), the time zone of this data sete was changed from "none" (i.e., your local time zone was used every time you loaded this dataset)
+to GMT+12, in order to avoid missing datetimes at times where daylight saving time ocurred. 
+However, due to CRAN requirements, in January 2024 (for hydroTSM v0.7-1), the time zone of this data sete was changed from "GMT+12" to UTM, in order to avoid missing datetimes at times where daylight saving time ocurred. 
+After the previous change, the initial DateTime of this dataset changed 
+from "1980-01-01 08:15:00 -03" (in my local computer) to "1979-12-31 20:15:00 UTC" (everywhere). 
+
+Only two NA elements were removed from the original dataset: the first one and the last one.
 }
 \usage{
 data(KarameaAtGorgeQts)
