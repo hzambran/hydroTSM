@@ -9,6 +9,7 @@ importFrom("classInt", classIntervals)
 importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply, index, "time<-", na.approx, na.spline)
 importFrom("xts", axTicksByTime, to.period, .index, periodicity)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
+importFrom("timechange", time_force_tz)
 importFrom("e1071", skewness, kurtosis)
 importFrom("lattice", levelplot)
 #importFrom("lattice", lattice.options, lattice.getOption, trellis.currentLayout, trellis.focus, trellis.unfocus, trellis.panelArgs)
