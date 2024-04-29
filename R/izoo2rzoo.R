@@ -61,6 +61,7 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 #          12-Oct-2022                                                         #
 #          25-May-2023 ; 03-Aug-2023 ; 04-Nov-2023 ; 16-Nov-2023 ; 17-Nov-2023 #
 #          25-Nov-2023                                                         #
+#          28-Apr-2024                                                         #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
@@ -70,7 +71,10 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
 
   # sampling frequency of 'x'           
   x.freq <- sfreq(x)
-        
+
+  # Date/Time of 'x'
+  tx <- time(x)
+
   # Cheking if 'x is a sub-daily zoo object  
   if (x.freq %in% c("minute","hourly") ) {
     subdaily.ts <- TRUE
@@ -99,8 +103,12 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   missingTZ <- FALSE
   if (missing(tz)) {
     missingTZ <- TRUE
-    tz        <- ""
-  } # IF end
+    tz        <- attr(tx, "tzone")
+  } else {
+      # For the Date/Time of 'x' to be in the time zone specified by 'tz'
+      tx.new  <- timechange::time_force_tz(tx, tz=tz)
+      time(x) <- tx.new
+    } # ELSE end
       
   ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
            grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |
