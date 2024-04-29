@@ -14,7 +14,7 @@
  Irregular Zoo -> Regular Zoo
 }
 \description{
-It takes an irregular zoo object (with non-existing values for some dates) and converts it into a regularly spaced zoo object within the time period defined by \code{from} and \code{to}, by filling the missing dates with \sQuote{NA}
+It takes an irregular zoo object (with non-existing values for some dates/times) and converts it into a regularly spaced zoo object within the time period defined by \code{from} and \code{to}, by filling the missing dates with \sQuote{NA}
 }
 \usage{
 izoo2rzoo(x, ...)
@@ -49,9 +49,13 @@ Valid values are (but not limited to) \kbd{hours}, \kbd{days}, \kbd{months}, \kb
 By default, \code{tstep} is missing, and it is automatically set to \kbd{"minutes"} when \code{sfreq(x)} is \kbd{min}, to \kbd{"hours"} when \code{sfreq(x)} is \kbd{hourly}, to \kbd{"days"} when \code{sfreq(x)} is \kbd{daily}, to \kbd{"weeks"} when \code{sfreq(x)} is \kbd{weekly}, to \kbd{"months"} when \code{sfreq(x)} is \kbd{monthly}, to \kbd{"quarters"} when \code{sfreq(x)} is \kbd{quarterly}, and to \kbd{"years"} when \code{sfreq(x)} is \kbd{annual}.
 }
   \item{tz}{
-character, with the specification of the time zone used for \code{from}, \code{to}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+character, with the specification of the time zone used for \code{x}, \code{from}, and \code{to}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
 
 If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
+
+If \code{tz} is provided, it forces \code{time(x)} to be in the tome zone specified by \code{tz}, without modifying the the values (hours, minutes, seconds, etc). \cr
+
+A list of valid time zones can be obtained by calling the base function \code{OlsonNames()}. \cr
 
 This argument can be used when working with sub-daily zoo objects to force using  time zones other than the local time zone for \code{from} and \code{to}. It should be used with caution, being well aware of the time zone of the data. See examples.
 }
@@ -60,10 +64,10 @@ further arguments passed to or from other methods
 }
 }
 \details{
-If the full time period of \code{x} is a subset of the time period defined by \code{from} and \code{to}, the time period of the resulting zoo is the one defined by \code{from} and \code{to}, assigning 'NA' to all the dates in which \code{x} do not have a value.
+If the full time period of \code{x} is a subset of the time period defined by \code{from} and \code{to}, the time period of the resulting zoo is the one defined by \code{from} and \code{to}, assigning 'NA' to all the dates in which \code{x} does not have a value.
 }
 \value{
-a regularly spaced zoo object, with values given by \code{x} and time stamps going from \code{from} to \code{to} at intervals defined by \code{tsteps}
+a regularly spaced zoo object, with values given by \code{x} and time stamps going from \code{from} to \code{to} at intervals defined by \code{tsteps}.
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
@@ -149,6 +153,7 @@ length(y)
 dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00", tz="")
 x  <- zoo(0:20, dt)
 (y  <- izoo2rzoo(x, from="2020-12-31") )# 00:00:00 is ommited
+(time(y))
 
 
 ##
@@ -161,7 +166,18 @@ x  <- zoo(0:20, dt)
 
 
 ##
-## Example 7: Extending hourly data to a DateTime after 'end(x)', 
+## Example 7: Extending hourly data to a DateTime before 'start(x)', 
+##            specifying date and time, and forcing UTC to be the time zone.
+##            Time of 'x' is in local time zone (tz="") instead of UTC, but
+##            it will be treated as UTC by using the 'tz' argument
+dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00", tz="")
+x  <- zoo(0:20, dt)
+(time(x))
+(y  <- izoo2rzoo(x, from="2020-12-31 20:00:00", tz="UTC") )# 00:00:00 is ommited
+(time(y))
+
+##
+## Example 8: Extending hourly data to a DateTime after 'end(x)', 
 ##            specifying date and time.
 ##            Time of 'x' is in local time zone (tz="") instead of UTC
 dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00", tz="")
@@ -170,7 +186,7 @@ x  <- zoo(0:20, dt)
 
 
 ##
-## Example 8: Extending hourly data to a DateTime before 'start(x)'.
+## Example 9: Extending hourly data to a DateTime before 'start(x)'.
 ##            Note that the 'tz' argument can be ommited in the 'hip' function, 
 ##            because by default it assumes UTC as time zone
 dt <- hip("2021-01-01 00:00:00", "2021-01-01 20:00:00", tz="UTC")
@@ -179,11 +195,12 @@ x  <- zoo(0:20, dt)
 
 
 ##
-## Example 9: Extending hourly data to a date before 'start(x)'. However, hourly 'x'
+## Example 10: Extending hourly data to a date before 'start(x)'. However, hourly 'x'
 ##            values are given at HH:15:00 hours instead of HH:00:00 hours.
 
 ## Loading the time series of hourly streamflows for the station Karamea at Gorge
-## Time Zone for 'KarameaAtGorgeQts' data is GMT+12 (see ?KarameaAtGorgeQts)
+## Time Zone for 'KarameaAtGorgeQts' data is 'UTC' (see ?KarameaAtGorgeQts), but it will
+## be tr4ated as 'NZ' (Zealand Standard Time) for this example
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
@@ -192,7 +209,7 @@ x <- KarameaAtGorgeQts
 x <- window(x, end="1980-01-01 23:59:00")
 
 # Adding NA hourly data since 1979-12-31 21:15:00
-izoo2rzoo(x, from="1979-12-31 21:15:00", tz="GMT+12")
+izoo2rzoo(x, from="1979-12-31 21:15:00", tz="NZ")
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
