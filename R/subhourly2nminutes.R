@@ -44,9 +44,10 @@ subhourly2nminutes.default <- function(x, nminutes, FUN, na.rm=TRUE,
 # Started: 15-Oct-2022                                                         #
 # Updates: 25-Oct-2022                                                         #
 #          29-Ago-2023 ; 11-Oct-2023                                           #
+#          23-Jul-2024                                                         #
 ################################################################################
 subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE, 
-                                   from=start(x), to=end(x), ...) {
+                                   from=start(x), to=end(x), tz, ...) {
 
     # testing the existence of 'na.rm' argument
     #args <- list(...)
@@ -91,8 +92,19 @@ subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE,
       } else x <- window(x, end=to)
     } # IF end
 
-    # Getting the time zone of 'x'
-    ltz <- format(time(x), "%Z")[1]
+    # Automatic detection of 'tz'
+    #ltz <- format(time(x), "%Z")[1]
+    #ltz <- ""
+    tx <- time(x)
+    missingTZ <- FALSE
+    if (missing(tz)) {
+      missingTZ <- TRUE
+      tz        <- attr(tx, "tzone")
+    } else {
+        # For the Date/Time of 'x' to be in the time zone specified by 'tz'
+        tx.new  <- timechange::time_force_tz(tx, tz=tz)
+        time(x) <- tx.new
+      } # ELSE end
 
     lstart <- start(x)
     lend   <- end(x)
@@ -101,7 +113,7 @@ subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE,
     # temporal aggregation from 'x.nmin' minutes to 'nminutes' minutes
     h <- aggregate(x, by= function(tt) cut(tt, breaks=temp), FUN=FUN, na.rm= na.rm, ...)
 
-    # I don't know why, but the time attribute of the resulting object 'h' is 'factor' (not PSOIXct), 
+    # I don't know why, but the time attribute of the resulting object 'h' is 'factor' (not POSIXct), 
     # and the '00:00:00' is removed from time corresponding to the full hour 
     # (e.g., '2021-01-01 00:00:00' becomes '2021-01-01')
 
@@ -109,7 +121,7 @@ subhourly2nminutes.zoo <- function(x, nminutes, FUN, na.rm=TRUE,
     lt        <- as.character(time(h))
     index     <- which(substr(lt, 12, 19) == "")
     lt[index] <- paste(lt[index], "00:00:00")
-    h         <- zoo(coredata(h), as.POSIXct(lt, format="%Y-%m-%d %H:%M", tz=ltz ))
+    h         <- zoo(coredata(h), as.POSIXct(lt, format="%Y-%m-%d %H:%M", tz=tz ))
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN

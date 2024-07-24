@@ -44,8 +44,9 @@ subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
 # Started: 30-Jun-2021                                                         #
 # Updates: 08-Oct-2022 ; 09-Oct-2022 ; 15-Oct-2022                             #
 #          27-Nov-2023                                                         #
+#          23-Jul-2024                                                         # 
 ################################################################################
-subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
+subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, tz, ...) {
 
     # testing the existence of 'na.rm' argument
     #args <- list(...)
@@ -59,15 +60,25 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
     if (missing(FUN))
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-hourly values")   
 
-    # Getting the time zone of 'x'
+    # Automatic detection of 'tz'
     #ltz <- format(time(x), "%Z")[1]
-    ltz <- ""
+    #ltz <- ""
+    tx <- time(x)
+    missingTZ <- FALSE
+    if (missing(tz)) {
+      missingTZ <- TRUE
+      tz        <- attr(tx, "tzone")
+    } else {
+        # For the Date/Time of 'x' to be in the time zone specified by 'tz'
+        tx.new  <- timechange::time_force_tz(tx, tz=tz)
+        time(x) <- tx.new
+      } # ELSE end
 
     # Computing the Hourly time series 
     tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d %H"), FUN=FUN, na.rm= na.rm, ...)
 
     # Restoring time(x) to a complete POSIX format
-    tmp <- zoo(coredata(tmp), as.POSIXct(time(tmp), format="%Y-%m-%d %H", tz=ltz ))
+    tmp <- zoo(coredata(tmp), as.POSIXct(time(tmp), format="%Y-%m-%d %H", tz=tz ))
 
 
     # Removing annual values in the output object for days with 
@@ -79,7 +90,7 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
         stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
 
       # Computing the percentage of missing values in each hour
-      na.pctg <- cmv(x, tscale="hourly", tz=ltz)
+      na.pctg <- cmv(x, tscale="hourly", tz=tz)
 
       # identifying hours with a percentage of missing values higher than 'na.rm.max'
       na.pctg.index <- which( na.pctg >= na.rm.max)
