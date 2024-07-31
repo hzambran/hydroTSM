@@ -24,7 +24,7 @@ subhourly2hourly(x, ...)
 
 \method{subhourly2hourly}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
 
-\method{subhourly2hourly}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
+\method{subhourly2hourly}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, tz, ...)
 
 \method{subhourly2hourly}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0,
            dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", out.fmt="zoo", 
@@ -50,6 +50,17 @@ Logical. Should missing values be removed? \cr
 }
   \item{na.rm.max}{
 Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each hour to keep the hourly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given hour is larger or equal than \code{na.rm.max} the corresponding hourly value will be \code{NA}.
+}
+  \item{tz}{
+character, with the specification of the time zone used for \code{x}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+
+If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
+
+If \code{tz} is provided, it forces \code{time(x)} to be in the tome zone specified by \code{tz}, without modifying the the values (hours, minutes, seconds, etc). \cr
+
+A list of valid time zones can be obtained by calling the base function \code{OlsonNames()}. \cr
+
+This argument can be used when working with sub-daily zoo objects to force using  time zones other than the local time zone for \code{x}. It should be used with caution, being well aware of the time zone of the data. See examples.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each column of \code{x} (e.g., gauging station) \cr

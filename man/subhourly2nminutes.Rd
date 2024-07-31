@@ -26,7 +26,7 @@ subhourly2nminutes(x, ...)
                                      from=start(x), to=end(x), ...)
 
 \method{subhourly2nminutes}{zoo}(x, nminutes, FUN, na.rm=TRUE, 
-                                 from=start(x), to=end(x), ...)
+                                 from=start(x), to=end(x), tz, ...)
 
 \method{subhourly2nminutes}{data.frame}(x, nminutes, FUN, na.rm=TRUE, 
         from=start(x), to=end(x), dates=1, date.fmt="\%Y-\%m-\%d \%H:\%M:\%S", 
@@ -63,6 +63,17 @@ When \code{from < start(x)} then \code{x} is extended backward with NAs to the s
 POSIX object indicating the ending time used to carry out the temporal aggregation.  \cr
 When \code{to < end(x)} then \code{x} is cut in time to the ending DateTime defined by \code{to}. \cr
 When \code{to > end(x)} then \code{x} is extended forward with NAs to the ending DateTime defined by \code{from}.
+}
+  \item{tz}{
+character, with the specification of the time zone used for \code{x}, \code{from}, and \code{to}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+
+If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
+
+If \code{tz} is provided, it forces \code{time(x)} to be in the tome zone specified by \code{tz}, without modifying the the values (hours, minutes, seconds, etc). \cr
+
+A list of valid time zones can be obtained by calling the base function \code{OlsonNames()}. \cr
+
+This argument can be used when working with sub-daily zoo objects to force using  time zones other than the local time zone for \code{from} and \code{to}. It should be used with caution, being well aware of the time zone of the data. See examples.
 }
   \item{dates}{
 numeric, factor, POSIXct or POSIXt object indicating how to obtain the dates and times for each column of \code{x} (e.g., gauging station) \cr
