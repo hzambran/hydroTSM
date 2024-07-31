@@ -1,10 +1,12 @@
 NEWS/ChangeLog for hydroTSM
 
 --------------------------
-# Changes in version 0.7-2  Ongoing
+# Changes in version 0.7-3  Ongoing
 
 ## Bug fixes
         o 'izoo2rzoo'         :  -) argument 'tz' is now able to correctly handle sub-daily zoo objects, with or without specification of a value by the user.
+        o 'subhourly2hourly'  :  -) new argument 'tz' to correctly handle sub-daily zoo objects, with or without specification of a value by the user.
+        o 'subhourly2nminutes':  -) new argument 'tz' to correctly handle sub-daily zoo objects, with or without specification of a value by the user.
 
 ## Package files
         o Now hydroTSM imports the 'timechange' pacakge, in order to allow the correct handling of time zones in the 'izoo2rzoo' function.
