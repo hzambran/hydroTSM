@@ -16,7 +16,10 @@ Plots a color matrix, representing the values stored in \code{x}. \cr
 Originally, it was thought to represent the amount of days with information per year in a set of gauging stations, but it can be used for plotting the information stored in any two dimensional matrix.
 }
 \usage{
-matrixplot(x, ColorRamp="Days", ncolors = 70, main = "", ...)
+matrixplot(x, ColorRamp="Days", ncolors = 70, main = "", 
+           cuts,  cuts.dec=2, cuts.labels, 
+           cuts.style=c("equal", "pretty", "fixed", "sd", "quantile", "kmeans", "bclust", "fisher"), 
+           legend.cex=1.1,  legend.title="",  legend.title.cex=1.5, legend.fontsize=15, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -34,6 +37,30 @@ numeric, indicating the number of color intervals that will be used for represen
 }
   \item{main}{
 Main title for the plot
+}
+\item{cuts}{
+Numeric, indicating the values used to divide the range of 'x' in the legend of colours. If not provided, it is automatically selected as a function of 'lenght(ColorRamp)'.
+}
+\item{cuts.dec}{
+Number of decimal places used to present the numbers that divide the range of 'x' in the legend of colours.
+}
+\item{cuts.labels}{
+Character indicating the label to be used in the ccolour legend for each one of the values defined by 'cuts'. If not provided, as.character(cuts)' is used.
+}
+\item{cuts.style}{
+character, indicating how to finding class intervals for continuous numerical variables for choosing colours to be used in the figure. See \code{\link[classInt]{classIntervals}}
+}
+\item{legend.cex}{
+character expansion factor *relative* to current \code{par("cex")} used for the legend text.
+}
+\item{legend.title}{
+text to be displayed above the legned of colours (e.g., showing the measurement units of the raster being displayed).
+}
+\item{legend.title.cex}{
+expansion factor(s) for the legend title. Currently it is not used. See \code{legend.fontsize} instead.
+}
+\item{legend.fontsize}{
+size of text (in points) used in the legend title (e.g., showing the measurement units of the raster being displayed).
 }
   \item{\dots}{
 further arguments passed to \code{\link[lattice]{levelplot}} function (\pkg{lattice} package) or from other methods
@@ -62,7 +89,7 @@ Adapted from a not available web page (http://www2.warwick.ac.uk/fac/sci/moac/cu
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{dwi}}
+\code{\link{dwi}}, \code{\link[classInt]{classIntervals}}
 }
 \examples{
 ## Loading the SanMartino precipitation data
