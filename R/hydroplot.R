@@ -145,7 +145,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 
           # manually adding a grid
           grid(nx=NA, ny=NULL)
-          abline(v=time(x)[axTicksByTime(x)], col = "lightgray", lty = "dotted")
+          abline(v=time(x)[xts::axTicksByTime(x)], col = "lightgray", lty = "dotted")
       } # IF end
 
 
@@ -166,7 +166,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 
           # manually adding a grid
           grid(nx=NA, ny=NULL)
-          abline(v=time(x)[axTicksByTime(x)], col = "lightgray", lty = "dotted")
+          abline(v=time(x)[xts::axTicksByTime(x)], col = "lightgray", lty = "dotted")
 
           if (d.ma1) {
             # Plotting the 1st Moving Average of the Daily time series. If win.len1=365*1 => "Annual Moving Average"
@@ -213,7 +213,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 
         # manually adding a grid
         grid(nx=NA, ny=NULL)
-        abline(v=time(x)[axTicksByTime(x.monthly)], col = "lightgray", lty = "dotted")
+        abline(v=time(x)[xts::axTicksByTime(x.monthly)], col = "lightgray", lty = "dotted")
 
         if (m.ma1) {
         # Plotting the 1st Moving Average of the Daily time series. If win.len1=365*1 => "Annual Moving Average"
@@ -257,7 +257,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 
           # manually adding a grid
           grid(nx=NA, ny=NULL)
-          abline(v=time(x)[axTicksByTime(x.annual)], col = "lightgray", lty = "dotted")
+          abline(v=time(x)[xts::axTicksByTime(x.annual)], col = "lightgray", lty = "dotted")
       } # IF end
 
 } # '.hydroplotts' end
@@ -518,7 +518,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
         abline(h=h[1], col="red", lty=2)
         # manually adding a grid
         grid(nx=NA, ny=NULL)
-        abline(v=time(x)[axTicksByTime(winter)], col = "lightgray", lty = "dotted")
+        abline(v=time(x)[xts::axTicksByTime(winter)], col = "lightgray", lty = "dotted")
                 
         # spring
         zoo::plot.zoo(spring, xaxt = "n", yaxt = "n", type="o", 
@@ -531,7 +531,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
         abline(h=h[2], col="red", lty=2)
         # manually adding a grid
         grid(nx=NA, ny=NULL)
-        abline(v=time(x)[axTicksByTime(spring)], col = "lightgray", lty = "dotted")
+        abline(v=time(x)[xts::axTicksByTime(spring)], col = "lightgray", lty = "dotted")
                 
         # summer
         zoo::plot.zoo(summer, xaxt = "n", yaxt = "n", type="o", 
@@ -544,7 +544,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
         abline(h=h[3], col="red", lty=2)
         # manually adding a grid
         grid(nx=NA, ny=NULL)
-        abline(v=time(x)[axTicksByTime(summer)], col = "lightgray", lty = "dotted")
+        abline(v=time(x)[xts::axTicksByTime(summer)], col = "lightgray", lty = "dotted")
       
         # autumm
         zoo::plot.zoo(autumm, xaxt = "n", yaxt = "n", type="o", 
@@ -557,7 +557,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
         abline(h=h[4], col="red", lty=2)
         # manually adding a grid
         grid(nx=NA, ny=NULL)
-        abline(v=time(x)[axTicksByTime(autumm)], col = "lightgray", lty = "dotted")
+        abline(v=time(x)[xts::axTicksByTime(autumm)], col = "lightgray", lty = "dotted")
       
       #################################
       # Plotting seasonal boxplots    #
@@ -638,6 +638,7 @@ hydroplot.default <- function(x,
 #          04-Jun-2012                                                         #
 #          04-Apr-2013 ; 29-May-2013                                           #
 #          07-Nov-2020                                                         #
+#          04-Sep-2024                                                         #
 ################################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -694,10 +695,8 @@ hydroplot.zoo <- function(x,
        if (is.na(match(pfreq, c("o", "dma", "dm", "ma", "seasonal"))))
           stop("Invalid argument: 'pfreq' must be in c('o', 'dma', 'ma', 'dm', 'seasonal')")
      } else if ( sfreq(x) == "monthly" ) {
-         if (is.na(match(pfreq, c("ma", "seasonal")))) {
-            message("[Warning: 'x' is a monthly object, so 'pfreq' has been changed to 'ma']")
-            pfreq <- "ma"
-         }
+         if (is.na(match(pfreq, c("o", "ma", "seasonal")))) 
+           stop("Invalid argument: 'pfreq' must be in c('o', 'ma', 'seasonal')")
        } # ELSE end
 
      if ( (pfreq == "o") & (ptype != "ts") ) {
