@@ -50,6 +50,7 @@ daily2annual.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="%Y",.
 #          21-Jul-2015                                                         #
 #          21-May-2022 ; 25-May-2022 ; 23-Dic-2022 ; 27-Dec-2022               #
 #          20-Jun-2023 ; 30-Jul-2023                                           #
+#          05-Feb-2025                                                         #
 ################################################################################
 daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="%Y-%m-%d", ...) {
 
@@ -111,9 +112,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="%Y-%m-%d"
   years  <- format( dates, "%Y")
 
   # Computing Annual time series
-  if (missing(na.rm)) {
-    tmp <- aggregate(x, by=years, FUN, ...)
-  } else tmp <- aggregate(x, by=years, FUN, ..., na.rm=na.rm)
+  tmp <- aggregate(x, by=years, FUN, na.rm=na.rm, ...)
 
 
   # Removing annual values in the output object for months with 
@@ -121,7 +120,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="%Y-%m-%d"
   if ( na.rm & (na.rm.max != 0) ) {
 
     # Checking that 'na.rm.max' is in [0, 1]
-    if ( (na.rm.max <0) | (na.rm.max <0) )
+    if ( (na.rm.max < 0) | (na.rm.max > 1) )
       stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
 
     # Computing the percentage of missing values in each year
