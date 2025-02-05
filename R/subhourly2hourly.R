@@ -45,6 +45,7 @@ subhourly2hourly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ...) {
 # Updates: 08-Oct-2022 ; 09-Oct-2022 ; 15-Oct-2022                             #
 #          27-Nov-2023                                                         #
 #          23-Jul-2024                                                         # 
+#          05-Feb-2025                                                         #
 ################################################################################
 subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, tz, ...) {
 
@@ -86,7 +87,7 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, tz, ...) {
     if ( na.rm & (na.rm.max != 0) ) {
 
       # Checking that 'na.rm.max' is in [0, 1]
-      if ( (na.rm.max <0) | (na.rm.max <0) )
+      if ( (na.rm.max < 0) | (na.rm.max > 1) )
         stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
 
       # Computing the percentage of missing values in each hour

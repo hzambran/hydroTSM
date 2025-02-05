@@ -85,6 +85,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00
 #          27-May-2021                                                         #
 #          11-Oct-2022                                                         #
 #          30-Jul-2023 ; 31-Jul-2023 ; 03-Aug-2023                             #
+#          05-Feb-2025                                                         #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                start.fmt= "%H:%M:%S", tz, ...) {
@@ -148,7 +149,7 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
     if ( na.rm & (na.rm.max != 0) ) {
 
       # Checking that 'na.rm.max' is in [0, 1]
-      if ( (na.rm.max <0) | (na.rm.max <0) )
+      if ( (na.rm.max < 0) | (na.rm.max > 1) )
         stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
 
       # Computing the percentage of missing values in each day
