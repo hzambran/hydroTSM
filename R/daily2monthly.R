@@ -57,6 +57,10 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
   # Checking the user provide a valid value for 'x'
   if (sfreq(x) %in% c("monthly", "quarterly", "annual"))
     stop("Invalid argument: 'x' is not a (sub)daily/weekly ts. 'x' is a ", sfreq(x), " ts" )
+
+  # Checking that 'na.rm.max' is in [0, 1]
+  if ( (na.rm.max < 0) | (na.rm.max > 1) )
+    stop("Invalid argument: 'na.rm.max' must be in [0, 1] !") 
       
   # Monthly index for 'x'
   dates  <- time(x)
@@ -67,17 +71,13 @@ daily2monthly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
   # Removing monthly values in the output object for months with 
   # more than 'na.rm.max' percentage of NAs in a given month
-  if ( na.rm & (na.rm.max != 0) ) {
-
-    # Checking that 'na.rm.max' is in [0, 1]
-    if ( (na.rm.max < 0) | (na.rm.max > 1) )
-      stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+  if ( na.rm ) {
 
     # Computing the percentage of missing values in each month
     na.pctg <- cmv(x, tscale="monthly")
 
     # identifying months with a percentage of missing values higher than 'na.rm.max'
-    na.pctg.index <- which( na.pctg >= na.rm.max)
+    na.pctg.index <- which( na.pctg > na.rm.max)
 
     # Setting as NA all the monhts with a percentage of missing values higher than 'na.rm.max'
     tmp[na.pctg.index] <- NA 

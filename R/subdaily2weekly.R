@@ -47,6 +47,7 @@ subdaily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:0
 ################################################################################
 # Started: 11-Oct-2023                                                         #
 # Updates: 04-Nov-2023                                                         # 
+#          05-Feb-2025                                                         #
 ################################################################################
 subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                 start.fmt= "%H:%M:%S", tz, ...) {
@@ -78,6 +79,10 @@ subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00
     # Checking the user provide a valid value for 'FUN'
     if (missing(FUN))
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
+
+    # Checking that 'na.rm.max' is in [0, 1]
+    if ( (na.rm.max < 0) | (na.rm.max > 1) )
+      stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")  
 
     # Automatic detection of 'tz'
     #if (missing(tz)) tz <- ""
@@ -130,17 +135,13 @@ subdaily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00
 
     # Removing weekly values in the output object for weeks with 
     # more than 'na.rm.max' percentage of NAs in a given week
-    if ( na.rm & (na.rm.max != 0) ) {
-
-      # Checking that 'na.rm.max' is in [0, 1]
-      if ( (na.rm.max < 0) | (na.rm.max > 1) )
-        stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+    if ( na.rm ) {
 
       # Computing the percentage of missing values in each week
       na.pctg <- cmv(x, tscale="weekly")
 
       # identifying weeks with a percentage of missing values higher than 'na.rm.max'
-      na.pctg.index <- which( na.pctg >= na.rm.max)
+      na.pctg.index <- which( na.pctg > na.rm.max)
 
       # Setting as NA all the weeks with a percentage of missing values higher than 'na.rm.max'
       tmp[na.pctg.index] <- NA 

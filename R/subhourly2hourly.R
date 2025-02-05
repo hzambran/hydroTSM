@@ -59,7 +59,11 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, tz, ...) {
 
     # Checking the user provide a valid value for 'FUN'
     if (missing(FUN))
-      stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-hourly values")   
+      stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-hourly values") 
+
+    # Checking that 'na.rm.max' is in [0, 1]
+    if ( (na.rm.max < 0) | (na.rm.max > 1) )
+      stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")  
 
     # Automatic detection of 'tz'
     #ltz <- format(time(x), "%Z")[1]
@@ -84,17 +88,13 @@ subhourly2hourly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, tz, ...) {
 
     # Removing annual values in the output object for days with 
     # more than 'na.rm.max' percentage of NAs in a given day
-    if ( na.rm & (na.rm.max != 0) ) {
-
-      # Checking that 'na.rm.max' is in [0, 1]
-      if ( (na.rm.max < 0) | (na.rm.max > 1) )
-        stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+    if ( na.rm ) {
 
       # Computing the percentage of missing values in each hour
       na.pctg <- cmv(x, tscale="hourly", tz=tz)
 
       # identifying hours with a percentage of missing values higher than 'na.rm.max'
-      na.pctg.index <- which( na.pctg >= na.rm.max)
+      na.pctg.index <- which( na.pctg > na.rm.max)
 
       # Setting as NA all the days with a percentage of missing values higher than 'na.rm.max'
       tmp[na.pctg.index] <- NA 

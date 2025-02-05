@@ -102,6 +102,10 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
     if ( missing(FUN) | !is.function(FUN) )
       stop("Missing argument: 'FUN' must contain a valid function for aggregating the sub-daily values")
 
+    # Checking that 'na.rm.max' is in [0, 1]
+    if ( (na.rm.max < 0) | (na.rm.max > 1) )
+      stop("Invalid argument: 'na.rm.max' must be in [0, 1] !") 
+
     # Automatic detection of 'tz'
     #if (missing(tz)) tz <- ""
     if (missing(tz)) tz <- format(time(x), "%Z")[1]
@@ -146,17 +150,13 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
 
     # Removing annual values in the output object for days with 
     # more than 'na.rm.max' percentage of NAs in a given day
-    if ( na.rm & (na.rm.max != 0) ) {
-
-      # Checking that 'na.rm.max' is in [0, 1]
-      if ( (na.rm.max < 0) | (na.rm.max > 1) )
-        stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+    if ( na.rm ) {
 
       # Computing the percentage of missing values in each day
       na.pctg <- cmv(x, tscale="daily", start=start, start.fmt=start.fmt, tz=tz)
 
       # identifying days with a percentage of missing values higher than 'na.rm.max'
-      na.pctg.index <- which( na.pctg >= na.rm.max)
+      na.pctg.index <- which( na.pctg > na.rm.max)
 
       # Setting as NA all the days with a percentage of missing values higher than 'na.rm.max'
       tmp[na.pctg.index] <- NA 

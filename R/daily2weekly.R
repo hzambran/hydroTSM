@@ -42,6 +42,7 @@ daily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 ################################################################################
 # Started: 09-Aug-2023                                                         #
 # Updates: 11-Oct-2023 ; 22-Oct-2023 ; 04-Nov-2023                             #
+#          05-Feb-2025                                                         #
 ################################################################################
 daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
@@ -52,6 +53,10 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
   # Checking the user provide a valid value for 'x'
   if (sfreq(x) %in% c("monthly", "quarterly", "annual"))
     stop("Invalid argument: 'x' is not a (sub)daily ts. 'x' is a ", sfreq(x), " ts" )
+
+  # Checking that 'na.rm.max' is in [0, 1]
+  if ( (na.rm.max < 0) | (na.rm.max > 1) )
+    stop("Invalid argument: 'na.rm.max' must be in [0, 1] !") 
       
   # Weekly index for 'x'
   dates <- time(x)
@@ -65,17 +70,13 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 
   # Removing weekly values in the output object for weeks with 
   # more than 'na.rm.max' percentage of NAs in a given week
-  if ( na.rm & (na.rm.max != 0) ) {
-
-    # Checking that 'na.rm.max' is in [0, 1]
-    if ( (na.rm.max < 0) | (na.rm.max > 1) )
-      stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+  if ( na.rm ) {
 
     # Computing the percentage of missing values in each week
     na.pctg <- cmv(x, tscale="weekly")
 
     # identifying weeks with a percentage of missing values higher than 'na.rm.max'
-    na.pctg.index <- which( na.pctg >= na.rm.max)
+    na.pctg.index <- which( na.pctg > na.rm.max)
 
     # Setting as NA all the weeks with a percentage of missing values higher than 'na.rm.max'
     tmp[na.pctg.index] <- NA 

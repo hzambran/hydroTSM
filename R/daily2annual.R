@@ -104,6 +104,10 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="%Y-%m-%d"
   # Checking 'out.fmt'
   if ( is.na(match(out.fmt, c("%Y", "%Y-%m-%d") ) ) )
     stop("Invalid argument: 'out.fmt' must be in c('%Y', '%Y-%m-%d')" )	
+
+  # Checking that 'na.rm.max' is in [0, 1]
+  if ( (na.rm.max < 0) | (na.rm.max > 1) )
+    stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
 	   
   # Annual index for 'x'
   dates  <- time(x)
@@ -117,17 +121,13 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="%Y-%m-%d"
 
   # Removing annual values in the output object for months with 
   # more than 'na.rm.max' percentage of NAs in a given year
-  if ( na.rm & (na.rm.max != 0) ) {
-
-    # Checking that 'na.rm.max' is in [0, 1]
-    if ( (na.rm.max < 0) | (na.rm.max > 1) )
-      stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+  if ( na.rm ) {
 
     # Computing the percentage of missing values in each year
     na.pctg <- cmv(x, tscale="annual")
 
     # identifying years with a percentage of missing values higher than 'na.rm.max'
-    na.pctg.index <- which( na.pctg >= na.rm.max)
+    na.pctg.index <- which( na.pctg > na.rm.max)
 
     # Setting as NA all the years with a percentage of missing values higher than 'na.rm.max'
     tmp[na.pctg.index] <- NA 
