@@ -55,7 +55,7 @@ Logical. Should missing values be removed? \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a day, the corresponing daily value in the output object will be \code{NA}.
 }
   \item{na.rm.max}{
-Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each day to keep the daily aggregated value in the output object of this function. In other words, if the percentage of missing values in a given day is larger or equal than \code{na.rm.max} the corresponding daily value will be \code{NA}.
+Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each day to keep the daily aggregated value in the output object of this function. In other words, if the percentage of missing values in a given day is larger than \code{na.rm.max} the corresponding daily value will be \code{NA}.
 }
   \item{start}{
 character, indicating the starting time used for aggregating sub-daily time series into daily ones. It MUST be provided in the format specified by \code{start.fmt}. \cr

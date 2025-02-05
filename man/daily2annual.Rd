@@ -63,7 +63,7 @@ Logical. Should missing values be removed? \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a year, the corresponing annual values in the output object will be \code{NA}.
 }
   \item{na.rm.max}{
-Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each year to keep the yearly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given year is larger or equal than \code{na.rm.max} the corresponding annual value will be \code{NA}.
+Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each year to keep the yearly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given year is larger than \code{na.rm.max} the corresponding annual value will be \code{NA}.
 }
   \item{out.fmt}{
 Character indicating the date format for the output zoo object. See \code{format} in \code{\link[base]{as.Date}}. Possible values are: \cr

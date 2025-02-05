@@ -57,7 +57,7 @@ Logical. Should missing values be removed? \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA within a month, the corresponing monthly values in the output object will be \code{NA}.
 }
   \item{na.rm.max}{
-Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given month is larger or equal than \code{na.rm.max} the corresponding monthly value will be \code{NA}.
+Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given month is larger than \code{na.rm.max} the corresponding monthly value will be \code{NA}.
 }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates for each gauging station \cr

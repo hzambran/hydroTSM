@@ -49,7 +49,7 @@ Logical. Should missing values be removed? \cr
 -) \kbd{FALSE}: if there is AT LEAST one NA sub-hourly value within a day, the corresponding hourly value(s) will be NA as well
 }
   \item{na.rm.max}{
-Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each hour to keep the hourly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given hour is larger or equal than \code{na.rm.max} the corresponding hourly value will be \code{NA}.
+Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each hour to keep the hourly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given hour is larger than \code{na.rm.max} the corresponding hourly value will be \code{NA}.
 }
   \item{tz}{
 character, with the specification of the time zone used for \code{x}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
