@@ -9,7 +9,12 @@ NEWS/ChangeLog for hydroTSM
 ## Bug fixes
         o 'izoo2rzoo'         :  -) argument 'tz' is now able to correctly handle sub-daily zoo objects, with or without specification of a value by the user.
         o 'subhourly2hourly'  :  -) new argument 'tz' to correctly handle sub-daily zoo objects, with or without specification of a value by the user.
+                                 -) 'na.rm.max' is now correctly verified to be in [0, 1]
         o 'subhourly2nminutes':  -) new argument 'tz' to correctly handle sub-daily zoo objects, with or without specification of a value by the user.
+        o 'subdaily2daily'    :  -) 'na.rm.max' is now correctly verified to be in [0, 1]
+        o 'daily2monthly'     :  -) 'na.rm.max' is now correctly verified to be in [0, 1]
+        o 'daily2annual'      :  -) 'na.rm.max' is now correctly verified to be in [0, 1]. Thanks to Hector Garces for reporting it !.
+                                 -) now it correctly aggregates the daily values into annual ones when 'na.rm' is a missing argument
         o 'hydroplot'         :  -) now correctly works with monthly objects when 'pfreq=o'
 
 ## Package files
