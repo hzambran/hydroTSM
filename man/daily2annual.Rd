@@ -1,7 +1,7 @@
 %% File daily2annual.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 https://CRAN.R-project.org/package=hydroTSM
-%% Copyright 2008-2023 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2025 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{(sub)daily2annual}
@@ -34,15 +34,20 @@ daily2annual(x, ...)
 subdaily2annual(x, ...)
 monthly2annual(x, ...)
 
-\method{daily2annual}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", start.month=1, ...)
+\method{daily2annual}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, 
+        out.fmt=out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, ...)
 
-\method{daily2annual}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y-\%m-\%d", start.month=1, ...)
+\method{daily2annual}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, 
+        out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, ...) 
 
-\method{daily2annual}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", start.month=1, dates=1, 
+\method{daily2annual}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0, 
+        out.fmt=out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 
-\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, na.rm.max=0, out.fmt="\%Y", start.month=1, 
-        dates=1, date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
+\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, na.rm.max=0, 
+        out.fmt=out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, 
+        dates=1, date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE,
+        ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
