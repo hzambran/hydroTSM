@@ -34,14 +34,14 @@ daily2annual(x, ...)
 subdaily2annual(x, ...)
 monthly2annual(x, ...)
 
-\method{daily2annual}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", ...)
+\method{daily2annual}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", start.month=1, ...)
 
-\method{daily2annual}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y-\%m-\%d", ...)
+\method{daily2annual}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y-\%m-\%d", start.month=1, ...)
 
-\method{daily2annual}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", dates=1, 
+\method{daily2annual}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0, out.fmt="\%Y", start.month=1, dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 
-\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, na.rm.max=0, out.fmt="\%Y", 
+\method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, na.rm.max=0, out.fmt="\%Y", start.month=1, 
         dates=1, date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -70,6 +70,9 @@ Character indicating the date format for the output zoo object. See \code{format
 -) \kbd{\%Y}        : only the year will be used for the time. Default option. (e.g., "1961" "1962"...) \cr
 -) \kbd{\%Y-\%m-\%d}: a complete date format will be used for the time. (e.g., "1961-01-01" "1962-01-01"...). See Details.
 }
+  \item{start.month}{
+ numeric in [1,..,12], representing the starting month (1:Jan, ..., 12:Dec) to be used in the computation of annual values. By default \code{start.month=1}.
+ }
   \item{dates}{
 numeric, factor or Date object indicating how to obtain the dates for corresponding to each gauging station \cr
 If \code{dates} is a number (default), it indicates the index of the column in \code{x} that stores the dates \cr

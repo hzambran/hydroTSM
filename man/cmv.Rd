@@ -25,24 +25,26 @@ cmv(x, ...)
 \method{cmv}{default}(x, tscale=c("hourly", "daily", "weekly", "monthly", 
             "quarterly", "seasonal", "annual"),
             out.type=c("percentage", "amount"), dec=3, 
-            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
+            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
+            start.month=1, ...)
 
 \method{cmv}{zoo}(x, tscale=c("hourly", "daily", "weekly", "monthly", 
             "quarterly", "seasonal", "annual"),
             out.type=c("percentage", "amount"), dec=3, 
-            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, ...)
+            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
+            start.month=1,, ...)
 
 \method{cmv}{data.frame}(x, tscale=c("hourly", "daily", "weekly", "monthly", 
             "quarterly", "seasonal", "annual"),
             out.type=c("percentage", "amount"), dec=3, 
-            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz, 
-            dates=1, date.fmt="\%Y-\%m-\%d", ...)
+            start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
+            start.month=1, dates=1, date.fmt="\%Y-\%m-\%d", ...)
 
 \method{cmv}{matrix}(x, tscale=c("hourly", "daily", "weekly", "monthly", 
             "quarterly", "seasonal", "annual"),
             out.type=c("percentage", "amount"), dec=3, 
             start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
-            dates=1, date.fmt="\%Y-\%m-\%d", ...)
+            start.month=1, dates=1, date.fmt="\%Y-\%m-\%d", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -75,6 +77,9 @@ It is useful when the daily values start at a time different from \code{"00:00:0
 }
   \item{start.fmt}{
 character indicating the format in which the time is provided in \code{start}, By default \code{date.fmt=\%H:\%M:\%S}. See \code{format} in \code{\link[base]{as.POSIXct}}.
+}
+  \item{start.month}{
+ numeric in [1,..,12], representing the starting month (1:Jan, ..., 12:Dec) to be used in the computation of annual values. By default \code{start.month=1}.
 }
   \item{tz}{
 character, with the specification of the time zone used in both \code{x} and \code{start}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
