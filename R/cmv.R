@@ -1,7 +1,7 @@
 # File cmv.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2023-2023 Mauricio Zambrano-Bigiarini
+# Copyright 2023-2025 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -82,15 +82,17 @@ cmv <-function(x, ...) UseMethod("cmv")
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
-# Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #
+# Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #   
+#          03-May-2025 (EGU 2025)                                              #
 ################################################################################
 cmv.default <- function(x, 
-	                    tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                    out.type=c("percentage", "amount"),
-	                    dec=3, 
+	                      tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
+	                      out.type=c("percentage", "amount"),
+	                      dec=3, 
                         start="00:00:00", 
                         start.fmt= "%H:%M:%S", 
                         tz,
+                        start.month=1,
                         ...) {
 
   # Checking that 'x' is a zoo object
@@ -116,51 +118,67 @@ cmv.default <- function(x,
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
 # Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #
+#          03-May-2025 (EGU 2025)                                              #
 ################################################################################
 cmv.zoo <- function(x, 
-	                tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                out.type=c("percentage", "amount"),
-	                dec=3,
+	                  tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
+	                  out.type=c("percentage", "amount"),
+	                  dec=3,
                     start="00:00:00", 
                     start.fmt= "%H:%M:%S", 
                     tz,
+                    start.month=1,
                     ...) {
+
   # checking 'tscale'
   tscale <- match.arg(tscale)
 
   # checking 'out.type'
   out.type <- match.arg(out.type)
 
-  # checking 'dec'
-  if (  ( abs(dec) - round(dec) ) > 1e-5 ) 
+  # Checking 'dec'
+  if ( trunc(abs(dec) -  abs(dec) ) != 0 )
     stop("Invalid argument: 'dec' must be integer !")
+
+  # Checking that 'na.rm.max' is in [1, 12]
+  if ( (start.month < 1) | (start.month > 12) | 
+       ( trunc(abs(start.month) -  abs(start.month) ) != 0 ) )
+    stop("Invalid argument: 'start.month' must be an integer in [1, 12] !")
 
   # Automatic detection of 'tz'
   if (missing(tz)) tz <- ""
   #if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
+  # Getting the original time index for each element in 'x'
+  time.old  <- time(x)
+
   # Analysis of days different from 00:00 to 23:59 hrs
-    if ( start != "00:00:00" ) {
-      # Storing the original time
-      time.old <- time(x)
+  if ( start != "00:00:00" ) {
+    # Converting the new starting time provided by the user into a POSIXct object
+    start <- as.POSIXct(start, format=start.fmt, tz=tz)
 
-      # Converting the new starting time provided by the user into a POSIXct object
-      start <- as.POSIXct(start, format=start.fmt, tz=tz)
+    # normal staring time for a day
+    nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
 
-      # normal staring time for a day
-      nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
+    # time difference between the desired starting time 'strat' and the "normal"
+    # starting time 'nstart', [s]
+    delta <- difftime(start, nstart, units="secs")
 
-      # time difference between the desired starting time 'strat' and the "normal"
-      # starting time 'nstart', [s]
-      delta <- difftime(start, nstart, units="secs")
+    # Computing teh time difference between 'start' and the "normal" starting time, [s]
+    #time.new <- as.POSIXct(time.old, tz=tz) - delta
+    time.new <- time.old - delta
 
-      # Computing teh time difference between 'start' and the "normal" starting time, [s]
-      #time.new <- as.POSIXct(time.old, tz=tz) - delta
-      time.new <- time.old - delta
+    # Changing the time in 'x' in 'delta' seconds
+    time(x)  <- time.new
+  } # IF end
 
-      # Changing the time in 'x' in 'delta' seconds
-      time(x)  <- time.new
-    } # IF end
+  # Getting the year corresponding to each element in 'x'
+  years  <- format( time.old, "%Y")
+
+  # Shifting backwards the year each element in 'x', 
+  # only when start.month != 1
+  if ( start.month != 1 )
+    years <- .shiftyears(ltime=time.old, lstart.month=start.month)
 
   # Checking that the time frequency of 'x' is compatible with 'tscale'
   if ( tscale == "hourly") {
@@ -196,7 +214,8 @@ cmv.zoo <- function(x,
     "monthly"   = aggregate(x, by= function(tt) format(tt, "%Y-%m")      , FUN=fun),  
     "quarterly" = aggregate(x, by= function(tt) zoo::format.yearqtr(tt)  , FUN=fun),  
     "seasonal"  = aggregate(x, by= function(tt) paste0(format(tt, "%Y"), "-", time2season(tt)), FUN=fun),  
-    "annual"    = aggregate(x, by= function(tt) format(tt, "%Y")         , FUN=fun)
+    #"annual"    = aggregate(x, by= function(tt) format(tt, "%Y")         , FUN=fun)
+    "annual"    = aggregate(x, by= years                                 , FUN=fun)
   ) # 'md' END
 
   # Function for obtaining the amount of missing values in 'x'
@@ -214,7 +233,8 @@ cmv.zoo <- function(x,
     "monthly"   = aggregate(x, by= function(tt) format(tt, "%Y-%m")      , FUN=fun),  
     "quarterly" = aggregate(x, by= function(tt) zoo::format.yearqtr(tt)  , FUN=fun),  
     "seasonal"  = aggregate(x, by= function(tt) paste0(format(tt, "%Y"), "-", time2season(tt)), FUN=fun),  
-    "annual"    = aggregate(x, by= function(tt) format(tt, "%Y")         , FUN=fun)
+    #"annual"    = aggregate(x, by= function(tt) format(tt, "%Y")         , FUN=fun)
+    "annual"    = aggregate(x, by= years                                 , FUN=fun)
   ) # 'md' END
 
   if (out.type=="percentage") {
@@ -235,6 +255,7 @@ cmv.zoo <- function(x,
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
 # Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #
+#          03-May-2025 (EGU 2025)                                              #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -249,11 +270,12 @@ cmv.zoo <- function(x,
 #             ONLY required when class(dates)=="factor" or "numeric"
 # 'verbose' : logical; if TRUE, progress messages are printed
 cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                       out.type=c("percentage", "amount"),
-	                       dec=3,
+	                         out.type=c("percentage", "amount"),
+	                         dec=3,
                            start="00:00:00", 
                            start.fmt= "%H:%M:%S", 
                            tz,
+                           start.month=1,
                            dates=1, 
                            date.fmt="%Y-%m-%d", ...) {
                                     
@@ -288,7 +310,8 @@ cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "
           )
   
   cmv.zoo(x=x, tscale=tscale, out.type=out.type, dec=dec, 
-          start=start, start.fmt=start.fmt, tz=tz)
+          start=start, start.fmt=start.fmt, tz=tz,
+          start.month=start.month)
 
  } #'cmv.data.frame' END
 
@@ -300,19 +323,22 @@ cmv.data.frame <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
 # Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #
+#          03-May-2025 (EGU 2025)                                              #
 ################################################################################
 cmv.matrix  <- function(x, tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                    out.type=c("percentage", "amount"),
-	                    dec=3,
+	                      out.type=c("percentage", "amount"),
+	                      dec=3,
                         start="00:00:00", 
                         start.fmt= "%H:%M:%S", 
                         tz,
+                        start.month=1,
                         dates=1, 
                         date.fmt="%Y-%m-%d", ...) {
 
    x <- as.data.frame(x)
    cmv.data.frame(x=x, tscale=tscale, out.type=out.type, dec=dec,
                   start=start, start.fmt=start.fmt, tz=tz,
+                  start.month=start.month,
                   dates=dates, date.fmt=date.fmt)
 
 } # 'cmv.matrix  ' END
