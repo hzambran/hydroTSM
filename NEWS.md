@@ -5,6 +5,10 @@ NEWS/ChangeLog for hydroTSM
 
 ## New features   
         o 'matrixplot'        :  -) new arguments: cuts,  cuts.dec=2, cuts.labels, cuts.style, legend.cex, legend.title, legend.title.cex, legend.fontsize.
+        o 'daily2annual'      :  -) new argument 'start.month' to choose the starting month to be used in the computation of annual values.
+                                    By default 1 (Jan)
+        o 'cmv'               :  -) new argument 'start.month' to choose the starting month to be used in the computation of annual values.
+                                    By default 1 (Jan)
 
 ## Bug fixes
         o 'izoo2rzoo'         :  -) argument 'tz' is now able to correctly handle sub-daily zoo objects, with or without specification of a value by the user.
@@ -19,13 +23,15 @@ NEWS/ChangeLog for hydroTSM
         o 'daily2annual'      :  -) 'na.rm.max' is now correctly verified to be in [0, 1]. Thanks to Hector Garces for reporting it !.
                                  -) now it correctly aggregates the daily values into annual ones when 'na.rm' is a missing argument
                                  -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
-          corresponding annual value will be ‘NA’.
+                                    corresponding annual value will be ‘NA’.
         o 'daily2weekly'      :  -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
         o 'subdaily2weekly'   :  -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
         o 'hydroplot'         :  -) now correctly works with monthly objects when 'pfreq=o'
 
 ## Package files
         o Now hydroTSM imports the 'timechange' package, in order to allow the correct handling of time zones in the 'izoo2rzoo' function.
+        o "new internal function '.shiftyears' to allow the computation of annual values starting in a month different from january.
+
 
 
 # Changes in version 0.7-0  17-Jan-2024
