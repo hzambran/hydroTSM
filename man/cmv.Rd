@@ -32,7 +32,7 @@ cmv(x, ...)
             "quarterly", "seasonal", "annual"),
             out.type=c("percentage", "amount"), dec=3, 
             start="00:00:00", start.fmt= "\%H:\%M:\%S", tz,
-            start.month=1,, ...)
+            start.month=1, ...)
 
 \method{cmv}{data.frame}(x, tscale=c("hourly", "daily", "weekly", "monthly", 
             "quarterly", "seasonal", "annual"),
