@@ -99,25 +99,6 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   } # 'get.dates' END
 
 
-  # Function for shifting backwards a vector of numeric years by 'nmonths' (number of months).
-  .shiftyears <- function(ltime,       # vector with the times of each elemnt of a zoo object
-                          lstart.month # numeric in [2,..,12], representing the months. 2:Feb, 12:Dec
-                          ) {
-     syears.bak        <- as.numeric(format( ltime, "%Y" ))
-     syears            <- syears.bak
-     smonths           <- as.numeric(format( ltime, "%m"))
-     months2moveback   <- 1:(lstart.month-1)
-     N                 <- length(months2moveback)
-     for (i in 1:N) {
-       m.index          <- which(smonths == months2moveback[i])
-       syears[m.index]  <- syears[m.index] - 1
-       
-     } # FOR end
-
-     return(syears)
-  } # '.shiftyears' END
-
-
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN)) 
     stop("Missing argument value: 'FUN' must contain a valid function for aggregating the values")
@@ -133,14 +114,20 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   # Checking that 'na.rm.max' is in [0, 1]
   if ( (na.rm.max < 0) | (na.rm.max > 1) )
     stop("Invalid argument: 'na.rm.max' must be in [0, 1] !")
+
+  # Checking that 'na.rm.max' is in [1, 12]
+  if ( (start.month < 1) | (start.month > 12) | 
+       ( ( trunc(start.month) -  start.month ) != 0 ) )
+    stop("Invalid argument: 'start.month' must be an integer in [1, 12] !")
 	   
-  # Annual index for 'x'
+  # Getting the time index for each element in 'x'
   ltimes  <- time(x)
 
-  #y      <- as.numeric(format( dates, "%Y"))
-  #years  <- factor( y, levels=unique(y) )
+  # Getting the year corresponding to each element in 'x'
   years  <- format( ltimes, "%Y")
 
+  # Shifting backwards the year each element in 'x', 
+  # only when start.month != 1
   if ( start.month != 1 )
     years <- .shiftyears(ltime=ltimes, lstart.month=start.month)
 
@@ -153,7 +140,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   if ( na.rm ) {
 
     # Computing the percentage of missing values in each year
-    na.pctg <- cmv(x, tscale="annual")
+    na.pctg <- cmv(x, tscale="annual", start.month=start.month)
 
     # identifying years with a percentage of missing values higher than 'na.rm.max'
     na.pctg.index <- which( na.pctg > na.rm.max)
