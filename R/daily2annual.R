@@ -180,7 +180,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
 
   # Checking the format of the time attribute of the output object
   if ( out.fmt == "%Y-%m-%d" )
-    time(out) <- paste0( time(out), "-01-01")
+    time(out) <- as.Date( paste0( time(out), "-01-01") )
 
   return(out)
 
