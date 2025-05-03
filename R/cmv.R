@@ -180,7 +180,7 @@ cmv.zoo <- function(x,
   # Shifting backwards the year each element in 'x', 
   # only when start.month != 1
   if ( start.month != 1 )
-    years <- .shiftyears(ltime=time.old, lstart.month=start.month)
+    years <- shiftyears(ltime=time.old, lstart.month=start.month)
 
   # Checking that the time frequency of 'x' is compatible with 'tscale'
   if ( tscale == "hourly") {

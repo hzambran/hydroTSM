@@ -130,7 +130,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   # Shifting backwards the year each element in 'x', 
   # only when start.month != 1
   if ( start.month != 1 )
-    years <- .shiftyears(ltime=ltimes, lstart.month=start.month)
+    years <- shiftyears(ltime=ltimes, lstart.month=start.month)
 
   # Computing Annual time series
   tmp <- aggregate(x, by=years, FUN, na.rm=na.rm, ...)

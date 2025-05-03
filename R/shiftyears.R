@@ -19,13 +19,13 @@
 # Output: numeric vector representing the year corresponing to each element of 
 #         'ltime', considering 'lstart.month' as the starting month for annual
 #         computations
-.shiftyears <- function(ltime,       # vector with the date/times of each element 
-                                     # of a zoo object
-                        lstart.month # numeric in [1,..,12], representing the 
-                                     # starting month to be used in the  
-                                     # computation of annual values.
-                                     # By default 1 (Jan)
-                        ) {
+shiftyears <- function(ltime,       # vector with the date/times of each element 
+                                    # of a zoo object
+                       lstart.month # numeric in [1,..,12], representing the 
+                                    # starting month to be used in the  
+                                    # computation of annual values.
+                                    # By default 1 (Jan)
+                       ) {
   syears.bak        <- as.numeric(format( ltime, "%Y" ))
   syears            <- syears.bak
   smonths           <- as.numeric(format( ltime, "%m"))
@@ -37,4 +37,4 @@
   } # FOR end
 
   return(syears)
-} # '.shiftyears' END
+} # 'shiftyears' END
