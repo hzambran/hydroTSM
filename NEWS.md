@@ -4,6 +4,9 @@ NEWS/ChangeLog for hydroTSM
 # Changes in version 0.7-5  Ongoing
 
 ## New features   
+        o 'baseflow'          :  -) it can apply the filter more than three times (see new 'n.pass' argument), which should be mandatory for hourly time series 
+                                    (Ladson et al., 2013)
+                                 -) new arguments: 'n.pass' 'pass.start'
         o 'matrixplot'        :  -) new arguments: cuts,  cuts.dec=2, cuts.labels, cuts.style, legend.cex, legend.title, legend.title.cex, legend.fontsize.
         o 'daily2annual'      :  -) new argument 'start.month' to choose the starting month to be used in the computation of annual values.
                                     By default 1 (Jan)

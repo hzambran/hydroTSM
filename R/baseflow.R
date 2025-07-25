@@ -3,7 +3,7 @@
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
 #                                 http://www.rforge.net/hydroTSM/ 
-# Copyright 2012-2018 Mauricio Zambrano-Bigiarini
+# Copyright 2012-2025 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -13,16 +13,23 @@
 #          this function computes the baseflow using the filter proposed by    # 
 #          Arnold & Allen in 1999                                              #
 ################################################################################
-# Reference: Arnold, J. G., & Allen, P. M. (1999). Automated methods for       #
-#            estimating baseflow and ground water recharge from streamflow     #
-#            records. JAWRA Journal of the American Water Resources Association, 
-#            35(2), 411-424. doi: 10.1111/j.1752-1688.1999.tb03599.x           #
+# References: Arnold, J. G., & Allen, P. M. (1999). Automated methods for      #
+#             estimating baseflow and ground water recharge from streamflow    #
+#             records. JAWRA Journal of the American Water Resources ,         #
+#             Association 35(2), 411-424.                                      #
+#             doi: 10.1111/j.1752-1688.1999.tb03599.x                          #
+#                                                                              #
+#             Ladson, A. R., Brown, R., Neal, B., & Nathan, R. (2013). A       #
+#             standard approach to baseflow separation using the Lyne and      #
+#             Hollick filter. Australasian Journal of Water Resources, 17(1),  #
+#             25-34. doi:10.7158/13241583.2013.11465417                        #
 ################################################################################
-# Author : Mauricio Zambrano-Bigiarini                                         #
+# Author : Mauricio Zambrano-Bigiarini, Hector Garces-Figueroa                 #
 # Started: 2013                                                                #
 # Updates: 16-May-2018                                                         #
 #          26-Nov-2023                                                         #
 #          17-Jan-2024                                                         #
+#          24-Jul-2025 (HGF) ; 25-Jul-2025                                     #
 ################################################################################
 
 # 'x'       : zoo object with streamflow records. The suggested time 
@@ -38,6 +45,13 @@
 #                spaced zoo object. The default value corresponds to the date of 
 #                the last element of \code{x} \cr
 #                It has to be in the format indicated by \code{date.fmt}.
+# 'n.pass'     : Integer indicating the number times the filetr can be passed
+#                over the streamflow data. Default is 3L.
+# 'pass.start' : Character indicating the direction of the first filter pass.
+#                Subsequent passes alternate direction (e.g., forward-backward)
+#                Valid values are:
+#             -) "forward" (default)
+#             -) "backward"
 # 'date.fmt'   : Character indicating the format in which the dates are stored in 
 #                \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. 
 #                See \sQuote{Details} section in \code{\link[base]{strptime}}.
@@ -97,12 +111,14 @@ baseflow.zoo <- function(x,
                          beta=0.925, 
                          from=start(x), 
                          to=end(x),
-                         date.fmt, 
+                         n.pass = 3L,
+                         pass.start = c("forward", "backward"),
+                         date.fmt,
                          tz,
                          na.fill=c("none", "linear", "spline"), 
                          out.type=c("last", "all"), 
                          plot=TRUE, 
-                         xcol="black", 
+                         xcol="black",
                          bfcol=c("blue", "darkcyan", "darkorange3"),
                          pch=15,
                          cex=0.3,
@@ -118,12 +134,28 @@ baseflow.zoo <- function(x,
   x.freq <- sfreq(x)
   
   # Checking if 'x is a sub-daily zoo object  
-  if (x.freq %in% c("minute","hourly") ) {
+  subdaily.ts <- FALSE
+  if (x.freq %in% c("minute","hourly") ) 
     subdaily.ts <- TRUE
-  } else subdaily.ts <- FALSE
+
+  if ( (x.freq == "hourly") and (n.pass < 9) )
+    warning("For hourly data 'n.pass' should be equal to 9 !! (Ladson et al., 2013) ")
+
+  # checking 'n.pass'
+  if (!inherits(n.pass, "integer")) stop("'n.pass' must be an integer !")
+  if (n.pass <= 0) stop("'n.pass' must be greater than 0 !")
+  
+  # checking 'pass.start'
+  pass.choices <- c("forward", "backward")
+  pass.start <- match.arg(pass.start, pass.choices)
+
+  # checking 'bfcol'
+  if (out.type == "all" && plot && length(bfcol) != n.pass) {
+    stop ("length of 'bfcol' must match 'n.pass'")
+  } 
 
   ####################################################################################
-  # Lines 119-202 are taken from izoo2rzoo.R to check 'from' and 'to'
+  # Lines 154-178 are taken from izoo2rzoo.R to check 'from' and 'to'
   ####################################################################################
 
   # Automatic detection of 'date.fmt'
@@ -240,110 +272,116 @@ baseflow.zoo <- function(x,
 
   # Initializing quickflow values 
   quickflow    <- rep(NA, n)
-  quickflow[1] <- x[1] / 2
+  quickflow <- replicate(n.pass, quickflow, simplify = FALSE)
+  quickflow[[1]][1] <- x[1] / 2
 
   # Initializing baseflow values after the first ('baseflow1'), 
   # second ('baseflow2') and third ('baseflow3') pass of the filter
-  baseflow1 <- rep(NA, n)
-  baseflow2 <- rep(NA, n)
-  baseflow3 <- rep(NA, n)
+  baseflow <- rep(NA, n)
+  baseflow <- replicate(n.pass, baseflow, simplify = FALSE)
+  pass.type <- rep(unique(c(pass.start, pass.choices)), length.out = n.pass)
 
-  # 1) First pass of the filter (forward)
-  for (i in 2:n) {
-    quickflow[i] <- f1 * quickflow[i-1] + f2 * ( x[i] - x[i-1] )
-    if ( quickflow[i] < 0) quickflow[i] <- 0
-  } # FOR end
+  .filter_pass <- function(l.baseflow, l.quickflow, l.type,
+                           l.f1 = f1, l.f2 = f2, l.n = n) {
+    if (l.type == "forward") {
+      aux.n <- 2:l.n
+      op    <- match.fun("-")
+    } else { # type == "backward"
+      aux.n <- (l.n-2) : 1
+      op    <- match.fun("+")
+    }
 
-  # baseflow1 computation
-  baseflow1  <- x - quickflow
-  # Removing any possible negative values
-  neg.index <- which(baseflow1 < 0)
-  if (length(neg.index) > 0) baseflow1[neg.index] <- 0
-  # Removing any possible baseflow1 values larger than its corresponding streamflow
-  larger.index <- which(baseflow1 > x)
-  if (length(larger.index) > 0) baseflow1[larger.index] <- x[larger.index]
+    for (i in aux.n) {
+      l.quickflow[i] <- l.f1 * l.quickflow[op(i, 1)] +
+                        l.f2 * (l.baseflow[i] - l.baseflow[op(i, 1)])
+      if (l.quickflow[i] < 0) l.quickflow[i] <- 0
+    }
 
-
-  # 2) Second pass of the filter (backward)
-  baseflow2[n-1] <- baseflow1[n-1]
-  for (i in (n-2):1) {
-    quickflow[i] <- f1 * quickflow[i+1] + f2 * ( baseflow1[i] - baseflow1[i+1] )
-    if ( quickflow[i] < 0) quickflow[i] <- 0
-  } # FOR end
-
-  # baseflow2 computation
-  baseflow2  <- baseflow1 - quickflow
-  # Removing any possible negative values
-  neg.index <- which(baseflow2 < 0)
-  if (length(neg.index) > 0) baseflow2[neg.index] <- 0
-  # Removing any possible baseflow2 values larger than its previous baseflow1
-  larger.index <- which(baseflow2 > baseflow1)
-  if (length(larger.index) > 0) baseflow2[larger.index] <- baseflow1[larger.index]
-
-
-  # 3) Third pass of the filter (forward)
-  baseflow3[n-1] <- baseflow1[n-1]
-  for (i in 2:n) {
-    quickflow[i] <- f1 * quickflow[i-1] + f2 * ( baseflow2[i] - baseflow2[i-1] )
-    if ( quickflow[i] < 0) quickflow[i] <- 0
-  } # FOR end
-
-  # baseflow3 computation
-  baseflow3  <- baseflow2 - quickflow
-  # Removing any possible negative values
-  neg.index <- which(baseflow3 < 0)
-  if (length(neg.index) > 0) baseflow3[neg.index] <- 0
-  # Removing any possible baseflow3 values larger than its previous baseflow2
-  larger.index <- which(baseflow3 > baseflow2)
-  if (length(larger.index) > 0) baseflow3[larger.index] <- baseflow2[larger.index]
+    baseflow.out <- l.baseflow - l.quickflow
+    neg.index <- which(baseflow.out < 0)
+    if (length(neg.index) > 0) baseflow.out[neg.index] <- 0
+    larger.index <- which(baseflow.out > l.baseflow)
+    if (length(larger.index) > 0) {
+      baseflow.out[larger.index] <- l.baseflow[larger.index]
+    }
+    
+    out <- list(bf = baseflow.out, qf = l.quickflow)
+    return(out)
+  }
+  # First pass of the filter
+  first.pass     <- .filter_pass(l.baseflow = x,
+                                 l.quickflow = quickflow[[1]],
+                                 l.type = pass.type[[1]])
+  baseflow[[1]]  <- first.pass[["bf"]]
+  quickflow[[1]] <- first.pass[["qf"]]
+  
+  if (n.pass >= 2) {
+    for (i in 2:n.pass) { 
+      baseflow[[i]][n-1] <- baseflow[[1]][n-1] 
+      filtered.data  <- .filter_pass(l.baseflow = baseflow[[i - 1]],
+                                    l.quickflow = quickflow[[i - 1]],
+                                    l.type = pass.type[[i]])
+      baseflow[[i]]  <- filtered.data[["bf"]]
+      quickflow[[i]] <- filtered.data[["qf"]]
+    }
+  }
 
   # Giving back the time attribute if the orignal 'x' object had one
+  
+  baseflow <- do.call(cbind, baseflow)
   if ( HasTime ) {
     x         <- zoo(x, xtime)
-    baseflow1 <- zoo(baseflow1, xtime)
-    baseflow2 <- zoo(baseflow2, xtime)
-    baseflow3 <- zoo(baseflow3, xtime)
+    baseflow <- zoo::zoo(baseflow, xtime)
   } # if END
 
   # Creating the output object
   if (out.type=="last") {
-    out <- baseflow3
-  } else out <- cbind(baseflow3, baseflow2, baseflow1)
+    out <- baseflow[, n.pass]
+  } else out <- baseflow
 
 
   # Plotting, if necessary
   if (plot) {
+    ylab <- "Q"
+    xlab <- "Time"
+    legend.text <- c("Streamflow", "Baseflow")
     if (HasTime) {
-      plot(x, ylab="Q", type="n", xaxt="n", xlab="Time")
+      plot(x, ylab=ylab, type="n", xaxt="n", xlab=xlab)
       drawTimeAxis(x)
       grid()
       points(x, type="o", col=xcol, pch=15, lty=1, cex=cex)
       if (out.type=="all") {
-        points(baseflow1, type="o", col=bfcol[3], pch=pch, lty=1, cex=cex)
-        points(baseflow2, type="o", col=bfcol[2], pch=pch, lty=1, cex=cex)
-
-        legend.text <- c("Streamflow", "Baseflow 3rd pass", "Baseflow 2nd pass", "Baseflow 1st pass")
-        legend.cols <- c(xcol, bfcol[1], bfcol[2], bfcol[3])
+        for (i in 1:(n.pass - 1)) {
+            aux.col <- bfcol[n.pass + 1 - i]
+            points(1:n, baseflow[, i], type="o", col=aux.col, pch=pch, lty=1,
+                   cex=cex)
+          }
+        legend.text <- c("Streamflow", paste("Baseflow pass", n.pass:1))
+        # legend.cols <- c(xcol, bfcol[1], bfcol[2], bfcol[3])
+        legend.cols <- c(xcol, bfcol)
       } else {
-          legend.text <- c("Streamflow", "Baseflow")
           legend.cols <- c(xcol, bfcol[1])
         } # ELSE end
-        points(baseflow3, type="o", col=bfcol[1], pch=pch, lty=1, cex=cex)
+        points(baseflow[, n.pass], type="o", col=bfcol[1], pch=pch, lty=1,
+               cex=cex)
     } else { # HasTime == FALSE
-        plot(1:n, x, ylab="Q", type="n", xlab="Time")
+        plot(1:n, x, ylab=ylab, type="n", xlab=xlab)
         grid()
         points(1:n, x, type="o", col=xcol, pch=pch, lty=1, cex=cex)
         if (out.type=="all") {
-          points(1:n, baseflow1, type="o", col=bfcol[3], pch=pch, lty=1, cex=cex)
-          points(1:n, baseflow2, type="o", col=bfcol[2], pch=pch, lty=1, cex=cex)
+          for (i in 1:(n.pass - 1)) {
+            aux.col <- bfcol[n.pass + 1 - i]
+            points(1:n, baseflow[, i], type="o", col=aux.col, pch=pch, lty=1,
+                   cex=cex)
+          }
 
-          legend.text <- c("Streamflow", "Baseflow 3rd pass", "Baseflow 2nd pass", "Baseflow 1st pass")
-          legend.cols <- c(xcol, bfcol[1], bfcol[2], bfcol[3])
+          legend.text <- c("Streamflow", paste("Baseflow pass", n.pass:1))
+          legend.cols <- c(xcol, bfcol)
         } else {
-            legend.text <- c("Streamflow", "Baseflow")
             legend.cols <- c(xcol, bfcol[1])
           } # ELSE end
-          points(1:n, baseflow3, type="o", col=bfcol[1], pch=pch, lty=1, cex=cex)
+          points(1:n, baseflow[, n.pass], type="o", col=bfcol[1], pch=pch,
+                 lty=1, cex=cex)
       } # ELSE end
 
     legend("topright", legend = legend.text, bty="n",

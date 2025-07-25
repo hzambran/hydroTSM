@@ -2,7 +2,7 @@
 %% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 %%                                 http://www.rforge.net/hydroTSM/ ; 
 %%                                 https://cran.r-project.org/package=hydroTSM
-%% Copyright 2023-2024 Mauricio Zambrano-Bigiarini
+%% Copyright 2023-2025 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{baseflow}
@@ -19,7 +19,8 @@ Given a complete (without missing values) series of streamflow, this function co
 \usage{
 baseflow(x, ...)
 
-\method{baseflow}{zoo}(x, beta=0.925, from=start(x), to=end(x), date.fmt, tz, 
+\method{baseflow}{zoo}(x, beta=0.925, from=start(x), to=end(x),  n.pass=3L,
+         pass.start=c("forward", "backward"), date.fmt, tz, 
          na.fill=c("none", "linear", "spline"), out.type=c("last", "all"), 
          plot=TRUE, xcol="black", bfcol=c("blue", "darkcyan", "darkorange3"),
          pch=15, cex=0.3, ...)
@@ -40,6 +41,14 @@ The default value corresponds to the date of the first element of \code{x}.
   \item{to}{
 Character indicating the ending date for subsetting \code{x}. It has to be in the format indicated by \code{date.fmt}. \cr
 The default value corresponds to the date of the last element of \code{x}.
+}
+  \item{n.pass}{
+Integer indicating the number times the filter will be passed over the streamflow data stored in \code{x}. Default is 3.
+}
+  \item{pass.start}{
+Character indicating the direction of the first pass of the filter. Subsequent passes alternate direction (e.g., forward-backward). Valid values are: \cr
+-) \kbd{forward}  => the first pass of the filter is applied forward \cr
+-) \kbd{backward} => the first pass of the filter is applied backward 
 }
   \item{date.fmt}{
 character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}}.
@@ -112,6 +121,9 @@ The filter can be passed over the streamflow data three times (forward, backward
 \cite{Lyne, V., Hollick, M. (1979). Stochastic time-variable rainfall-runoff modelling. Proceedings of the Hydrology and Water Resources Symposium, Perth, 10--12 September. Institution of Engineers National Conference Publication, No. 79/10, 89--92}.
 
 \cite{Nathan, R. J., & McMahon, T. A. (1990). Evaluation of automated techniques for base flow and recession analyses. Water resources research, 26(7), 1465--1473. doi:10.1029/WR026i007p01465}.
+
+\cite{Ladson, A. R., Brown, R., Neal, B., & Nathan, R. (2013). A standard approach to baseflow separation using the Lyne and Hollick filter. Australasian Journal of Water Resources, 17(1), 25-34. doi:10.7158/13241583.2013.11465417}.
+
 }
 \author{
 Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
