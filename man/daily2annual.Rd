@@ -46,8 +46,8 @@ monthly2annual(x, ...)
 
 \method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, na.rm.max=0, 
         out.fmt=out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, 
-        dates=1, date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE,
-        ...)
+        dates=1, date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", 
+        verbose = TRUE,  ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
