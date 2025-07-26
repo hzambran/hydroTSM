@@ -3,6 +3,9 @@ NEWS/ChangeLog for hydroTSM
 --------------------------
 # Changes in version 0.7-5  Ongoing
 
+## New functions
+        o 'isComplete'        : for testing for identifying whether a zoo object has a regular time frequency without missing values from the first one to the last one
+
 ## New features   
         o 'baseflow'          :  -) it can apply the filter more than three times (see new 'n.pass' argument), which should be mandatory for hourly time series 
                                     (Ladson et al., 2013)
