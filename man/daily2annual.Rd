@@ -22,7 +22,7 @@
 \alias{subdaily2annual.data.frame}
 \alias{subdaily2annual.matrix}
 
-
+%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 (sub)Daily/Monthly -> Annual 
 }
