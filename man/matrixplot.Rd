@@ -18,8 +18,10 @@ Originally, it was thought to represent the amount of days with information per 
 \usage{
 matrixplot(x, ColorRamp="Days", ncolors = 70, main = "", 
            cuts,  cuts.dec=2, cuts.labels, 
-           cuts.style=c("equal", "pretty", "fixed", "sd", "quantile", "kmeans", "bclust", "fisher"), 
-           legend.cex=1.1,  legend.title="",  legend.title.cex=1.5, legend.fontsize=15, ...)
+           cuts.style=c("equal", "pretty", "fixed", "sd", "quantile", 
+                        "kmeans", "bclust", "fisher"), 
+           legend.cex=1.1,  legend.title="",  legend.title.cex=1.5, 
+           legend.fontsize=15, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
