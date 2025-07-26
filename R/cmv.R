@@ -120,12 +120,12 @@ cmv.default <- function(x,
 ################################################################################
 # Started: 25-Jul-2023 (Buenos Aires)                                          #
 # Updates: 28-Jul-2023 ; 03-Aug-2023 ; 27-Nov-2023                             #
-#          03-May-2025 (EGU 2025)                                              #
+#          03-May-2025 (EGU 2025) ; 26-Jul-2025                                #
 ################################################################################
 cmv.zoo <- function(x, 
-	                  tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
-	                  out.type=c("percentage", "amount"),
-	                  dec=3,
+	                tscale=c("hourly", "daily", "weekly", "monthly", "quarterly", "seasonal", "annual"), 
+	                out.type=c("percentage", "amount"),
+	                dec=3,
                     start="00:00:00", 
                     start.fmt= "%H:%M:%S", 
                     tz,
@@ -148,8 +148,8 @@ cmv.zoo <- function(x,
     stop("Invalid argument: 'start.month' must be an integer in [1, 12] !")
 
   # Automatic detection of 'tz'
-  if (missing(tz)) tz <- ""
-  #if (missing(tz)) tz <- format(time(x), "%Z")[1]
+  #if (missing(tz)) tz <- ""
+  if (missing(tz)) tz <- format(time(x), "%Z")[1]
 
   # Getting the original time index for each element in 'x'
   time.old  <- time(x)
