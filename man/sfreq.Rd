@@ -84,7 +84,7 @@ sfreq(m)
 
 
 ## Ex5: Annual data
-a <- daily2annual(d, FUN=mean, na.rm=TRUE)
+a <- daily2annual(d, FUN=mean, na.rm=TRUE, out.fmt="\%Y-\%m-\%d")
 sfreq(a)
 
 
