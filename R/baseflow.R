@@ -138,7 +138,7 @@ baseflow.zoo <- function(x,
   if (x.freq %in% c("minute","hourly") ) 
     subdaily.ts <- TRUE
 
-  if ( (x.freq == "hourly") and (n.pass < 9) )
+  if ( (x.freq == "hourly") & (n.pass < 9) )
     warning("For hourly data 'n.pass' should be equal to 9 !! (Ladson et al., 2013) ")
 
   # checking 'n.pass'
