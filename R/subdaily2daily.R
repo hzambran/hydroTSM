@@ -85,7 +85,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00
 #          27-May-2021                                                         #
 #          11-Oct-2022                                                         #
 #          30-Jul-2023 ; 31-Jul-2023 ; 03-Aug-2023                             #
-#          05-Feb-2025                                                         #
+#          05-Feb-2025 ; 25-Jul-2025 ; 26-Jul-2025                             #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                start.fmt= "%H:%M:%S", tz, ...) {
@@ -106,6 +106,9 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
     if ( (na.rm.max < 0) | (na.rm.max > 1) )
       stop("Invalid argument: 'na.rm.max' must be in [0, 1] !") 
 
+    if ( !zoo::is.regular(x, strict=TRUE) )
+      warning("'x' is not a strictly regular '", sfreq(x), "' time series !. (see the 'izoo2rzoo' function)")
+
     # Automatic detection of 'tz'
     #if (missing(tz)) tz <- ""
     if (missing(tz)) tz <- format(time(x), "%Z")[1]
@@ -116,14 +119,14 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
       time.old <- time(x)
 
       # Converting the new starting time provided by the user into a POSIXct object
-      start <- as.POSIXct(start, format=start.fmt, tz=tz)
+      startFULL <- as.POSIXct(start, format=start.fmt, tz=tz)
 
       # normal staring time for a day
       nstart <- as.POSIXct("00:00:00", format="%H:%M:%S", tz=tz)
 
       # time difference between the desired starting time 'strat' and the "normal"
       # starting time 'nstart', [s]
-      delta <- difftime(start, nstart, units="secs")
+      delta <- difftime(startFULL, nstart, units="secs")
 
       # Computing teh time difference between 'start' and the "normal" starting time, [s]
       #time.new <- as.POSIXct(time.old, tz=tz) - delta
@@ -140,23 +143,13 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
     # The following lines of code makes sure that the missing elements in a day are actually 
     # considered as missing
 
-    st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
-    et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
-    x  <- izoo2rzoo(x, from=st, to=et, tz=tz)
-    message("1:")
-    print(str(x))
+    #st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
+    #et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
+    #x  <- izoo2rzoo(x, from=st, to=et, tz=tz)
 
     # Computing the Daily time series 
     tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
-    message("2:")
-    print(str(tmp))
     time(tmp) <- as.Date( time(tmp) )
-        
-    # trasnforming NaNs into NAs
-    non.finite.index <-  which (!is.finite(tmp))
-    if ( length(non.finite.index) > 0 ) tmp[non.finite.index] <- NA
-    message("3:")
-    print(str(tmp))
     
     # Removing annual values in the output object for days with 
     # more than 'na.rm.max' percentage of NAs in a given day
@@ -171,29 +164,21 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
       # Setting as NA all the days with a percentage of missing values higher than 'na.rm.max'
       tmp[na.pctg.index] <- NA 
     } # IF end
-    message("4:")
-    print(str(tmp))
 
     # Removing subdaily time attibute, but not the dates
     if (NCOL(tmp) == 1) {
       tmp <- zoo(as.numeric(tmp), as.Date(time(tmp), format="%Y-%m-%d") ) 
     } else tmp <- zoo::zoo(zoo::coredata(tmp), as.Date(time(tmp), format="%Y-%m-%d") ) 
-    message("5:")
-    print(str(tmp))
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
     nan.index <- which(is.nan(tmp))
     if ( length(nan.index) > 0 ) tmp[nan.index] <- NA
-    message("6:")
-    print(str(tmp))
   
     # Replacing all the Inf and -Inf by NA's
     # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
     inf.index <- which(is.infinite(tmp))
-    if ( length(inf.index) > 0 ) tmp[inf.index] <- NA      
-    message("7:")
-    print(str(tmp))
+    if ( length(inf.index) > 0 ) tmp[inf.index] <- NA        
 
     return(tmp)
 

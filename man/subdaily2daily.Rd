@@ -95,9 +95,9 @@ logical; if TRUE, progress messages are printed
 arguments additional to \code{na.rm} passed to \code{FUN}.
 }
 }
-%%\details{
-%%  ~~ If necessary, more details than the description above ~~
-%%}
+\details{
+ This function assumes that \code{x} has a strictly regular time frequency (see \code{\link[zoo]{is.regular}}) and raise a warning otherwise.
+}
 \value{
   a zoo object with daily time series
 }
