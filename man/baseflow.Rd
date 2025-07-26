@@ -126,7 +126,7 @@ The filter can be passed over the streamflow data three times (forward, backward
 
 }
 \author{
-Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
+Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail} ; Hector Garces-Figueroa
 }
 %%\note{
 %%  ~~further notes~~
