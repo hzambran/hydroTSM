@@ -143,11 +143,21 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
     st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
     et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
     x  <- izoo2rzoo(x, from=st, to=et, tz=tz)
+    message("1:")
+    print(str(x))
 
     # Computing the Daily time series 
     tmp <- aggregate(x, by= function(tt) format(tt, "%Y-%m-%d"), FUN=FUN, na.rm= na.rm, ...)
-
-
+    message("2:")
+    print(str(tmp))
+    time(tmp) <- as.Date( time(tmp) )
+        
+    # trasnforming NaNs into NAs
+    non.finite.index <-  which (!is.finite(tmp))
+    if ( length(non.finite.index) > 0 ) tmp[non.finite.index] <- NA
+    message("3:")
+    print(str(tmp))
+    
     # Removing annual values in the output object for days with 
     # more than 'na.rm.max' percentage of NAs in a given day
     if ( na.rm ) {
@@ -161,22 +171,29 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
       # Setting as NA all the days with a percentage of missing values higher than 'na.rm.max'
       tmp[na.pctg.index] <- NA 
     } # IF end
-
+    message("4:")
+    print(str(tmp))
 
     # Removing subdaily time attibute, but not the dates
     if (NCOL(tmp) == 1) {
       tmp <- zoo(as.numeric(tmp), as.Date(time(tmp), format="%Y-%m-%d") ) 
     } else tmp <- zoo::zoo(zoo::coredata(tmp), as.Date(time(tmp), format="%Y-%m-%d") ) 
+    message("5:")
+    print(str(tmp))
 
     # Replacing the NaNs by 'NA.
     # mean(NA:NA, na.rm=TRUE) == NaN
     nan.index <- which(is.nan(tmp))
     if ( length(nan.index) > 0 ) tmp[nan.index] <- NA
+    message("6:")
+    print(str(tmp))
   
     # Replacing all the Inf and -Inf by NA's
     # min(NA:NA, na.rm=TRUE) == Inf  ; max(NA:NA, na.rm=TRUE) == -Inf
     inf.index <- which(is.infinite(tmp))
     if ( length(inf.index) > 0 ) tmp[inf.index] <- NA      
+    message("7:")
+    print(str(tmp))
 
     return(tmp)
 
