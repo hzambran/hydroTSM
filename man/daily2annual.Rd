@@ -35,17 +35,17 @@ subdaily2annual(x, ...)
 monthly2annual(x, ...)
 
 \method{daily2annual}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, 
-        out.fmt=out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, ...)
+        out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, ...)
 
 \method{daily2annual}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, 
         out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, ...) 
 
 \method{daily2annual}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0, 
-        out.fmt=out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, dates=1, 
+        out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", verbose = TRUE, ...)
 
 \method{daily2annual}{matrix}(x, FUN, na.rm = TRUE, na.rm.max=0, 
-        out.fmt=out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, 
+        out.fmt=c("\%Y", "\%Y-\%m-\%d"), start.month=1, 
         dates=1, date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", 
         verbose = TRUE,  ...)
 }
