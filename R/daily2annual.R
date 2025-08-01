@@ -122,7 +122,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
     stop("Invalid argument: 'start.month' must be an integer in [1, 12] !")
 	   
   # Getting the time index for each element in 'x'
-  ltimes  <- time(x)
+  ltimes <- time(x)
 
   # Getting the year corresponding to each element in 'x'
   years  <- format( ltimes, "%Y")
@@ -132,8 +132,11 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   if ( start.month != 1 )
     years <- shiftyears(ltime=ltimes, lstart.month=start.month)
 
+  na.index    <- is.na(x)
+  x.nonNA     <- x[!na.index]
+  years.nonNA <- years[!na.index]
   # Computing Annual time series
-  tmp <- aggregate(x, by=years, FUN, na.rm=na.rm, ...)
+  tmp <- aggregate(x.nonNA, by=years.nonNA, FUN, na.rm=na.rm, ...)
 
 
   # Removing annual values in the output object for months with 
@@ -141,7 +144,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   if ( na.rm ) {
 
     # Computing the percentage of missing values in each year
-    na.pctg <- cmv(x, tscale="annual", start.month=start.month)
+    na.pctg <- cmv(x.nonNA, tscale="annual", start.month=start.month)
 
     # identifying years with a percentage of missing values higher than 'na.rm.max'
     na.pctg.index <- which( na.pctg > na.rm.max)
@@ -164,15 +167,19 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   # getting the name of the function as character
   fn.name <- substitute(FUN)
 
+  na.index    <- is.na(x)
+  x.nonNA     <- x[!na.index]
+  years.nonNA <- years[!na.index]
+
   # date format for the output annual series:
   if ( (fn.name=="max") | (fn.name=="min")) {
     if (NCOL(tmp) == 1) {
-      ltimes <- get.dates(x, fun=FUN, years=years, fn.name=fn.name)
+      ltimes <- get.dates(x.nonNA, fun=FUN, years=years.nonNA, fn.name=fn.name)
       out    <- zoo::zoo(tmp, ltimes)
     } else { # NCOL(tmp) > 1
         out   <- vector("list", NCOL(tmp))
         for (i in 1:NCOL(tmp)) {
-          ltimes   <-  get.dates(x, fun=FUN, years=years, fn.name=fn.name)
+          ltimes   <-  get.dates(x.nonNA, fun=FUN, years=years.nonNA, fn.name=fn.name)
           out[[i]] <-  zoo(tmp[,i], ltimes)
         } # FOR end
       } # ELSE end
