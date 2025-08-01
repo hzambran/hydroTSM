@@ -85,7 +85,7 @@ subdaily2daily.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00
 #          27-May-2021                                                         #
 #          11-Oct-2022                                                         #
 #          30-Jul-2023 ; 31-Jul-2023 ; 03-Aug-2023                             #
-#          05-Feb-2025 ; 25-Jul-2025 ; 26-Jul-2025                             #
+#          05-Feb-2025 ; 25-Jul-2025 ; 26-Jul-2025 ; 31-Jul-2025               #
 ################################################################################
 subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00", 
                                start.fmt= "%H:%M:%S", tz, ...) {
@@ -106,8 +106,8 @@ subdaily2daily.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
     if ( (na.rm.max < 0) | (na.rm.max > 1) )
       stop("Invalid argument: 'na.rm.max' must be in [0, 1] !") 
 
-    if ( !zoo::is.regular(x, strict=TRUE) )
-      warning("'x' is not a strictly regular '", sfreq(x), "' time series !. (see the 'izoo2rzoo' function)")
+    if ( !zoo::is.regular(x, strict=FALSE) )
+      warning("'x' is not a regular '", sfreq(x), "' time series !. (see the 'izoo2rzoo' function)")
 
     # Automatic detection of 'tz'
     #if (missing(tz)) tz <- ""
