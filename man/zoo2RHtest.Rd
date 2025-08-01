@@ -13,7 +13,7 @@
 Zoo -> RHTest 
 }
 \description{
-It creates the input file to the \var{'RHtest_dlyPrcp.r'} script,  used for testing the homogeneity of climatological time series (available at: \url{http://etccdi.pacificclimate.org/software.shtml})
+It creates the input file to the \var{'RHtest_dlyPrcp.r'} script,  used for testing the homogeneity of climatological time series (available at: \url{https://etccdi.pacificclimate.org/software.shtml})
 }
 \usage{
 zoo2RHtest(x, fname="pcp.txt", tstep.out="daily", dec=".", na="-999.0")
@@ -44,8 +44,8 @@ character to be used for representing the missing values in the data
 %%}
 \references{
 %\url{http://ccma.seos.uvic.ca} % not available anynmore, reported by Gang Dong on March 12th, 2013
-\url{http://etccdi.pacificclimate.org/software.shtml}
-\url{http://etccdi.pacificclimate.org/RHtest/RHtestsV4_UserManual_10Dec2014.pdf}
+\url{https://etccdi.pacificclimate.org/software.shtml}
+\url{https://etccdi.pacificclimate.org/RHtest/RHtestsV4_UserManual_10Dec2014.pdf}
 %\url{http://css.escwa.org.lb/sdpd/1802/d2-1.pdf} % not available anynmore, rdetected on March 10th, 2020
 
 % \url{http://www.cmc.org.ve/mediawiki/index.php?title=Preparando_los_datos}
