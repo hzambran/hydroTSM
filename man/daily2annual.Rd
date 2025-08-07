@@ -158,7 +158,7 @@ data(SanMartinoPPts)
 x <- SanMartinoPPts
 
 # Subsetting 'x' to its first three months (Jan/1921 - Mar/1921)
-x <- window(x, end="1921-03-31")
+x <- window(x, end="1921-12-31")
 
 ## Transforming into NA the 10% of values in 'x'
 set.seed(10) # for reproducible results
@@ -181,8 +181,8 @@ daily2annual(x, FUN=max)
 
 
 ######################
-## Ex4: Monthly to Annual (same result as )
-m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
+## Ex4: Monthly to Annual, allowing a maximum of 20% of missing values in each month 
+m <- daily2monthly(x, FUN=sum, na.rm=TRUE, na.rm.max=0.2)
 monthly2annual(m, FUN=sum, na.rm=TRUE)
 
 

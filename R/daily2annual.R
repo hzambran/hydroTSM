@@ -203,7 +203,7 @@ daily2annual.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
 #          29-May-2013                                                         #      
 #          22-Aug-2022                                                         #
 #          20-Jun-2023 ; 30-Jul-2023                                           #
-#          02-May-2025 (EGU 2025)                                              #
+#          02-May-2025 (EGU 2025) ; 07-Aug-205                                 #
 ################################################################################
 # 'dates'   : "numeric", "factor", "Date" indicating how to obtain the
 #             dates for correponding to the 'sname' station
@@ -235,6 +235,9 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   # Checking that the user provied a valid argument for 'out.type'
   if (is.na(match( out.type, c("data.frame", "db") ) ) )
       stop("Invalid argument: 'out.type' must be in c('data.frame', 'db'")
+  
+  # Checking 'out.fmt'
+  out.fmt <- match.arg(out.fmt)
 
   # Checking that the user provide a valid value for 'FUN'
   if (missing(FUN))
@@ -266,13 +269,13 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   x <- zoo(x, dates)
   
   ##############################################################################
-  if (out.type == "data.frame") {
+  #if (out.type == "data.frame") {
   
-    z <- daily2annual.zoo(x=x, FUN=FUN, ..., na.rm=na.rm, 
-                          na.rm.max=na.rm.max, out.fmt=out.fmt, 
-                          start.month=start.month)
+  #  z <- daily2annual.zoo(x=x, FUN=FUN, ..., na.rm=na.rm, 
+  #                        na.rm.max=na.rm.max, out.fmt=out.fmt, 
+  #                        start.month=start.month)
     
-  } else if (out.type == "db") { 
+  #} else if (out.type == "db") { 
 
        if (verbose) message("[Starting computations...]")
        
@@ -334,7 +337,7 @@ daily2annual.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
 
       } # FOR end
 
-    } # ELSE end
+  #   } # ELSE end
 
   return( z )
 
