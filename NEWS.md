@@ -33,11 +33,17 @@ NEWS/ChangeLog for hydroTSM
                                     corresponding annual value will be ‘NA’.
         o 'daily2weekly'      :  -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
         o 'subdaily2weekly'   :  -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
-        o 'hydroplot'         :  -) now correctly works with monthly objects when 'pfreq=o'
+        o 'hydroplot'         :  -) now it correctly works with monthly objects when 'pfreq=o'
+                                 -) now it correctly works with subdaily objects when 'pfreq=o' 
+                                 -) default value for 'from' argument was changed from NULL to 'start(x)'.
+                                 -) default value for 'to' argument was changed from NULL to 'end(x)'.
+                                 -) new argument 'tz', to make it more flexible with sub-daily zoo objects
 
 ## Package files
         o Now hydroTSM imports the 'timechange' package, in order to allow the correct handling of time zones in the 'izoo2rzoo' function.
-        o "new internal function '.shiftyears' to allow the computation of annual values starting in a month different from january.
+        o "new internal function 'shiftyears' to allow the computation of annual values starting in a month different from january.
+        o "new internal function 'check_from_and_to_and_subset' to allow subsetting a zoo object, with verification of the starting and ending definition of the 
+          user-defined subseting window.
 
 
 
