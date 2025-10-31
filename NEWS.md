@@ -18,6 +18,7 @@ NEWS/ChangeLog for hydroTSM
 
 ## Bug fixes
         o 'izoo2rzoo'         :  -) argument 'tz' is now able to correctly handle sub-daily zoo objects, with or without specification of a value by the user.
+                                 -) new argument 'na.action' to allow replacing existing NA values with linear or spline interpolation or to keep them.
         o 'subhourly2hourly'  :  -) new argument 'tz' to correctly handle sub-daily zoo objects, with or without specification of a value by the user.
                                  -) 'na.rm.max' is now correctly verified to be in [0, 1]
                                  -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
