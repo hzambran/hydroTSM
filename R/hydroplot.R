@@ -2,7 +2,7 @@
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 http://www.rforge.net/hydroTSM/ ; 
 #                                 https://cran.r-project.org/package=hydroTSM
-# Copyright 2008-2020 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2025 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 hydroplot <-function(x, ...) UseMethod("hydroplot")
@@ -592,6 +592,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 #          04-Jun-2012                                                         #
 #          04-Apr-2013 ; 29-May-2013                                           #
 #          07-Nov-2020                                                         #
+#          31-Oct-2025                                                         #
 ################################################################################
 hydroplot.default <- function(x, 
                               FUN, na.rm=TRUE,
@@ -610,9 +611,9 @@ hydroplot.default <- function(x,
                               cex.lab=1.3,
                               cex.axis=1.3,
                               col=c("blue", "lightblue", "lightblue"),
-                              from=NULL, 
-                              to=NULL,
-                              dates=1, date.fmt = "%Y-%m-%d",
+                              from=start(x), 
+                              to=end(x),
+                              dates=1, date.fmt = "%Y-%m-%d", tz=NULL, 
                               stype="default",
                               season.names=c("Winter", "Spring", "Summer", "Autumn"),
                               h=NULL, ...) {
@@ -639,6 +640,7 @@ hydroplot.default <- function(x,
 #          04-Apr-2013 ; 29-May-2013                                           #
 #          07-Nov-2020                                                         #
 #          04-Sep-2024                                                         #
+#          31-Oct-2025                                                         #
 ################################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -667,9 +669,9 @@ hydroplot.zoo <- function(x,
                           cex.lab=1.3,
                           cex.axis=1.3,
                           col=c("blue", "lightblue", "lightblue"),
-                          from=NULL, 
-                          to=NULL,
-                          dates=1, date.fmt = "%Y-%m-%d",
+                          from=start(x), 
+                          to=end(x),
+                          dates=1, date.fmt = "%Y-%m-%d", tz=NULL, 
                           stype="default",
                           season.names=c("Winter", "Spring", "Summer", "Autumn"),
                           h=NULL, ...) {
@@ -732,21 +734,8 @@ hydroplot.zoo <- function(x,
      dates  <- time(x)
      ndates <- length(dates)
      
-     # Checking the validity of the 'from' argument
-     if (!is.null(from)) { 
-        from <- as.Date(from, format=date.fmt)
-        if ( !(from %in% dates) ) {
-           stop("Invalid argument: 'from' is not in 'dates' ")
-        } else x <- window(x, start=from)
-     } # IF end
-
-     # Checking the validity of the 'to' argument
-     if (!is.null(to)) { 
-        to <- as.Date(to, format=date.fmt)
-        if ( !(from %in% dates) ) {
-           stop("Invalid argument: 'to' is not in 'dates' ")
-        } else x <- window(x, end=to)
-     } # IF end
+     # Checking the validity of the 'from' and 'to' arguments and 
+     x <- check_from_and_to_and_subset(x, from=from, to=to, date.fmt=date.fmt, tz)
 
 
      #################
@@ -920,6 +909,7 @@ hydroplot.zoo <- function(x,
 #          04-Apr-2013 ; 29-May-2013                                           #
 #          07-Nov-2020                                                         #
 #          23-Aug-2022                                                         #
+#          31-Oct-2025                                                         #
 ################################################################################
 hydroplot.data.frame <- function(x, 
                                  FUN, na.rm=TRUE,
@@ -938,9 +928,9 @@ hydroplot.data.frame <- function(x,
                                  cex.lab=1.3,
                                  cex.axis=1.3,
                                  col=c("blue", "lightblue", "lightblue"),
-                                 from=NULL, 
-                                 to=NULL,
-                                 dates=1, date.fmt = "%Y-%m-%d",
+                                 from=start(x), 
+                                 to=end(x),
+                                 dates=1, date.fmt = "%Y-%m-%d", tz=NULL, 
                                  stype="default",
                                  season.names=c("Winter", "Spring", "Summer", "Autumn"),
                                  h=NULL, ...) {

@@ -2,7 +2,7 @@
 % Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 %                                 http://www.rforge.net/hydroTSM/ ; 
 %                                 https://cran.r-project.org/package=hydroTSM
-% Copyright 2008-2020 Mauricio Zambrano-Bigiarini
+% Copyright 2008-2025 Mauricio Zambrano-Bigiarini
 % Distributed under GPL 2 or later
 
 \name{hydroplot}
@@ -33,7 +33,7 @@ sname2plot(x, ...)
           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
           col=c("blue", "lightblue", "lightblue"), 
-          from=NULL, to=NULL, dates=1, date.fmt= "\%Y-\%m-\%d", 
+          from=start(x), to=end(x), dates=1, date.fmt= "\%Y-\%m-\%d", tz=NULL,
           stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
           h=NULL, ...)
 
@@ -42,7 +42,7 @@ sname2plot(x, ...)
           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
           col=c("blue", "lightblue", "lightblue"), 
-          from=NULL, to=NULL, dates=1, date.fmt= "\%Y-\%m-\%d", 
+          from=start(x), to=end(x), dates=1, date.fmt= "\%Y-\%m-\%d", tz=NULL, 
           stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
           h=NULL, ...)
 
@@ -51,7 +51,7 @@ sname2plot(x, ...)
           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
           col=c("blue", "lightblue", "lightblue"), 
-          from=NULL, to=NULL, dates=1, date.fmt= "\%Y-\%m-\%d", 
+          from=start(x), to=end(x), dates=1, date.fmt= "\%Y-\%m-\%d", tz=NULL, 
           stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
           h=NULL, ...)
 
@@ -182,6 +182,17 @@ If \code{dates} is already of Date class, the code verifies that the number of d
   \item{date.fmt}{
 Character indicating the format in which the dates are stored in \var{dates}, \var{from} and \var{to}. See \code{format} in \code{\link[base]{as.Date}}. \cr
 ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
+}
+  \item{tz}{
+character, with the specification of the time zone used for \code{x}, \code{from}, and \code{to}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
+
+If \code{tz} is NULL (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
+
+If \code{tz} is provided, it forces \code{time(x)} to be in the tome zone specified by \code{tz}, without modifying the the values (hours, minutes, seconds, etc). \cr
+
+A list of valid time zones can be obtained by calling the base function \code{OlsonNames()}. \cr
+
+This argument can be used when working with sub-daily zoo objects to force using  time zones other than the local time zone for \code{from} and \code{to}. It should be used with caution, being well aware of the time zone of the data. See examples.
 }
   \item{from}{
 OPTIONAL, used for extracting a subset of values. \cr
