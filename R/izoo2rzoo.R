@@ -113,9 +113,11 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
     missingTZ <- TRUE
     tz        <- attr(tx, "tzone")
   } else {
-      # For the Date/Time of 'x' to be in the time zone specified by 'tz'
-      tx.new  <- timechange::time_force_tz(tx, tz=tz)
-      time(x) <- tx.new
+      if ( subdaily.ts ) {
+        # For the Date/Time of 'x' to be in the time zone specified by 'tz'
+        tx.new  <- timechange::time_force_tz(tx, tz=tz)
+        time(x) <- tx.new
+      } # IF end
     } # ELSE end
       
   ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
@@ -131,6 +133,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
 
   # If 'from' was given as Date, but 'x' is sub-daily
   if (!missing(from)) {
+
     if (from > to) stop("Invalid argument: 'from > to' !")
 
     if (from > end(x)) stop("Invalid argument: 'from > end(x)' !")
@@ -174,7 +177,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
     #dt <-  try(as.POSIXct(from, format=date.fmt))
   } else dt <- try(as.Date(from, format=date.fmt))
 
-  if("try-error" %in% class(dt) || is.na(dt)) {
+  if ("try-error" %in% class(dt) || is.na(dt)) {
     stop("Invalid argument: format of 'from' is not compatible with 'date.fmt' !")
   } else if (subdaily.ts) {
       from <- as.POSIXct(from, format=date.fmt, tz=tz)
@@ -185,7 +188,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
     dt <-  try(as.POSIXct(to, format=date.fmt, tz=tz))
   } else dt <- try(as.Date(to, format=date.fmt))
 
-  if("try-error" %in% class(dt) || is.na(dt)) {
+  if ("try-error" %in% class(dt) || is.na(dt)) {
     stop("Invalid argument: format of 'to' is not compatible with 'date.fmt' !")
   } else if (subdaily.ts) {
       to <- as.POSIXct(to, format=date.fmt, tz=tz)
@@ -199,9 +202,8 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   # If the user wants to fill in NA values
   if (na.action == "linear") {
     x.reg <- zoo::na.approx(x.reg, na.rm=FALSE)
-  } else if (na.action == "spline") {
+  } else if (na.action == "spline") 
       x.reg <- zoo::na.spline(x.reg, na.rm=FALSE)
-    } # ELSE end
 
   # Selecting only those data within the time period between 'from' and 'to'
   x.sel <- window(x.reg, start=from, end=to)

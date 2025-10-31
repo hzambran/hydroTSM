@@ -11,7 +11,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 12-Oct-2023                                                         #
-# Updates:                                                                     #
+# Updates: 31-Oct-2025                                                         #
 ################################################################################
 # 'x   '    : variable of type 'zoo' or 'data.frame', with daily or monthly frequency
 # 'FUN'      : Function that will be applied to ALL the values in 'x' belonging to each one of the 12 months of the year
@@ -26,7 +26,8 @@ weeklyfunction.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00
     # Checking that 'x' is a zoo object
     if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !!")
 
-    weeklyfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, ...)
+    weeklyfunction.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, 
+                       start.fmt=start.fmt, tz=tz, ...)
 
 } # 'weeklyfunction.default' end
 
@@ -82,10 +83,14 @@ weeklyfunction.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, start="00:00:00"
     # The following lines of code makes sure that the missing elements in a day are actually 
     # considered as missing
 
-    st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
-    et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
+    if (sfreq(x) %in% c("min", "hourly") ) {
+      st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
+      et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
+    } else {
+        st <- start(x)
+        et <- end(x)
+      } # ELSE end
     x  <- izoo2rzoo(x, from=st, to=et, tz=tz)
-
 
     # Computing the Weekly time series 
     totals <- aggregate(x, by= function(tt) format(tt, "%W"), FUN=FUN, na.rm= na.rm, ...)
