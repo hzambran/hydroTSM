@@ -1,7 +1,7 @@
 # File shiftyears.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2023-2025 Mauricio Zambrano-Bigiarini
+# Copyright 2025-2025 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
