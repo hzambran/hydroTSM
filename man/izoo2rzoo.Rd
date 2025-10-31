@@ -20,10 +20,12 @@ It takes an irregular zoo object (with non-existing values for some dates/times)
 izoo2rzoo(x, ...)
 
 \method{izoo2rzoo}{default}(x, from= start(x), to= end(x), 
-                   date.fmt, tstep, tz, ...)
+                   date.fmt, tstep, tz, 
+                   na.action=c("keep", "linear", "spline"), ... )
      
 \method{izoo2rzoo}{zoo}(x, from= start(x), to= end(x), 
-                   date.fmt, tstep, tz, ...)
+                   date.fmt, tstep, tz, 
+                   na.action=c("keep", "linear", "spline"), ... )
 
 }
 %- maybe also 'usage' for other objects documented here.
