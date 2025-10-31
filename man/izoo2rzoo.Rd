@@ -59,6 +59,9 @@ A list of valid time zones can be obtained by calling the base function \code{Ol
 
 This argument can be used when working with sub-daily zoo objects to force using  time zones other than the local time zone for \code{from} and \code{to}. It should be used with caution, being well aware of the time zone of the data. See examples.
 }
+  \item{na.action}{
+character indicating whether to keep 'NA' values in \code{x} (default) or interpolate them with linear or spline interpolation using the \code{\link[zoo]{na.approx}} or the \code{\link[zoo]{na.spline}} function of the zoo package.
+}
   \item{\dots}{
 further arguments passed to or from other methods
 }

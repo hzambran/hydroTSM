@@ -1,7 +1,7 @@
 # File izoo2rzoo.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2009-2023 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2025 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################ 
@@ -25,6 +25,7 @@
 #             System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} (the default value) is UTC (Universal Time, Coordinated). 
 #             See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
 #             This argument can be used when working with subdaily zoo objects to force using UTC instead of the local time zone
+# na.action: character, indicating whether to keep 'NA' values (default) or interpolate them with linear or spline interpolation
 
 izoo2rzoo <-function(x, ...) UseMethod("izoo2rzoo")
 
@@ -38,13 +39,15 @@ izoo2rzoo <-function(x, ...) UseMethod("izoo2rzoo")
 #          03-Aug-2023                                                         #
 ################################################################################ 
 izoo2rzoo.default <- function(x, from= start(x), to= end(x), 
-                              date.fmt, tstep, tz, ...) {
+                              date.fmt, tstep, tz, 
+                              na.action=c("keep", "linear", "spline"), ... ) {
 
   # Checking that the user provied a valid class for 'x'    
   if ( !is.zoo(x) )  
      stop("Invalid argument: 'class(x)' must be 'zoo' !")
 
-  izoo2rzoo.zoo(x=x, from=from, to=to, date.fmt=date.fmt, tstep=tstep, tz=tz, ...)
+  izoo2rzoo.zoo(x=x, from=from, to=to, date.fmt=date.fmt, tstep=tstep, tz=tz, 
+                na.action=na.action, ... )
 
 } # 'izoo2rzoo.default' END
 
@@ -62,12 +65,17 @@ izoo2rzoo.default <- function(x, from= start(x), to= end(x),
 #          25-May-2023 ; 03-Aug-2023 ; 04-Nov-2023 ; 16-Nov-2023 ; 17-Nov-2023 #
 #          25-Nov-2023                                                         #
 #          28-Apr-2024                                                         #
+#          29-Oct-2025                                                         #
 ################################################################################ 
 
 izoo2rzoo.zoo <- function(x, from= start(x), to= end(x), 
-                          date.fmt, tstep, tz, ... ) {
+                          date.fmt, tstep, tz, 
+                          na.action=c("keep", "linear", "spline"), ... ) {
 
   if (!is.zoo(x)) stop("Invalid argument: 'x' must be of class 'zoo' !")
+
+  # Checking 'na.action' argument
+  na.action <- match.arg(na.action)
 
   # sampling frequency of 'x'           
   x.freq <- sfreq(x)
@@ -83,13 +91,13 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   # Defining the 'tstep' value
   if ( missing(tstep) )
     switch(x.freq,
-           minute = {tstep <- "min"},
-           hourly = {tstep <- "hours"},
-           daily = {tstep <- "days"},
-           weeekly = {tstep <- "weeks"},
-           monthky = {tstep <- "months"},
-           quarterly = {tstep <- "quarters"},
-           annual = {tstep <- "years"}
+           minute = {tstep <- "1 min"},
+           hourly = {tstep <- "1 hour"},
+           daily = {tstep <- "1 day"},
+           weeekly = {tstep <- "1 week"},
+           monthky = {tstep <- "1 month"},
+           quarterly = {tstep <- "1 quarter"},
+           annual = {tstep <- "1 year"}
            )
 
   # Automatic detection of 'date.fmt'
@@ -165,6 +173,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
     dt <-  try(as.POSIXct(from, format=date.fmt, tz=tz))
     #dt <-  try(as.POSIXct(from, format=date.fmt))
   } else dt <- try(as.Date(from, format=date.fmt))
+
   if("try-error" %in% class(dt) || is.na(dt)) {
     stop("Invalid argument: format of 'from' is not compatible with 'date.fmt' !")
   } else if (subdaily.ts) {
@@ -175,6 +184,7 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
   if (subdaily.ts) {
     dt <-  try(as.POSIXct(to, format=date.fmt, tz=tz))
   } else dt <- try(as.Date(to, format=date.fmt))
+
   if("try-error" %in% class(dt) || is.na(dt)) {
     stop("Invalid argument: format of 'to' is not compatible with 'date.fmt' !")
   } else if (subdaily.ts) {
@@ -182,23 +192,31 @@ izoo2rzoo.zoo <- function(x, from= start(x), to= end(x),
     } else to <- as.Date(to, format=date.fmt)
 
   # Creating a regular time series with NA's in all dates in [from, to]
-  dates  <- seq(from=from, to=to, by= tstep)
-  na.zoo <- zoo(rep(NA, length(dates)), dates)
+  dates.reg <- seq(from=from, to=to, by= tstep)
+  #na.zoo    <- zoo(rep(NA, length(dates.reg)), dates.reg)
+  x.reg     <- merge(x, zoo(, dates.reg))
+
+  # If the user wants to fill in NA values
+  if (na.action == "linear") {
+    x.reg <- zoo::na.approx(x.reg, na.rm=FALSE)
+  } else if (na.action == "spline") {
+      x.reg <- zoo::na.spline(x.reg, na.rm=FALSE)
+    } # ELSE end
 
   # Selecting only those data within the time period between 'from' and 'to'
-  x.sel <- window(x, start=from, end=to)
+  x.sel <- window(x.reg, start=from, end=to)
 
-  # Creating a regular time series with NA's in dates in which 'x' has no data
-  x.merged <- merge(na.zoo, x.sel)
+  ## Creating a regular time series with NA's in dates.reg in which 'x' has no data
+  #x.merged <- merge(na.zoo, x.sel)
   
-  # Removing the fictitious column corresponding to 'na.zoo'
-  x.merged <- x.merged[,-1]
+  ## Removing the fictitious column corresponding to 'na.zoo'
+  #x.merged <- x.merged[,-1]
   
   # Giving the same column names than the original 'x'
   if ( is.matrix(x) | is.data.frame(x) )
-    colnames(x.merged) <- colnames(x)
+    colnames(x.sel) <- colnames(x)
 
   # Returning only the column containing the Regular ts with NA's in the empty records
-  return( x.merged )
+  return( x.sel )
 
 } # 'izoo2rzoo.zoo' end
