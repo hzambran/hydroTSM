@@ -1,7 +1,7 @@
 # File subdaily2monthly.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2013-2023 Mauricio Zambrano-Bigiarini
+# Copyright 2013-2025 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -25,16 +25,17 @@ subdaily2monthly <-function(x, ...) UseMethod("subdaily2monthly")
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Apr-2013                                                         #
-# Updates: 25-May-2033                                                         # 
+# Updates: 25-May-2033                                                         #  
+#          31-Oct-2025                                                         #
 ################################################################################
 subdaily2monthly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                     start.fmt= "%H:%M:%S", tz, ...) {
+                                     start.fmt= "%H:%M:%S", tz=NULL, ...) {
 
   # Checking that 'x' is a zoo object
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !")
 
   # if (missing(tz)) tz <- ""
-    if (missing(tz)) tz <- format(time(x), "%Z")[1]
+  if (is.null(tz)) tz <- attr(time(x), "tzone")
 
   subdaily2monthly.zoo(x=x, FUN=FUN, na.rm=na.rm, start=start, start.fmt=start.fmt, tz=tz, ...)
 
@@ -45,10 +46,11 @@ subdaily2monthly.default <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Apr-2013                                                         #
-# Updates: 25-May-2023                                                         # 
+# Updates: 25-May-2023                                                         #  
+#          31-Oct-2025                                                         #
 ################################################################################
 subdaily2monthly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                 start.fmt= "%H:%M:%S", tz, ...) {
+                                 start.fmt= "%H:%M:%S", tz=NULL, ...) {
 
   # testing the existence of 'na.rm' argument
   #args <- list(...)
@@ -80,7 +82,7 @@ subdaily2monthly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 
     # Automatic detection of 'tz'
     #if (missing(tz)) tz <- ""
-    if (missing(tz)) tz <- format(time(x), "%Z")[1]
+    if (is.null(tz)) tz <- attr(time(x), "tzone")
 
     # Analysis of days different from 00:00 to 23:59 hrs
     if ( start != "00:00:00" ) {
@@ -112,9 +114,13 @@ subdaily2monthly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
     # what happens with all the values from 00:00:00 to 07:59:59 hrs?
     # The following lines of code makes sure that the missing elements in a day are actually 
     # considered as missing
-
-    st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
-    et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
+    if (sfreq(x) %in% c("min", "hourly") ) {
+      st <- paste(format(start(x), "%Y-%m-%d"), "00:00:00", tz)
+      et <- paste(format(end(x), "%Y-%m-%d"), "23:59:59", tz)
+    } else {
+        st <- start(x)
+        et <- end(x)
+      } # ELSE end
     x  <- izoo2rzoo(x, from=st, to=et, tz=tz)
 
 
@@ -145,9 +151,10 @@ subdaily2monthly.zoo <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 ################################################################################
 # Started: 09-Apr-2013                                                         #
 # Updates: 25-May-2023                                                         # 
+#          31-Oct-2025                                                         #
 ################################################################################
 subdaily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                        start.fmt= "%H:%M:%S", tz, 
+                                        start.fmt= "%H:%M:%S", tz=NULL, 
                                         dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                                out.fmt="zoo",
 				                                verbose=TRUE,...) {
@@ -169,7 +176,7 @@ subdaily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
          stop("Invalid argument: 'class(dates)' must be in c('numeric', 'factor', 'POSIXct', 'POSIXt') !")
 
   # Automatic detection of 'tz'
-  if (missing(tz)) tz <- ""
+  if (is.null(tz)) tz <- attr(time(x), "tzone")
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
@@ -215,9 +222,10 @@ subdaily2monthly.data.frame <- function(x, FUN, na.rm=TRUE, start="00:00:00",
 ################################################################################
 # Started: 09-Apr-2013                                                         #
 # Updates: 25-May-2023                                                         # 
+#          31-10-2025                                                          #
 ################################################################################
 subdaily2monthly.matrix <- function(x, FUN, na.rm=TRUE, start="00:00:00", 
-                                    start.fmt= "%H:%M:%S", tz, 
+                                    start.fmt= "%H:%M:%S", tz=NULL, 
                                     dates=1, date.fmt="%Y-%m-%d %H:%M:%S",
 				                            out.fmt="zoo",
 				                            verbose=TRUE,...) {
@@ -239,7 +247,7 @@ subdaily2monthly.matrix <- function(x, FUN, na.rm=TRUE, start="00:00:00",
          stop("Invalid argument: 'class(dates)' must be in c('numeric', 'factor', 'POSIXct', 'POSIXt') !")
 
   # Automatic detection of 'tz'
-  if (missing(tz)) tz <- ""
+  if (is.null(tz)) tz <- attr(time(x), "tzone")
 
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2monthly.default' instead of 'daily2monthly.data.frame'....
