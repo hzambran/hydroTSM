@@ -15,6 +15,7 @@
 \alias{.drty.dcs2zoo}
 \alias{.interpol1}
 \alias{shiftyears}
+\alias{check_from_and_to_and_subset}
 \description{Internal hydroTSM objects.}
 \details{These are not to be called by the user.}
 \keyword{internal}
