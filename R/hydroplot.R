@@ -133,6 +133,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 
       # Plotting only the original zoo or xts object, without moving averages and legends
       if ( pfreq == "o") {
+
           # Plotting the Daily Time Series
           zoo::plot.zoo(x, xaxt = "n", yaxt = "n", type="o", 
                    main=main, xlab=xlab, ylab=ylab, 
@@ -735,6 +736,8 @@ hydroplot.zoo <- function(x,
      ndates <- length(dates)
      
      # Checking the validity of the 'from' and 'to' arguments and 
+     if ( sfreq(x) %in% c("minute", "hourly") )
+       date.fmt <- "%Y-%m-%d %H:%M:%S"
      x <- check_from_and_to_and_subset(x, from=from, to=to, date.fmt=date.fmt, tz)
 
 
@@ -803,19 +806,19 @@ hydroplot.zoo <- function(x,
        if ( sfreq(x) == "daily" ) {
          x.monthly <- daily2monthly(x, FUN=FUN, na.rm=na.rm)
        } else if ( sfreq(x) == "monthly" ) {
-          x.monthly <- x
-          } else x.monthly <- NA
+           x.monthly <- x
+         } else x.monthly <- NA
 
        # Computing the annual time series
        if ( !is.na( match( sfreq(x), c("daily", "monthly") ) ) ) {
          x.annual <- daily2annual(x, FUN=FUN, na.rm=na.rm, out.fmt="%Y-%m-%d")
        } else if ( sfreq(x) == "annual" ) {
-          x.annual <- x
-          } else x.annual <- NA
+           x.annual <- x
+         } else x.annual <- NA
 
      } else {
-       x.monthly <- NA
-       x.annual  <- NA
+         x.monthly <- NA
+         x.annual  <- NA
        } # ELSE end   
      
 
@@ -829,6 +832,23 @@ hydroplot.zoo <- function(x,
          } else if (pfreq %in% c("dm", "ma")) { 
             par(mfcol=c(2,1))
            } # ELSE end
+
+       # if 'x' and 'y' are subdaily ts, 'tick.tstep', 'lab.tstep' and 'lab.fmt' are adopted
+       if (sfreq(x) %in% c("minute", "hourly") ) {
+         nmonths <- hydroTSM::mip(from=start(x), to=end(x), out.type="nmbr")
+
+         if (nmonths <= 40) { # 40 months or less
+           if (tick.tstep=="auto") tick.tstep <- "days"
+           if (lab.tstep=="auto") lab.tstep <- "months"
+           if ( is.null(lab.fmt) ) lab.fmt <- "%Y-%b"
+         } else {
+             if (tick.tstep=="auto") tick.tstep <- "months"
+             if (lab.tstep=="auto") lab.tstep <- "years"
+             if ( is.null(lab.fmt) ) lab.fmt <- "%Y"
+           } # ELSE end     
+
+       } # IF end
+
        # Drawing the daily, monthly and annual time series of the variable against time
        .hydroplotts(x=x, x.monthly=x.monthly, x.annual=x.annual, pfreq=pfreq,
                     win.len1=win.len1, win.len2=win.len2, var.type=var.type, 
