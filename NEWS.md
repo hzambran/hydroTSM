@@ -35,6 +35,7 @@ NEWS/ChangeLog for hydroTSM
         o 'subdaily2weekly'   :  -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
         o 'hydroplot'         :  -) now it correctly works with monthly objects when 'pfreq=o'
                                  -) now it correctly works with subdaily objects when 'pfreq=o' 
+                                 -) improved visualization of time axis for subdaily objects when 'pfreq=o' 
                                  -) default value for 'from' argument was changed from NULL to 'start(x)'.
                                  -) default value for 'to' argument was changed from NULL to 'end(x)'.
                                  -) new argument 'tz', to make it more flexible with sub-daily zoo objects
