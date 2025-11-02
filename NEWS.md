@@ -5,6 +5,8 @@ NEWS/ChangeLog for hydroTSM
 
 ## New functions
         o 'isComplete'        : for testing for identifying whether a zoo object has a regular time frequency without missing values from the first one to the last one
+        o 'shiftyears'        : to allow the computation of annual values starting in a month different from january. Mostly for internal purposes only.
+
 
 ## New features   
         o 'baseflow'          :  -) it can apply the filter more than three times (see new 'n.pass' argument), which should be mandatory for hourly time series 
@@ -42,7 +44,6 @@ NEWS/ChangeLog for hydroTSM
 
 ## Package files
         o Now hydroTSM imports the 'timechange' package, in order to allow the correct handling of time zones in the 'izoo2rzoo' function.
-        o "new internal function 'shiftyears' to allow the computation of annual values starting in a month different from january.
         o "new internal function 'check_from_and_to_and_subset' to allow subsetting a zoo object, with verification of the starting and ending definition of the 
           user-defined subseting window.
 
