@@ -5,8 +5,8 @@
 # Distributed under GPL 2 or later
 
 ################################################################################
-# .shiftyears: Shifting years backwards for correct computation of annual      # 
-#              values when the hydrological year does not start in 1           #
+# shiftyears: Shifting years backwards for correct computation of annual       # 
+#             values when the hydrological year does not start in january      #
 ################################################################################
 # This function shift backwards a vector of dates/times (Date/POSIXct/POSIXlt),#
 # by 'lstart.month' (number representing the starting month to be used in the  #
