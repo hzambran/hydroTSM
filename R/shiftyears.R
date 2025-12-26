@@ -21,10 +21,9 @@
 #         computations
 shiftyears <- function(ltime,       # vector with the date/times of each element 
                                     # of a zoo object
-                       lstart.month # numeric in [1,..,12], representing the 
-                                    # starting month to be used in the  
-                                    # computation of annual values.
-                                    # By default 1 (Jan)
+                       lstart.month # numeric in [2,..,12], 2:Feb, 12:Dec, 
+                                    # It represents the starting month to be 
+                                    # used in the computation of annual values.
                        ) {
   syears.bak        <- as.numeric(format( ltime, "%Y" ))
   syears            <- syears.bak
