@@ -5,7 +5,7 @@ vers <- paste("R package version", meta$Version)
 
 bibentry(bibtype = "Manual",
 	title = "{hydroTSM}: Time Series Management and Analysis for Hydrological Modelling",
-	author = person(given="Mauricio", family="Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X")),
+	author = person("Zambrano-Bigiarini, Mauricio", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X")),
 	year = "2025",
 	note = paste(vers, ". doi:10.32614/CRAN.paquete.hydroTSM"),
 	url = "https://CRAN.R-project.org/paquete=hydroTSM",
