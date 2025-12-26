@@ -7,15 +7,15 @@ bibentry(bibtype = "Manual",
 	title = "{hydroTSM}: Time Series Management and Analysis for Hydrological Modelling",
 	author = person("Zambrano-Bigiarini, Mauricio", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X")),
 	year = "2025",
-	note = paste(vers, ". doi:10.32614/CRAN.paquete.hydroTSM"),
-	url = "https://CRAN.R-project.org/paquete=hydroTSM",
-        doi = "10.32614/CRAN.paquete.hydroTSM",
+	note = paste(vers, ". doi:10.32614/CRAN.package.hydroTSM"),
+	url = "https://cran.r-project.org/package=hydroTSM",
+        doi = "10.32614/CRAN.package.hydroTSM",
 
 	textVersion = paste("Zambrano-Bigiarini, M. (2025) ",
         "hydroTSM: Time Series Management and Analysis for Hydrological Modelling",
         vers,
-        ". URL:https://CRAN.R-project.org/paquete=hydroTSM",
-        ". doi:10.32614/CRAN.paquete.hydroTSM",
+        ". URL:https://cran.r-project.org/package=hydroTSM",
+        ". doi:10.32614/CRAN.package.hydroTSM",
         ".", sep = ""))
 
 citFooter("I have invested an important amount of time and effort in creating hydroTSM, please cite it if you use it !")
