@@ -160,6 +160,9 @@ cmv(x, tscale="annual")
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
+# Subsetting to only the first two years (1981-1982)
+x <- window(x, end=as.POSIXct("1982-12-31 23:59:00", tz="UTC") )
+
 ## Transforming into NA the 30% of values in 'x'
 n           <- length(x)
 n.nas       <- round(0.1*n, 0)

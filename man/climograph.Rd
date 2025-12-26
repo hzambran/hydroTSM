@@ -215,6 +215,10 @@ If the output climograph present some mixed or not legible characters, you might
 ## Ex1: Loading the DAILY precipitation, maximum and minimum air temperature at 
 ##      station Maquehue Temuco Ad (Chile)
 data(MaquehueTemuco)
+
+# Subsetting to only the 1981-1990 temporal period
+MaquehueTemuco <- window(MaquehueTemuco, start="1981-01-01", end="1990-12-31") )
+
 pcp <- MaquehueTemuco[, 1]
 tmx <- MaquehueTemuco[, 2]
 tmn <- MaquehueTemuco[, 3]
