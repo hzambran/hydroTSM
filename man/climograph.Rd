@@ -48,7 +48,7 @@ variable of type 'zoo' with monthly, daily or subdaily mean temperature data.
 }
   \item{tmx}{
 variable of type 'zoo' with monthly, daily or subdaily maximum temperature data. \cr
-ONLY used (together with \code{tmn}) when \code{tmean}' is missing.
+ONLY used (together with \code{tmn}) when \code{tmean} is missing.
 }
   \item{tmn}{
 variable of type 'zoo' with monthly, daily or subdaily minimum temperature data. 
@@ -217,7 +217,7 @@ If the output climograph present some mixed or not legible characters, you might
 data(MaquehueTemuco)
 
 # Subsetting to only the 1981-1990 temporal period
-MaquehueTemuco <- window(MaquehueTemuco, start="1981-01-01", end="1990-12-31") )
+MaquehueTemuco <- window(MaquehueTemuco, start="1981-01-01", end="1990-12-31")
 
 pcp <- MaquehueTemuco[, 1]
 tmx <- MaquehueTemuco[, 2]
