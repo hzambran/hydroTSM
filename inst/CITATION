@@ -6,16 +6,16 @@ vers <- paste("R package version", meta$Version)
 bibentry(bibtype = "Manual",
 	title = "{hydroTSM}: Time Series Management and Analysis for Hydrological Modelling",
 	author = person("Mauricio Zambrano-Bigiarini", email = "mzb.devel@gmail.com", role=c("aut", "cre", "cph"), comment=c(ORCID = "0000-0002-9536-643X")),
-	year = "2024",
-	note = paste(vers, ". doi:10.5281/zenodo.839565"),
-	url = "https://cran.r-project.org/package=hydroTSM",
-    doi = "10.5281/zenodo.839565",
+	year = "2025",
+	note = paste(vers, ". doi:10.32614/CRAN.paquete.hydroTSM"),
+	url = "https://CRAN.R-project.org/paquete=hydroTSM",
+        doi = "10.32614/CRAN.paquete.hydroTSM",
 
-	textVersion = paste("Zambrano-Bigiarini, M. (2024) ",
+	textVersion = paste("Zambrano-Bigiarini, M. (2025) ",
         "hydroTSM: Time Series Management and Analysis for Hydrological Modelling",
         vers,
-        ". URL:https://cran.r-project.org/package=hydroTSM",
-        ". doi:10.5281/zenodo.839565",
+        ". URL:https://CRAN.R-project.org/paquete=hydroTSM",
+        ". doi:10.32614/CRAN.paquete.hydroTSM",
         ".", sep = ""))
 
 citFooter("I have invested an important amount of time and effort in creating hydroTSM, please cite it if you use it !")
