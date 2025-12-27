@@ -10,7 +10,7 @@ Depends: R (>= 3.5.0), zoo (>= 1.7-2)
 Imports: xts (>= 0.9-7), e1071, stats, utils, methods, graphics, grDevices, lattice, classInt, timechange
 Suggests: knitr, rmarkdown, gridExtra
 VignetteBuilder: knitr
-URL: https://github.com/hzambran/hydroTSM, https://cran.r-project.org/package=hydroTSM, https://hzambran.github.io/hydroTSM/
+URL: https://hzambran.github.io/hydroTSM/, https://github.com/hzambran/hydroTSM, https://CRAN.R-project.org/package=hydroTSM
 MailingList: https://stat.ethz.ch/mailman/listinfo/r-sig-ecology
 BugReports: https://github.com/hzambran/hydroTSM/issues
 LazyLoad: yes
