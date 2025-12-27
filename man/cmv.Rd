@@ -134,6 +134,9 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 data(SanMartinoPPts)
 x <- SanMartinoPPts
 
+# Subsetting to only the 1981-1990 temporal period
+x <- window(x, start="1981-01-01", end="1990-12-31")
+
 ## Transforming into NA the 10% of values in 'x'
 n           <- length(x)
 n.nas       <- round(0.1*n, 0)
