@@ -1,7 +1,7 @@
 NEWS/ChangeLog for hydroTSM
 
 --------------------------
-# Changes in version 0.7-5  Ongoing
+# Changes in version 0.8-0  Ongoing
 
 ## New functions
         o 'isComplete'        : for testing for identifying whether a zoo object has a regular time frequency without missing values from the first one to the last one
@@ -17,6 +17,7 @@ NEWS/ChangeLog for hydroTSM
                                     By default 1 (Jan)
         o 'cmv'               :  -) new argument 'start.month' to choose the starting month to be used in the computation of annual values.
                                     By default 1 (Jan)
+        o 'fdc'               :  -) new arguments: 'thr.pos' 
 
 ## Bug fixes
         o 'izoo2rzoo'         :  -) argument 'tz' is now able to correctly handle sub-daily zoo objects, with or without specification of a value by the user.

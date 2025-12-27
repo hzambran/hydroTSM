@@ -25,28 +25,32 @@ fdc(x, ...)
     main="Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
     ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), col="black", 
     pch=1, lwd=1, lty=1, cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL, leg.cex=1, 
-    leg.pos="topright", verbose= TRUE, thr.shw=TRUE, new=TRUE, ...)
+    leg.pos="topright", thr.pos="bottomleft", 
+    verbose= TRUE, thr.shw=TRUE, new=TRUE, ...)
 
 \method{fdc}{matrix}(x, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
     main= "Flow Duration Curve",  xlab="\% Time flow equalled or exceeded", 
     ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
     col=palette("default")[1:ncol(x)], pch=1:ncol(x), lwd=rep(1, ncol(x)), 
     lty=1:ncol(x), cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL, 
-    leg.cex=1, leg.pos="topright",verbose=TRUE, thr.shw=TRUE, new=TRUE, ...)
+    leg.cex=1, leg.pos="topright", thr.pos="bottomleft", 
+    verbose=TRUE, thr.shw=TRUE, new=TRUE, ...)
 
 \method{fdc}{data.frame}(x, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main= "Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
      ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
      col=palette("default")[1:ncol(x)], pch=1:ncol(x), lwd=rep(1, ncol(x)), 
      lty=1:ncol(x), cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL, 
-     leg.cex=1, leg.pos="topright", verbose=TRUE, thr.shw=TRUE, new=TRUE, ...)
+     leg.cex=1, leg.pos="topright", thr.pos="bottomleft", 
+     verbose=TRUE, thr.shw=TRUE, new=TRUE, ...)
      
 \method{fdc}{zoo}(x, lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y", 
      main= "Flow Duration Curve", xlab="\% Time flow equalled or exceeded", 
      ylab="Q, [m3/s]", ylim, yat=c(0.01, 0.1, 1), xat=c(0.01, 0.025, 0.05), 
      col=palette("default")[1:NCOL(x)], pch=1:NCOL(x), lwd=rep(1, NCOL(x)), 
      lty=1:NCOL(x), cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL, 
-     leg.cex=1, leg.pos="topright", verbose=TRUE, thr.shw=TRUE, new=TRUE, ...)
+     leg.cex=1, leg.pos="topright", thr.pos="bottomleft", 
+     verbose=TRUE, thr.shw=TRUE, new=TRUE, ...)
 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -117,6 +121,10 @@ numeric, indicating the character expansion factor for the legend, *relative* to
 }
   \item{leg.pos}{
 keyword to be used to position the legend. One of the list \sQuote{"bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"}. This places the legend on the inside of the plot frame at the given location. See \code{\link[graphics]{legend}}.
+}
+  \item{thr.pos}{
+keyword to be used to position the streamflow values corresponding to the user-defined thresholds \code{lQ.thr} and \code{hQ.thr}. It is only used when \code{thr.shw=TRUE}. \cr
+  One of the list \sQuote{"bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"}. This places the the streamflow values on the inside of the plot frame at the given location. See \code{\link[graphics]{legend}}.
 }
   \item{verbose}{
 logical; if TRUE, progress messages are printed (when \code{x} is a matrix or data.frame). 

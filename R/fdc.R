@@ -1,7 +1,7 @@
 # File fdc.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM/
-# Copyright 2007-2017 Mauricio Zambrano-Bigiarini
+# Copyright 2007-2025 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -14,6 +14,7 @@
 #          05-Aug-2013                                                         #
 #          15-Jan-2014                                                         # 
 #          04-Feb-2015                                                         #
+#          27-Dec-2025                                                         #
 ################################################################################
 
 # Plot the flow Duration Curve in the original time units of 'x' and
@@ -48,6 +49,7 @@ fdc.default <- function (x,
                          leg.txt=NULL,
                          leg.cex=1,
                          leg.pos="topright",
+                         thr.pos="bottomleft",
                          verbose= TRUE,
                          thr.shw=TRUE,
                          new=TRUE,
@@ -154,8 +156,8 @@ fdc.default <- function (x,
               x.lQ <- x[Qposition(dc.plot, lQ.thr)]
               x.hQ <- x[Qposition(dc.plot, hQ.thr)]
 
-              legend("bottomleft", c(paste("Qhigh.thr=", round(x.hQ, 2), sep=""),
-                                     paste("Qlow.thr=", round(x.lQ, 2), sep="") ),
+              legend(x=thr.pos, c(paste("Qhigh.thr=", round(x.hQ, 2), sep=""),
+                                  paste("Qlow.thr=", round(x.lQ, 2), sep="") ),
                      cex=0.8, bty="n") #bty="n" => no box around the legend
           } # IF end
      } # IF end
@@ -177,6 +179,7 @@ fdc.default <- function (x,
 # Updates: 16-Sep-2011 ; 03-Nov-2011                                           #
 #          02-May-2012                                                         #
 #          05-Aug-2013                                                         #
+#          27-Dec-2025                                                         #
 ################################################################################
 
 fdc.matrix <- function (x,
@@ -200,6 +203,7 @@ fdc.matrix <- function (x,
                         leg.txt=NULL,
                         leg.cex=1,
                         leg.pos="topright",
+                        thr.pos="bottomleft",
                         verbose=TRUE,
                         thr.shw=TRUE,
                         new=TRUE,
@@ -279,6 +283,7 @@ fdc.matrix <- function (x,
 # Updates: 03-Nov-2011                                                         #
 #          02-May-2012                                                         #
 #          05-Aug-2013                                                         #
+#          27-Dec-2025                                                         #
 ################################################################################
 fdc.data.frame <- function(x,
                            lQ.thr=0.7,
@@ -301,6 +306,7 @@ fdc.data.frame <- function(x,
                            leg.txt=NULL,
                            leg.cex=1,
                            leg.pos="topright",
+                           thr.pos="bottomleft",
                            verbose=TRUE,
                            thr.shw=TRUE,
                            new=TRUE,
@@ -332,6 +338,7 @@ fdc.data.frame <- function(x,
               leg.txt=leg.txt,
               leg.cex=leg.cex,
               leg.pos=leg.pos,
+              thr.pos=thr.pos,
               thr.shw=thr.shw,
               new=new,               
               ...)
@@ -347,6 +354,7 @@ fdc.data.frame <- function(x,
 # Started: 03-Nov-2011                                                         #
 # Updates: 02-May-2012                                                         #
 #          05-Aug-2013                                                         #
+#          27-Dec-2025                                                         #
 ################################################################################
 fdc.zoo <- function (x,
                      lQ.thr=0.7,
@@ -369,6 +377,7 @@ fdc.zoo <- function (x,
                      leg.txt=NULL,
                      leg.cex=1,
                      leg.pos="topright",
+                     thr.pos="bottomleft",
                      verbose=TRUE,
                      thr.shw=TRUE,
                      new=TRUE,
@@ -398,6 +407,7 @@ fdc.zoo <- function (x,
                leg.txt= leg.txt,
                leg.cex=leg.cex,
                leg.pos=leg.pos,
+               thr.pos=thr.pos,
                thr.shw=thr.shw,
                new=new,               
                ...)
@@ -423,6 +433,7 @@ fdc.zoo <- function (x,
                      leg.txt=leg.txt,
                      leg.cex=leg.cex,                     
                      leg.pos=leg.pos,
+                     thr.pos=thr.pos,
                      thr.shw=thr.shw,
                      new=new,               
                      ...)
