@@ -1,0 +1,7 @@
+url: https://hzambran.github.io/hydroTSM/
+template:
+  bootstrap: 5
+home:
+  title: "hydroTSM"
+  description: "Time Series Management and Analysis for Hydrological Modelling"
+
