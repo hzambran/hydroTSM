@@ -194,7 +194,7 @@ fdc3 <- fdc(Q, log="x")
 Traditional flow duration curve of the 30-year daily streamflow data:
 
 ```{r FDC1}
-fdc1 <- fdc(Q, log="")
+fdc1 <- fdc(Q, log="", thr.pos="topright")
 ```
 
 # Baseflow
@@ -239,18 +239,23 @@ baseflow(Q, na.fill="spline", from="2000-04-01", to="2000-12-31",
          
 
 # Software details
+
 This tutorial was built under: 
 
 ```{r echo=FALSE}
 sessionInfo()$platform
-sessionInfo()$R.version$version.string 
-paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
+sessionInfo()$R.version$version.string
+paste("hydroTSM"  , sessionInfo()$otherPkgs$hydroTSM$Version)
 ```
-
 
 # Version history
 
-* v0.1: 17-Jan-2024
+-) v0.30: 27-Dec-2025
+
+-) v0.20: 21-Jan-2024
+
+-) v0.01: 2009
+
 
 # Appendix
 
@@ -324,19 +329,3 @@ require(lattice)
 grid.arrange(p, p, nrow=2)
 ```
 
-# Software details
-
-This tutorial was built under: 
-
-```{r echo=FALSE}
-sessionInfo()$platform
-sessionInfo()$R.version$version.string
-paste("hydroTSM"  , sessionInfo()$otherPkgs$hydroTSM$Version)
-
-# Version history
-
--) v0.30: 27-Dec-2025
-
--) v0.20: 21-Jan-2024
-
--) v0.01: 2009

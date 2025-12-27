@@ -2,7 +2,7 @@
 title: Introductory analysis of daily precipitation with hydroTSM
 author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
-date: "version 0.20, 27-Dec-2025"
+date: "version 1.0, 27-Dec-2025"
 output:
   pdf_document:
     number_sections: yes
@@ -412,7 +412,8 @@ paste("hydroTSM", sessionInfo()$otherPkgs$hydroTSM$Version)
 
 # Version history
 
-* v0.9: Jan 2024
+* v1.0: 27-Dec-2025
+* v0.9: 21-Jan-2024
 * v0.8: Nov 2023
 * v0.7: Mar 2020
 * v0.6: Aug 2017
@@ -429,7 +430,7 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 ## Editors, GUI
 
-*  **Multi-platform**: [Sublime Text](https://www.sublimetext.com/) (https://sublime.weberup.com/) ; [RStudio](https://posit.co/) (https://posit.co/)
+*  **Multi-platform**: [Sublime Text](https://www.sublimetext.com/) (https://www.sublimetext.com/) ; [RStudio](https://posit.co/) (https://posit.co/)
 
 *  **GNU/Linux only**: [ESS](https://ess.r-project.org/) (https://ess.r-project.org/)
 
@@ -493,21 +494,3 @@ require(lattice)
 
 grid.arrange(p, p, nrow=2)
 ```
-
-# Software details
-
-This tutorial was built under: 
-
-```{r echo=FALSE}
-sessionInfo()$platform
-sessionInfo()$R.version$version.string
-paste("hydroTSM"  , sessionInfo()$otherPkgs$hydroTSM$Version)
-
-
-# Version history
-
--) v0.20: 27-Dec-2025
-
--) v0.10: 21-Jan-2024
-
--) v0.01: 2009
