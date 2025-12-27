@@ -206,7 +206,7 @@ p <- Cauquenes7336001[, 1]
 q <- Cauquenes7336001[, 5]
 
 # Subsetting to only the 1981-1990 temporal period
-Cauquenes7336001 <- window(Cauquenes7336001, start="1981-01-01", end="1990-12-31") )
+Cauquenes7336001 <- window(Cauquenes7336001, start="1981-01-01", end="1990-12-31")
 
 ## Plotting P and Q for the full time period of both time series
 plot_pq(p=p, q=q)
