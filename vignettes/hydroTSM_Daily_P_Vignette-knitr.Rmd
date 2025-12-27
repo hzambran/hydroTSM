@@ -2,7 +2,7 @@
 title: Introductory analysis of daily precipitation with hydroTSM
 author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
-date: " version 0.10, 21-Jan-2024"
+date: "version 0.20, 27-Dec-2025"
 output:
   pdf_document:
     number_sections: yes
@@ -23,14 +23,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Citation
 
-If you use *[hydroTSM](https://cran.r-project.org/package=hydroTSM)*, please cite it as Zambrano-Bigiarini (2024):
+If you use *[hydroTSM](https://CRAN.R-project.org/package=hydroTSM)*, please cite it as Zambrano-Bigiarini (2025):
 
-Zambrano-Bigiarini, Mauricio (2024). hydroTSM: Time Series Management and Analysis for Hydrological Modelling. R package version 0.7-0. URL:https://cran.r-project.org/package=hydroTSM. doi:10.5281/zenodo.839565.
+Zambrano-Bigiarini, Mauricio (2025). hydroTSM: Time Series Management and Analysis for Hydrological Modelling. R package version 0.8-0. URL:https://CRAN.R-project.org/package=hydroTSM. doi:10.32614/CRAN.package.hydroTSM.
 
 
 # Installation
 
-Installing the latest stable version (from [CRAN](http://cran.r-project.org/web/packages/hydroTSM/)):
+Installing the latest stable version (from [CRAN](https://CRAN.R-project.org/package=hydroTSM)):
 ```{r installation1, eval=FALSE}
 install.packages("hydroTSM")
 ```
@@ -429,7 +429,7 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 ## Editors, GUI
 
-*  **Multi-platform**: [Sublime Text](https://sublime.weberup.com/) (https://sublime.weberup.com/) ; [RStudio](https://posit.co/) (https://posit.co/)
+*  **Multi-platform**: [Sublime Text](https://www.sublimetext.com/) (https://sublime.weberup.com/) ; [RStudio](https://posit.co/) (https://posit.co/)
 
 *  **GNU/Linux only**: [ESS](https://ess.r-project.org/) (https://ess.r-project.org/)
 
@@ -448,13 +448,13 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 *  [**readxl** R package](https://cran.r-project.org/package=readxl): Import MS Excel files into R. 
 
-*  [**some examples**](https://www.statmethods.net/data-input/importingdata.html): https://www.statmethods.net/data-input/importingdata.html
+*  [**some examples**](https://www.datacamp.com/doc/r/importingdata): https://www.datacamp.com/doc/r/importingdata
 
 
 
 ## Useful Websites
 
-*  [**Quick R**](https://www.statmethods.net/): https://www.statmethods.net/
+*  [**Quick R**](https://www.datacamp.com/doc/r/category/r-documentation): https://www.datacamp.com/doc/r/category/r-documentation
 
 *  [**Time series in R**](https://cran.r-project.org/view=TimeSeries): https://cran.r-project.org/view=TimeSeries
 
@@ -493,3 +493,21 @@ require(lattice)
 
 grid.arrange(p, p, nrow=2)
 ```
+
+# Software details
+
+This tutorial was built under: 
+
+```{r echo=FALSE}
+sessionInfo()$platform
+sessionInfo()$R.version$version.string
+paste("hydroTSM"  , sessionInfo()$otherPkgs$hydroTSM$Version)
+
+
+# Version history
+
+-) v0.20: 27-Dec-2025
+
+-) v0.10: 21-Jan-2024
+
+-) v0.01: 2009

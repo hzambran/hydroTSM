@@ -2,7 +2,7 @@
 title: Introductory analysis of daily streamflows with hydroTSM
 author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
-date: "version 0.2, 21-Jan-2024"
+date: "version 0.3, 27-Dec-2025"
 output:
   pdf_document:
     number_sections: yes
@@ -259,7 +259,7 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 ## Editors, GUI
 
-*  **Multi-platform**: [Sublime Text](https://sublime.weberup.com/) (https://sublime.weberup.com/) ; [RStudio](https://posit.co/) (https://posit.co/)
+*  **Multi-platform**: [Sublime Text](https://www.sublimetext.com/) (https://www.sublimetext.com/ ; [RStudio](https://posit.co/) (https://posit.co/)
 
 *  **GNU/Linux only**: [ESS](https://ess.r-project.org/) (https://ess.r-project.org/)
 
@@ -272,23 +272,23 @@ In order to make easier the use of \texttt{hydroTSM} for users not familiar with
 
 *  `?zoo::read.zoo`, `?zoo::write.zoo`: functions for reading and writing time series from/to text files, respectively.
 
-*  [**R Data Import/Export**](https://cran.r-project.org/doc/manuals/r-release/R-data.html): https://cran.r-project.org/doc/manuals/r-release/R-data.html
+*  [**R Data Import/Export**](https://CRAN.R-project.org/doc/manuals/r-release/R-data.html): https://CRAN.R-project.org/doc/manuals/r-release/R-data.html
 
-*  [**foreign** R package](https://cran.r-project.org/package=foreign): read data stored in several R-external formats (dBase, Minitab, S, SAS, SPSS, Stata, Systat, Weka, ...)
+*  [**foreign** R package](https://CRAN.R-project.org/package=foreign): read data stored in several R-external formats (dBase, Minitab, S, SAS, SPSS, Stata, Systat, Weka, ...)
 
-*  [**readxl** R package](https://cran.r-project.org/package=readxl): Import MS Excel files into R. 
+*  [**readxl** R package](https://CRAN.R-project.org/package=readxl): Import MS Excel files into R. 
 
-*  [**some examples**](https://www.statmethods.net/data-input/importingdata.html): https://www.statmethods.net/data-input/importingdata.html
+*  [**some examples**](https://www.datacamp.com/doc/r/importingdata): https://www.datacamp.com/doc/r/importingdata
 
 
 
 ## Useful Websites
 
-*  [**Quick R**](https://www.statmethods.net/): https://www.statmethods.net/
+*  [**Quick R**](https://www.datacamp.com/doc/r/category/r-documentation): https://www.datacamp.com/doc/r/category/r-documentation
 
-*  [**Time series in R**](https://cran.r-project.org/view=TimeSeries): https://cran.r-project.org/view=TimeSeries
+*  [**Time series in R**](https://CRAN.R-project.org/view=TimeSeries): https://CRAN.R-project.org/view=TimeSeries
 
-*  [**Quick reference for the `zoo` package**](https://cran.r-project.org/package=zoo/vignettes/zoo-quickref.pdf): https://cran.r-project.org/package=zoo/vignettes/zoo-quickref.pdf
+*  [**Quick reference for the `zoo` package**](https://CRAN.R-project.org/package=zoo/vignettes/zoo-quickref.pdf): https://CRAN.R-project.org/package=zoo/vignettes/zoo-quickref.pdf
 
 
 ## F.A.Q.
@@ -323,3 +323,20 @@ require(lattice)
 
 grid.arrange(p, p, nrow=2)
 ```
+
+# Software details
+
+This tutorial was built under: 
+
+```{r echo=FALSE}
+sessionInfo()$platform
+sessionInfo()$R.version$version.string
+paste("hydroTSM"  , sessionInfo()$otherPkgs$hydroTSM$Version)
+
+# Version history
+
+-) v0.30: 27-Dec-2025
+
+-) v0.20: 21-Jan-2024
+
+-) v0.01: 2009
