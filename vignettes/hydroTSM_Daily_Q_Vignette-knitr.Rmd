@@ -4,8 +4,9 @@ author:
 - Mauricio Zambrano-Bigiarini^[mauricio.zambrano@ufrontera.cl]
 date: "version 0.3, 27-Dec-2025"
 output:
-  pdf_document:
-    number_sections: yes
+  pdf_document: 
+    number_sections: true
+    fig_caption: true
   html_document:
     df_print: paged
     number_sections: yes
@@ -15,6 +16,8 @@ vignette: |
   %\VignetteKeyword{hydrological modelling}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown} 
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include = FALSE}
