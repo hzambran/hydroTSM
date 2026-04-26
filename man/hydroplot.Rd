@@ -2,7 +2,7 @@
 % Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 %                                 http://www.rforge.net/hydroTSM/ ; 
 %                                 https://cran.r-project.org/package=hydroTSM
-% Copyright 2008-2025 Mauricio Zambrano-Bigiarini
+% Copyright 2008-2026 Mauricio Zambrano-Bigiarini
 % Distributed under GPL 2 or later
 
 \name{hydroplot}
@@ -268,22 +268,24 @@ hydroplot(OcaEnOnaQts, pfreq="seasonal", FUN=mean, stype="default")
 ## custom season names (let's assume to be in the Southern Hemisphere)
 hydroplot(OcaEnOnaQts, pfreq="seasonal", FUN=mean, 
           stype="default", season.names=c("Summer","Autumn", "Winter","Spring"))
-}
+
 
 #############
 ## Loading the monthly time series of precipitation within the Ebro River basin.
 data(EbroPPtsMonthly)
 
+op <- par(mar=c(5.1, 4.1, 4.1, 2.1))
+on.exit(par(op))
+
+## Plotting seasonal precipitation at station "P9001"
+sname2plot(EbroPPtsMonthly, sname="P9001", FUN=sum, dates=1, pfreq="seasonal", 
+           stype="default")
+}
+
 ## Plotting the monthly and annual values of precipitation at station "P9001", 
 ## stored in 'EbroPPtsMonthly'.
 sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", dates=1, 
            pfreq="ma")
-
-## Plotting seasonal precipitation at station "P9001"
-par(mar=c(5.1, 4.1, 4.1, 2.1))
-
-sname2plot(EbroPPtsMonthly, sname="P9001", FUN=sum, dates=1, pfreq="seasonal", 
-           stype="default")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

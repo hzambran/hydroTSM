@@ -2,7 +2,7 @@
 %% Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 %%                                 http://www.rforge.net/hydroTSM/ ; 
 %%                                 https://cran.r-project.org/package=hydroTSM
-%% Copyright 2023-2024 Mauricio Zambrano-Bigiarini
+%% Copyright 2023-2026 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{plot_pq}
@@ -14,7 +14,7 @@
  Plot precipitation and streamflow time series in the same figure.
 }
 \description{
-Given a time series of precipitation and streamflow, this function plots the two time series in the same figure, streamflows as a normal time series and preciitation as bars comming from the upper part of the plotting window. 
+Given a time series of precipitation and streamflow, this function plots the two time series in the same figure, streamflows as a normal time series and precipitation as bars coming from the upper part of the plotting window. 
 }
 \usage{
 plot_pq(p, ...)
@@ -37,8 +37,7 @@ plot_pq(p, ...)
                 plot.q.probs=TRUE, q.probs=c(0.25, 0.75), 
                 q.probs.col="lightskyblue1", q.probs.alpha=0.8, 
                 labels=TRUE, labels.cex=0.8,
-                labels.p.dy=-median(daily2monthly(p, FUN=sum, na.rm=TRUE), 
-                             na.rm=TRUE)*1.1,
+                labels.p.dy=NULL,
                 labels.q.dx=c(rep(-0.2,6), rep(0.2,6)),
                 labels.q.dy=rep(median(q, na.rm=TRUE)*1.3, 12),
                 
@@ -55,11 +54,11 @@ zoo object with streamflow time series, with any time frequency.
 }
   \item{ptype}{
 Character indicating the type of plot to be produced. Valid values are: \cr
--) \kbd{original} => a time series plot with precipitation in the upper panel (as bars from the time axis) and streamflows in the lower pannel (as dotted lines). \cr
--) \kbd{monthly}  => a plot with mean monthly values of pecipitation in the upper panel (as bars from top to bottom) and streamflows in the lower panel (as bars from bottom to up). Quantiles of precipitation and streamflows are also plotted depending on the values defined in \code{p.probs} and \code{q.probs}, respectively.
+-) \kbd{original} => a time series plot with precipitation in the upper panel (as bars from the time axis) and streamflows in the lower panel (as dotted lines). \cr
+-) \kbd{monthly}  => a plot with mean monthly values of precipitation in the upper panel (as bars from top to bottom) and streamflows in the lower panel (as bars from bottom to up). Quantiles of precipitation and streamflows are also plotted depending on the values defined in \code{p.probs} and \code{q.probs}, respectively.
 }
   \item{na.fill}{
-Character indicating how to fill any NA present in \code{x}. Valid values are: \cr
+Character indicating how to fill any NA present in \code{p} or \code{q}. \cr
 -) \kbd{remove} => NAs are not plotted
 -) \kbd{linear} => NAs are removed by linear interpolation, using \code{\link[zoo]{na.approx}} \cr 
 -) \kbd{spline} => NAs are removed by spline interpolation, using \code{\link[zoo]{na.spline}}
@@ -74,12 +73,12 @@ It has to be in the format indicated by \code{date.fmt}.
 }
   \item{date.fmt}{
 character indicating the format in which the dates are stored in \code{from} and \code{to}, e.g. \kbd{\%Y-\%m-\%d}. See \sQuote{Details} section in \code{\link[base]{strptime}}.
-By default, \code{date.fmt} is missing, and it is automatically set to \kbd{\%Y-\%m-\%d} when \code{time(x)} is \code{Date} object, and set to \kbd{\%Y-\%m-\%d \%H:\%M:\%S} when \code{x} is a sub-daily zoo object.
+By default, \code{date.fmt} is missing, and it is automatically set to \kbd{\%Y-\%m-\%d} when \code{time(p)} is \code{Date} object, and set to \kbd{\%Y-\%m-\%d \%H:\%M:\%S} when \code{x} is a sub-daily zoo object.
 }
   \item{tz}{
 character, with the specification of the time zone used for \code{from}, \code{to}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
 
-If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(x)}. \cr
+If \code{tz} is missing (the default), it is automatically set to the time zone used in \code{time(p)}. \cr
 
 This argument can be used when working with sub-daily zoo objects to force using  time zones other than the local time zone for \code{from} and \code{to}. It should be used with caution, being well aware of the time zone of the data. See examples.
 }
@@ -94,10 +93,10 @@ a two-element title for the \code{y} axis: see \code{\link[graphics]{title}}. \c
 The first element is used for the right \code{y} axis (i.e., for precipitation). The second element is used for the left \code{y} axis (i.e., for streamflows).
 }
   \item{p.col}{
-character, representing the colors to be used for ploting the precipitation time series.  
+character, representing the colors to be used for plotting the precipitation time series.  
 }
   \item{q.col}{
-character, representing the colors to be used for ploting the streamflow time series. 
+character, representing the colors to be used for plotting the streamflow time series. 
 }
   \item{leg.title}{
 a character string or length-one expression giving a title to be placed at the top of the legend. \code{\link[graphics]{legend}}.
@@ -107,7 +106,7 @@ a two-element character to appear in the legend placed at the bottom of the figu
 The first element is used for precipitation and the second element is used for streamflows.
 }
   \item{q.pch}{
-numeric, representing the symbols used for ploting the streamflow time series.
+numeric, representing the symbols used for plotting the streamflow time series.
 }
   \item{q.cex}{
 a numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of \code{par("cex")}. See \code{\link[graphics]{plot.default}}
@@ -116,12 +115,12 @@ a numerical vector giving the amount by which plotting characters and symbols sh
 numeric in [1:12] indicating the starting month for the monthlycurve. Numeric values in [1, 12] represents months in [January, December]. By default \code{start.month=1}.
 }
   \item{plot.p.probs}{
-logical used to decide whether to show lower an upper uncertainty values for each one of the 12 monthly precipitation values. By default \code{plot.p.probs=TRUE}. \cr 
-When \code{plot.p.probs=TRUE} the \code{p.probs} argument is used to define the values of the lower an upper uncertainty values.
+logical used to decide whether to show lower and upper uncertainty bounds for each one of the 12 monthly precipitation values. By default \code{plot.p.probs=TRUE}. \cr 
+When \code{plot.p.probs=TRUE} the \code{p.probs} argument is used to define the values of the lower and upper uncertainty bounds.
 } 
   \item{p.probs}{
-numeric of length 2. It defines the quantile values used to compute the lower an upper uncertainty values for each one of the 12 monthly precipitation values. This uncertainty values are drawn as vertical lines over the bars used to plot the 12 monthly precipitation values. \cr 
-By default \code{p.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly precipitation values. 
+numeric of length 2. It defines the quantile values used to compute the lower and upper uncertainty bounds for each one of the 12 monthly precipitation values. This uncertainty bounds are drawn as vertical lines over the bars used to plot the 12 monthly precipitation values. \cr 
+By default \code{p.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower and upper uncertainty bounds for each one of the 12 monthly precipitation values. 
 If \code{p} is a (sub)daily zoo object, it is first aggregated into monthly values using \code{mean}, and then the \code{p.probs} quantiles are computed over all the monthly values belonging to a calendar month.
 } 
   \item{p.alpha}{
@@ -129,13 +128,13 @@ numeric of length 1, with the factor used to modify the opacity of \code{p.col}.
 } 
   \item{plot.q.probs}{
 logical used to decide whether to show uncertainty bands around each one of the 12 monthly average or median streamflow values. By default \code{plot.q.probs=TRUE}. \cr 
-When \code{plot.q.probs=TRUE} the \code{q.probs} argument is used to define the values of the lower an upper uncertainty bands.
+When \code{plot.q.probs=TRUE} the \code{q.probs} argument is used to define the values of the lower and upper uncertainty bands.
 } 
   \item{q.probs}{
-numeric of length 2. It is used to define quantile values used to compute the lower an upper uncertainty bands around each one of the 12 monthly average or median streamflow. \cr 
-If \code{pcp} is provided, then \code{ubands.probs} are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly average or median precipitation values. \cr
-By default \code{ubands.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower an upper uncertainty bounds for each one of the 12 monthly average or median values. 
-If \code{x} is provided and is a (sub)daily zoo object, it is first aggregated into monthly values using \code{FUN}, and then the \code{ubands.probs} quantiles are computed over all the monthly values belonging to a calendar month.
+numeric of length 2. It is used to define quantile values used to compute the lower and upper uncertainty bands around each one of the 12 monthly average or median streamflow. \cr 
+If \code{q} is a (sub)daily zoo object, it is first aggregated into monthly values using \code{FUN}, and then the \code{q.probs} quantiles are computed over all the monthly values belonging to a calendar month.. \cr
+By default \code{q.probs=c(0.25, 0.75)}, which indicates that the quantiles 0.25 and 0.75 are used to compute the lower and upper uncertainty bounds for each one of the 12 monthly average or median values. 
+If \code{q} is provided and is a (sub)daily zoo object, it is first aggregated into monthly values using \code{FUN}, and then the \code{q.probs} quantiles are computed over all the monthly values belonging to a calendar month.
 }
   \item{q.probs.col}{
 character with the color used to plot the uncertainty bands around the average or median streamflow values. \cr
@@ -169,10 +168,10 @@ further arguments passed to or from other methods. Not used yet.
 }
 }
 \details{
-Given a time series of precipitation and streamflow, this function plots the two time series in the same figure, streamflows as a normal time series and precipitation as bars comming from the upper part of the plotting window. 
+Given a time series of precipitation and streamflow, this function plots the two time series in the same figure, streamflows as a normal time series and precipitation as bars coming from the upper part of the plotting window. 
 }
 \value{
-A figure with the two time series in the same graphical area, streamflows as a normal time series and precipitation as bars comming from the upper part of the plotting window. 
+A figure with the two time series in the same graphical area, streamflows as a normal time series and precipitation as bars coming from the upper part of the plotting window. 
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
@@ -202,11 +201,12 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 ##      fifth column.
 
 data(Cauquenes7336001)
-p <- Cauquenes7336001[, 1]
-q <- Cauquenes7336001[, 5]
 
 # Subsetting to only the 1981-1990 temporal period
 Cauquenes7336001 <- window(Cauquenes7336001, start="1981-01-01", end="1990-12-31")
+
+p <- Cauquenes7336001[, 1]
+q <- Cauquenes7336001[, 5]
 
 ## Plotting P and Q for the full time period of both time series
 plot_pq(p=p, q=q)
@@ -214,7 +214,7 @@ plot_pq(p=p, q=q)
 ######################
 ## Ex2: Plotting precipitation and streamflows only for a specific time period,
 ##      from April to December 2000.
-plot_pq(p, q, from="2000-04-01", to="2000-12-31")
+plot_pq(p, q, from="1985-04-01", to="1985-12-31")
 
 ######################
 ## Ex3: Plotting monthly values of precipitation and streamflows for the 

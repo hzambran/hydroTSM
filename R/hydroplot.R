@@ -2,7 +2,7 @@
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 http://www.rforge.net/hydroTSM/ ; 
 #                                 https://cran.r-project.org/package=hydroTSM
-# Copyright 2008-2025 Mauricio Zambrano-Bigiarini
+# Copyright 2008-2026 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 hydroplot <-function(x, ...) UseMethod("hydroplot")
@@ -432,6 +432,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 # Started: 19-Jun-2011                                                  #
 # Updates: 10-Aug-2011                                                  #
 #          06-Aug-2017                                                  #
+#          26-Apr-2026                                                  #
 #########################################################################
 .hydroplotseasonal <- function(x, FUN, na.rm=TRUE,
 		               tick.tstep= "auto", lab.tstep= "auto", lab.fmt=NULL,
@@ -502,7 +503,11 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
       # Plotting seasonal time series #
       #################################
       def.par <- par(no.readonly = TRUE) # save default, for resetting... 
-      on.exit(par(def.par))
+      # To ensure both graphical parameters (par) and layout are restored deterministically.
+      on.exit({ 
+        par(def.par)
+        layout(1)
+      })
       
       layout( matrix( c(1,1,1,1,1,1,1,1,1,5,5,2,2,2,2,2,2,2,2,2,6,6,3,3,3,3,3,3,3,3,3,7,7,4,4,4,4,4,4,4,4,4,8,8), ncol=11, byrow=TRUE) ) 
       

@@ -2,7 +2,7 @@
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
 #                                 http://www.rforge.net/hydroTSM/ 
-# Copyright 2023-2024 Mauricio Zambrano-Bigiarini
+# Copyright 2023-2026 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ################################################################################
@@ -18,6 +18,7 @@
 # Started: 09-Jun-2018                                                         #
 # Updates: 26-Nov-2023 ; 22-Dec-2023                                           #
 #          12-Jan-2024 ; 13-Jan-2024 ; 17-Jan-2024                             #
+#          26-Apr-2026                                                         #
 ################################################################################
 
 # 'p'          : zoo object with precipitation time series, with any time frequency 
@@ -120,8 +121,7 @@ plot_pq.zoo <- function(p,
                             
                         labels=TRUE,
                         labels.cex=0.8,
-                        labels.p.dy=-median(daily2monthly(p, FUN=sum, na.rm=TRUE), 
-                                     na.rm=TRUE)*1.1,
+                        labels.p.dy=NULL,
                         labels.q.dx=c(rep(-0.2,6), rep(0.2,6)),
                         labels.q.dy=rep(median(q, na.rm=TRUE)*1.3, 12),
                         
@@ -143,7 +143,7 @@ plot_pq.zoo <- function(p,
       if ( !is.zoo(q) ) stop("Invalid argument: 'class(q)' must be 'zoo' !")
 
   # Checking that 'p' and 'q' have the same time index
-  if ( !all.equal(time(p), time(q)) )
+  if ( !isTRUE( all.equal( time(p), time(q) ) ) )
     stop("Invalid argument(s): 'p' and 'q' must have the same time index !")
 
   # Checking 'ptype'
@@ -164,8 +164,8 @@ plot_pq.zoo <- function(p,
   dates.q  <- time(q)
   if (!missing(p)) {
     dates.p <- time(p)
-    if (!all.equal(dates.q, dates.p))
-      stop("Invalid arguments: 'dates(q)' must be equal to 'dates(p)' !!")
+    if ( !isTRUE( all.equal(dates.q, dates.p) ) )
+      stop("Invalid arguments: 'dates(q)' must be equal to 'dates(p)' !")
   } # IF end
   
   ####################################################################################
@@ -185,10 +185,17 @@ plot_pq.zoo <- function(p,
     tz        <- ""
   } # IF end
       
-  ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
-           grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |
-           grepl("%p", date.fmt, fixed=TRUE) | grepl("%X", date.fmt, fixed=TRUE), 
-           subdaily.date.fmt <- TRUE, subdaily.date.fmt <- FALSE )
+  #ifelse ( grepl("%H", date.fmt, fixed=TRUE) | grepl("%M", date.fmt, fixed=TRUE) |
+  #         grepl("%S", date.fmt, fixed=TRUE) | grepl("%I", date.fmt, fixed=TRUE) |
+  #         grepl("%p", date.fmt, fixed=TRUE) | grepl("%X", date.fmt, fixed=TRUE), 
+  #         subdaily.date.fmt <- TRUE, subdaily.date.fmt <- FALSE )
+  subdaily.date.fmt <-
+    grepl("%H", date.fmt, fixed=TRUE) |
+    grepl("%M", date.fmt, fixed=TRUE) |
+    grepl("%S", date.fmt, fixed=TRUE) |
+    grepl("%I", date.fmt, fixed=TRUE) |
+    grepl("%p", date.fmt, fixed=TRUE) |
+    grepl("%X", date.fmt, fixed=TRUE)
 
   # If the index of 'p' is character, it is converted into a Date object
   if ( class(time(p))[1] %in% c("factor", "character") )
@@ -230,7 +237,7 @@ plot_pq.zoo <- function(p,
   } else {
            if (subdaily.date.fmt) {
              #time(x) <- as.POSIXct(time(x), tz=tz)
-             time(x) <- as.POSIXct(time(x))
+             time(p) <- as.POSIXct(time(p))
              warning("'date.fmt' (", date.fmt, ") is sub-daily, while 'p' is a '", 
                      p.freq, "' ts => 'time(p)=as.POSIXct(time(p), tz)'")
            } # IF end    
@@ -261,6 +268,13 @@ plot_pq.zoo <- function(p,
   p <- window(p, start=from, end=to)
   q <- window(q, start=from, end=to)
 
+  if (is.null(labels.p.dy)) {
+    labels.p.dy <- -median(
+      daily2monthly(p, FUN=sum, na.rm=TRUE),
+      na.rm=TRUE
+    ) * 1.1
+  } # IF end
+
   # If required, filling in any missing value(s)
   if (na.fill != "remove") {
     p.na.index <- which(is.na(p))
@@ -280,6 +294,11 @@ plot_pq.zoo <- function(p,
 
   # saving graphical parameters
   oldpars <- par(no.readonly=TRUE)
+  # To avoid inconsistent state of the graphical device
+  on.exit({
+    par(oldpars)
+    layout(1)
+  })
 
   if (ptype=="original") {
      .plot_pq_ts.zoo(p, q, 
@@ -308,9 +327,6 @@ plot_pq.zoo <- function(p,
                               labels.q.dy=labels.q.dy,
                               labels.p.dy=labels.p.dy
                               )
-
-   # restoring original graphical parameters
-  par(oldpars)
 } # 'plot_pq.zoo' END
 
 
@@ -339,7 +355,8 @@ plot_pq.zoo <- function(p,
                             ) {
 
   # saving graphical parameters
-  #oldpars <- par(no.readonly=TRUE)
+  oldpars <- par(no.readonly=TRUE)
+  on.exit(par(oldpars))
 
   #par(mar=0.1 + c(5, 4, 4, 8), xpd=TRUE ) # bottom, left, top and right. Default: 0.1+ c(5, 4, 4, 2)
   par(mar=0.1 + c(7, 4, 4, 4), xpd=TRUE ) # bottom, left, top and right. Default: 0.1+ c(5, 4, 4, 2)
@@ -356,7 +373,7 @@ plot_pq.zoo <- function(p,
   par(new=TRUE)
   ylim    <- rev(range(p, na.rm=TRUE))
   ylim[1] <- ylim[1]*3
-  barplot(p, ylim = ylim, xaxt="n", yaxt = "n", col=cols[1], border=NA)
+  barplot(zoo::coredata(p), ylim = ylim, xaxt="n", yaxt = "n", col=cols[1], border=NA)
   axis(4, at = pretty(p), col=cols[1], col.axis=cols[1])
   mtext(side = 4, line = 2, text="P", col=cols[1], srt=45)
   #at <- pretty(p)
@@ -377,9 +394,6 @@ plot_pq.zoo <- function(p,
          lty=1, pch=pchs, col=cols, cex=1,
          title=leg.title, legend= leg.text)
 
-  # restoring original graphical parameters
-  #par(oldpars)
-
 } # '.plot_pq_ts.zoo' END
 
 
@@ -397,7 +411,8 @@ plot_pq.zoo <- function(p,
 # Started: 26-Jul-2022                                                            #
 # Updates: 22-Sep-2022 ; 11-Oct-2022 ; 25-Oct-2022                                #
 #          22-Dec-2023 ; 27-Dec-2023                                              #
-#          12-Jan-2024 ; 17-Jan-2024                                              #          
+#          12-Jan-2024 ; 17-Jan-2024                                              # 
+#          26-Apr-2026                                                            #         
 ###################################################################################
 # 'q'        : object of type 'zoo' with monthly, daily or subdaily streamflow data.
 #              If q is a monthly zoo object, it must have 12 elments and it should be 
@@ -471,6 +486,11 @@ plot_pq.zoo <- function(p,
 
   # saving graphical parameters
   oldpars <- par(no.readonly=TRUE)
+
+  on.exit({
+    par(oldpars)
+    layout(1)
+  })
 
   ###########################################
   ## In case 'q' is not average monthly values
@@ -562,8 +582,5 @@ plot_pq.zoo <- function(p,
   lines(lx, q.m.med, xlim=xlim, ylim=ylim, col= cols[2], type = "o", lwd=3, pch=15, cex=1.4)
   axis(side=1, at=lx, labels=month.names)
   if (labels) text(lx+labels.q.dx, q.m.med+labels.q.dy, cex=labels.cex, adj=0.5, labels= round(q.m.med,1), col="black" )
- 
-  # restoring original graphical parameters
-  par(oldpars)
 
 } # 'plot_pq_monthly.zoo' END
