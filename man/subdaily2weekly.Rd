@@ -143,6 +143,7 @@ x[na.index] <- NA
 # Verifying that the second and third month of 'x' had 10% or more of missing values
 cmv(x, tscale="weekly")
 
+\dontrun{
 ######################
 ## Ex2: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'
 #       Loading the HOURLY streamflows for the station Karamea at Gorge
@@ -151,7 +152,7 @@ x <- KarameaAtGorgeQts
 
 # Sub-daily to weekly ts
 subdaily2weekly(x, FUN=mean, na.rm=TRUE)
-
+}
 }
 
 
