@@ -1,27 +1,48 @@
 # hydroTSM
-[![Research software impact](http://depsy.org/api/package/cran/hydroTSM/badge.svg)](http://depsy.org/package/r/hydroTSM) [![CRAN](http://www.r-pkg.org/badges/version/hydroTSM)](https://cran.r-project.org/package=hydroTSM) [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html) [![monthly](http://cranlogs.r-pkg.org/badges/hydroTSM)](https://www.rpackages.io/package/hydroTSM) [![total](http://cranlogs.r-pkg.org/badges/grand-total/hydroTSM)](https://www.rpackages.io/package/hydroTSM) [![Build Status](https://travis-ci.org/hzambran/hydroTSM.svg?branch=master)](https://travis-ci.org/hzambran/hydroTSM) [![dependencies](https://tinyverse.netlify.com/badge/hydroTSM)](https://CRAN.R-project.org/package=hydroTSM)
 
-<!-- badges: start -->
-  [![R-CMD-check](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml)
-<!-- badges: end -->
+<!-- README badge block -->
 
-hydroTSM provides S3 functions for management, analysis and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks.
+[![Research software impact](http://depsy.org/api/package/cran/hydroTSM/badge.svg)](http://depsy.org/package/r/hydroTSM) 
+[![License: GPL (>= 2)](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![Dependencies](https://tinyverse.netlify.app/badge/hydroTSM)](https://CRAN.R-project.org/package=hydroTSM)
+[![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://hzambran.github.io/hydroTSM/)
 
-The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimize each function as much as possible, functionality has had priority over speed).
+[![CRAN status](https://www.r-pkg.org/badges/version/hydroTSM)](https://CRAN.R-project.org/package=hydroTSM)
+[![R-CMD-check](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml)
+[![CRAN downloads (monthly)](https://cranlogs.r-pkg.org/badges/last-month/hydroTSM)](https://cran.r-project.org/package=hydroTSM)
+[![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/hydroTSM)](https://cran.r-project.org/package=hydroTSM)
 
-Bugs / comments / questions / collaboration of any kind are very welcomed, and in particular, datasets that can be included in this package for academic purposes.
+
+
+## Description
+
+[**hydroTSM**](https://cran.r-project.org/package=hydroTSM) is an R package designed to support the practical workflow of hydrologists and environmental scientists who routinely work with time series data. It provides a comprehensive and coherent set of tools for the management, quality control, analysis, interpolation, and visualization of hydrological and environmental time series, with particular emphasis on tasks commonly encountered in hydrological modelling and water resources assessment.
+
+[**hydroTSM**](https://cran.r-project.org/package=hydroTSM) prioritises reliability, transparency, and functional breadth, reflecting the operational realities of applied hydrology, where reproducible data handling and robust diagnostics are often more critical than marginal computational gains. Its functions are built to integrate naturally into analytical pipelines, facilitating consistent preprocessing and exploration of observational datasets prior to modelling or decision-making.
+
+Developed with the daily needs of practitioners in mind, [**hydroTSM**](https://cran.r-project.org/package=hydroTSM) has been widely used in research, teaching, and professional applications. It is especially suitable for users who require dependable, well-documented tools to support routine hydrological analysis while maintaining full control over data processing steps within the R environment.
+
+
+![](./man/figures/logo.png)
 
 
 ## Installation
+
 Installing the latest stable version from [CRAN](https://CRAN.R-project.org/package=hydroTSM):
-```{r}
+
+```
 install.packages("hydroTSM")
 ```
 
+
 Alternatively, you can also try the under-development version from [Github](https://github.com/hzambran/hydroTSM):
-```{r}
+
+```
 if (!require(devtools)) install.packages("devtools")
+
 library(devtools)
+
 install_github("hzambran/hydroTSM")
 ```
 
@@ -31,7 +52,8 @@ If you find an error in some function, or want to report a typo in the documenta
 
 
 ## Citation 
-```{r}
+
+```
 citation("hydroTSM")
 ```
 
@@ -69,8 +91,10 @@ A BibTeX entry for LaTeX users is
 
 ## See Also 
 
-* [hydroGOF: Goodness-of-fit functions for comparison of simulated and observed hydrological time series](https://cran.r-project.org/package=hydroGOF).
+* [**hydroGOF**: Goodness-of-fit functions for comparison of simulated and observed hydrological time series](https://cran.r-project.org/package=hydroGOF).
 
-* [hydroPSO: Model-independent Particle Swarm Optimisation (PSO) for environmental/hydrological models](https://cran.r-project.org/package=hydroPSO).
+* [**hydroMOPSO**: Multi-Objective Optimisation with Focus on Environmental Models](https://cran.r-project.org/package=hydroMOPSO).
 
-* [RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests](https://cran.r-project.org/package=RFmerge).
+* [**hydroPSO**: Model-independent Particle Swarm Optimisation (PSO) for environmental/hydrological models](https://cran.r-project.org/package=hydroPSO).
+
+* [**RFmerge**: Merging of Satellite Datasets with Ground Observations using Random Forests](https://cran.r-project.org/package=RFmerge).
