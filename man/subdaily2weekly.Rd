@@ -1,7 +1,7 @@
 %%File daily2weekly.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 https://CRAN.R-project.org/package=hydroTSM
-%% Copyright 2023-2023 Mauricio Zambrano-Bigiarini
+%% Copyright 2023-2026 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{subdaily2weekly}
@@ -117,19 +117,9 @@ Mauricio Zambrano-Bigiarini, \email{mzb.devel@gmail}
 \code{\link{cmv}}, \code{\link{subhourly2hourly}}, \code{\link{daily2monthly}}, \code{\link{daily2annual}}, \code{\link{subdaily2daily}}, \code{\link{weeklyfunction}}, \code{\link{hydroplot}}, \code{\link{vector2zoo}}, \code{\link{izoo2rzoo}}, \code{\link{as.Date}}
 }
 \examples{
+
 ######################
-## Ex1: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'
-
-## Loading the HOURLY streamflows for the station Karamea at Gorge
-data(KarameaAtGorgeQts)
-x <- KarameaAtGorgeQts
-
-# Sub-daily to weekly ts
-subdaily2weekly(x, FUN=mean, na.rm=TRUE)
-
-\dontrun{
-######################
-## Ex2: Computation of WEEKLY values from HOURLY ts, only when the percentage of NAs in 
+## Ex1: Computation of WEEKLY values from HOURLY ts, only when the percentage of NAs in 
 #       each week is lower than a user-defined percentage (10% in this example).
 
 ## Loading the HOURLY streamflows for the station Karamea at Gorge
@@ -154,14 +144,14 @@ x[na.index] <- NA
 cmv(x, tscale="weekly")
 
 ######################
-## Ex3: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'
+## Ex2: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'
 #       Loading the HOURLY streamflows for the station Karamea at Gorge
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
 # Sub-daily to weekly ts
 subdaily2weekly(x, FUN=mean, na.rm=TRUE)
-}
+
 }
 
 
