@@ -2,11 +2,29 @@ NEWS/ChangeLog for hydroTSM
 
 --------------------------
 
+# Changes in version 0.8-4  27-Apr-2026
+
+## Package files   
+        o 'subdaily2weekly': modified examples to effectively reduce, as much as possible, the computation time in CRAN (to avoid a NOTE).
+
+# Changes in version 0.8-3  27-Apr-2026
+
+## Package files   
+        o 'subdaily2weekly': modified examples to effectively reduce the computation time in CRAN (to avoid a NOTE).
+
+
+# Changes in version 0.8-2  27-Apr-2026
+
+## Package files   
+        o 'subdaily2weekly': modified examples to reduce the computation time in CRAN (to avoid a NOTE).
+
+
 # Changes in version 0.8-1  27-Apr-2026
 
 ## Package files   
         o DESCRIPTION file: Joschka Thurner is now correctly recognised as contributor of the package (he should have been in v0.7-0, but I forgot to do it).  
         o CITATION file: The DOI was changed form the one given by Zotero to the new DOI given by CRAN (10.32614/CRAN.package.hydroTSM) since June 2024.
+
 
 # Changes in version 0.8-0  27-Apr-2026
 
