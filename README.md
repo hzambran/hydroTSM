@@ -6,12 +6,14 @@
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![Dependencies](https://tinyverse.netlify.app/badge/hydroTSM)](https://CRAN.R-project.org/package=hydroTSM)
 [![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://hzambran.github.io/hydroTSM/)
+[![DOI](https://img.shields.io/badge/DOI-10.21105%2FCRAN.package.hydroTSM-blue)](https://doi.org/CRAN.package.hydroTSM)
 
+
+[![GitHub package version (development)](https://img.shields.io/github/r-package/v/hzambran/hydroTSM/master)](https://github.com/hzambran/hydroTSM)
 [![CRAN status](https://www.r-pkg.org/badges/version/hydroTSM)](https://CRAN.R-project.org/package=hydroTSM)
 [![R-CMD-check](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml)
 [![CRAN downloads (monthly)](https://cranlogs.r-pkg.org/badges/last-month/hydroTSM)](https://cran.r-project.org/package=hydroTSM)
 [![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/hydroTSM)](https://cran.r-project.org/package=hydroTSM)
-
 
 
 ## Description
