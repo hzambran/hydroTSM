@@ -1,12 +1,13 @@
 # hydroTSM
 
+[![DOI](https://img.shields.io/badge/DOI-10.32614%2FCRAN.package.hydroTSM-blue)](https://doi.org/CRAN.package.hydroTSM)
+
 [![License: GPL (\>=
 2)](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![Dependencies](https://tinyverse.netlify.app/badge/hydroTSM)](https://CRAN.R-project.org/package=hydroTSM)
 [![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://hzambran.github.io/hydroTSM/)
-[![DOI](https://img.shields.io/badge/DOI-10.21105%2FCRAN.package.hydroTSM-blue)](https://doi.org/CRAN.package.hydroTSM)
 
 [![GitHub package version
 (development)](https://img.shields.io/github/r-package/v/hzambran/hydroTSM/master)](https://github.com/hzambran/hydroTSM)

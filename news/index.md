@@ -8,7 +8,7 @@
     o 'subdaily2weekly': modified examples to effectively reduce, as much as possible, the computation time in CRAN (to avoid a NOTE).
 ```
 
-## Changes in version 0.8-2 to 0.4-4 27-Apr-2026
+## Changes in version 0.8-2 to 0.8-4 27-Apr-2026
 
 ### Package files
 
