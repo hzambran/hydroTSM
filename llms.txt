@@ -6,7 +6,10 @@
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![Dependencies](https://tinyverse.netlify.app/badge/hydroTSM)](https://CRAN.R-project.org/package=hydroTSM)
 [![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://hzambran.github.io/hydroTSM/)
+[![DOI](https://img.shields.io/badge/DOI-10.21105%2FCRAN.package.hydroTSM-blue)](https://doi.org/CRAN.package.hydroTSM)
 
+[![GitHub package version
+(development)](https://img.shields.io/github/r-package/v/hzambran/hydroTSM/master)](https://github.com/hzambran/hydroTSM)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/hydroTSM)](https://CRAN.R-project.org/package=hydroTSM)
 [![R-CMD-check](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml)
@@ -71,8 +74,8 @@ documentation, or to request a new feature (and wish it be implemented
 
 To cite hydroTSM in publications use:
 
-> Zambrano-Bigiarini, Mauricio (2025). hydroTSM: Time Series Management
-> and Analysis for Hydrological Modelling. R package version 0.7-0.
+> Zambrano-Bigiarini, Mauricio (2026). hydroTSM: Time Series Management
+> and Analysis for Hydrological Modelling. R package version 0.8-4.
 > URL:<https://CRAN.R-project.org/package=hydroTSM>.
 > <doi:10.32614/CRAN.package.hydroTSM>.
 
@@ -82,8 +85,8 @@ A BibTeX entry for LaTeX users is
 > title = {hydroTSM: Time Series Management, Analysis and Interpolation
 > for Hydrological Modelling},  
 > author = {Zambrano-Bigiarini, Mauricio},  
-> note = {R package version 0.7-0},  
-> year = {2025}, url =
+> note = {R package version 0.8-4},  
+> year = {2026}, url =
 > {<https://CRAN.R-project.org/package=hydroTSM>},  
 > doi = {<doi:10.32614/CRAN.package.hydroTSM>},  
 > }
