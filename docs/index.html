@@ -5,81 +5,87 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="S3 functions for management, analysis, interpolation and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks. The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimise each function as much as possible, functionality has had priority over speed). Bugs / comments / questions / collaboration of any kind are very welcomed, and in particular, datasets that can be included in this package for academic purposes.">
 <title>Time Series Management and Analysis for Hydrological Modelling • hydroTSM</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Time Series Management and Analysis for Hydrological Modelling">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Time Series Management and Analysis for Hydrological Modelling">
+<meta name="description" content="S3 functions for management, analysis, interpolation and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks. The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimise each function as much as possible, functionality has had priority over speed). Bugs / comments / questions / collaboration of any kind are very welcomed, and in particular, datasets that can be included in this package for academic purposes.">
 <meta property="og:description" content="S3 functions for management, analysis, interpolation and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks. The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimise each function as much as possible, functionality has had priority over speed). Bugs / comments / questions / collaboration of any kind are very welcomed, and in particular, datasets that can be included in this package for academic purposes.">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<meta property="og:image" content="https://hzambran.github.io/hydroTSM/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6-37</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7-31</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="reference/index.html">Reference</a>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/hydroTSM_Daily_P_Vignette-knitr.html">Introductory analysis of daily precipitation with hydroTSM</a></li>
+    <li><a class="dropdown-item" href="articles/hydroTSM_Daily_Q_Vignette-knitr.html">Introductory analysis of daily streamflows with hydroTSM</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="articles/index.html">Articles</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/hzambran/hydroTSM/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/hzambran/hydroTSM/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="hydrotsm">hydroTSM<a class="anchor" aria-label="anchor" href="#hydrotsm"></a>
-</h1></div>
-<p><a href="http://depsy.org/package/r/hydroTSM" class="external-link"><img src="http://depsy.org/api/package/cran/hydroTSM/badge.svg" alt="Research software impact"></a> <a href="https://cran.r-project.org/package=hydroTSM" class="external-link"><img src="http://www.r-pkg.org/badges/version/hydroTSM" alt="CRAN"></a> <a href="http://www.gnu.org/licenses/gpl-3.0.html" class="external-link"><img src="https://img.shields.io/badge/license-GPL%20%28%3E=%203%29-lightgrey.svg?style=flat" alt="License"></a> <a href="https://www.rpackages.io/package/hydroTSM" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/hydroTSM" alt="monthly"></a> <a href="https://www.rpackages.io/package/hydroTSM" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/grand-total/hydroTSM" alt="total"></a> <a href="https://travis-ci.org/hzambran/hydroTSM" class="external-link"><img src="https://travis-ci.org/hzambran/hydroTSM.svg?branch=master" alt="Build Status"></a> <a href="https://CRAN.R-project.org/package=hydroTSM" class="external-link"><img src="https://tinyverse.netlify.com/badge/hydroTSM" alt="dependencies"></a></p>
-<!-- badges: start -->
-<p>hydroTSM provides S3 functions for management, analysis, interpolation and plotting of time series used in hydrology and related environmental sciences. In particular, this package is highly oriented to hydrological modelling tasks.</p>
-<p>The focus of this package has been put in providing a collection of tools useful for the daily work of hydrologists (although an effort was made to optimize each function as much as possible, functionality has had priority over speed).</p>
-<p>Bugs / comments / questions / collaboration of any kind are very welcomed, and in particular, datasets that can be included in this package for academic purposes.</p>
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="hydrotsm">hydroTSM<a class="anchor" aria-label="anchor" href="#hydrotsm"></a>
+</h1>
+</div>
+<!-- README badge block -->
+<p><a href="http://depsy.org/package/r/hydroTSM" class="external-link"><img src="http://depsy.org/api/package/cran/hydroTSM/badge.svg" alt="Research software impact"></a> <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html" class="external-link"><img src="https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg" alt="License: GPL (&gt;= 2)"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a> <a href="https://CRAN.R-project.org/package=hydroTSM" class="external-link"><img src="https://tinyverse.netlify.app/badge/hydroTSM" alt="Dependencies"></a> <a href="https://hzambran.github.io/hydroTSM/"><img src="https://img.shields.io/badge/docs-pkgdown-blue.svg" alt="Documentation"></a></p>
+<p><a href="https://CRAN.R-project.org/package=hydroTSM" class="external-link"><img src="https://www.r-pkg.org/badges/version/hydroTSM" alt="CRAN status"></a> <a href="https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://cran.r-project.org/package=hydroTSM" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/hydroTSM" alt="CRAN downloads (monthly)"></a> <a href="https://cran.r-project.org/package=hydroTSM" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/hydroTSM" alt="Downloads"></a></p>
+<div class="section level2">
+<h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
+</h2>
+<p><a href="https://cran.r-project.org/package=hydroTSM" class="external-link"><strong>hydroTSM</strong></a> is an R package designed to support the practical workflow of hydrologists and environmental scientists who routinely work with time series data. It provides a comprehensive and coherent set of tools for the management, quality control, analysis, interpolation, and visualization of hydrological and environmental time series, with particular emphasis on tasks commonly encountered in hydrological modelling and water resources assessment.</p>
+<p><a href="https://cran.r-project.org/package=hydroTSM" class="external-link"><strong>hydroTSM</strong></a> prioritises reliability, transparency, and functional breadth, reflecting the operational realities of applied hydrology, where reproducible data handling and robust diagnostics are often more critical than marginal computational gains. Its functions are built to integrate naturally into analytical pipelines, facilitating consistent preprocessing and exploration of observational datasets prior to modelling or decision-making.</p>
+<p>Developed with the daily needs of practitioners in mind, <a href="https://cran.r-project.org/package=hydroTSM" class="external-link"><strong>hydroTSM</strong></a> has been widely used in research, teaching, and professional applications. It is especially suitable for users who require dependable, well-documented tools to support routine hydrological analysis while maintaining full control over data processing steps within the R environment.</p>
+<p><img src="./reference/figures/logo.png"></p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>Installing the latest stable version from <a href="https://CRAN.R-project.org/package=hydroTSM" class="external-link">CRAN</a>:</p>
-<pre class="{r}"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"hydroTSM"</span><span class="op">)</span></span></code></pre>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"hydroTSM"</span><span class="op">)</span></span></code></pre>
 <p>Alternatively, you can also try the under-development version from <a href="https://github.com/hzambran/hydroTSM" class="external-link">Github</a>:</p>
-<pre class="{r}"><code><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<pre><code><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"hzambran/hydroTSM"</span><span class="op">)</span></span></code></pre>
+<span></span>
+<span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"hzambran/hydroTSM"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="reporting-bugs-requesting-new-features">Reporting bugs, requesting new features<a class="anchor" aria-label="anchor" href="#reporting-bugs-requesting-new-features"></a>
@@ -89,22 +95,29 @@
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<pre class="{r}"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"hydroTSM"</span><span class="op">)</span></span></code></pre>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"hydroTSM"</span><span class="op">)</span></span></code></pre>
 <p>To cite hydroTSM in publications use:</p>
-<blockquote><p>Mauricio Zambrano-Bigiarini. hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling. R package version 0.5-1. URL <a href="https://hzambran.github.io/hydroTSM/" class="uri">https://hzambran.github.io/hydroTSM/</a>. <a href="DOI:10.5281/zenodo.839864" class="uri">DOI:10.5281/zenodo.839864</a></p></blockquote>
+<blockquote>
+<p>Zambrano-Bigiarini, Mauricio (2025). hydroTSM: Time Series Management and Analysis for Hydrological Modelling. R package version 0.7-0. URL:<a href="https://CRAN.R-project.org/package=hydroTSM" class="external-link uri">https://CRAN.R-project.org/package=hydroTSM</a>. <a href="doi:10.32614/CRAN.package.hydroTSM" class="uri">doi:10.32614/CRAN.package.hydroTSM</a>.</p>
+</blockquote>
 <p>A BibTeX entry for LaTeX users is</p>
-<blockquote><p>@Manual{hydroTSM,<br>
+<blockquote>
+<p>@Manual{hydroTSM,<br>
 title = {hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling},<br>
-author = {{Mauricio Zambrano-Bigiarini}},<br>
-note = {R package version 0.5-1},<br>
-url = {<a href="https://hzambran.github.io/hydroTSM/" class="uri">https://hzambran.github.io/hydroTSM/</a>},<br>
-doi = {10.5281/zenodo.839864},<br>
-}</p></blockquote>
+author = {Zambrano-Bigiarini, Mauricio},<br>
+note = {R package version 0.7-0},<br>
+year = {2025}, url = {<a href="https://CRAN.R-project.org/package=hydroTSM" class="external-link uri">https://CRAN.R-project.org/package=hydroTSM</a>},<br>
+doi = {<a href="doi:10.32614/CRAN.package.hydroTSM" class="uri">doi:10.32614/CRAN.package.hydroTSM</a>},<br>
+}</p>
+</blockquote>
 </div>
 <div class="section level2">
-<h2 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
+<h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
 </h2>
-<p><a href="https://cran.r-project.org/web/packages/hydroTSM/vignettes/hydroTSM_Vignette-knitr.pdf" class="external-link">Here</a> you can find an introductory vignette showing the use of several hydroTSM functions.</p>
+<ol style="list-style-type: decimal">
+<li><p><a href="https://cran.r-project.org/package=hydroTSM/vignettes/hydroTSM_Daily_P_Vignette-knitr.pdf" class="external-link">Daily precipitation</a>. Here you can find an introductory vignette showing the use of several hydroTSM functions for analysing daily precipitation data.</p></li>
+<li><p><a href="https://cran.r-project.org/package=hydroTSM/vignettes/hydroTSM_Daily_Q_Vignette-knitr.pdf" class="external-link">Daily streamflows</a>. Here you can find an introductory vignette showing the use of several hydroTSM functions for analysing daily streamflow data.</p></li>
+</ol>
 </div>
 <div class="section level2">
 <h2 id="related-material">Related Material<a class="anchor" aria-label="anchor" href="#related-material"></a>
@@ -118,8 +131,10 @@ doi = {10.5281/zenodo.839864},<br>
 <h2 id="see-also">See Also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
 <ul>
-<li><p><a href="https://github.com/hzambran/hydroGOF" class="external-link">hydroGOF: Goodness-of-fit functions for comparison of simulated and observed hydrological time series</a>.</p></li>
-<li><p><a href="https://github.com/hzambran/hydroPSO" class="external-link">hydroPSO: Model-independent Particle Swarm Optimisation (PSO) for environmental/hydrological models</a>.</p></li>
+<li><p><a href="https://cran.r-project.org/package=hydroGOF" class="external-link">hydroGOF: Goodness-of-fit functions for comparison of simulated and observed hydrological time series</a>.</p></li>
+<li><p><a href="https://cran.r-project.org/package=hydroMOPSO" class="external-link">hydroMOPSO: Multi-Objective Optimisation with Focus on Environmental Models</a>.</p></li>
+<li><p><a href="https://cran.r-project.org/package=hydroPSO" class="external-link">hydroPSO: Model-independent Particle Swarm Optimisation (PSO) for environmental/hydrological models</a>.</p></li>
+<li><p><a href="https://cran.r-project.org/package=RFmerge" class="external-link">RFmerge: Merging of Satellite Datasets with Ground Observations using Random Forests</a>.</p></li>
 </ul>
 </div>
 </div>
@@ -150,37 +165,30 @@ doi = {10.5281/zenodo.839864},<br>
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Mauricio Zambrano-Bigiarini <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0002-9536-643X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Mauricio Zambrano-Bigiarini <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0002-9536-643X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/hzambran/hydroTSM/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-</ul>
-</div>
+
 
   </aside>
 </div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Mauricio Zambrano-Bigiarini.</p>
+  <p>Developed by Mauricio Zambrano-Bigiarini.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

@@ -1,174 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/404.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/index.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/Cauquenes7336001.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/EbroPPtsMonthly.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/KarameaAtGorgeQts.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/MaquehueTemuco.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/OcaEnOnaQts.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/SanMartinoPPts.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/annualfunction.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/baseflow.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/calendarHeatmap.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/climograph.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/cmv.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/daily2annual.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/daily2monthly.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/daily2weekly.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/dip.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/diy.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/dm2seasonal.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/drawxaxis.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/dwdays.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/dwi.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/extract.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/fdc.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/fdcu.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/hip.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/hydroTSM-internal.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/hydroTSM-package.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/hydropairs.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/hydroplot.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/infillxy.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/istdx.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/izoo2rzoo.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/ma.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/matrixplot.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/mip.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/monthlyfunction.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/plot_pq.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/rm1stchar.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/seasonalfunction.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/sfreq.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/si.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/smry.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/sname2ts.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/stdx.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/subdaily2daily.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/subdaily2weekly.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/subhourly2hourly.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/subhourly2nminutes.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/time2season.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/vector2zoo.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/weeklyfunction.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/yip.html</loc>
-  </url>
-  <url>
-    <loc>https://hzambran.github.io/hydroTSM/reference/zoo2RHtest.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://hzambran.github.io/hydroTSM/404.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/articles/hydroTSM_Daily_P_Vignette-knitr.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/articles/hydroTSM_Daily_Q_Vignette-knitr.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/articles/index.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/authors.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/index.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/news/index.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/Cauquenes7336001.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/EbroPPtsMonthly.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/KarameaAtGorgeQts.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/MaquehueTemuco.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/OcaEnOnaQts.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/SanMartinoPPts.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/annualfunction.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/baseflow.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/calendarHeatmap.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/climograph.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/cmv.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/daily2annual.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/daily2monthly.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/daily2weekly.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/dip.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/diy.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/dm2seasonal.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/drawxaxis.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/dwdays.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/dwi.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/extract.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/fdc.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/fdcu.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/hip.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/hydroTSM-internal.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/hydroTSM-package.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/hydropairs.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/hydroplot.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/index.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/infillxy.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/isComplete.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/istdx.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/izoo2rzoo.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/ma.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/matrixplot.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/mip.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/monthlyfunction.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/plot_pq.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/rm1stchar.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/seasonalfunction.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/sfreq.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/shiftyears.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/si.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/smry.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/sname2ts.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/stdx.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/subdaily2daily.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/subdaily2weekly.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/subhourly2hourly.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/subhourly2nminutes.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/time2season.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/vector2zoo.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/weeklyfunction.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/yip.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/zoo2RHtest.html</loc></url>
 </urlset>
+
