@@ -12,8 +12,7 @@
 ### New features
 
 ``` R
-    o 'baseflow'          :  -) it can apply the filter more than three times (see new 'n.pass' argument), which should be mandatory for hourly time series 
-                                (Ladson et al., 2013)
+    o 'baseflow'          :  -) it can apply the filter more than three times (see new 'n.pass' argument), which should be mandatory for hourly time series (Ladson et al., 2013)
                              -) new arguments: 'n.pass' 'pass.start'
     o 'matrixplot'        :  -) new arguments: cuts,  cuts.dec=2, cuts.labels, cuts.style, legend.cex, legend.title, legend.title.cex, legend.fontsize.
     o 'daily2annual'      :  -) new argument 'start.month' to choose the starting month to be used in the computation of annual values.
@@ -38,8 +37,7 @@
                              -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
     o 'daily2annual'      :  -) 'na.rm.max' is now correctly verified to be in [0, 1]. Thanks to Hector Garces for reporting it !.
                              -) now it correctly aggregates the daily values into annual ones when 'na.rm' is a missing argument
-                             -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
-                                corresponding annual value will be ‘NA’.
+                             -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max' corresponding annual value will be ‘NA’.
     o 'daily2weekly'      :  -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
     o 'subdaily2weekly'   :  -) now it correctly set as NA annual values where the percentage of missing values is larger (not larger or equal) than 'na.rm.max'
     o 'hydroplot'         :  -) now it correctly works with monthly objects when 'pfreq=o'
