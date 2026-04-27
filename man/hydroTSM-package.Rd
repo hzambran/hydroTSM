@@ -25,7 +25,7 @@ Version: \tab 0.8-0\cr
 Date: \tab 2026-04-27\cr
 License: \tab GPL >= 2 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Mon Apr 27 08:07:23 -04 2026 ; MZB \cr
+Packaged: \tab Mon Apr 27 08:57:54 -04 2026 ; MZB \cr
 BuiltUnder: \tab R version 4.6.0 (2026-04-24) -- "Because it was There" ; aarch64-apple-darwin23 \cr
 }
 
