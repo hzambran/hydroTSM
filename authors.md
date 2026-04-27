@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/hzambran/hydroTSM/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/hzambran/hydroTSM/blob/v0.8-0/inst/CITATION)
 
 Zambrano-Bigiarini, M. (2025) hydroTSM: Time Series Management and
 Analysis for Hydrological ModellingR package version 0.8.0.
