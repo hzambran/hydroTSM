@@ -1,7 +1,7 @@
 NEWS/ChangeLog for hydroTSM
 
 --------------------------
-# Changes in version 0.8-0  Ongoing
+# Changes in version 0.8-0  27-Apr-2026
 
 ## New functions
         o 'isComplete'        : for testing for identifying whether a zoo object has a regular time frequency without missing values from the first one to the last one
@@ -50,8 +50,8 @@ NEWS/ChangeLog for hydroTSM
 
 ## Package files
         o Now hydroTSM imports the 'timechange' package, in order to allow the correct handling of time zones in the 'izoo2rzoo' function.
-        o "new internal function 'check_from_and_to_and_subset' to allow subsetting a zoo object, with verification of the starting and ending definition of the 
-          user-defined subseting window.
+        o "new internal function 'check_from_and_to_and_subset' to allow subsetting a zoo object, with verification of the starting and ending definition of the user-defined subseting window.
+        o hydroTSM now has a graphical logo.        
 
 
 
