@@ -5,6 +5,8 @@
 - **Mauricio Zambrano-Bigiarini**. Author, maintainer, copyright holder.
   [](https://orcid.org/0000-0002-9536-643X)
 
+- **Joschka Thurner**. Contributor.
+
 ## Citation
 
 Source:
