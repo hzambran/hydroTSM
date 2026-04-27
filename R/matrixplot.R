@@ -1,7 +1,7 @@
 # File matrixplot.R
 # Part of the hydroTSM R package, https://github.com/hzambran/hydroTSM ; 
 #                                 https://CRAN.R-project.org/package=hydroTSM
-# Copyright 2009-2020 Mauricio Zambrano-Bigiarini
+# Copyright 2009-2026 Mauricio Zambrano-Bigiarini
 # Distributed under GPL 2 or later
 
 ####################################################################
@@ -14,6 +14,7 @@
 #          02-Feb-2015                                             #
 #          10-Mar-2020                                             #
 #          03-Sep-2024                                             #
+#          26-Apr-2026                                             #
 ####################################################################
 # Adapted (and thank you very much) from:
 # http://www2.warwick.ac.uk/fac/sci/moac/currentstudents/peter_cock/r/matrix_contour/
@@ -31,13 +32,13 @@
 
 matrixplot <- function(x, 
                        ColorRamp="Days", 
-                       ncolors=70, 
+                       ncolors=10, 
                        main="", 
                        cuts,                                # Numeric, indicating the values used to divide the range of 'x' in the legend of colours. If not provided, it is automatically selected as a function of 'lenght(col)'
                        cuts.dec=2,                          # Number of decimal places used to present the numbers that divide the range of 'x' in the legend of colours
                        cuts.labels,                         # Character indicating the label to be used in the ccolour legend for each one of the values defined by 'cuts'. If not provided, as.character(cuts)' is used
                        cuts.style=c("equal", "pretty", "fixed", "sd", "quantile", "kmeans", "bclust", "fisher"), # discarded becsue takes too much time or not alway provide the required number of classes: "dpih", "headtails", "hclust",  "jenks",
-                       legend.cex=1.1,                      # character expansion factor *relative* to current \code{par("cex")} used for the legend text.
+                       legend.cex=0.8,                      # character expansion factor *relative* to current \code{par("cex")} used for the legend text.
                        legend.title="",                     # text to be displayed above the legned of colours (e.g., showing the measurement units of the raster being displayed)
                        legend.title.cex=1.5,                # expansion factor(s) for the legend title
                        legend.fontsize=15,                  # The size of text (in points) used in the legend title                    
@@ -144,13 +145,20 @@ matrixplot <- function(x,
   #               main= main,
   #               xlab=NULL, ylab=NULL,...)
 
+  # Limit number of legend labels to 15
+  max.labels  <- min(15, length(lcuts))
+  label.idx   <- round( seq(1, length(lcuts), length.out = max.labels) )
+  cuts.labels <- cuts.labels[label.idx]
+  legend.at   <- as.numeric(factor(lcuts))[label.idx]
+  
+
   y <- levelplot(x, 
                  scales=list(tck=0, x=list(rot=90)),
                  colorkey = list(title = paste0(legend.title, " \n"),
                                  title.gpar=list(fontsize=legend.fontsize, font=1), #font=2 -> bold font
                                  space = "right",
                                  at=as.numeric(factor(lcuts)),                                                  # equally spaced color bins in the legend
-                                 labels=list(labels=cuts.labels, at=as.numeric(factor(lcuts)), cex=legend.cex), # equally spaced color bins in the legend
+                                 labels=list(labels=cuts.labels, at=legend.at, cex=legend.cex), # equally spaced color bins in the legend
                                  col=col                                     
                                  ), 
                  main=main,

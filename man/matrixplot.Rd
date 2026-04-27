@@ -1,7 +1,7 @@
 %% File matrixplot.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2009-2013 Mauricio Zambrano-Bigiarini
+%% Copyright 2009-2026 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{matrixplot}
@@ -16,11 +16,11 @@ Plots a color matrix, representing the values stored in \code{x}. \cr
 Originally, it was thought to represent the amount of days with information per year in a set of gauging stations, but it can be used for plotting the information stored in any two dimensional matrix.
 }
 \usage{
-matrixplot(x, ColorRamp="Days", ncolors = 70, main = "", 
+matrixplot(x, ColorRamp="Days", ncolors = 10, main = "", 
            cuts,  cuts.dec=2, cuts.labels, 
            cuts.style=c("equal", "pretty", "fixed", "sd", "quantile", 
                         "kmeans", "bclust", "fisher"), 
-           legend.cex=1.1,  legend.title="",  legend.title.cex=1.5, 
+           legend.cex=0.8,  legend.title="",  legend.title.cex=1.5, 
            legend.fontsize=15, ...)
 }
 %- maybe also 'usage' for other objects documented here.
