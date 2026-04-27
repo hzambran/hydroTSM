@@ -12,16 +12,16 @@ that can be included in this package for academic purposes.
 
 ## Details
 
-|             |                                                            |
-|-------------|------------------------------------------------------------|
-| Package:    | hydroTSM                                                   |
-| Type:       | Package                                                    |
-| Version:    | 0.7-0                                                      |
-| Date:       | 2024-01-14                                                 |
-| License:    | GPL \>= 2                                                  |
-| LazyLoad:   | yes                                                        |
-| Packaged:   | Wed 17 Jan 2024 20:43:17 -03 ; MZB                         |
-| BuiltUnder: | R version 4.3.2 (2023-10-31) ;x86_64-pc-linux-gnu (64-bit) |
+|             |                                                                                |
+|-------------|--------------------------------------------------------------------------------|
+| Package:    | hydroTSM                                                                       |
+| Type:       | Package                                                                        |
+| Version:    | 0.8-0                                                                          |
+| Date:       | 2026-04-27                                                                     |
+| License:    | GPL \>= 2                                                                      |
+| LazyLoad:   | yes                                                                            |
+| Packaged:   | Mon Apr 27 08:07:23 -04 2026 ; MZB                                             |
+| BuiltUnder: | R version 4.6.0 (2026-04-24) – "Because it was There" ; aarch64-apple-darwin23 |
 
 —————————————————————————————————————————  
 Datasets:
@@ -91,6 +91,7 @@ Maintainer: Mauricio Zambrano-Bigiarini \<mzb.devel@gmail\>
 
 <https://github.com/hzambran/hydroGOF>.  
 <https://github.com/hzambran/hydroPSO>.  
+<https://gitlab.com/rmarinao/hydroMOPSO>.  
 
 ## Examples
 

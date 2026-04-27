@@ -11,7 +11,7 @@ Source:
 [`inst/CITATION`](https://github.com/hzambran/hydroTSM/blob/master/inst/CITATION)
 
 Zambrano-Bigiarini, M. (2025) hydroTSM: Time Series Management and
-Analysis for Hydrological ModellingR package version 0.7-32.
+Analysis for Hydrological ModellingR package version 0.8.0.
 URL:https://CRAN.R-project.org/package=hydroTSM.
 doi:10.32614/CRAN.package.hydroTSM.
 
@@ -19,7 +19,7 @@ doi:10.32614/CRAN.package.hydroTSM.
       title = {{hydroTSM}: Time Series Management and Analysis for Hydrological Modelling},
       author = {{Zambrano-Bigiarini, Mauricio}},
       year = {2025},
-      note = {R package version 0.7-32 . doi:10.32614/CRAN.package.hydroTSM},
+      note = {R package version 0.8.0 . doi:10.32614/CRAN.package.hydroTSM},
       url = {https://CRAN.R-project.org/package=hydroTSM},
       doi = {10.32614/CRAN.package.hydroTSM},
     }
