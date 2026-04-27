@@ -41,7 +41,12 @@ NEWS/ChangeLog for hydroTSM
                                  -) improved visualization of time axis for subdaily objects when 'pfreq=o' 
                                  -) default value for 'from' argument was changed from NULL to 'start(x)'.
                                  -) default value for 'to' argument was changed from NULL to 'end(x)'.
-                                 -) new argument 'tz', to make it more flexible with sub-daily zoo objects
+                                 -) new argument 'tz', to make it more flexible with sub-daily zoo objects.
+                                 -) small changes to avoid invalid graphics state.
+        o 'plot_pq'           :  -) small changes to avoid invalid graphics state.
+        o 'matrixplot'        :  -) cluttered legend is now avoided, and a maximum of 10 levels ffor the legend is anow allowed
+
+
 
 ## Package files
         o Now hydroTSM imports the 'timechange' package, in order to allow the correct handling of time zones in the 'izoo2rzoo' function.
