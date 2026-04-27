@@ -21,12 +21,12 @@ The focus of this package has been put in providing a collection of tools useful
 \tabular{ll}{
 Package: \tab hydroTSM\cr
 Type: \tab Package\cr
-Version: \tab 0.7-0\cr
-Date: \tab 2024-01-14\cr
+Version: \tab 0.8-0\cr
+Date: \tab 2026-04-27\cr
 License: \tab GPL >= 2 \cr
 LazyLoad: \tab yes\cr
-Packaged: \tab Wed 17 Jan 2024 20:43:17 -03 ; MZB \cr
-BuiltUnder: \tab R version 4.3.2 (2023-10-31) ;x86_64-pc-linux-gnu (64-bit) \cr
+Packaged: \tab Mon Apr 27 08:07:23 -04 2026 ; MZB \cr
+BuiltUnder: \tab R version 4.6.0 (2026-04-24) -- "Because it was There" ; aarch64-apple-darwin23 \cr
 }
 
 --------------------------------------------------------------------------------------------------------------------------- \cr
@@ -129,6 +129,7 @@ Maintainer: Mauricio Zambrano-Bigiarini <mzb.devel@gmail>
 \seealso{
 \url{https://github.com/hzambran/hydroGOF}. \cr
 \url{https://github.com/hzambran/hydroPSO}. \cr
+\url{https://gitlab.com/rmarinao/hydroMOPSO}. \cr
 }
 \examples{
 ## Loading the monthly time series (10 years) of precipitation for the Ebro River basin.

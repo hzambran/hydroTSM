@@ -51,7 +51,8 @@ NEWS/ChangeLog for hydroTSM
 ## Package files
         o Now hydroTSM imports the 'timechange' package, in order to allow the correct handling of time zones in the 'izoo2rzoo' function.
         o "new internal function 'check_from_and_to_and_subset' to allow subsetting a zoo object, with verification of the starting and ending definition of the user-defined subseting window.
-        o hydroTSM now has a graphical logo.        
+        o hydroTSM now has a graphical logo.  
+        o hydroTSM now has a webpage (https://hzambran.github.io/hydroTSM/), created by pkgdown.          
 
 
 
