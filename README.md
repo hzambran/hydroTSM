@@ -60,7 +60,7 @@ citation("hydroTSM")
 
 To cite hydroTSM in publications use:
 
-> Zambrano-Bigiarini, Mauricio (2025). hydroTSM: Time Series Management and Analysis for Hydrological Modelling. R package version 0.7-0. URL:https://CRAN.R-project.org/package=hydroTSM. doi:10.32614/CRAN.package.hydroTSM.
+> Zambrano-Bigiarini, Mauricio (2026). hydroTSM: Time Series Management and Analysis for Hydrological Modelling. R package version 0.8-4. URL:https://CRAN.R-project.org/package=hydroTSM. doi:10.32614/CRAN.package.hydroTSM.
 
 
 A BibTeX entry for LaTeX users is
@@ -68,8 +68,8 @@ A BibTeX entry for LaTeX users is
 >  @Manual{hydroTSM,  
 >    title = {hydroTSM: Time Series Management, Analysis and Interpolation for Hydrological Modelling},  
 >    author = {Zambrano-Bigiarini, Mauricio},  
->    note = {R package version 0.7-0},  
->    year = {2025},
+>    note = {R package version 0.8-4},  
+>    year = {2026},
 >    url = {https://CRAN.R-project.org/package=hydroTSM},  
 >    doi = {doi:10.32614/CRAN.package.hydroTSM},  
 >  }
