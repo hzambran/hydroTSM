@@ -1,5 +1,14 @@
 # Changelog
 
+## Changes in version 0.8-1 27-Apr-2026
+
+### Package files
+
+``` R
+    o DESCRIPTION file: Joschka Thurner is now correctly recognised as contributor of the package (he should have been in v0.7-0, but I forgot to do it).  
+    o CITATION file: The DOI was changed form the one given by Zotero to the new DOI given by CRAN (10.32614/CRAN.package.hydroTSM) since June 2024.
+```
+
 ## Changes in version 0.8-0 27-Apr-2026
 
 ### New functions
@@ -57,7 +66,8 @@
     o Now hydroTSM imports the 'timechange' package, in order to allow the correct handling of time zones in the 'izoo2rzoo' function.
     o "new internal function 'check_from_and_to_and_subset' to allow subsetting a zoo object, with verification of the starting and ending definition of the user-defined subseting window.
     o hydroTSM now has a graphical logo.  
-    o hydroTSM now has a webpage (https://hzambran.github.io/hydroTSM/), created by pkgdown.          
+    o hydroTSM now has a webpage (https://hzambran.github.io/hydroTSM/), created by pkgdown.     
+   
 ```
 
 ## Changes in version 0.7-0 17-Jan-2024
