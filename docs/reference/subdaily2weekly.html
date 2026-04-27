@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7-32</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -137,15 +137,28 @@ character, for selecting if the result will be a matrix/data.frame or a zoo obje
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">######################</span></span></span>
-<span class="r-in"><span><span class="co">## Ex1: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">######################</span></span></span>
+<span class="r-in"><span><span class="co">## Ex1: Computation of WEEKLY values from HOURLY ts, only when the percentage of NAs in </span></span></span>
+<span class="r-in"><span><span class="co">#       each week is lower than a user-defined percentage (10% in this example).</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Loading the HOURLY streamflows for the station Karamea at Gorge</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">KarameaAtGorgeQts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">KarameaAtGorgeQts</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Sub-daily to weekly ts</span></span></span>
-<span class="r-in"><span><span class="fu">subdaily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">mean</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Subsetting 'x' to its first three weeks </span></span></span>
+<span class="r-in"><span><span class="co"># (Monday 2nd December 1985 - Sunday 29th uanuary 20th 1980)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">x</span>, end<span class="op">=</span><span class="st">"1985-12-31 23:59:00"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Transforming into NA the 10% of values in 'x'</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="co"># for reproducible results</span></span></span>
+<span class="r-in"><span><span class="va">n</span>           <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n.nas</span>       <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">*</span><span class="va">n</span>, <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">na.index</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, <span class="va">n.nas</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span><span class="op">[</span><span class="va">na.index</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Daily to Weekly, only for weeks with less than 10% of missing values</span></span></span>
+<span class="r-in"><span><span class="op">(</span> <span class="va">w2</span> <span class="op">&lt;-</span> <span class="fu">subdaily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span> <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1979-53 1980-00 1980-01 1980-02 1980-03 1980-04 1980-05 1980-06 1980-07 1980-08 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      NA      NA      NA      NA      NA      NA      NA      NA      NA      NA </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1980-09 1980-10 1980-11 1980-12 1980-13 1980-14 1980-15 1980-16 1980-17 1980-18 </span>
@@ -211,34 +224,333 @@ character, for selecting if the result will be a matrix/data.frame or a zoo obje
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1985-43 1985-44 1985-45 1985-46 1985-47 1985-48 1985-49 1985-50 1985-51 1985-52 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      NA      NA      NA      NA      NA      NA      NA      NA      NA      NA </span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Verifying that the second and third month of 'x' had 10% or more of missing values</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="cmv.html">cmv</a></span><span class="op">(</span><span class="va">x</span>, tscale<span class="op">=</span><span class="st">"weekly"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1979-53 0.500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-00 0.104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-01 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-02 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-03 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-04 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-05 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-06 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-07 0.065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-08 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-09 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-10 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-11 0.065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-12 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-13 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-14 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-15 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-16 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-17 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-18 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-19 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-20 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-21 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-22 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-23 0.065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-24 0.143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-25 0.065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-26 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-27 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-28 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-29 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-30 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-31 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-32 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-33 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-34 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-35 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-36 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-37 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-38 0.096</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-39 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-40 0.078</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-41 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-42 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-43 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-44 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-45 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-46 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-47 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-48 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-49 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-50 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-51 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1980-52 0.069</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-00 0.104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-01 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-02 0.065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-03 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-04 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-05 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-06 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-07 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-08 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-09 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-10 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-11 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-12 0.137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-13 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-14 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-15 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-16 0.137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-17 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-18 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-19 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-20 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-21 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-22 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-23 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-24 0.048</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-25 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-26 0.143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-27 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-28 0.054</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-29 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-30 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-31 0.137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-32 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-33 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-34 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-35 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-36 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-37 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-38 0.126</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-39 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-40 0.090</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-41 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-42 0.065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-43 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-44 0.065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-45 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-46 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-47 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-48 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-49 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-50 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-51 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1981-52 0.073</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-00 0.097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-01 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-02 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-03 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-04 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-05 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-06 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-07 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-08 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-09 0.143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-10 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-11 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-12 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-13 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-14 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-15 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-16 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-17 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-18 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-19 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-20 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-21 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-22 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-23 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-24 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-25 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-26 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-27 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-28 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-29 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-30 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-31 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-32 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-33 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-34 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-35 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-36 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-37 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-38 0.072</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-39 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-40 0.066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-41 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-42 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-43 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-44 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-45 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-46 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-47 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-48 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-49 0.143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-50 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-51 0.137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1982-52 0.108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-00 0.062</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-01 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-02 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-03 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-04 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-05 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-06 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-07 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-08 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-09 0.137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-10 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-11 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-12 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-13 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-14 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-15 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-16 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-17 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-18 0.048</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-19 0.155</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-20 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-21 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-22 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-23 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-24 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-25 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-26 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-27 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-28 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-29 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-30 0.137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-31 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-32 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-33 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-34 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-35 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-36 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-37 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-38 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-39 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-40 0.072</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-41 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-42 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-43 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-44 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-45 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-46 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-47 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-48 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-49 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-50 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-51 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1983-52 0.076</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-00 0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-01 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-02 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-03 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-04 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-05 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-06 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-07 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-08 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-09 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-10 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-11 0.149</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-12 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-13 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-14 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-15 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-16 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-17 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-18 0.149</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-19 0.137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-20 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-21 0.143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-22 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-23 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-24 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-25 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-26 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-27 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-28 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-29 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-30 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-31 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-32 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-33 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-34 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-35 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-36 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-37 0.054</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-38 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-39 0.102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-40 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-41 0.084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-42 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-43 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-44 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-45 0.054</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-46 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-47 0.774</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-48 1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-49 1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-50 1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-51 0.196</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-52 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1984-53 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-00 0.090</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-01 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-02 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-03 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-04 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-05 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-06 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-07 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-08 0.143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-09 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-10 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-11 0.054</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-12 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-13 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-14 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-15 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-16 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-17 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-18 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-19 0.137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-20 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-21 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-22 0.101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-23 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-24 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-25 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-26 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-27 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-28 0.071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-29 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-30 0.077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-31 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-32 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-33 0.119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-34 0.065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-35 0.083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-36 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-37 0.095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-38 0.066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-39 0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-40 0.102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-41 0.137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-42 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-43 0.107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-44 0.155</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-45 0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-46 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-47 0.113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-48 0.089</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-49 0.143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-50 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-51 0.131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1985-52 0.190</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co">######################</span></span></span>
-<span class="r-in"><span><span class="co">## Ex2: Computation of WEEKLY values from HOURLY ts, only when the percentage of NAs in </span></span></span>
-<span class="r-in"><span><span class="co">#       each week is lower than a user-defined percentage (10</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Loading the HOURLY streamflows for the station Karamea at Gorge</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">KarameaAtGorgeQts</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">KarameaAtGorgeQts</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Subsetting 'x' to its first three weeks </span></span></span>
-<span class="r-in"><span><span class="co"># (Monday 2nd December 1985 - Sunday 29th uanuary 20th 1980)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">x</span>, end<span class="op">=</span><span class="st">"1985-12-31 23:59:00"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Transforming into NA the 10</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="co"># for reproducible results</span></span></span>
-<span class="r-in"><span><span class="va">n</span>           <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">n.nas</span>       <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">*</span><span class="va">n</span>, <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">na.index</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, <span class="va">n.nas</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span><span class="op">[</span><span class="va">na.index</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Daily to Weekly, only for weeks with less than 10</span></span></span>
-<span class="r-in"><span><span class="op">(</span> <span class="va">w2</span> <span class="op">&lt;-</span> <span class="fu">subdaily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span> <span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Verifying that the second and third month of 'x' had 10</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="cmv.html">cmv</a></span><span class="op">(</span><span class="va">x</span>, tscale<span class="op">=</span><span class="st">"weekly"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">######################</span></span></span>
-<span class="r-in"><span><span class="co">## Ex3: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'</span></span></span>
+<span class="r-in"><span><span class="co">## Ex2: Computation of WEEKLY values from HOURLY ts, removing any missing value in 'x'</span></span></span>
 <span class="r-in"><span><span class="co">#       Loading the HOURLY streamflows for the station Karamea at Gorge</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">KarameaAtGorgeQts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">KarameaAtGorgeQts</span></span></span>
