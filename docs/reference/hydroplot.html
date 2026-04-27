@@ -9,7 +9,7 @@ sname2plot: When x is a data frame whose columns contain the time series of seve
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7-31</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7-32</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -299,13 +299,12 @@ Depending on the value of <code>ptype</code>, time series plots, boxplots and/or
 <span class="r-in"><span><span class="co">## Plotting seasonal precipitation at station "P9001"</span></span></span>
 <span class="r-in"><span><span class="fu">sname2plot</span><span class="op">(</span><span class="va">EbroPPtsMonthly</span>, sname<span class="op">=</span><span class="st">"P9001"</span>, FUN<span class="op">=</span><span class="va">sum</span>, dates<span class="op">=</span><span class="fl">1</span>, pfreq<span class="op">=</span><span class="st">"seasonal"</span>, </span></span>
 <span class="r-in"><span>           stype<span class="op">=</span><span class="st">"default"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Plotting the monthly and annual values of precipitation at station "P9001", </span></span></span>
 <span class="r-in"><span><span class="co">## stored in 'EbroPPtsMonthly'.</span></span></span>
 <span class="r-in"><span><span class="fu">sname2plot</span><span class="op">(</span><span class="va">EbroPPtsMonthly</span>, sname<span class="op">=</span><span class="st">"P9001"</span>, var.type<span class="op">=</span><span class="st">"Precipitation"</span>, dates<span class="op">=</span><span class="fl">1</span>, </span></span>
 <span class="r-in"><span>           pfreq<span class="op">=</span><span class="st">"ma"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="hydroplot-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
