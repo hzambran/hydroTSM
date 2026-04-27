@@ -280,12 +280,12 @@ on.exit(par(op))
 ## Plotting seasonal precipitation at station "P9001"
 sname2plot(EbroPPtsMonthly, sname="P9001", FUN=sum, dates=1, pfreq="seasonal", 
            stype="default")
-}
 
 ## Plotting the monthly and annual values of precipitation at station "P9001", 
 ## stored in 'EbroPPtsMonthly'.
 sname2plot(EbroPPtsMonthly, sname="P9001", var.type="Precipitation", dates=1, 
            pfreq="ma")
+}
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
