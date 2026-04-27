@@ -268,12 +268,8 @@ plot_pq.zoo <- function(p,
   p <- window(p, start=from, end=to)
   q <- window(q, start=from, end=to)
 
-  if (is.null(labels.p.dy)) {
-    labels.p.dy <- -median(
-      daily2monthly(p, FUN=sum, na.rm=TRUE),
-      na.rm=TRUE
-    ) * 1.1
-  } # IF end
+  if (is.null(labels.p.dy)) 
+    labels.p.dy <- -median( daily2monthly(p, FUN=sum, na.rm=TRUE), na.rm=TRUE) * 1.1
 
   # If required, filling in any missing value(s)
   if (na.fill != "remove") {
@@ -292,13 +288,16 @@ plot_pq.zoo <- function(p,
     } # IF end
   } # IF end
 
-  # saving graphical parameters
-  oldpars <- par(no.readonly=TRUE)
-  # To avoid inconsistent state of the graphical device
+  oldpars <- par(no.readonly = TRUE)
+
+  layout(1)
+  par(mfrow = c(1, 1))
+  par(new = FALSE)
+
   on.exit({
-    par(oldpars)
     layout(1)
-  })
+    par(oldpars)
+  }, add = TRUE)
 
   if (ptype=="original") {
      .plot_pq_ts.zoo(p, q, 
@@ -393,7 +392,7 @@ plot_pq.zoo <- function(p,
          x.intersp=0.1, y.intersp=3, 
          lty=1, pch=pchs, col=cols, cex=1,
          title=leg.title, legend= leg.text)
-
+  par(new = FALSE)
 } # '.plot_pq_ts.zoo' END
 
 
@@ -484,13 +483,16 @@ plot_pq.zoo <- function(p,
   } # .shift END
    
 
-  # saving graphical parameters
-  oldpars <- par(no.readonly=TRUE)
+  ## --- capture graphics state ---
+  old_par <- par(no.readonly = TRUE)
+
+  ## reset layout explicitly
+  layout(matrix(1))
 
   on.exit({
-    par(oldpars)
-    layout(1)
-  })
+    layout(matrix(1))
+    par(old_par)
+  }, add = FALSE)
 
   ###########################################
   ## In case 'q' is not average monthly values
@@ -534,10 +536,6 @@ plot_pq.zoo <- function(p,
   if (start.month != 1) p.m.q1  <- .shift(x=p.m.q1 , imonth=start.month)
   if (start.month != 1) p.m.q2  <- .shift(x=p.m.q2 , imonth=start.month)
 
-
-  
-  # the next line is required just in case a previous plot modified the graphical 'layout'
-  par(mfrow=c(1,1)) 
 
   ##############################################################################
   # Definining the plotting area (1 column, 2 rows), where the lower row has 
@@ -583,4 +581,6 @@ plot_pq.zoo <- function(p,
   axis(side=1, at=lx, labels=month.names)
   if (labels) text(lx+labels.q.dx, q.m.med+labels.q.dy, cex=labels.cex, adj=0.5, labels= round(q.m.med,1), col="black" )
 
+  # to avoid returning plotting objects that can interfere with device recording.
+  invisible(NULL)
 } # 'plot_pq_monthly.zoo' END

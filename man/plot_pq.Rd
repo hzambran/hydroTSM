@@ -211,21 +211,23 @@ q <- Cauquenes7336001[, 5]
 ## Plotting P and Q for the full time period of both time series
 plot_pq(p=p, q=q)
 
-######################
-## Ex2: Plotting precipitation and streamflows only for a specific time period,
-##      from April to December 2000.
-plot_pq(p, q, from="1985-04-01", to="1985-12-31")
+\dontrun{
+  ######################
+  ## Ex2: Plotting precipitation and streamflows only for a specific time period,
+  ##      from April to December 2000.
+  plot_pq(p, q, from="1985-04-01", to="1985-12-31")
 
-######################
-## Ex3: Plotting monthly values of precipitation and streamflows for the 
-##      full time period of both time series.
-plot_pq(p, q, ptype="monthly")
+  ######################
+  ## Ex3: Plotting monthly values of precipitation and streamflows for the 
+  ##      full time period of both time series.
+  plot_pq(p, q, ptype="monthly")
 
-######################
-## Ex4: Plotting monthly values of precipitation and streamflows for the 
-##      full time period of both time series, but using a hydrologic year
-##      starting on April
-plot_pq(p, q, ptype="monthly", start.month=4)
+  ######################
+  ## Ex4: Plotting monthly values of precipitation and streamflows for the 
+  ##      full time period of both time series, but using a hydrologic year
+  ##      starting on April
+  plot_pq(p, q, ptype="monthly", start.month=4)
+}
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
