@@ -1,7 +1,7 @@
 %%File izoo2rzoo.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 http://cran.r-project.org/web/packages/hydroTSM/
-%% Copyright 2008-2023 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2026 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{izoo2rzoo}
@@ -205,7 +205,7 @@ x  <- zoo(0:20, dt)
 
 ## Loading the time series of hourly streamflows for the station Karamea at Gorge
 ## Time Zone for 'KarameaAtGorgeQts' data is 'UTC' (see ?KarameaAtGorgeQts), but it will
-## be tr4ated as 'NZ' (Zealand Standard Time) for this example
+## be tr4ated as 'Pacific/Auckland' (Zealand Standard Time) for this example
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
@@ -214,7 +214,7 @@ x <- KarameaAtGorgeQts
 x <- window(x, end="1980-01-01 23:59:00")
 
 # Adding NA hourly data since 1979-12-31 21:15:00
-izoo2rzoo(x, from="1979-12-31 21:15:00", tz="NZ")
+izoo2rzoo(x, from="1979-12-31 21:15:00", tz="Pacific/Auckland")
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
