@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -418,7 +418,7 @@ By default, <code>tstep</code> is missing, and it is automatically set to <kbd>"
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Loading the time series of hourly streamflows for the station Karamea at Gorge</span></span></span>
 <span class="r-in"><span><span class="co">## Time Zone for 'KarameaAtGorgeQts' data is 'UTC' (see ?KarameaAtGorgeQts), but it will</span></span></span>
-<span class="r-in"><span><span class="co">## be tr4ated as 'NZ' (Zealand Standard Time) for this example</span></span></span>
+<span class="r-in"><span><span class="co">## be tr4ated as 'Pacific/Auckland' (Zealand Standard Time) for this example</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">KarameaAtGorgeQts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">KarameaAtGorgeQts</span></span></span>
 <span class="r-in"><span></span></span>
@@ -427,7 +427,7 @@ By default, <code>tstep</code> is missing, and it is automatically set to <kbd>"
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">x</span>, end<span class="op">=</span><span class="st">"1980-01-01 23:59:00"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Adding NA hourly data since 1979-12-31 21:15:00</span></span></span>
-<span class="r-in"><span><span class="fu">izoo2rzoo</span><span class="op">(</span><span class="va">x</span>, from<span class="op">=</span><span class="st">"1979-12-31 21:15:00"</span>, tz<span class="op">=</span><span class="st">"NZ"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">izoo2rzoo</span><span class="op">(</span><span class="va">x</span>, from<span class="op">=</span><span class="st">"1979-12-31 21:15:00"</span>, tz<span class="op">=</span><span class="st">"Pacific/Auckland"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1979-12-31 21:15:00 72.6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1979-12-31 22:15:00 72.4</span>
