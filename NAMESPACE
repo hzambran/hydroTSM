@@ -23,6 +23,8 @@ importFrom("lattice", levelplot)
 #importFrom("chron", month.day.year)
 exportPattern("^[^\\.]")
 
+export(shiftyears)
+
 S3method(annualfunction, data.frame)
 S3method(annualfunction, default)
 S3method(annualfunction, matrix)
