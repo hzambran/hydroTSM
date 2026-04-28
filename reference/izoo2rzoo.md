@@ -426,7 +426,7 @@ x  <- zoo(0:20, dt)
 
 ## Loading the time series of hourly streamflows for the station Karamea at Gorge
 ## Time Zone for 'KarameaAtGorgeQts' data is 'UTC' (see ?KarameaAtGorgeQts), but it will
-## be tr4ated as 'NZ' (Zealand Standard Time) for this example
+## be tr4ated as 'Pacific/Auckland' (Zealand Standard Time) for this example
 data(KarameaAtGorgeQts)
 x <- KarameaAtGorgeQts
 
@@ -435,7 +435,7 @@ x <- KarameaAtGorgeQts
 x <- window(x, end="1980-01-01 23:59:00")
 
 # Adding NA hourly data since 1979-12-31 21:15:00
-izoo2rzoo(x, from="1979-12-31 21:15:00", tz="NZ")
+izoo2rzoo(x, from="1979-12-31 21:15:00", tz="Pacific/Auckland")
 #>                         
 #> 1979-12-31 21:15:00 72.6
 #> 1979-12-31 22:15:00 72.4

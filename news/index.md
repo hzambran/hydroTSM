@@ -1,5 +1,13 @@
 # Changelog
 
+## Changes in version 0.8-6 27-Apr-2026
+
+### Package files
+
+``` R
+    o NAMESPACE file: 'shiftyears' function is now explicitly exported (to be used in the hydroGOF R package).
+```
+
 ## Changes in version 0.8-5 27-Apr-2026
 
 ### Package files
