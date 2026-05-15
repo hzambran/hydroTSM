@@ -39,7 +39,7 @@ hydropairs <- function(x, dec=3, use="pairwise.complete.obs", method="pearson",.
 
   panel.cor <- function(x, y, digits=dec, prefix="", cex.cor)
     {
-        usr <- par("usr"); on.exit(par(usr))
+        usr <- par("usr"); on.exit(par(usr=usr), add=TRUE)
         par(usr = c(0, 1, 0, 1))
 
         r <- abs(cor(x, y, method= method, use= use))
@@ -60,7 +60,7 @@ hydropairs <- function(x, dec=3, use="pairwise.complete.obs", method="pearson",.
 
   panel.hist <- function(x, ...)
          {
-             usr <- par("usr"); on.exit(par(usr))
+             usr <- par("usr"); on.exit(par(usr=usr), add=TRUE)
              par(usr = c(usr[1:2], 0, 1.5) )
              h <- hist(x, plot = FALSE)
              breaks <- h$breaks; nB <- length(breaks)
