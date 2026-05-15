@@ -1,6 +1,16 @@
 # Changelog
 
+## Changes in version 0.9-0 Ongoing
+
+### Bug fixes
+
+``` R
+    o 'hydropairs': fixed incorrect restoring of graphical state. 'on.exit(par(usr))' was replaced by 'on.exit(par(usr=usr), add=TRUE)'
+```
+
 ## Changes in version 0.8-6 27-Apr-2026
+
+CRAN release: 2026-04-28
 
 ### Package files
 

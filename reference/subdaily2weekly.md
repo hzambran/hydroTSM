@@ -159,6 +159,7 @@ Mauricio Zambrano-Bigiarini, <mzb.devel@gmail>
 ## Examples
 
 ``` r
+
 ######################
 ## Ex1: Computation of WEEKLY values from HOURLY ts, only when the percentage of NAs in 
 #       each week is lower than a user-defined percentage (10% in this example).

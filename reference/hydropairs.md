@@ -86,10 +86,4 @@ data(EbroPPtsMonthly)
 ## of the first 3 gauging stations in 'EbroPPtsMonthly'. 
 ## The first column of 'EbroPPtsMonthly' has the dates.
 hydropairs(EbroPPtsMonthly[,2:4])
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
 ```

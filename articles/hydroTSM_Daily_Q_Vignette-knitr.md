@@ -16,6 +16,7 @@ Installing the latest stable version (from
 [CRAN](https://cran.r-project.org/package=hydroTSM)):
 
 ``` r
+
 install.packages("hydroTSM")
 ```
 
@@ -23,6 +24,7 @@ Alternatively, you can also try the under-development version (from
 [Github](https://github.com/hzambran/hydroTSM)):
 
 ``` r
+
 if (!require(devtools)) install.packages("devtools")
 library(devtools)
 install_github("hzambran/hydroTSM")
@@ -34,6 +36,7 @@ Loading the *hydroTSM* package, which contains data and functions used
 in this analysis:
 
 ``` r
+
 library(hydroTSM)
 ```
 
@@ -50,24 +53,28 @@ Loading daily streamflow data at the station Cauquenes en el Arrayan,
 Maule Region, Chile, from 01/Jan/1979 to 31/Dec/2020.
 
 ``` r
+
 data(Cauquenes7336001)
 ```
 
 Selecting only a 30-years time slice for the analysis
 
 ``` r
+
 x <- window(Cauquenes7336001, start="1981-01-01", end="2010-12-31")
 ```
 
 Dates of the daily values of ‘x’:
 
 ``` r
+
 dates <- time(x)
 ```
 
 Amount of years in ‘x’ (needed for computations):
 
 ``` r
+
 ( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
 ```
 
@@ -79,6 +86,7 @@ The `Cauquenes7336001` dataset stores 5 variables (in this order): P,
 precipitations (P, \[mm\]) will be selected:
 
 ``` r
+
 P <- x[, 1]
 Q <- x[, 5]
 ```
@@ -88,6 +96,7 @@ Q <- x[, 5]
 1.  Summary statistics of streamflows:
 
 ``` r
+
 smry(Q)
 ```
 
@@ -109,6 +118,7 @@ smry(Q)
 2.  Amount of days with information (not NA) per year:
 
 ``` r
+
 dwi(Q)
 ```
 
@@ -120,6 +130,7 @@ dwi(Q)
 3.  Amount of days with information (not NA) per month per year:
 
 ``` r
+
 dwi(Q, out.unit="mpy")
 ```
 
@@ -162,6 +173,7 @@ dwi(Q, out.unit="mpy")
     temporal scale using decimal values:
 
 ``` r
+
 ( pmd <- cmv(Q, tscale="monthly") )
 ```
 
@@ -174,6 +186,7 @@ dwi(Q, out.unit="mpy")
 Identifying months with more than 10 percent of missing data:
 
 ``` r
+
 index <- which(pmd >= 0.1)
 time(pmd[index])
 ```
@@ -187,6 +200,7 @@ time(pmd[index])
     example).
 
 ``` r
+
 ## Daily to monthly, only for months with less than 10% of missing values
 (m2 <- daily2monthly(Q, FUN=mean, na.rm=TRUE, na.rm.max=0.1))
 ```
@@ -207,6 +221,7 @@ this example, only daily and monthly plots are produced, and only data
 starting on 01-Jan-1987 are plotted.
 
 ``` r
+
 hydroplot(Q, var.type="Flow", main="at Cauquenes en el Arrayan", 
           pfreq = "dm", from="2000-01-01")
 ```
@@ -216,6 +231,7 @@ hydroplot(Q, var.type="Flow", main="at Cauquenes en el Arrayan",
 Plotting P and Q for the full time period of both time series:
 
 ``` r
+
 plot_pq(p=P, q=Q)
 ```
 
@@ -225,6 +241,7 @@ Plotting precipitation and streamflows only for a specific time period,
 from April to December 2000:
 
 ``` r
+
 plot_pq(p=P, q=Q, from="2000-04-01", to="2000-12-31")
 ```
 
@@ -234,6 +251,7 @@ Plotting monthly values of precipitation and streamflows for the full
 time period of both time series:
 
 ``` r
+
 plot_pq(p=P, q=Q, ptype="monthly")
 ```
 
@@ -244,6 +262,7 @@ time period of both time series, but using a hydrologic year starting on
 April:
 
 ``` r
+
 plot_pq(p=P, q=Q, ptype="monthly", start.month=4)
 ```
 
@@ -254,6 +273,7 @@ a calendar heatmap (six years maximum) to visually identify dry, normal
 and wet days:
 
 ``` r
+
 q <- window(Q, start="2005-01-01", end="2010-12-31")
 calendarHeatmap(q)
 ```
@@ -275,6 +295,7 @@ logarithmic scale for the `y` axis (i.e., to put focus on the low
 flows):
 
 ``` r
+
 fdc2 <- fdc(Q)
 ```
 
@@ -288,6 +309,7 @@ logarithmic scale for the `x` axis (i.e., to put focus on the high
 flows):
 
 ``` r
+
 fdc3 <- fdc(Q, log="x")
 ```
 
@@ -296,6 +318,7 @@ fdc3 <- fdc(Q, log="x")
 Traditional flow duration curve of the 30-year daily streamflow data:
 
 ``` r
+
 fdc1 <- fdc(Q, log="", thr.pos="topright")
 ```
 
@@ -312,6 +335,7 @@ function for computing and plotting the baseflow for the full time
 period of a given time series of streamflows:
 
 ``` r
+
 baseflow(Q) 
 ```
 
@@ -323,6 +347,7 @@ incorporated in the `baseflow` function the missing data, i.e.,
 `na.fill="spline`:
 
 ``` r
+
 baseflow(Q, na.fill="spline") 
 ```
 
@@ -340,6 +365,7 @@ Now, we will compute and plot the daily baseflow (i.e., the value
 obtained after the thir pass of the filter) for the full time period:
 
 ``` r
+
 baseflow(Q, na.fill="spline", plot=TRUE)
 ```
 
@@ -357,6 +383,7 @@ You might also want to compute and plot the daily baseflow for a
 specific time period. For this example, from April to December 2000:
 
 ``` r
+
 baseflow(Q, na.fill="spline", from="2000-04-01", to="2000-12-31")
 ```
 
@@ -375,6 +402,7 @@ each pass of the filter), for a specific time period (April to December
 2000):
 
 ``` r
+
 baseflow(Q, na.fill="spline", from="2000-04-01", to="2000-12-31", 
          out.type="all", plot=TRUE)
 ```
@@ -398,7 +426,7 @@ This tutorial was built under:
 
     ## [1] "R version 4.6.0 (2026-04-24)"
 
-    ## [1] "hydroTSM 0.8-6"
+    ## [1] "hydroTSM 0.8-7"
 
 ## Version history
 
@@ -430,7 +458,7 @@ in the [R](https://www.r-project.org/) world.
 
 - [`?read.table`](https://rdrr.io/r/utils/read.table.html),
   [`?write.table`](https://rdrr.io/r/utils/write.table.html): allow the
-  user to read/write a file (in $\ $table format) and create a data
+  user to read/write a file (in $`~`$table format) and create a data
   frame from it. Related functions are
   [`?read.csv`](https://rdrr.io/r/utils/read.table.html),
   [`?write.csv`](https://rdrr.io/r/utils/write.table.html),
@@ -482,6 +510,7 @@ In the following sequential lines of code, you can see two examples that
 show you how to plot two matrixplots in a single Figure:
 
 ``` r
+
 library(hydroTSM)
 data(SanMartinoPPts)
 x <- window(SanMartinoPPts, end=as.Date("1960-12-31"))
@@ -502,12 +531,14 @@ The second and easier way allows you to obtain the same previous figure
 package:
 
 ``` r
+
 if (!require(gridExtra)) install.packages("gridExtra")
 ```
 
     ## Loading required package: gridExtra
 
 ``` r
+
 require(gridExtra) # also loads grid
 require(lattice)
 ```
@@ -515,6 +546,7 @@ require(lattice)
     ## Loading required package: lattice
 
 ``` r
+
 grid.arrange(p, p, nrow=2)
 ```
 

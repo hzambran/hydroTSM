@@ -16,6 +16,7 @@ Installing the latest stable version (from
 [CRAN](https://CRAN.R-project.org/package=hydroTSM)):
 
 ``` r
+
 install.packages("hydroTSM")
 ```
 
@@ -23,6 +24,7 @@ Alternatively, you can also try the under-development version (from
 [Github](https://github.com/hzambran/hydroTSM)):
 
 ``` r
+
 if (!require(devtools)) install.packages("devtools")
 library(devtools)
 install_github("hzambran/hydroTSM")
@@ -34,6 +36,7 @@ Loading the *hydroTSM* package, which contains data and functions used
 in this analysis:
 
 ``` r
+
 library(hydroTSM)
 ```
 
@@ -50,24 +53,28 @@ Loading daily precipitation data at the station San Martino di
 Castrozza, Trento Province, Italy, from 01/Jan/1921 to 31/Dec/1990.
 
 ``` r
+
 data(SanMartinoPPts)
 ```
 
 Selecting only a 6-years time slice for the analysis
 
 ``` r
+
 x <- window(SanMartinoPPts, start="1985-01-01")
 ```
 
 Dates of the daily values of ‘x’
 
 ``` r
+
 dates <- time(x)
 ```
 
 Amount of years in ‘x’ (needed for computations)
 
 ``` r
+
 ( nyears <- yip(from=start(x), to=end(x), out.type="nmbr" ) )
 ```
 
@@ -78,6 +85,7 @@ Amount of years in ‘x’ (needed for computations)
 1.  Summary statistics
 
 ``` r
+
 smry(x)
 ```
 
@@ -99,6 +107,7 @@ smry(x)
 2.  Amount of days with information (not NA) per year
 
 ``` r
+
 dwi(x)
 ```
 
@@ -108,6 +117,7 @@ dwi(x)
 3.  Amount of days with information (not NA) per month per year
 
 ``` r
+
 dwi(x, out.unit="mpy")
 ```
 
@@ -124,6 +134,7 @@ dwi(x, out.unit="mpy")
     example).
 
 ``` r
+
 # Loading the DAILY precipitation data at SanMartino
 data(SanMartinoPPts)
 y <- SanMartinoPPts
@@ -146,6 +157,7 @@ y[na.index] <- NA
     ##        102         NA         NA
 
 ``` r
+
 # Verifying that the second and third month of 'x' had 10% or more of missing values
 cmv(y, tscale="month")
 ```
@@ -161,6 +173,7 @@ this example, only daily and monthly plots are produced, and only data
 starting on 01-Jan-1987 are plotted.
 
 ``` r
+
 hydroplot(x, var.type="Precipitation", main="at San Martino", 
           pfreq = "dm", from="1987-01-01")
 ```
@@ -171,6 +184,7 @@ Global view of daily precipitation values a calendar heatmap (six years
 maximum), useful for visually identifying dry, normal and wet days:
 
 ``` r
+
 calendarHeatmap(x)
 ```
 
@@ -183,12 +197,14 @@ and November 1st 1990 was Thursday.
 Selecting only a three-month time slice for the analysis:
 
 ``` r
+
 yy <- window(SanMartinoPPts, start="1990-10-01")
 ```
 
 Plotting the selected time series:
 
 ``` r
+
 hydroplot(yy,  ptype="ts", pfreq="o", var.unit="mm")
 ```
 
@@ -199,6 +215,7 @@ hydroplot(yy,  ptype="ts", pfreq="o", var.unit="mm")
 Annual values of precipitation
 
 ``` r
+
 daily2annual(x, FUN=sum, na.rm=TRUE)
 ```
 
@@ -210,6 +227,7 @@ Average annual precipitation
 Obvious way:
 
 ``` r
+
 mean( daily2annual(x, FUN=sum, na.rm=TRUE) )
 ```
 
@@ -225,6 +243,7 @@ over all the annual values of `x` previously obtained, in order to
 obtain a single annual value.
 
 ``` r
+
 annualfunction(x, FUN=sum, na.rm=TRUE) / nyears
 ```
 
@@ -237,6 +256,7 @@ annualfunction(x, FUN=sum, na.rm=TRUE) / nyears
     identifying dry/wet months.
 
 ``` r
+
 # Daily zoo to monthly zoo
 m <- daily2monthly(x, FUN=sum, na.rm=TRUE)
      
@@ -252,6 +272,7 @@ require(lattice)
     ## Loading required package: lattice
 
 ``` r
+
 print(matrixplot(M, ColorRamp="Precipitation", 
            main="Monthly precipitation at San Martino st., [mm/month]"))
 ```
@@ -262,6 +283,7 @@ print(matrixplot(M, ColorRamp="Precipitation",
     looking at these values in the boxplot.
 
 ``` r
+
 monthlyfunction(m, FUN=median, na.rm=TRUE)
 ```
 
@@ -271,18 +293,21 @@ monthlyfunction(m, FUN=median, na.rm=TRUE)
 3.  Vector with the three-letter abbreviations for the month names
 
 ``` r
+
 cmonth <- format(time(m), "%b")
 ```
 
 4.  Creating ordered monthly factors
 
 ``` r
+
 months <- factor(cmonth, levels=unique(cmonth), ordered=TRUE)
 ```
 
 5.  Boxplot of the monthly values
 
 ``` r
+
 boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation", 
          ylab="Precipitation, [mm]", xlab="Month")
 ```
@@ -294,6 +319,7 @@ boxplot( coredata(m) ~ months, col="lightblue", main="Monthly Precipitation",
 Average seasonal values of precipitation
 
 ``` r
+
 seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
 ```
 
@@ -303,6 +329,7 @@ seasonalfunction(x, FUN=sum, na.rm=TRUE) / nyears
 Extracting the seasonal values for each year
 
 ``` r
+
 ( DJF <- dm2seasonal(x, season="DJF", FUN=sum) )
 ```
 
@@ -310,6 +337,7 @@ Extracting the seasonal values for each year
     ## 148.2 262.2 178.2 197.6 212.0 174.6
 
 ``` r
+
 ( MAM <- dm2seasonal(m, season="MAM", FUN=sum) )
 ```
 
@@ -317,6 +345,7 @@ Extracting the seasonal values for each year
     ## 388.2 405.6 356.0 310.4 489.0 267.2
 
 ``` r
+
 ( JJA <- dm2seasonal(m, season="JJA", FUN=sum) )
 ```
 
@@ -324,6 +353,7 @@ Extracting the seasonal values for each year
     ## 376.2 367.0 550.6 462.6 658.8 409.6
 
 ``` r
+
 ( SON <- dm2seasonal(m, season="SON", FUN=sum) )
 ```
 
@@ -333,6 +363,7 @@ Extracting the seasonal values for each year
 Plotting the time evolution of the seasonal precipitation values
 
 ``` r
+
 hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 ```
 
@@ -347,18 +378,21 @@ Castrozza, Trento Province, Italy, with data from 01/Jan/1921 to
 31/Dec/1990.
 
 ``` r
+
 data(SanMartinoPPts)
 ```
 
 Selecting only a 6-year time slice for the analysis
 
 ``` r
+
 x <- window(SanMartinoPPts, start="1985-10-01")
 ```
 
 Plotting the selected time series
 
 ``` r
+
 hydroplot(x,  ptype="ts", pfreq="o", var.unit="mm")
 ```
 
@@ -370,6 +404,7 @@ Computing the seasonality index defined by Walsh and Lawler (1981) to
 classify the precipitation regime of `x`:
 
 ``` r
+
 si(x)
 ```
 
@@ -387,6 +422,7 @@ Counting and plotting the number of days in the period where
 precipitation is \> 10 \[mm\]:
 
 ``` r
+
 ( R10mm <- length( x[x>10] ) )
 ```
 
@@ -397,12 +433,14 @@ precipitation is \> 10 \[mm\]:
 Identifying the wet days (daily precipitation \>= 1 mm):
 
 ``` r
+
 wet.index <- which(x >= 1)
 ```
 
 Computing the 95th percentile of precipitation on wet days (*PRwn95*):
 
 ``` r
+
 ( PRwn95 <- quantile(x[wet.index], probs=0.95, na.rm=TRUE) )
 ```
 
@@ -417,6 +455,7 @@ period 1988-1990, not the 30-year period 1961-1990 commonly used.
 Identifying the very wet days (daily precipitation \>= *PRwn95*):
 
 ``` r
+
 (very.wet.index <- which(x >= PRwn95))
 ```
 
@@ -427,6 +466,7 @@ Identifying the very wet days (daily precipitation \>= *PRwn95*):
 Computing the total precipitation on the very wet days:
 
 ``` r
+
 ( R95p <- sum(x[very.wet.index]) )
 ```
 
@@ -440,6 +480,7 @@ period 1988-1990, not the 30-year period 1961-1990 commonly used
 Computing the 5-day total (accumulated) precipitation:
 
 ``` r
+
 x.5max <- rollapply(data=x, width=5, FUN=sum, fill=NA, partial= TRUE, 
                     align="center")
 
@@ -453,6 +494,7 @@ hydroplot(x.5max,  ptype="ts+boxplot", pfreq="o", var.unit="mm")
 Maximum annual value of 5-day total precipitation:
 
 ``` r
+
 (x.5max.annual <- daily2annual(x.5max, FUN=max, na.rm=TRUE))
 ```
 
@@ -473,6 +515,7 @@ Since v0.5-0, `hydroTSM` includes a function to plot a climograph,
 considering not only precipitation but air temperature data as well.
 
 ``` r
+
 # Loading daily ts of precipitation, maximum and minimum temperature
 data(MaquehueTemuco)
 
@@ -485,6 +528,7 @@ tmn <- MaquehueTemuco[, 3]
 Plotting a full climograph:
 
 ``` r
+
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 ```
@@ -495,6 +539,7 @@ Plotting a climograph with uncertainty bands around mean values, but
 with no labels for tmx and tmn:
 
 ``` r
+
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, tmx.labels=FALSE, tmn.labels=FALSE, 
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
 ```
@@ -505,6 +550,7 @@ Plotting a climograph with uncertainty bands around mean values, but
 with no labels for tmx, tmn and pcp:
 
 ``` r
+
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
                 pcp.labels=FALSE, tmean.labels=FALSE, tmx.labels=FALSE, tmn.labels=FALSE, 
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
@@ -517,6 +563,7 @@ following figure will plot a full climograph starting in April
 (`start.month=4`) instead of January (`start.month=1`):
 
 ``` r
+
 m <- climograph(pcp=pcp, tmx=tmx, tmn=tmn, na.rm=TRUE, 
                 start.month=4, temp.labels.dx=c(rep(-0.2,4), rep(0.2,6),rep(-0.2,2)),
                 main="Maquehue Temuco Ad (Chile)", lat=-38.770, lon=-72.637)
@@ -532,7 +579,7 @@ This tutorial was built under:
 
     ## [1] "R version 4.6.0 (2026-04-24)"
 
-    ## [1] "hydroTSM 0.8-6"
+    ## [1] "hydroTSM 0.8-7"
 
 ## Version history
 
@@ -569,7 +616,7 @@ in the [R](https://www.r-project.org/) world.
 
 - [`?read.table`](https://rdrr.io/r/utils/read.table.html),
   [`?write.table`](https://rdrr.io/r/utils/write.table.html): allow the
-  user to read/write a file (in $\ $table format) and create a data
+  user to read/write a file (in $`~`$table format) and create a data
   frame from it. Related functions are
   [`?read.csv`](https://rdrr.io/r/utils/read.table.html),
   [`?write.csv`](https://rdrr.io/r/utils/write.table.html),
@@ -621,6 +668,7 @@ In the following sequential lines of code, you can see two examples that
 show you how to plot two matrixplots in a single Figure:
 
 ``` r
+
 library(hydroTSM)
 data(SanMartinoPPts)
 x <- window(SanMartinoPPts, end=as.Date("1960-12-31"))
@@ -641,12 +689,14 @@ The second and easier way allows you to obtain the same previous figure
 package:
 
 ``` r
+
 if (!require(gridExtra)) install.packages("gridExtra")
 ```
 
     ## Loading required package: gridExtra
 
 ``` r
+
 require(gridExtra) # also loads grid
 require(lattice)
 

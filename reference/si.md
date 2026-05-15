@@ -96,6 +96,7 @@ Mauricio Zambrano-Bigiarini, <mzb.devel@gmail>
 ## Examples
 
 ``` r
+
 ############################
 ## Ex 1: Seasonality index for a rain gauge with equable precipitation , 
 ##       but with a definite wetter season 

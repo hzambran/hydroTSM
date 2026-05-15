@@ -12,74 +12,74 @@ that can be included in this package for academic purposes.
 
 ## Details
 
-|             |                                                                                |
-|-------------|--------------------------------------------------------------------------------|
-| Package:    | hydroTSM                                                                       |
-| Type:       | Package                                                                        |
-| Version:    | 0.8-0                                                                          |
-| Date:       | 2026-04-27                                                                     |
-| License:    | GPL \>= 2                                                                      |
-| LazyLoad:   | yes                                                                            |
-| Packaged:   | Mon Apr 27 08:57:54 -04 2026 ; MZB                                             |
+|  |  |
+|----|----|
+| Package: | hydroTSM |
+| Type: | Package |
+| Version: | 0.8-0 |
+| Date: | 2026-04-27 |
+| License: | GPL \>= 2 |
+| LazyLoad: | yes |
+| Packaged: | Mon Apr 27 08:57:54 -04 2026 ; MZB |
 | BuiltUnder: | R version 4.6.0 (2026-04-24) – "Because it was There" ; aarch64-apple-darwin23 |
 
 —————————————————————————————————————————  
 Datasets:
 
-|                                                                                                                                                                  |                                                                                                                               |
-|------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+|  |  |
+|----|----|
 | [`Cauquenes7336001`](https://hzambran.github.io/hydroTSM/reference/Cauquenes7336001.md) Hydrometeorological time series for "Cauquenes en El Arrayan" catchment. | [`EbroPPtsMonthly`](https://hzambran.github.io/hydroTSM/reference/EbroPPtsMonthly.md) Ebro Monthly Precipitation Time Series. |
-| [`KarameaAtGorgeQts`](https://hzambran.github.io/hydroTSM/reference/KarameaAtGorgeQts.md) Karamea at Gorge, time series of hourly streamflows.                   | [`MaquehueTemuco`](https://hzambran.github.io/hydroTSM/reference/MaquehueTemuco.md) San Martino, ts of daily precipitation.   |
-| [`OcaEnOnaQts`](https://hzambran.github.io/hydroTSM/reference/OcaEnOnaQts.md) Oca in "Ona" (Q0931), time series of daily streamflows                             | [`SanMartinoPPts`](https://hzambran.github.io/hydroTSM/reference/SanMartinoPPts.md) San Martino, ts of daily precipitation.   |
-| —————————————————————————————————————————                                                                                                                        |                                                                                                                               |
+| [`KarameaAtGorgeQts`](https://hzambran.github.io/hydroTSM/reference/KarameaAtGorgeQts.md) Karamea at Gorge, time series of hourly streamflows. | [`MaquehueTemuco`](https://hzambran.github.io/hydroTSM/reference/MaquehueTemuco.md) San Martino, ts of daily precipitation. |
+| [`OcaEnOnaQts`](https://hzambran.github.io/hydroTSM/reference/OcaEnOnaQts.md) Oca in "Ona" (Q0931), time series of daily streamflows | [`SanMartinoPPts`](https://hzambran.github.io/hydroTSM/reference/SanMartinoPPts.md) San Martino, ts of daily precipitation. |
+| ————————————————————————————————————————— |  |
 
 Temporal aggregation:
 
-|                                                                                                                                            |                                                                                                                                                       |
-|--------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`annualfunction`](https://hzambran.github.io/hydroTSM/reference/annualfunction.md) single representative annual value of a zoo object.    | [`weeklyfunction`](https://hzambran.github.io/hydroTSM/reference/weeklyfunction.md) single representative weekly value of a zoo object.               |
+|  |  |
+|----|----|
+| [`annualfunction`](https://hzambran.github.io/hydroTSM/reference/annualfunction.md) single representative annual value of a zoo object. | [`weeklyfunction`](https://hzambran.github.io/hydroTSM/reference/weeklyfunction.md) single representative weekly value of a zoo object. |
 | [`monthlyfunction`](https://hzambran.github.io/hydroTSM/reference/monthlyfunction.md) single representative monthly value of a zoo object. | [`seasonalfunction`](https://hzambran.github.io/hydroTSM/reference/seasonalfunction.md) representative values of each weather season of a zoo object. |
-| [`daily2annual`](https://hzambran.github.io/hydroTSM/reference/daily2annual.md) Aggregation from daily to annual                           | [`subdaily2annual`](https://hzambran.github.io/hydroTSM/reference/daily2annual.md) Aggregation from subdaily to annual.                               |
-| [`monthly2annual`](https://hzambran.github.io/hydroTSM/reference/daily2annual.md) Aggregation from monthly to annual.                      | [`daily2monthly`](https://hzambran.github.io/hydroTSM/reference/daily2monthly.md) Aggregation from daily to monthly.                                  |
-| [`subdaily2monthly`](https://hzambran.github.io/hydroTSM/reference/daily2monthly.md) Aggregation from subdaily to monthly.                 | [`daily2weekly`](https://hzambran.github.io/hydroTSM/reference/daily2weekly.md) Aggregation from daily to weekly.                                     |
-| [`dm2seasonal`](https://hzambran.github.io/hydroTSM/reference/dm2seasonal.md) Aggregation from daily or monthly to seasonal.               | [`subdaily2seasonal`](https://hzambran.github.io/hydroTSM/reference/dm2seasonal.md) Aggregation from subdaily to seasonal.                            |
-| [`subdaily2daily`](https://hzambran.github.io/hydroTSM/reference/subdaily2daily.md) Aggregation from subdaily to daily.                    | [`subdaily2weekly`](https://hzambran.github.io/hydroTSM/reference/subdaily2weekly.md) Aggregation from subdaily to weekly.                            |
-| [`subhourly2hourly`](https://hzambran.github.io/hydroTSM/reference/subhourly2hourly.md) Aggregation from subhourly to hourly.              | [`subhourly2nminutes`](https://hzambran.github.io/hydroTSM/reference/subhourly2nminutes.md)Aggregation from subhourly to n-minutes.                   |
-| —————————————————————————————————————————                                                                                                  |                                                                                                                                                       |
+| [`daily2annual`](https://hzambran.github.io/hydroTSM/reference/daily2annual.md) Aggregation from daily to annual | [`subdaily2annual`](https://hzambran.github.io/hydroTSM/reference/daily2annual.md) Aggregation from subdaily to annual. |
+| [`monthly2annual`](https://hzambran.github.io/hydroTSM/reference/daily2annual.md) Aggregation from monthly to annual. | [`daily2monthly`](https://hzambran.github.io/hydroTSM/reference/daily2monthly.md) Aggregation from daily to monthly. |
+| [`subdaily2monthly`](https://hzambran.github.io/hydroTSM/reference/daily2monthly.md) Aggregation from subdaily to monthly. | [`daily2weekly`](https://hzambran.github.io/hydroTSM/reference/daily2weekly.md) Aggregation from daily to weekly. |
+| [`dm2seasonal`](https://hzambran.github.io/hydroTSM/reference/dm2seasonal.md) Aggregation from daily or monthly to seasonal. | [`subdaily2seasonal`](https://hzambran.github.io/hydroTSM/reference/dm2seasonal.md) Aggregation from subdaily to seasonal. |
+| [`subdaily2daily`](https://hzambran.github.io/hydroTSM/reference/subdaily2daily.md) Aggregation from subdaily to daily. | [`subdaily2weekly`](https://hzambran.github.io/hydroTSM/reference/subdaily2weekly.md) Aggregation from subdaily to weekly. |
+| [`subhourly2hourly`](https://hzambran.github.io/hydroTSM/reference/subhourly2hourly.md) Aggregation from subhourly to hourly. | [`subhourly2nminutes`](https://hzambran.github.io/hydroTSM/reference/subhourly2nminutes.md)Aggregation from subhourly to n-minutes. |
+| ————————————————————————————————————————— |  |
 
 Temporal manipulation:
 
-|                                                                                                       |                                                                                                                        |
-|-------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| [`dip`](https://hzambran.github.io/hydroTSM/reference/dip.md) Days in period.                         | [`diy`](https://hzambran.github.io/hydroTSM/reference/diy.md) Days in year.                                            |
-| [`hip`](https://hzambran.github.io/hydroTSM/reference/hip.md) Hours in period.                        | [`mip`](https://hzambran.github.io/hydroTSM/reference/mip.md) Months in period.                                        |
-| [`yip`](https://hzambran.github.io/hydroTSM/reference/yip.md) Years in period.                        | [`izoo2rzoo`](https://hzambran.github.io/hydroTSM/reference/izoo2rzoo.md) Irregular zoo object to regular zoo objectl. |
-| [`time2season`](https://hzambran.github.io/hydroTSM/reference/time2season.md) Time to weather season. | [`vector2zoo`](https://hzambran.github.io/hydroTSM/reference/vector2zoo.md) Numeric and date/times to zoo object.      |
-| —————————————————————————————————————————                                                             |                                                                                                                        |
+|  |  |
+|----|----|
+| [`dip`](https://hzambran.github.io/hydroTSM/reference/dip.md) Days in period. | [`diy`](https://hzambran.github.io/hydroTSM/reference/diy.md) Days in year. |
+| [`hip`](https://hzambran.github.io/hydroTSM/reference/hip.md) Hours in period. | [`mip`](https://hzambran.github.io/hydroTSM/reference/mip.md) Months in period. |
+| [`yip`](https://hzambran.github.io/hydroTSM/reference/yip.md) Years in period. | [`izoo2rzoo`](https://hzambran.github.io/hydroTSM/reference/izoo2rzoo.md) Irregular zoo object to regular zoo objectl. |
+| [`time2season`](https://hzambran.github.io/hydroTSM/reference/time2season.md) Time to weather season. | [`vector2zoo`](https://hzambran.github.io/hydroTSM/reference/vector2zoo.md) Numeric and date/times to zoo object. |
+| ————————————————————————————————————————— |  |
 
 Hydrological functions:
 
-|                                                                                                                              |                                                                                                                                         |
-|------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| [`baseflow`](https://hzambran.github.io/hydroTSM/reference/baseflow.md) Baseflow computation.                                | [`climograph`](https://hzambran.github.io/hydroTSM/reference/climograph.md) Climograph                                                  |
-| [`dwdays`](https://hzambran.github.io/hydroTSM/reference/dwdays.md) Dry and wet days.                                        | [`fdc`](https://hzambran.github.io/hydroTSM/reference/fdc.md) Flow duration curve.                                                      |
-| [`fdcu`](https://hzambran.github.io/hydroTSM/reference/fdcu.md) Flow duration curve with uncertainty bounds.                 | [`hydroplot`](https://hzambran.github.io/hydroTSM/reference/hydroplot.md) Exploratory figure for hydrological time series.              |
+|  |  |
+|----|----|
+| [`baseflow`](https://hzambran.github.io/hydroTSM/reference/baseflow.md) Baseflow computation. | [`climograph`](https://hzambran.github.io/hydroTSM/reference/climograph.md) Climograph |
+| [`dwdays`](https://hzambran.github.io/hydroTSM/reference/dwdays.md) Dry and wet days. | [`fdc`](https://hzambran.github.io/hydroTSM/reference/fdc.md) Flow duration curve. |
+| [`fdcu`](https://hzambran.github.io/hydroTSM/reference/fdcu.md) Flow duration curve with uncertainty bounds. | [`hydroplot`](https://hzambran.github.io/hydroTSM/reference/hydroplot.md) Exploratory figure for hydrological time series. |
 | [`sname2plot`](https://hzambran.github.io/hydroTSM/reference/hydroplot.md) Hydrological time series plotting and extraction. | [`plot_pq`](https://hzambran.github.io/hydroTSM/reference/plot_pq.md) Plot precipitation and streamflow time series in the same figure. |
-| [`si`](https://hzambran.github.io/hydroTSM/reference/si.md) Seasonality Index for precipitation.                             | [`sname2ts`](https://hzambran.github.io/hydroTSM/reference/sname2ts.md) Station Name -\> Time Series.                                   |
-| [`zoo2RHtest`](https://hzambran.github.io/hydroTSM/reference/zoo2RHtest.md) Zoo object -\> RHTest.                           | —————————————————————————————————————————                                                                                               |
+| [`si`](https://hzambran.github.io/hydroTSM/reference/si.md) Seasonality Index for precipitation. | [`sname2ts`](https://hzambran.github.io/hydroTSM/reference/sname2ts.md) Station Name -\> Time Series. |
+| [`zoo2RHtest`](https://hzambran.github.io/hydroTSM/reference/zoo2RHtest.md) Zoo object -\> RHTest. | ————————————————————————————————————————— |
 
 Miscelaneous functions:
 
-|                                                                                                            |                                                                                                        |
-|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| [`calendarHeatmap`](https://hzambran.github.io/hydroTSM/reference/calendarHeatmap.md) Calendar heat map.   | [`cmv`](https://hzambran.github.io/hydroTSM/reference/cmv.md) Counting missing values.                 |
-| [`drawxaxis`](https://hzambran.github.io/hydroTSM/reference/drawxaxis.md) Draw a temporal horizontal axis. | [`dwi`](https://hzambran.github.io/hydroTSM/reference/dwi.md) Days with information.                   |
-| [`extract`](https://hzambran.github.io/hydroTSM/reference/extract.md) Extract a subset of a zoo object.    | [`hydropairs`](https://hzambran.github.io/hydroTSM/reference/hydropairs.md) Visual correlation matrix. |
-| [`infillxy`](https://hzambran.github.io/hydroTSM/reference/infillxy.md) Infills NA values.                 | [`istdx`](https://hzambran.github.io/hydroTSM/reference/istdx.md) Inverse standarization.              |
-| [`ma`](https://hzambran.github.io/hydroTSM/reference/ma.md) Moving average.                                | [`matrixplot`](https://hzambran.github.io/hydroTSM/reference/matrixplot.md) 2D color matrix.           |
-| [`rm1stchar`](https://hzambran.github.io/hydroTSM/reference/rm1stchar.md) Remove first character.          | [`sfreq`](https://hzambran.github.io/hydroTSM/reference/sfreq.md) Sampling frequency.                  |
-| [`smry`](https://hzambran.github.io/hydroTSM/reference/smry.md) Improved summary function.                 | [`stdx`](https://hzambran.github.io/hydroTSM/reference/stdx.md) Standarization.                        |
-| —————————————————————————————————————————                                                                  |                                                                                                        |
+|  |  |
+|----|----|
+| [`calendarHeatmap`](https://hzambran.github.io/hydroTSM/reference/calendarHeatmap.md) Calendar heat map. | [`cmv`](https://hzambran.github.io/hydroTSM/reference/cmv.md) Counting missing values. |
+| [`drawxaxis`](https://hzambran.github.io/hydroTSM/reference/drawxaxis.md) Draw a temporal horizontal axis. | [`dwi`](https://hzambran.github.io/hydroTSM/reference/dwi.md) Days with information. |
+| [`extract`](https://hzambran.github.io/hydroTSM/reference/extract.md) Extract a subset of a zoo object. | [`hydropairs`](https://hzambran.github.io/hydroTSM/reference/hydropairs.md) Visual correlation matrix. |
+| [`infillxy`](https://hzambran.github.io/hydroTSM/reference/infillxy.md) Infills NA values. | [`istdx`](https://hzambran.github.io/hydroTSM/reference/istdx.md) Inverse standarization. |
+| [`ma`](https://hzambran.github.io/hydroTSM/reference/ma.md) Moving average. | [`matrixplot`](https://hzambran.github.io/hydroTSM/reference/matrixplot.md) 2D color matrix. |
+| [`rm1stchar`](https://hzambran.github.io/hydroTSM/reference/rm1stchar.md) Remove first character. | [`sfreq`](https://hzambran.github.io/hydroTSM/reference/sfreq.md) Sampling frequency. |
+| [`smry`](https://hzambran.github.io/hydroTSM/reference/smry.md) Improved summary function. | [`stdx`](https://hzambran.github.io/hydroTSM/reference/stdx.md) Standarization. |
+| ————————————————————————————————————————— |  |
 
 ## Author
 
@@ -103,12 +103,6 @@ data(EbroPPtsMonthly)
 ## Ex1) Graphical correlation among the ts of monthly precipitation of the first 
 ##      3 stations in 'EbroPPtsMonthly' (its first column stores the dates).
 hydropairs(EbroPPtsMonthly[,2:4])
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
-#> Warning: argument 1 does not name a graphical parameter
 
 
 #######

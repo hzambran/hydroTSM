@@ -95,6 +95,7 @@ Mauricio Zambrano-Bigiarini, <mzb.devel@gmail.com>
 ## Examples
 
 ``` r
+
 ###########
 # EXAMPLE 1: Hourly zoo object, with a POSIXct time attribute
 ###########
