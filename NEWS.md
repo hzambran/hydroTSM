@@ -2,10 +2,17 @@ NEWS/ChangeLog for hydroTSM
 
 --------------------------
 
+# Changes in version 0.9-0  Ongoing
+
+## Bug fixes
+        o 'hydropairs': fixed incorrect restoring of graphical state. 'on.exit(par(usr))' was replaced by 'on.exit(par(usr=usr), add=TRUE)'
+
+
 # Changes in version 0.8-6  27-Apr-2026
 
 ## Package files   
         o NAMESPACE file: 'shiftyears' function is now explicitly exported (to be used in the hydroGOF R package).
+
 
 # Changes in version 0.8-5  27-Apr-2026
 
