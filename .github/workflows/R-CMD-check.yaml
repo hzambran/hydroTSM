@@ -43,6 +43,12 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install macOS system dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install curl pkg-config
+          echo "PKG_CONFIG_PATH=$(brew --prefix curl)/lib/pkgconfig:${PKG_CONFIG_PATH}" >> "$GITHUB_ENV"
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
