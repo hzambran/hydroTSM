@@ -60,6 +60,7 @@ Temporal aggregation:
     \code{\link{subdaily2daily}}    Aggregation from subdaily to daily. \cr
     \code{\link{subdaily2weekly}}   Aggregation from subdaily to weekly. \cr
     \code{\link{subhourly2hourly}}  Aggregation from subhourly to hourly. \cr
+    \code{\link{subhourly2nhourly}} Aggregation from subhourly or hourly to n-hourly. \cr
     \code{\link{subhourly2nminutes}}Aggregation from subhourly to n-minutes. \cr
 --------------------------------------------------------------------------------------------------------------------------- \cr
 }

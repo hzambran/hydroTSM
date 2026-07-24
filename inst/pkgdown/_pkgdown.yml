@@ -36,6 +36,7 @@ reference:
     - '`subdaily2daily`'
     - '`subdaily2weekly`'
     - '`subhourly2hourly`'
+    - '`subhourly2nhourly`'
     - '`subhourly2nminutes`'
 
 - title: Temporal manipulation

@@ -4,6 +4,9 @@ NEWS/ChangeLog for hydroTSM
 
 # Changes in version 0.9-0  Ongoing
 
+## New functions
+        o 'subhourly2nhourly': for aggregating sub-hourly or hourly zoo objects into user-defined n-hourly ones.
+
 ## Bug fixes
         o 'hydropairs': fixed incorrect restoring of graphical state. 'on.exit(par(usr))' was replaced by 'on.exit(par(usr=usr), add=TRUE)'
 
