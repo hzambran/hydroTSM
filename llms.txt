@@ -238,6 +238,8 @@ A BibTeX entry for LaTeX users is
   : Subdaily -\> Weekly
 - [`subhourly2hourly()`](https://hzambran.github.io/hydroTSM/reference/subhourly2hourly.md)
   : Sub-hourly -\> Hourly
+- [`subhourly2nhourly()`](https://hzambran.github.io/hydroTSM/reference/subhourly2nhourly.md)
+  : Sub-hourly or hourly -\> n-hourly
 - [`subhourly2nminutes()`](https://hzambran.github.io/hydroTSM/reference/subhourly2nminutes.md)
   : Sub-hourly -\> n-minutes
 - [`time2season()`](https://hzambran.github.io/hydroTSM/reference/time2season.md)

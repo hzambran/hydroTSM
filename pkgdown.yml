@@ -1,10 +1,10 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   hydroTSM_Daily_P_Vignette-knitr: hydroTSM_Daily_P_Vignette-knitr.html
   hydroTSM_Daily_Q_Vignette-knitr: hydroTSM_Daily_Q_Vignette-knitr.html
-last_built: 2026-05-16T01:08Z
+last_built: 2026-07-24T05:53Z
 urls:
   reference: https://hzambran.github.io/hydroTSM/reference
   article: https://hzambran.github.io/hydroTSM/articles

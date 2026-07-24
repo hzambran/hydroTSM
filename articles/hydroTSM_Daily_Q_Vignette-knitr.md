@@ -424,9 +424,9 @@ This tutorial was built under:
 
     ## [1] "x86_64-pc-linux-gnu"
 
-    ## [1] "R version 4.6.0 (2026-04-24)"
+    ## [1] "R version 4.6.1 (2026-06-24)"
 
-    ## [1] "hydroTSM 0.8-7"
+    ## [1] "hydroTSM 0.8-8"
 
 ## Version history
 

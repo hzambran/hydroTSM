@@ -2,6 +2,12 @@
 
 ## Changes in version 0.9-0 Ongoing
 
+### New functions
+
+``` R
+    o 'subhourly2nhourly': for aggregating sub-hourly or hourly zoo objects into user-defined n-hourly ones.
+```
+
 ### Bug fixes
 
 ``` R

@@ -44,8 +44,8 @@ Temporal aggregation:
 | [`subdaily2monthly`](https://hzambran.github.io/hydroTSM/reference/daily2monthly.md) Aggregation from subdaily to monthly. | [`daily2weekly`](https://hzambran.github.io/hydroTSM/reference/daily2weekly.md) Aggregation from daily to weekly. |
 | [`dm2seasonal`](https://hzambran.github.io/hydroTSM/reference/dm2seasonal.md) Aggregation from daily or monthly to seasonal. | [`subdaily2seasonal`](https://hzambran.github.io/hydroTSM/reference/dm2seasonal.md) Aggregation from subdaily to seasonal. |
 | [`subdaily2daily`](https://hzambran.github.io/hydroTSM/reference/subdaily2daily.md) Aggregation from subdaily to daily. | [`subdaily2weekly`](https://hzambran.github.io/hydroTSM/reference/subdaily2weekly.md) Aggregation from subdaily to weekly. |
-| [`subhourly2hourly`](https://hzambran.github.io/hydroTSM/reference/subhourly2hourly.md) Aggregation from subhourly to hourly. | [`subhourly2nminutes`](https://hzambran.github.io/hydroTSM/reference/subhourly2nminutes.md)Aggregation from subhourly to n-minutes. |
-| ————————————————————————————————————————— |  |
+| [`subhourly2hourly`](https://hzambran.github.io/hydroTSM/reference/subhourly2hourly.md) Aggregation from subhourly to hourly. | [`subhourly2nhourly`](https://hzambran.github.io/hydroTSM/reference/subhourly2nhourly.md) Aggregation from subhourly or hourly to n-hourly. |
+| [`subhourly2nminutes`](https://hzambran.github.io/hydroTSM/reference/subhourly2nminutes.md)Aggregation from subhourly to n-minutes. | ————————————————————————————————————————— |
 
 Temporal manipulation:
 
