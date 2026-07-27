@@ -91,6 +91,8 @@ Hydrological functions:
     \code{\link{sname2plot}} Hydrological time series plotting and extraction. \cr
     \code{\link{plot_pq}}    Plot precipitation and streamflow time series in the same figure. \cr
     \code{\link{si}}         Seasonality Index for precipitation. \cr
+    \code{\link{spei}}       Standardized Precipitation-Evapotranspiration Index. \cr
+    \code{\link{spi}}        Standardized Precipitation Index for monthly precipitation. \cr
     \code{\link{sname2ts}}   Station Name -> Time Series. \cr
     \code{\link{zoo2RHtest}} Zoo object -> RHTest. \cr
 --------------------------------------------------------------------------------------------------------------------------- \cr
