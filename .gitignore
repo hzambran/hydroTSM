@@ -39,3 +39,4 @@ vignettes/*.pdf
 *_cache/
 docs/*
 docs
+/pkgdown/
