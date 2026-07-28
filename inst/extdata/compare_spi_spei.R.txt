@@ -1,0 +1,170 @@
+# Reproduce the hydroTSM SPI/SPEI validation benchmark.
+#
+# This is a validation script, not package runtime code. It deliberately uses
+# the optional SCI and SPEI packages without making them hydroTSM dependencies.
+#
+# From the hydroTSM source directory:
+# Rscript inst/extdata/compare_spi_spei.R.txt values.csv.gz metadata.csv.gz
+
+required.packages <- c("SCI", "SPEI", "zoo")
+available <- vapply(required.packages, requireNamespace, quietly=TRUE,
+                    FUN.VALUE=logical(1))
+
+if (!all(available))
+  stop("Install these comparison-only packages first: ",
+       paste(required.packages[!available], collapse=", "))
+
+# SCI's generalized-logistic helpers must be visible from the calling
+# environment in SCI 1.0.3.
+suppressPackageStartupMessages(library(SCI))
+
+arguments <- commandArgs(trailingOnly=TRUE)
+values.file <- if (length(arguments) >= 1L) {
+  arguments[1L]
+} else {
+    file.path(tempdir(), "spi_spei_comparison_values.csv.gz")
+  }
+metadata.file <- if (length(arguments) >= 2L) {
+  arguments[2L]
+} else {
+    file.path(tempdir(), "spi_spei_comparison_metadata.csv.gz")
+  }
+
+write.comparison.csv <- function(x, file, ...) {
+  if (grepl("\\.gz$", file)) {
+    con <- gzfile(file, open="wt")
+    on.exit(close(con), add=TRUE)
+    utils::write.csv(x, con, ...)
+  } else {
+    utils::write.csv(x, file, ...)
+  }
+} # 'write.comparison.csv' END
+
+source.file <- file.path(getwd(), "R", "spi.R")
+if (file.exists(source.file)) {
+  source(source.file)
+  hydro.spi <- spi
+  hydro.spei <- spei
+  hydro.version <- read.dcf("DESCRIPTION", fields="Version")[1L]
+} else {
+    if (!requireNamespace("hydroTSM", quietly=TRUE))
+      stop("Run from the hydroTSM source directory or install hydroTSM.")
+
+    hydro.spi <- hydroTSM::spi
+    hydro.spei <- hydroTSM::spei
+    hydro.version <- as.character(utils::packageVersion("hydroTSM"))
+  }
+
+data("wichita", package="SPEI")
+dates <- as.Date(sprintf("%04d-%02d-01", wichita$YEAR, wichita$MONTH))
+precipitation <- zoo::zoo(wichita$PRCP, dates)
+pet <- SPEI::thornthwaite(wichita$TMED, lat=37.6475, verbose=FALSE)
+water.balance <- zoo::zoo(wichita$PRCP - as.numeric(pet), dates)
+
+precipitation.ts <- stats::ts(
+  wichita$PRCP,
+  start=c(wichita$YEAR[1L], wichita$MONTH[1L]),
+  frequency=12
+)
+water.balance.ts <- stats::ts(
+  zoo::coredata(water.balance),
+  start=c(wichita$YEAR[1L], wichita$MONTH[1L]),
+  frequency=12
+)
+
+safe.values <- function(object, n) {
+  result <- tryCatch(
+    suppressWarnings(as.numeric(stats::fitted(object))),
+    error=function(e) rep(NA_real_, n)
+  )
+
+  if (length(result) != n)
+    result <- rep(NA_real_, n)
+
+  result
+}
+
+scales <- c(1L, 3L, 6L, 12L)
+fits <- c("max-lik", "pp-pwm", "ub-pwm")
+n <- length(dates)
+values <- list(date=as.character(dates))
+
+for (scale in scales) {
+  sci.spi.fit <- SCI::fitSCI(
+    wichita$PRCP, first.mon=1, time.scale=scale,
+    distr="gamma", p0=TRUE, scaling="sd", warn=FALSE
+  )
+  sci.spei.fit <- SCI::fitSCI(
+    zoo::coredata(water.balance), first.mon=1, time.scale=scale,
+    distr="genlog", p0=FALSE, scaling="sd", warn=FALSE
+  )
+
+  values[[paste("SCI", "SPI", "max-lik", paste0("s", scale),
+                sep="__")]] <- SCI::transformSCI(
+    wichita$PRCP, first.mon=1, obj=sci.spi.fit, warn=FALSE
+  )
+  values[[paste("SCI", "SPEI", "max-lik", paste0("s", scale),
+                sep="__")]] <- SCI::transformSCI(
+    zoo::coredata(water.balance), first.mon=1, obj=sci.spei.fit,
+    warn=FALSE
+  )
+
+  for (fit in fits) {
+    values[[paste("hydroTSM", "SPI", fit, paste0("s", scale),
+                  sep="__")]] <- hydro.spi(
+      precipitation, scale=scale, distribution="gamma", fit=fit,
+      zero.threshold=0, p0=TRUE, scaling="sd",
+      out.type="numeric", warn=FALSE
+    )
+    values[[paste("hydroTSM", "SPEI", fit, paste0("s", scale),
+                  sep="__")]] <- hydro.spei(
+      water.balance, scale=scale, distribution="genlog", fit=fit,
+      p0=FALSE, scaling="sd", out.type="numeric", warn=FALSE
+    )
+
+    spei.spi <- tryCatch(
+      SPEI::spi(
+        precipitation.ts, scale=scale, distribution="Gamma", fit=fit,
+        verbose=FALSE
+      ),
+      error=function(e) NULL
+    )
+    spei.spei <- tryCatch(
+      SPEI::spei(
+        water.balance.ts, scale=scale, distribution="log-Logistic",
+        fit=fit, verbose=FALSE
+      ),
+      error=function(e) NULL
+    )
+
+    values[[paste("SPEI", "SPI", fit, paste0("s", scale),
+                  sep="__")]] <- safe.values(spei.spi, n)
+    values[[paste("SPEI", "SPEI", fit, paste0("s", scale),
+                  sep="__")]] <- safe.values(spei.spei, n)
+  }
+}
+
+values <- as.data.frame(values, check.names=FALSE)
+write.comparison.csv(values, values.file, row.names=FALSE, na="")
+
+metadata <- data.frame(
+  field=c("generated", "hydroTSM", "SCI", "SPEI", "R",
+          "data", "period", "observations", "PET"),
+  value=c(
+    as.character(Sys.Date()),
+    hydro.version,
+    as.character(utils::packageVersion("SCI")),
+    as.character(utils::packageVersion("SPEI")),
+    paste(R.version$major, R.version$minor, sep="."),
+    "SPEI::wichita",
+    paste(format(min(dates), "%Y-%m"), format(max(dates), "%Y-%m"),
+          sep=" to "),
+    as.character(length(dates)),
+    "Thornthwaite; latitude 37.6475 degrees north"
+  ),
+  stringsAsFactors=FALSE
+)
+write.comparison.csv(metadata, metadata.file, row.names=FALSE)
+
+message("Wrote comparison values to: ", normalizePath(values.file))
+message("Wrote comparison metadata to: ", normalizePath(metadata.file))
