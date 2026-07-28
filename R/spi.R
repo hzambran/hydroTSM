@@ -10,7 +10,7 @@
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 26-Jul-2026                                                         #
-# Updates:                                                                     #
+# Updates: 27-Jul-2026                                                         #
 ################################################################################
 
 spi <- function(x,
@@ -159,32 +159,29 @@ spei <- function(x,
     }
 
   distribution <- match.arg(distribution, valid.distributions)
-  fit <- match.arg(fit, c("max-lik", "ub-pwm", "pp-pwm"))
-  scaling <- match.arg(scaling, c("sd", "no", "max"))
-  out.type <- match.arg(out.type, c("zoo", "numeric"))
+  fit          <- match.arg(fit, c("max-lik", "ub-pwm", "pp-pwm"))
+  scaling      <- match.arg(scaling, c("sd", "no", "max"))
+  out.type     <- match.arg(out.type, c("zoo", "numeric"))
 
   if (!is.list(kernel))
     stop("Invalid argument: 'kernel' must be a list !")
 
   kernel.type <- kernel$type
-  if (is.null(kernel.type))
-    kernel.type <- "rectangular"
+  if (is.null(kernel.type)) kernel.type <- "rectangular"
 
   if (length(kernel.type) != 1L || !is.character(kernel.type))
     stop("Invalid argument: 'kernel$type' must be a character string !")
 
   kernel.type <- match.arg(kernel.type,
-                           c("rectangular", "triangular", "circular",
-                             "gaussian"))
+                  c("rectangular", "triangular", "circular", "gaussian"))
 
   kernel.shift <- kernel$shift
-  if (is.null(kernel.shift))
-    kernel.shift <- 0
+  if (is.null(kernel.shift)) kernel.shift <- 0
 
-  if (length(kernel.shift) != 1L || !is.numeric(kernel.shift) ||
+  if ( length(kernel.shift) != 1L || !is.numeric(kernel.shift) ||
       !is.finite(kernel.shift) || kernel.shift < 0 ||
-      kernel.shift != as.integer(kernel.shift) || kernel.shift >= scale)
-    stop("Invalid argument: 'kernel$shift' must be an integer in ",
+      kernel.shift != as.integer(kernel.shift) || kernel.shift >= scale 
+     ) stop("Invalid argument: 'kernel$shift' must be an integer in ",
          "[0, scale-1] !")
 
   kernel.shift <- as.integer(kernel.shift)
@@ -329,9 +326,7 @@ spei <- function(x,
 
   fitting.method <- if (is.null(provided.params)) {
     paste0("fit=", fit)
-  } else {
-      "using user-supplied parameters"
-    }
+  } else "using user-supplied parameters"
 
   .droughtMessage(
     verbose=verbose,
@@ -395,16 +390,16 @@ spei <- function(x,
   spi.values    <- x.acc
 
   for (j in seq_len(ncol(x.acc))) {
+
     series.name <- colnames(x.acc)[j]
     if (is.null(series.name) || !nzchar(series.name))
       series.name <- as.character(j)
 
-    .droughtMessage(
-      verbose=verbose,
-      index.name=index.name,
-      text=paste0("processing series ", j, " of ", ncol(x.acc),
-                  " (", series.name, ")")
-    )
+    .droughtMessage(verbose=verbose,
+                    index.name=index.name,
+                    text=paste0("processing series ", j, " of ", ncol(x.acc),
+                    " (", series.name, ")")
+                   )
 
     if (is.null(provided.params)) {
       fitted.distribution <- .fitDroughtDistribution(
