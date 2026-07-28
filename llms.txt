@@ -230,6 +230,10 @@ A BibTeX entry for LaTeX users is
   Summary
 - [`sname2ts()`](https://hzambran.github.io/hydroTSM/reference/sname2ts.md)
   : Station Name -\> Time Series
+- [`spi()`](https://hzambran.github.io/hydroTSM/reference/spi.md)
+  [`spei()`](https://hzambran.github.io/hydroTSM/reference/spi.md) :
+  Standardized Precipitation and Precipitation-Evapotranspiration
+  Indices
 - [`stdx()`](https://hzambran.github.io/hydroTSM/reference/stdx.md) :
   Standarization
 - [`subdaily2daily()`](https://hzambran.github.io/hydroTSM/reference/subdaily2daily.md)
@@ -261,3 +265,5 @@ A BibTeX entry for LaTeX users is
   hydroTSM](https://hzambran.github.io/hydroTSM/articles/hydroTSM_Daily_P_Vignette-knitr.md):
 - [Introductory analysis of daily streamflows with
   hydroTSM](https://hzambran.github.io/hydroTSM/articles/hydroTSM_Daily_Q_Vignette-knitr.md):
+- [Theory, computation, and validation of SPI and SPEI with
+  hydroTSM](https://hzambran.github.io/hydroTSM/articles/hydroTSM_SPI_SPEI_Vignette.md):

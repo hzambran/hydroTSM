@@ -6,3 +6,5 @@
   hydroTSM](https://hzambran.github.io/hydroTSM/articles/hydroTSM_Daily_P_Vignette-knitr.md):
 - [Introductory analysis of daily streamflows with
   hydroTSM](https://hzambran.github.io/hydroTSM/articles/hydroTSM_Daily_Q_Vignette-knitr.md):
+- [Theory, computation, and validation of SPI and SPEI with
+  hydroTSM](https://hzambran.github.io/hydroTSM/articles/hydroTSM_SPI_SPEI_Vignette.md):

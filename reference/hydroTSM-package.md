@@ -65,7 +65,8 @@ Hydrological functions:
 | [`dwdays`](https://hzambran.github.io/hydroTSM/reference/dwdays.md) Dry and wet days. | [`fdc`](https://hzambran.github.io/hydroTSM/reference/fdc.md) Flow duration curve. |
 | [`fdcu`](https://hzambran.github.io/hydroTSM/reference/fdcu.md) Flow duration curve with uncertainty bounds. | [`hydroplot`](https://hzambran.github.io/hydroTSM/reference/hydroplot.md) Exploratory figure for hydrological time series. |
 | [`sname2plot`](https://hzambran.github.io/hydroTSM/reference/hydroplot.md) Hydrological time series plotting and extraction. | [`plot_pq`](https://hzambran.github.io/hydroTSM/reference/plot_pq.md) Plot precipitation and streamflow time series in the same figure. |
-| [`si`](https://hzambran.github.io/hydroTSM/reference/si.md) Seasonality Index for precipitation. | [`sname2ts`](https://hzambran.github.io/hydroTSM/reference/sname2ts.md) Station Name -\> Time Series. |
+| [`si`](https://hzambran.github.io/hydroTSM/reference/si.md) Seasonality Index for precipitation. | [`spei`](https://hzambran.github.io/hydroTSM/reference/spi.md) Standardized Precipitation-Evapotranspiration Index. |
+| [`spi`](https://hzambran.github.io/hydroTSM/reference/spi.md) Standardized Precipitation Index for monthly precipitation. | [`sname2ts`](https://hzambran.github.io/hydroTSM/reference/sname2ts.md) Station Name -\> Time Series. |
 | [`zoo2RHtest`](https://hzambran.github.io/hydroTSM/reference/zoo2RHtest.md) Zoo object -\> RHTest. | ————————————————————————————————————————— |
 
 Miscelaneous functions:

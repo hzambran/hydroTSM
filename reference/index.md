@@ -96,6 +96,10 @@
   Summary
 - [`sname2ts()`](https://hzambran.github.io/hydroTSM/reference/sname2ts.md)
   : Station Name -\> Time Series
+- [`spi()`](https://hzambran.github.io/hydroTSM/reference/spi.md)
+  [`spei()`](https://hzambran.github.io/hydroTSM/reference/spi.md) :
+  Standardized Precipitation and Precipitation-Evapotranspiration
+  Indices
 - [`stdx()`](https://hzambran.github.io/hydroTSM/reference/stdx.md) :
   Standarization
 - [`subdaily2daily()`](https://hzambran.github.io/hydroTSM/reference/subdaily2daily.md)
