@@ -183,9 +183,9 @@ data.arguments <- data.frame(
   ),
   values.and.default=c(
     "Numeric monthly zoo series; precipitation for SPI and P - PET for SPEI. The index must be Date, POSIXt, or yearmon and months must be consecutive.",
-    "Any positive integer not exceeding the series length; default 12. It controls the backward-looking memory.",
+    "Any positive integer not exceeding the series length; no default. It controls the backward-looking memory and must be provided explicitly.",
     "list(type, shift); type is rectangular, triangular, circular, or gaussian and shift is 0,...,scale-1. Default list(type='rectangular', shift=0).",
-    "NULL or c(year, month); both default to NULL, which fits the full record. They define the climatology used for parameter estimation, not the output period.",
+    "NULL, a Date object, or a character string in YYYY-MM or YYYY-MM-DD format; both default to NULL, which fits the full record. They define the climatology used for parameter estimation, not the output period.",
     "Any finite non-negative number; default 0. Values strictly below it become zero before accumulation, allowing a trace-precipitation definition.",
     "TRUE or FALSE; defaults TRUE for SPI and FALSE for SPEI. TRUE represents exact zeros by a point mass plus a continuous positive distribution.",
     "TRUE or FALSE; default FALSE. With p0=TRUE, TRUE assigns zeros to the centre of their empirical probability mass rather than its upper edge."
@@ -311,7 +311,7 @@ implementation.table <- data.frame(
   hydroTSM=c(
     "Direct spi() and spei() functions.",
     "Consecutive monthly zoo input; returns zoo or numeric values directly.",
-    "scale=12; Gamma/p0 for SPI, genlog/no p0 for SPEI; max-lik fitting.",
+    "scale is required; Gamma/p0 for SPI, genlog/no p0 for SPEI; max-lik fitting.",
     "All seven SPI and four SPEI candidates evaluated by Stagge et al. (2015).",
     "max-lik, ub-pwm, and pp-pwm; custom starts, fallback starts, or supplied parameters.",
     "zero.threshold for SPI; p0, centred zero mass, and symmetric sci.limit for either wrapper.",
@@ -381,11 +381,12 @@ head(pcp)
 
 ### SPI
 
-By default, `spi()` uses a Gamma distribution, maximum-likelihood parameter
-estimation, a mixed probability at zero, and a 12-month accumulation:
+`scale` must be provided explicitly. With `scale=12`, `spi()` uses a Gamma
+distribution, maximum-likelihood parameter estimation, and a mixed probability
+at zero:
 
 ```{r spi-default}
-spi12 <- spi(pcp, warn=FALSE)
+spi12 <- spi(pcp, scale=12, warn=FALSE)
 head(spi12, 15)
 ```
 
@@ -439,7 +440,7 @@ head(spei3)
 SPI and SPEI retain the input time index. Initial values are `NA` when a complete
 accumulation window is not yet available.
 
-```{r indices-plot, fig.cap="Example three-month SPI and SPEI series."}
+```{r indices-plot, fig.cap="Figure 1. Example three-month SPI and SPEI series."}
 indices <- zoo::merge.zoo(SPI=spi3, SPEI=spei3)
 plot(
   indices, plot.type="single", col=c("#1b9e77", "#d95f02"), lwd=1.2,
@@ -455,22 +456,38 @@ legend(
 ## Distributions and parameter estimation
 
 The supported distributions are those evaluated for SPI and SPEI by Stagge
-et al. (2015).
+et al. (2015). The parameter column shows the required order when `params` is
+supplied without names.
 
-```{r distributions, echo=FALSE}
-distribution.table <- data.frame(
-  index=c(rep("SPI", 7), rep("SPEI", 4)),
+```{r spi-distributions, echo=FALSE}
+spi.distribution.table <- data.frame(
   argument=c(
-    "gamma", "gumbel", "logis", "llogis", "lnorm", "norm", "weibull",
-    "genlog", "gev", "norm", "pe3"
+    "gamma", "gumbel", "logis", "llogis", "lnorm", "norm", "weibull"
   ),
   distribution=c(
     "Gamma", "Gumbel", "logistic", "log-logistic", "lognormal",
-    "normal", "Weibull", "generalized logistic", "GEV", "normal",
-    "Pearson type III"
+    "normal", "Weibull"
+  ),
+  parameters=c(
+    "shape, rate", "loc, scale", "location, scale", "shape, scale",
+    "meanlog, sdlog", "mean, sd", "shape, scale"
   )
 )
-knitr::kable(distribution.table, row.names=FALSE)
+knitr::kable(spi.distribution.table, row.names=FALSE)
+```
+
+```{r spei-distributions, echo=FALSE}
+spei.distribution.table <- data.frame(
+  argument=c("genlog", "gev", "norm", "pe3"),
+  distribution=c(
+    "generalized logistic", "GEV", "normal", "Pearson type III"
+  ),
+  parameters=c(
+    "shape, scale, location", "loc, scale, shape", "mean, sd",
+    "shape, scale, location"
+  )
+)
+knitr::kable(spei.distribution.table, row.names=FALSE)
 ```
 
 Three estimation methods are available:
@@ -495,14 +512,16 @@ the complete series:
 ```{r reference-period}
 spi3.reference <- spi(
   pcp, scale=3,
-  ref.start=c(1943, 1), ref.end=c(1948, 12),
+  ref.start="1943-01", ref.end="1948-12",
   warn=FALSE
 )
 ```
 
 Accumulation is performed before the reference-period subset is selected.
 Therefore, an accumulated value at the start of the reference period can use
-earlier observations from `x`.
+earlier observations from `x`. Character references can also include a day, for
+example `"1943-01-01"`, or be supplied as `Date` objects. The day component is
+only used to identify the calendar month.
 
 ### Supplied parameters
 
@@ -515,12 +534,52 @@ earlier observations from `x`.
 Named parameters are reordered automatically. Supplied parameters refer to the
 unscaled accumulated data, so `scaling` is ignored.
 
-```{r supplied-parameters}
-spei.fixed <- spei(
+Vector example: the same normal parameter set is reused for every calendar
+month and every series.
+
+```{r supplied-parameters-vector}
+spei.fixed.vector <- spei(
   water.balance, scale=1, distribution="norm",
-  params=c(sd=40, mean=0), warn=FALSE
+  params=c(mean=0, sd=40), warn=FALSE
 )
-head(spei.fixed)
+head(spei.fixed.vector)
+```
+
+Matrix example: each calendar month receives its own parameter set, reused for
+all series.
+
+```{r supplied-parameters-matrix}
+monthly.normal.params <- rbind(
+  mean=seq(-10, 10, length.out=12),
+  sd=rep(40, 12)
+)
+spei.fixed.monthly <- spei(
+  water.balance, scale=1, distribution="norm",
+  params=monthly.normal.params, warn=FALSE
+)
+head(spei.fixed.monthly)
+```
+
+Array example: each series and calendar month receives its own parameter set.
+
+```{r supplied-parameters-array}
+water.balance.two <- zoo::merge.zoo(
+  stationA=water.balance,
+  stationB=water.balance + 5
+)
+array.normal.params <- array(
+  NA_real_, dim=c(2, 2, 12),
+  dimnames=list(c("mean", "sd"), colnames(water.balance.two), month.abb)
+)
+array.normal.params["mean", "stationA", ] <- 0
+array.normal.params["mean", "stationB", ] <- 5
+array.normal.params["sd", , ] <- 40
+
+spei.fixed.array <- spei(
+  water.balance.two, scale=1, distribution="norm",
+  params=array.normal.params, warn=FALSE
+)
+head(spei.fixed.array)
 ```
 
 For SPI, `p0=TRUE` still estimates the monthly zero probability from the
@@ -558,6 +617,11 @@ invisible(spi(pcp, scale=3, fit="ub-pwm", verbose=TRUE, warn=FALSE))
 
 ## Comparison design
 
+The objective is to compare the SPI and SPEI series computed by the current
+hydroTSM implementation with series computed by the SPEI and SCI packages. The
+comparisons are made independently for accumulation scales 1, 3, 6, and 12 and
+for hydroTSM `fit="max-lik"`, `fit="pp-pwm"`, and `fit="ub-pwm"`.
+
 The benchmark uses the Wichita monthly dataset distributed with SPEI. Climatic
 water balance was calculated with Thornthwaite PET at latitude 37.6475 degrees
 north. All implementations used a rectangular kernel and the full record.
@@ -590,7 +654,7 @@ comparison.metadata <- utils::read.csv(
 knitr::kable(comparison.metadata, row.names=FALSE)
 ```
 
-The benchmark uses:
+All tables and plots use hydroTSM as the first series. The benchmark uses:
 
 - Gamma with mixed zero probability for SPI;
 - generalized logistic/log-logistic for SPEI;
@@ -660,6 +724,9 @@ for (index in indices.names) {
   for (fit in fits) {
     for (scale in scales) {
       hydro <- get.values("hydroTSM", index, fit, scale)
+      hydro.distribution <- if (index == "SPI") "gamma" else "genlog"
+      hydro.label <- paste("hydroTSM", index, hydro.distribution, fit,
+                           sep="; ")
 
       for (reference in c("SCI", "SPEI")) {
         reference.fit <- if (reference == "SCI") "max-lik" else fit
@@ -667,6 +734,15 @@ for (index in indices.names) {
           reference, index, reference.fit, scale
         )
         current <- comparison.metrics(hydro, reference.values)
+        reference.distribution <- if (reference == "SCI") {
+          hydro.distribution
+        } else if (index == "SPI") {
+            "Gamma"
+          } else {
+              "log-Logistic"
+            }
+        reference.label <- paste(reference, index, reference.distribution,
+                                 reference.fit, sep="; ")
 
         status <- if (reference == "SCI") {
           if (fit == "max-lik") "Fair" else "Different fitting methods"
@@ -685,8 +761,10 @@ for (index in indices.names) {
           index=index,
           fit=fit,
           scale=scale,
+          hydroTSM.result=hydro.label,
           reference=if (reference == "SCI")
                       "SCI (max-lik)" else paste("SPEI", fit),
+          reference.result=reference.label,
           status=status,
           current,
           stringsAsFactors=FALSE
@@ -723,8 +801,19 @@ spi.scale1.spei <- subset(
 
 ## Independent comparison tables
 
-Each table contains both package references at all four scales. The `status`
-column identifies whether a comparison uses equivalent conditions.
+Each table fixes one hydroTSM index and one hydroTSM fitting method, then
+compares that hydroTSM series separately with SCI and SPEI at scales 1, 3, 6,
+and 12. The `hydroTSM result` column identifies the series produced by the
+current hydroTSM function. The `reference result` column identifies the external
+package series used as the comparator. Both columns state the package, index,
+distribution, and fitting method.
+
+The `status` column identifies the conditions behind each row. `Fair` means the
+distribution, fitting method, accumulation, reference period, scaling convention,
+and zero treatment are equivalent for the comparison being made. Other status
+values identify why the row is descriptive rather than a strict reproduction
+test. The `nonfinite hydroTSM/reference` column reports the number of non-finite
+values in each input series before pairwise metrics are calculated.
 
 ```{r comparison-tables, echo=FALSE, results="asis"}
 for (index in indices.names) {
@@ -733,16 +822,23 @@ for (index in indices.names) {
       comparison.results,
       comparison.results$index == index & comparison.results$fit == fit
     )
+    current$`nonfinite hydroTSM/reference` <- paste(
+      current$hydro.nonfinite, current$reference.nonfinite, sep=" / "
+    )
     current <- current[
-      , c("scale", "reference", "status", "pairs", "correlation",
-          "RMSE", "MAE", "max.error", "hydro.nonfinite",
-          "reference.nonfinite")
+      , c("scale", "hydroTSM.result", "reference.result", "status",
+          "pairs", "correlation", "RMSE", "MAE", "max.error",
+          "nonfinite hydroTSM/reference")
     ]
+    names(current)[2:3] <- c("hydroTSM result", "reference result")
 
     cat("\n\n### ", index, ": `fit=\"", fit, "\"`\n\n", sep="")
+    cat("Rows use the full Wichita record, a rectangular kernel, ",
+        "`scaling=\"sd\"` for hydroTSM and SCI, and the distribution ",
+        "named in the result columns.\n\n", sep="")
     print(knitr::kable(
       current,
-      digits=c(0, NA, NA, 0, 7, 7, 7, 7, 0, 0),
+      digits=c(0, NA, NA, NA, 0, 7, 7, 7, 7, NA),
       row.names=FALSE
     ))
     cat("\n")
@@ -752,8 +848,8 @@ for (index in indices.names) {
 
 ## Graphical summaries
 
-The following scatterplots show the two fair comparison families. A dashed
-one-to-one line represents exact agreement.
+Figures 2 to 5 show direct value-to-value agreement for the main fair
+comparison families. A dashed one-to-one line represents exact agreement.
 
 ```{r plot-function, include=FALSE}
 plot.comparison <- function(index, fit, reference, scale) {
@@ -795,95 +891,31 @@ plot.comparison <- function(index, fit, reference, scale) {
 }
 ```
 
-```{r spi-sci-plot, echo=FALSE, fig.height=7.2, fig.cap="SPI: hydroTSM maximum likelihood versus SCI maximum likelihood."}
+```{r spi-sci-plot, echo=FALSE, fig.height=7.2, fig.cap="Figure 2. SPI: hydroTSM maximum likelihood versus SCI maximum likelihood."}
 old.par <- par(mfrow=c(2, 2), mar=c(4.2, 4.2, 2.5, 1))
 for (scale in scales)
   plot.comparison("SPI", "max-lik", "SCI", scale)
 par(old.par)
 ```
 
-```{r spei-sci-plot, echo=FALSE, fig.height=7.2, fig.cap="SPEI: hydroTSM maximum likelihood versus SCI maximum likelihood."}
+```{r spei-sci-plot, echo=FALSE, fig.height=7.2, fig.cap="Figure 3. SPEI: hydroTSM maximum likelihood versus SCI maximum likelihood."}
 old.par <- par(mfrow=c(2, 2), mar=c(4.2, 4.2, 2.5, 1))
 for (scale in scales)
   plot.comparison("SPEI", "max-lik", "SCI", scale)
 par(old.par)
 ```
 
-```{r spi-spei-plot, echo=FALSE, fig.height=7.2, fig.cap="SPI: hydroTSM unbiased PWM versus the SPEI package. The scale-1 panel has different zero treatment."}
+```{r spi-spei-plot, echo=FALSE, fig.height=7.2, fig.cap="Figure 4. SPI: hydroTSM unbiased PWM versus the SPEI package. The scale-1 panel has different zero treatment."}
 old.par <- par(mfrow=c(2, 2), mar=c(4.2, 4.2, 2.5, 1))
 for (scale in scales)
   plot.comparison("SPI", "ub-pwm", "SPEI", scale)
 par(old.par)
 ```
 
-```{r spei-spei-plot, echo=FALSE, fig.height=7.2, fig.cap="SPEI: hydroTSM unbiased PWM versus the SPEI package."}
+```{r spei-spei-plot, echo=FALSE, fig.height=7.2, fig.cap="Figure 5. SPEI: hydroTSM unbiased PWM versus the SPEI package."}
 old.par <- par(mfrow=c(2, 2), mar=c(4.2, 4.2, 2.5, 1))
 for (scale in scales)
   plot.comparison("SPEI", "ub-pwm", "SPEI", scale)
-par(old.par)
-```
-
-The RMSE summary below includes both fair and non-fair comparisons. Solid
-symbols identify fair comparisons and open symbols identify different
-conditions. Missing lines correspond to package runs without finite values.
-
-```{r rmse-summary, echo=FALSE, fig.height=6.4, fig.width=9, fig.cap="RMSE by index, fitting method, temporal scale, and reference package."}
-old.par <- par(mfrow=c(2, 3), mar=c(4, 4.2, 2.8, 1))
-reference.colors <- c("SCI (max-lik)"="#1b9e77",
-                      "SPEI max-lik"="#d95f02",
-                      "SPEI pp-pwm"="#d95f02",
-                      "SPEI ub-pwm"="#d95f02")
-
-for (index in indices.names) {
-  for (fit in fits) {
-    current <- subset(
-      comparison.results,
-      comparison.results$index == index & comparison.results$fit == fit
-    )
-    valid.rmse <- current$RMSE[is.finite(current$RMSE) & current$RMSE > 0]
-
-    if (length(valid.rmse) == 0L) {
-      plot.new()
-      title(main=paste(index, fit))
-      text(0.5, 0.5, "No finite RMSE values")
-      next
-    }
-
-    y.limits <- range(valid.rmse)
-    if (y.limits[1L] == y.limits[2L])
-      y.limits <- y.limits * c(0.8, 1.2)
-
-    plot(
-      NA, xlim=range(scales), ylim=y.limits, log="y",
-      xaxt="n", xlab="Scale", ylab="RMSE",
-      main=paste(index, fit)
-    )
-    axis(1, at=scales)
-    grid(col="grey90")
-
-    for (reference in unique(current$reference)) {
-      selected <- current[current$reference == reference, ]
-      valid <- is.finite(selected$RMSE) & selected$RMSE > 0
-      color <- reference.colors[reference]
-      lines(
-        selected$scale[valid], selected$RMSE[valid],
-        col=color, lwd=1.2
-      )
-      points(
-        selected$scale[valid], selected$RMSE[valid],
-        col=color,
-        pch=ifelse(selected$status[valid] == "Fair", 16, 1)
-      )
-    }
-
-    legend(
-      "topright", legend=c("SCI", "SPEI", "fair", "different"),
-      col=c("#1b9e77", "#d95f02", "black", "black"),
-      lty=c(1, 1, NA, NA), pch=c(NA, NA, 16, 1),
-      bty="n", cex=0.7
-    )
-  }
-}
 par(old.par)
 ```
 
