@@ -7,6 +7,12 @@ output:
   rmarkdown::html_vignette:
     toc: true
     number_sections: true
+  html_document:
+    df_print: paged
+    number_sections: yes
+  pdf_document: 
+    number_sections: true
+    fig_caption: true
 vignette: |
   %\VignetteIndexEntry{Theory, computation, and validation of SPI and SPEI with hydroTSM}
   %\VignetteKeyword{hydrology}
@@ -630,24 +636,34 @@ The package versions and data period used to create the bundled benchmark are:
 
 ```{r comparison-data, echo=FALSE}
 comparison.file <- system.file(
-  "extdata", "spi_spei_comparison_values.csv", package="hydroTSM"
+  "extdata", "spi_spei_comparison_values.csv.gz", package="hydroTSM"
 )
 metadata.file <- system.file(
-  "extdata", "spi_spei_comparison_metadata.csv", package="hydroTSM"
+  "extdata", "spi_spei_comparison_metadata.csv.gz", package="hydroTSM"
 )
 
 if (!nzchar(comparison.file))
   comparison.file <- file.path("..", "inst", "extdata",
-                               "spi_spei_comparison_values.csv")
+                               "spi_spei_comparison_values.csv.gz")
 if (!nzchar(metadata.file))
   metadata.file <- file.path("..", "inst", "extdata",
-                             "spi_spei_comparison_metadata.csv")
+                             "spi_spei_comparison_metadata.csv.gz")
 
-comparison.values <- utils::read.csv(
+read.comparison.csv <- function(file, ...) {
+  if (grepl("\\.gz$", file)) {
+    con <- gzfile(file, open="rt")
+    on.exit(close(con), add=TRUE)
+    utils::read.csv(con, ...)
+  } else {
+    utils::read.csv(file, ...)
+  }
+} # 'read.comparison.csv' END
+
+comparison.values <- read.comparison.csv(
   comparison.file, check.names=FALSE, na.strings=""
 )
 comparison.values$date <- as.Date(comparison.values$date)
-comparison.metadata <- utils::read.csv(
+comparison.metadata <- read.comparison.csv(
   metadata.file, stringsAsFactors=FALSE
 )
 
@@ -963,11 +979,11 @@ source(comparison.script)
 ```
 
 SCI, SPEI, and zoo must be installed to run that validation script. By default,
-it writes new comparison and metadata CSV files to `tempdir()`. From the
-hydroTSM source directory, explicit output files can be supplied with:
+it writes new compressed comparison and metadata CSV files to `tempdir()`. From
+the hydroTSM source directory, explicit output files can be supplied with:
 
 ```text
-Rscript inst/extdata/compare_spi_spei.R.txt values.csv metadata.csv
+Rscript inst/extdata/compare_spi_spei.R.txt values.csv.gz metadata.csv.gz
 ```
 
 Because SCI and SPEI are comparison oracles rather than production
