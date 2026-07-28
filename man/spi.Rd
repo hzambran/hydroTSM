@@ -13,7 +13,7 @@ Precipitation-Evapotranspiration Index (SPEI) for one or more complete monthly
 \code{zoo} series using base-R distribution and optimisation functions.
 }
 \usage{
-spi(x, scale=12,
+spi(x, scale,
     distribution=c("gamma", "gumbel", "logis", "llogis",
                    "lnorm", "norm", "weibull"),
     fit=c("max-lik", "ub-pwm", "pp-pwm"), zero.threshold=0,
@@ -23,7 +23,7 @@ spi(x, scale=12,
     sci.limit=Inf, na.rm=FALSE, out.type=c("zoo", "numeric"),
     verbose=FALSE, warn=TRUE, ...)
 
-spei(x, scale=12, distribution=c("genlog", "gev", "norm", "pe3"),
+spei(x, scale, distribution=c("genlog", "gev", "norm", "pe3"),
      fit=c("max-lik", "ub-pwm", "pp-pwm"),
      kernel=list(type="rectangular", shift=0), ref.start=NULL, ref.end=NULL,
      params=NULL, start.fun=NULL, start.fun.fix=FALSE,
@@ -41,7 +41,7 @@ spei(x, scale=12, distribution=c("genlog", "gev", "norm", "pe3"),
   }
   \item{scale}{
   positive integer indicating the number of months in the backward-looking
-  accumulation period. The default is 12.
+  accumulation period. This argument has no default and must be provided.
   }
   \item{distribution}{
   character string naming the distribution to fit. For \code{spi}, valid
@@ -72,9 +72,10 @@ spei(x, scale=12, distribution=c("genlog", "gev", "norm", "pe3"),
   \code{scale - 1}. The default is an unshifted rectangular kernel.
   }
   \item{ref.start, ref.end}{
-  optional integer vectors of the form \code{c(year, month)} defining the
-  reference period used to estimate the distribution parameters. By default,
-  the full period in \code{x} is used.
+  optional \code{Date} objects or character strings in \code{"YYYY-MM"} or
+  \code{"YYYY-MM-DD"} format defining the reference period used to estimate the
+  distribution parameters. The day component, when supplied, is used only to
+  identify the calendar month. By default, the full period in \code{x} is used.
   }
   \item{params}{
   optional numeric distribution parameters that override parameter fitting.

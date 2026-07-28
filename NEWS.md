@@ -9,6 +9,9 @@ NEWS/ChangeLog for hydroTSM
         o 'spi'                : for computing the Standardized Precipitation Index from monthly zoo objects using the seven candidate distributions evaluated by Stagge et al. (2015). Its 'zero.threshold' argument allows trace precipitation to be treated as zero, while 'fit' selects maximum-likelihood, unbiased-PWM, or plotting-position-PWM estimation. Arguments 'params', 'start.fun', and 'start.fun.fix' support supplied parameters and custom maximum-likelihood starting values, while 'verbose' enables bracketed progress messages.
         o 'spei'               : for computing the Standardized Precipitation-Evapotranspiration Index from monthly zoo climatic water-balance objects using the four candidate distributions evaluated by Stagge et al. (2015). It provides the same supplied-parameter, starting-value, and progress-message controls as 'spi'. Both drought-index functions use base R and do not require SCI, SPEI, or lmomco.
 
+## User-visible changes
+        o 'spi' and 'spei' now require an explicit 'scale' argument and accept 'ref.start'/'ref.end' as Date objects or character strings in "YYYY-MM" or "YYYY-MM-DD" format.
+
 ## New vignettes
         o 'Theory, computation, and validation of SPI and SPEI with hydroTSM': theoretical guidance on drought-index construction, temporal scales, distributions, fitting methods, and arguments; practical usage; and versioned numerical and graphical comparisons against the SCI and SPEI packages at accumulation scales 1, 3, 6, and 12.
 

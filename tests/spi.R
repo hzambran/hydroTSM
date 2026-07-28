@@ -6,6 +6,15 @@ precipitation <- stats::rgamma(length(dates), shape=2, rate=0.05)
 precipitation[c(1, 13, 25, 37)] <- c(0, 0.05, 0.1, 0.5)
 pcp <- zoo::zoo(precipitation, dates)
 
+missing.spi.scale <- tryCatch(spi(pcp), error=function(e) e)
+missing.spei.scale <- tryCatch(spei(pcp - 40), error=function(e) e)
+stopifnot(inherits(missing.spi.scale, "error"),
+          inherits(missing.spei.scale, "error"),
+          grepl("'scale' must be provided",
+                conditionMessage(missing.spi.scale), fixed=TRUE),
+          grepl("'scale' must be provided",
+                conditionMessage(missing.spei.scale), fixed=TRUE))
+
 threshold.adjusted <- pcp
 threshold.adjusted[zoo::coredata(threshold.adjusted) < 0.1] <- 0
 
@@ -37,9 +46,12 @@ for (kernel.type in c("rectangular", "triangular", "circular", "gaussian")) {
 spi.distributions <- c("gamma", "gumbel", "logis", "llogis", "lnorm",
                        "norm", "weibull")
 spei.distributions <- c("genlog", "gev", "norm", "pe3")
+missing.scale.formal <- formals(function(scale) NULL)["scale"]
 
 stopifnot(identical(eval(formals(spi)$distribution), spi.distributions),
           identical(eval(formals(spei)$distribution), spei.distributions),
+          identical(formals(spi)["scale"], missing.scale.formal),
+          identical(formals(spei)["scale"], missing.scale.formal),
           is.null(formals(spi)$params),
           is.null(formals(spei)$params),
           is.null(formals(spi)$start.fun),
@@ -67,9 +79,9 @@ for (distribution in spei.distributions) {
   }
 }
 
-stopifnot(inherits(try(spi(pcp, distribution="genlog"),
+stopifnot(inherits(try(spi(pcp, scale=3, distribution="genlog"),
                          silent=TRUE), "try-error"),
-          inherits(try(spei(pcp - 40, distribution="gamma"),
+          inherits(try(spei(pcp - 40, scale=3, distribution="gamma"),
                          silent=TRUE), "try-error"))
 
 for (scaling in c("sd", "no", "max")) {
@@ -83,9 +95,25 @@ limited.result <- spi(pcp, scale=1, zero.threshold=0.1,
 stopifnot(all(abs(limited.result[is.finite(limited.result)]) <= 2))
 
 reference.result <- spei(pcp - 40, scale=3,
-                         ref.start=c(1990, 1), ref.end=c(2010, 12),
+                         ref.start="1990-01", ref.end="2010-12",
                          warn=FALSE)
+reference.result.ymd <- spei(pcp - 40, scale=3,
+                             ref.start="1990-01-01",
+                             ref.end="2010-12-01",
+                             warn=FALSE)
+reference.result.date <- spei(pcp - 40, scale=3,
+                              ref.start=as.Date("1990-01-01"),
+                              ref.end=as.Date("2010-12-31"),
+                              warn=FALSE)
+old.reference.result <- try(
+  spei(pcp - 40, scale=3, ref.start=c(1990, 1), ref.end="2010-12",
+       warn=FALSE),
+  silent=TRUE
+)
 stopifnot(length(reference.result) == length(pcp),
+          isTRUE(all.equal(reference.result, reference.result.ymd)),
+          isTRUE(all.equal(reference.result, reference.result.date)),
+          inherits(old.reference.result, "try-error"),
           sum(is.finite(reference.result)) >= length(pcp) - 3)
 
 pcp.with.na <- pcp
@@ -208,15 +236,15 @@ for (distribution in names(spei.fixed.parameters)) {
 }
 
 stopifnot(
-  inherits(try(spei(balance, distribution="norm", params=c(mean=0)),
+  inherits(try(spei(balance, scale=1, distribution="norm", params=c(mean=0)),
                silent=TRUE), "try-error"),
-  inherits(try(spei(balance, distribution="norm",
+  inherits(try(spei(balance, scale=1, distribution="norm",
                     params=c(mean=0, sd=-1)),
                silent=TRUE), "try-error"),
-  inherits(try(spei(balance, distribution="norm",
+  inherits(try(spei(balance, scale=1, distribution="norm",
                     params=matrix(c(0, 1), nrow=2, ncol=1)),
                silent=TRUE), "try-error"),
-  inherits(try(spei(balance, distribution="norm",
+  inherits(try(spei(balance, scale=1, distribution="norm",
                     params=c(location=0, scale=1)),
                silent=TRUE), "try-error")
 )

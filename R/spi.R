@@ -14,7 +14,7 @@
 ################################################################################
 
 spi <- function(x,
-                scale=12,
+                scale,
                 distribution=c("gamma", "gumbel", "logis", "llogis",
                                "lnorm", "norm", "weibull"),
                 fit=c("max-lik", "ub-pwm", "pp-pwm"),
@@ -34,6 +34,9 @@ spi <- function(x,
                 verbose=FALSE,
                 warn=TRUE,
                 ...) {
+
+  if (missing(scale))
+    stop("Missing argument: 'scale' must be provided as a positive integer !")
 
   .droughtIndex(x=x,
                 index.name="SPI",
@@ -61,7 +64,7 @@ spi <- function(x,
 
 
 spei <- function(x,
-                 scale=12,
+                 scale,
                  distribution=c("genlog", "gev", "norm", "pe3"),
                  fit=c("max-lik", "ub-pwm", "pp-pwm"),
                  kernel=list(type="rectangular", shift=0),
@@ -79,6 +82,9 @@ spei <- function(x,
                  verbose=FALSE,
                  warn=TRUE,
                  ...) {
+
+  if (missing(scale))
+    stop("Missing argument: 'scale' must be provided as a positive integer !")
 
   .droughtIndex(x=x,
                 index.name="SPEI",
@@ -268,12 +274,44 @@ spei <- function(x,
     if (is.null(ref))
       return(default.id)
 
-    if (!is.numeric(ref) || length(ref) != 2L || any(!is.finite(ref)) ||
-        any(ref != as.integer(ref)) || ref[2] < 1 || ref[2] > 12)
-      stop("Invalid argument: '", ref.name,
-           "' must be an integer vector of the form c(year, month) !")
+    ref.error <- paste0("Invalid argument: '", ref.name,
+                        "' must be NULL, a Date object, or a character ",
+                        "string in 'YYYY-MM' or 'YYYY-MM-DD' format !")
 
-    as.integer(12 * ref[1] + ref[2] - 1)
+    if (length(ref) != 1L)
+      stop(ref.error)
+
+    if (inherits(ref, "Date")) {
+      if (anyNA(ref) || !is.finite(as.numeric(ref)))
+        stop(ref.error)
+
+      ref.date <- ref
+    } else if (is.character(ref)) {
+      if (anyNA(ref))
+        stop(ref.error)
+
+      ref.text <- ref
+      if (grepl("^\\d{4}-\\d{2}$", ref.text)) {
+        ref.text <- paste0(ref.text, "-01")
+      } else if (!grepl("^\\d{4}-\\d{2}-\\d{2}$", ref.text)) {
+        stop(ref.error)
+      }
+
+      ref.date <- tryCatch(as.Date(ref.text), error=function(e) NA)
+      if (is.na(ref.date) || format(ref.date, "%Y-%m-%d") != ref.text)
+        stop(ref.error)
+    } else {
+      stop(ref.error)
+    }
+
+    ref.year <- as.integer(format(ref.date, "%Y"))
+    ref.month <- as.integer(format(ref.date, "%m"))
+
+    if (!is.finite(ref.year) || !is.finite(ref.month))
+      stop("Invalid argument: '", ref.name,
+           "' could not be converted to a reference month !")
+
+    as.integer(12 * ref.year + ref.month - 1)
   } # 'check.ref' END
 
   ref.start.id <- check.ref(ref.start, "ref.start", month.ids[1])
