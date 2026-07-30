@@ -5,6 +5,7 @@ NEWS/ChangeLog for hydroTSM
 # Changes in version 0.9-0  Ongoing
 
 ## New functions
+        o 'change_tz'         : for changing the time zone used by the time index of sub-daily zoo objects while preserving the represented instants and observed values.
         o 'subhourly2nhourly': for aggregating sub-hourly or hourly zoo objects into user-defined n-hourly ones.
         o 'spi'                : for computing the Standardized Precipitation Index from monthly zoo objects using the seven candidate distributions evaluated by Stagge et al. (2015). Its 'zero.threshold' argument allows trace precipitation to be treated as zero, while 'fit' selects maximum-likelihood, unbiased-PWM, or plotting-position-PWM estimation. Arguments 'params', 'start.fun', and 'start.fun.fix' support supplied parameters and custom maximum-likelihood starting values, while 'verbose' enables bracketed progress messages.
         o 'spei'               : for computing the Standardized Precipitation-Evapotranspiration Index from monthly zoo climatic water-balance objects using the four candidate distributions evaluated by Stagge et al. (2015). It provides the same supplied-parameter, starting-value, and progress-message controls as 'spi'. Both drought-index functions use base R and do not require SCI, SPEI, or lmomco.
