@@ -21,6 +21,8 @@
   : Baseflow
 - [`calendarHeatmap()`](https://hzambran.github.io/hydroTSM/reference/calendarHeatmap.md)
   : Calendar heatmap
+- [`change_tz()`](https://hzambran.github.io/hydroTSM/reference/change_tz.md)
+  : Change the time zone of a sub-daily zoo object
 - [`climograph()`](https://hzambran.github.io/hydroTSM/reference/climograph.md)
   : Climograph
 - [`cmv()`](https://hzambran.github.io/hydroTSM/reference/cmv.md) :
