@@ -5,12 +5,21 @@ NEWS/ChangeLog for hydroTSM
 # Changes in version 0.9-0  Ongoing
 
 ## New functions
+        o 'tempQC'           : frequency-aware wrapper that dispatches daily and minute/hourly air-temperature zoo objects to 'tempQC_daily' or 'tempQC_subdaily'.
+        o 'tempQC_daily'     : for applying physical, copied-block, robust climatological, persistence, rate-of-change, spike/dip, spatial-regression and homogeneity tests to daily air-temperature station series.
+        o 'tempQC_subdaily'  : corresponding sub-daily air-temperature workflow with month-and-hour-conditioned climatological, temporal and spatial reference models.
+        o 'tempQC_*'         : individual air-temperature tests, including a paired Tmin/Tmax internal-consistency check, plus auditable station recommendations and optional corrections.
+        o 'precipQC'         : frequency-aware wrapper that uses 'sfreq' to dispatch daily zoo objects to 'precipQC_daily' and minute/hourly zoo objects to 'precipQC_subdaily'.
+        o 'precipQC_daily'   : for applying physical, climatological, persistence, accumulation, multi-scale spatial, dry-spell and homogeneity quality-control tests to daily precipitation zoo objects. It returns auditable suspicious values, optional corrections, and station acceptance recommendations without writing files.
+        o 'precipQC_subdaily': for applying a corresponding state-of-the-art workflow to sub-daily precipitation zoo objects, including native and multi-hour spatial tests, duration-adjusted record limits, daily/monthly accumulation checks, and coverage-screened weekday false-zero detection.
+        o 'precipQC_*'       : individual precipitation quality-control tests for range, copied calendar blocks, clustered identical values, distribution gaps, climatological extremes, repeated values, systematic weekday false zeros, accumulated totals, spatial consistency, uncorroborated dry spells and multi-indicator homogeneity breakpoints.
         o 'change_tz'         : for changing the time zone used by the time index of sub-daily zoo objects while preserving the represented instants and observed values.
         o 'subhourly2nhourly': for aggregating sub-hourly or hourly zoo objects into user-defined n-hourly ones.
         o 'spi'                : for computing the Standardized Precipitation Index from monthly zoo objects using the seven candidate distributions evaluated by Stagge et al. (2015). Its 'zero.threshold' argument allows trace precipitation to be treated as zero, while 'fit' selects maximum-likelihood, unbiased-PWM, or plotting-position-PWM estimation. Arguments 'params', 'start.fun', and 'start.fun.fix' support supplied parameters and custom maximum-likelihood starting values, while 'verbose' enables bracketed progress messages.
         o 'spei'               : for computing the Standardized Precipitation-Evapotranspiration Index from monthly zoo climatic water-balance objects using the four candidate distributions evaluated by Stagge et al. (2015). It provides the same supplied-parameter, starting-value, and progress-message controls as 'spi'. Both drought-index functions use base R and do not require SCI, SPEI, or lmomco.
 
 ## User-visible changes
+        o 'precipQC*' and 'tempQC*' now accept optional station metadata with user-selected identifier, longitude, latitude, and elevation fields. Coordinates constrain and weight spatial neighbours; explicitly selected elevation data further influence neighbour ranking and weighting. Correlation-only spatial QC remains available when metadata are omitted.
         o 'spi' and 'spei' now require an explicit 'scale' argument and accept 'ref.start'/'ref.end' as Date objects or character strings in "YYYY-MM" or "YYYY-MM-DD" format.
 
 ## New vignettes
