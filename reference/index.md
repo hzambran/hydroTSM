@@ -84,6 +84,27 @@
   : Monthly Function
 - [`plot_pq()`](https://hzambran.github.io/hydroTSM/reference/plot_pq.md)
   : Plot precipitation and streamflow time series in the same figure.
+- [`print(`*`<precipQC>`*`)`](https://hzambran.github.io/hydroTSM/reference/precipQC-class.md)
+  [`plot(`*`<precipQC>`*`)`](https://hzambran.github.io/hydroTSM/reference/precipQC-class.md)
+  : Precipitation quality-control result
+- [`precipQC()`](https://hzambran.github.io/hydroTSM/reference/precipQC.md)
+  : Frequency-aware quality control of precipitation time series
+- [`precipQC_daily()`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md)
+  : Quality control of daily precipitation time series
+- [`precipQC_subdaily()`](https://hzambran.github.io/hydroTSM/reference/precipQC_subdaily.md)
+  : Quality control of sub-daily precipitation time series
+- [`precipQC_range()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_persistence()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_duplicate()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_frequency()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_gap()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_weekday()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_climatology()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_accumulation()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_spatial()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_dryspell()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  [`precipQC_breakpoint()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md)
+  : Individual precipitation quality-control tests
 - [`rm1stchar()`](https://hzambran.github.io/hydroTSM/reference/rm1stchar.md)
   : Remove First Character(s)
 - [`seasonalfunction()`](https://hzambran.github.io/hydroTSM/reference/seasonalfunction.md)
@@ -114,6 +135,25 @@
   : Sub-hourly or hourly -\> n-hourly
 - [`subhourly2nminutes()`](https://hzambran.github.io/hydroTSM/reference/subhourly2nminutes.md)
   : Sub-hourly -\> n-minutes
+- [`print(`*`<tempQC>`*`)`](https://hzambran.github.io/hydroTSM/reference/tempQC-class.md)
+  [`plot(`*`<tempQC>`*`)`](https://hzambran.github.io/hydroTSM/reference/tempQC-class.md)
+  : Air-temperature quality-control result
+- [`tempQC()`](https://hzambran.github.io/hydroTSM/reference/tempQC.md)
+  : Frequency-aware quality control of air-temperature time series
+- [`tempQC_daily()`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md)
+  : Quality control of daily air-temperature time series
+- [`tempQC_subdaily()`](https://hzambran.github.io/hydroTSM/reference/tempQC_subdaily.md)
+  : Quality control of sub-daily air-temperature time series
+- [`tempQC_range()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md)
+  [`tempQC_duplicate()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md)
+  [`tempQC_persistence()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md)
+  [`tempQC_climatology()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md)
+  [`tempQC_step()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md)
+  [`tempQC_spike()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md)
+  [`tempQC_spatial()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md)
+  [`tempQC_internal()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md)
+  [`tempQC_breakpoint()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md)
+  : Individual quality-control tests for air temperature
 - [`time2season()`](https://hzambran.github.io/hydroTSM/reference/time2season.md)
   : Date/DateTime character -\> Seasonal character
 - [`vector2zoo()`](https://hzambran.github.io/hydroTSM/reference/vector2zoo.md)

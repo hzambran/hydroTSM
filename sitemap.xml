@@ -46,6 +46,11 @@
 <url><loc>https://hzambran.github.io/hydroTSM/reference/mip.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/monthlyfunction.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/plot_pq.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/precipQC-class.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/precipQC.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/precipQC_daily.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/precipQC_subdaily.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/precipQC_tests.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/rm1stchar.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/seasonalfunction.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/sfreq.html</loc></url>
@@ -60,6 +65,11 @@
 <url><loc>https://hzambran.github.io/hydroTSM/reference/subhourly2hourly.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/subhourly2nhourly.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/subhourly2nminutes.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/tempQC-class.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/tempQC.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/tempQC_daily.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/tempQC_subdaily.html</loc></url>
+<url><loc>https://hzambran.github.io/hydroTSM/reference/tempQC_tests.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/time2season.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/vector2zoo.html</loc></url>
 <url><loc>https://hzambran.github.io/hydroTSM/reference/weeklyfunction.html</loc></url>
