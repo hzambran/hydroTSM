@@ -109,6 +109,30 @@ stopifnot(
   inherits(invalid.coords, "try-error")
 )
 
+partial.metadata <- custom.metadata
+partial.metadata$longitude[1] <- NA_real_
+partial.metadata$latitude[2] <- NA_real_
+partial.checks <- no.checks
+partial.checks["spatial"] <- TRUE
+daily.partial <- precipQC(
+  daily[, 1:3], metadata=partial.metadata, station.id="gauge_id",
+  coords=c("longitude", "latitude"), elevation="height_m",
+  checks=partial.checks, spatial.days=1L, max.distance=1000,
+  min.overlap=30, min.years=0, max.missing=1, max.suspicious=1
+)
+stopifnot(
+  identical(daily.partial$settings$resolution, "daily"),
+  is.na(daily.partial$accepted.metadata$longitude[
+    daily.partial$accepted.metadata$gauge_id == "S3"
+  ]),
+  is.na(daily.partial$accepted.metadata$latitude[
+    daily.partial$accepted.metadata$gauge_id == "S2"
+  ]),
+  setequal(daily.partial$neighbours$S1, c("S2", "S3")),
+  length(daily.partial$neighbours$S2) == 2L,
+  length(daily.partial$neighbours$S3) == 2L
+)
+
 range.flags <- precipQC_range(daily, upper=1825)
 persistence.flags <- precipQC_persistence(
   daily, high.threshold=10, high.run=5
@@ -284,6 +308,21 @@ subdaily.no.checks <- c(
   range=FALSE, climatology=FALSE, persistence=FALSE,
   daily.accumulation=FALSE, monthly.accumulation=FALSE,
   weekday=FALSE, spatial=FALSE, dryspell=FALSE, breakpoint=FALSE
+)
+partial.subdaily.checks <- subdaily.no.checks
+partial.subdaily.checks["spatial"] <- TRUE
+subdaily.partial <- precipQC_subdaily(
+  subdaily[, 1:3], metadata=partial.metadata, station.id="gauge_id",
+  coords=c("longitude", "latitude"), elevation="height_m",
+  checks=partial.subdaily.checks, spatial.hours=0,
+  max.distance=1000, min.overlap=30, min.years=0,
+  max.missing=1, max.suspicious=1
+)
+stopifnot(
+  identical(subdaily.partial$settings$resolution, "subdaily"),
+  setequal(subdaily.partial$neighbours$S1, c("S2", "S3")),
+  length(subdaily.partial$neighbours$S2) == 2L,
+  length(subdaily.partial$neighbours$S3) == 2L
 )
 subdaily.wrapper <- precipQC(
   subdaily[, 1:2], metadata=metadata[1:2, ],

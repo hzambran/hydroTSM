@@ -164,7 +164,8 @@ Name of the metadata station-identifier column.
 }
   \item{coords}{
 Names of numeric longitude and latitude columns in decimal degrees, in that
-order.
+order. Individual entries may be \code{NA}; non-missing values are
+range-checked.
 }
   \item{elevation}{
 \code{NULL}, or the name of an optional numeric elevation column in metres.
@@ -179,6 +180,7 @@ Maximum number of neighbours.
 }
   \item{max.distance}{
 Maximum great-circle distance in km when coordinates are available.
+Pairs for which either station lacks a coordinate are not distance-filtered.
 }
   \item{min.neighbours}{
 Minimum simultaneous valid neighbours for a spatial estimate.
@@ -272,8 +274,11 @@ cannot prove that a reported depth is a longer-period accumulation.
 \code{log1p} transformation. Coordinates, overlap, and correspondence select
 up to ten neighbours. If elevation is selected, its exponential similarity
 factor penalizes neighbours separated by large height differences. The
-estimate is a distance- and elevation-weighted median when metadata exist and
-an ordinary median otherwise. The critical ratio uses
+estimate is a distance- and elevation-weighted median when usable metadata
+weights exist and an ordinary median otherwise. A located target ranks eligible located
+neighbours first and uses correlation-qualified unlocated neighbours only as
+fallbacks. A target missing either coordinate uses correlation-based selection
+and remains fully testable. The critical ratio uses
 the larger of the simultaneous neighbour dispersion, historical target
 residual dispersion, and a small numerical floor. Only positive residuals are
 flagged here; isolated dryness is handled separately.

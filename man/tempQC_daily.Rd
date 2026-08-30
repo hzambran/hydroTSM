@@ -50,7 +50,9 @@ matched to \code{colnames(x)} and need not be pre-sorted.}
   \item{station.id}{Name of the metadata column containing the column names
 of \code{x}.}
   \item{coords}{Names of numeric longitude and latitude metadata columns in
-decimal degrees, in that order.}
+decimal degrees, in that order. Entries may be \code{NA}; a station is
+located only when both coordinates are present. Non-missing values are checked
+against the valid longitude and latitude ranges.}
   \item{elevation}{\code{NULL}, or the name of an optional numeric metadata
 column containing elevation in metres.}
   \item{elevation.scale}{Positive elevation-decay scale in metres. It
@@ -141,7 +143,10 @@ as evidence instead of interpreting every statistical outlier as an error.
   proximity/inverse-error-variance weights. Proximity decays with horizontal
   distance and, when selected, absolute elevation difference. The pairwise
   regression intercept estimates systematic station offsets rather than
-  imposing a universal lapse rate. A point is
+  imposing a universal lapse rate. A target missing either coordinate uses
+  correlation and regression error without a distance filter. A located target
+  ranks eligible located neighbours first; unlocated neighbours remain
+  conservative fallbacks with reduced spatial weight. A point is
   flagged only if both its absolute residual and its standardized residual are
   large. This combines the SRT formulation of Hubbard et al. (2007) and Estevez
   et al. (2018) with the conservative dual threshold of Durre et al. (2010).

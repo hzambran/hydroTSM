@@ -113,6 +113,31 @@ stopifnot(
             colnames(daily)[1:2])
 )
 
+partial.metadata <- custom.metadata
+partial.metadata$longitude[1] <- NA_real_
+partial.metadata$latitude[2] <- NA_real_
+partial.checks <- no.checks
+partial.checks["spatial"] <- TRUE
+daily.partial <- tempQC(
+  daily[, 1:3], metadata=partial.metadata, station.id="gauge_id",
+  coords=c("longitude", "latitude"), elevation="height_m",
+  checks=partial.checks, max.distance=1000, min.overlap=30,
+  min.group.overlap=10, min.correlation=-1, min.years=0,
+  max.missing=1, max.suspicious=1
+)
+stopifnot(
+  identical(daily.partial$settings$resolution, "daily"),
+  is.na(daily.partial$accepted.metadata$longitude[
+    daily.partial$accepted.metadata$gauge_id == "S3"
+  ]),
+  is.na(daily.partial$accepted.metadata$latitude[
+    daily.partial$accepted.metadata$gauge_id == "S2"
+  ]),
+  setequal(daily.partial$neighbours$S1, c("S2", "S3")),
+  length(daily.partial$neighbours$S2) == 2L,
+  length(daily.partial$neighbours$S3) == 2L
+)
+
 rank.dates <- seq(as.Date("2020-01-01"), by="day", length.out=120)
 rank.base <- 12 + sin(seq_along(rank.dates) / 8)
 rank.noise <- rep(c(-0.3, 0.1, 0.2, 0), length.out=120)
@@ -180,6 +205,21 @@ stopifnot(
 subdaily.no.checks <- c(
   range=FALSE, climatology=FALSE, persistence=FALSE,
   step=FALSE, spike=FALSE, spatial=FALSE, breakpoint=FALSE
+)
+partial.subdaily.checks <- subdaily.no.checks
+partial.subdaily.checks["spatial"] <- TRUE
+subdaily.partial <- tempQC_subdaily(
+  subdaily[, 1:3], metadata=partial.metadata, station.id="gauge_id",
+  coords=c("longitude", "latitude"), elevation="height_m",
+  checks=partial.subdaily.checks, max.distance=1000,
+  min.overlap=30, min.group.overlap=10, min.correlation=-1,
+  min.years=0, max.missing=1, max.suspicious=1
+)
+stopifnot(
+  identical(subdaily.partial$settings$resolution, "subdaily"),
+  setequal(subdaily.partial$neighbours$S1, c("S2", "S3")),
+  length(subdaily.partial$neighbours$S2) == 2L,
+  length(subdaily.partial$neighbours$S3) == 2L
 )
 subdaily.wrapper <- tempQC(
   subdaily[, 1:2], metadata=metadata[1:2, ],

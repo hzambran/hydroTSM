@@ -54,7 +54,9 @@ interval.
 Station metadata and its identifier/coordinate column names. See
 \code{\link{precipQC_daily}}. Metadata are optional. When supplied,
 identifier, longitude, and latitude field names are required; elevation in
-metres is optional and is activated by naming its field.
+metres is optional and is activated by naming its field. Individual longitude
+or latitude entries may be \code{NA}; see the fallback rules in
+\code{\link{precipQC_daily}}.
 }
   \item{checks}{
 Named logical vector. Any subset of \code{"range"}, \code{"climatology"},
@@ -190,7 +192,9 @@ The sub-daily workflow follows a layered rule base:
   accumulation but hidden at another; station-neighbour corroboration also
   follows the spatial consistency stage of Jurczyk et al. (2020). When
   elevation is supplied, neighbour ranking and inverse-distance weights also
-  favour stations with similar height.
+  favour stations with similar height. Missing target coordinates trigger
+  correlation-based selection; a located target uses unlocated neighbours only
+  after eligible located neighbours.
 
   \item \emph{Spatial dry-spell consistency}. Fifteen-day dry windows are
   flagged only when neighbours record at least three wet days, adapting the

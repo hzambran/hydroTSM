@@ -19,7 +19,7 @@ NEWS/ChangeLog for hydroTSM
         o 'spei'               : for computing the Standardized Precipitation-Evapotranspiration Index from monthly zoo climatic water-balance objects using the four candidate distributions evaluated by Stagge et al. (2015). It provides the same supplied-parameter, starting-value, and progress-message controls as 'spi'. Both drought-index functions use base R and do not require SCI, SPEI, or lmomco.
 
 ## User-visible changes
-        o 'precipQC*' and 'tempQC*' now accept optional station metadata with user-selected identifier, longitude, latitude, and elevation fields. Coordinates constrain and weight spatial neighbours; explicitly selected elevation data further influence neighbour ranking and weighting. Correlation-only spatial QC remains available when metadata are omitted.
+        o 'precipQC*' and 'tempQC*' now accept optional station metadata with user-selected identifier, longitude, latitude, and elevation fields. Coordinates constrain and weight spatial neighbours; explicitly selected elevation data further influence neighbour ranking and weighting. Correlation-only spatial QC remains available when metadata are omitted or an individual station lacks either coordinate; located targets prefer eligible located neighbours before unlocated fallbacks.
         o 'spi' and 'spei' now require an explicit 'scale' argument and accept 'ref.start'/'ref.end' as Date objects or character strings in "YYYY-MM" or "YYYY-MM-DD" format.
 
 ## New vignettes

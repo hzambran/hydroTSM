@@ -102,10 +102,11 @@
 .precipQC_haversine <- function(lon, lat) {
 
   n <- length(lon)
-  out <- matrix(Inf, nrow=n, ncol=n)
+  out <- matrix(NA_real_, nrow=n, ncol=n)
   rad <- pi / 180
 
   for (i in seq_len(n)) {
+    if (!is.finite(lon[i]) || !is.finite(lat[i])) next
     ok <- is.finite(lon) & is.finite(lat) & seq_len(n) != i
     dlon <- (lon[ok] - lon[i]) * rad
     dlat <- (lat[ok] - lat[i]) * rad
@@ -150,6 +151,7 @@
 
   has.coords <- FALSE
   has.elevation <- FALSE
+  coordinate.available <- rep(FALSE, length(stations))
   if (supplied) {
     if (!is.character(coords) || length(coords) != 2L || anyNA(coords) ||
         any(!nzchar(coords)) || anyDuplicated(coords) ||
@@ -160,11 +162,16 @@
 
     lon <- metadata[[coords[1L]]]
     lat <- metadata[[coords[2L]]]
-    if (any(!is.finite(lon)) || any(lon < -180 | lon > 180))
-      stop("Invalid argument: metadata longitudes must be finite and in [-180, 180] !")
-    if (any(!is.finite(lat)) || any(lat < -90 | lat > 90))
-      stop("Invalid argument: metadata latitudes must be finite and in [-90, 90] !")
-    has.coords <- TRUE
+    invalid.lon <- !is.na(lon) &
+                   (!is.finite(lon) | lon < -180 | lon > 180)
+    invalid.lat <- !is.na(lat) &
+                   (!is.finite(lat) | lat < -90 | lat > 90)
+    if (any(invalid.lon))
+      stop("Invalid argument: non-missing metadata longitudes must be finite and in [-180, 180] !")
+    if (any(invalid.lat))
+      stop("Invalid argument: non-missing metadata latitudes must be finite and in [-90, 90] !")
+    coordinate.available <- is.finite(lon) & is.finite(lat)
+    has.coords <- any(coordinate.available)
 
     if (!is.null(elevation)) {
       if (!is.character(elevation) || length(elevation) != 1L ||
@@ -180,7 +187,8 @@
 
   list(metadata=metadata, station.id=station.id, coords=coords,
        elevation=elevation, has.coords=has.coords,
-       has.elevation=has.elevation)
+       has.elevation=has.elevation,
+       coordinate.available=coordinate.available)
 
 } # '.precipQC_metadata' END
 
@@ -240,8 +248,13 @@
   names(out) <- stations
 
   for (j in seq_len(nstations)) {
-    candidates <- which(seq_len(nstations) != j &
-                        distances[j, ] <= max.distance)
+    if (meta$has.coords) {
+      candidates <- which(seq_len(nstations) != j &
+                          (!is.finite(distances[j, ]) |
+                           distances[j, ] <= max.distance))
+    } else {
+      candidates <- which(seq_len(nstations) != j)
+    }
     if (length(candidates) == 0L) {
       out[[j]] <- integer()
       next
@@ -263,11 +276,15 @@
     eligible <- overlaps >= min.overlap & is.finite(correlations)
     preferred <- eligible & correlations >= min.correlation
 
-    if (meta$has.coords) {
-      ordered <- order(effective.distance[j, candidates], -correlations,
+    if (meta$coordinate.available[j]) {
+      known.distance <- is.finite(distances[j, candidates])
+      rank.distance <- ifelse(known.distance,
+                              effective.distance[j, candidates], Inf)
+      ordered <- order(!known.distance, rank.distance, -correlations,
                        na.last=TRUE)
     } else {
-      ordered <- order(-correlations, na.last=TRUE)
+      ordered <- order(-correlations,
+                       -elevation.similarity[j, candidates], na.last=TRUE)
     }
 
     selected <- candidates[ordered][preferred[ordered]]
@@ -280,7 +297,8 @@
   list(index=out, distance=distances,
        elevation.similarity=elevation.similarity,
        metadata=meta$metadata, has.coords=meta$has.coords,
-       has.elevation=meta$has.elevation)
+       has.elevation=meta$has.elevation,
+       coordinate.available=meta$coordinate.available)
 
 } # '.precipQC_neighbours' END
 
@@ -768,8 +786,18 @@ precipQC_spatial <- function(x, metadata=NULL, station.id="station",
       if (length(ok) < min.neighbours) next
 
       y <- transformed[i, ok]
-      if (neighbours$has.coords) {
+      if (neighbours$coordinate.available[j] ||
+          neighbours$has.elevation) {
         d <- neighbours$distance[j, ok]
+        known.distance <- is.finite(d)
+        if (any(known.distance)) {
+          fallback <- if (is.finite(max.distance)) max.distance else
+                      2 * max(d[known.distance], 0.1)
+          d[!known.distance] <- max(fallback,
+                                    max(d[known.distance], 0.1))
+        } else {
+          d[] <- 1
+        }
         w <- neighbours$elevation.similarity[j, ok] /
              pmax(d, 0.1)^2
         ordered <- order(y)

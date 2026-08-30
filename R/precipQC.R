@@ -89,6 +89,7 @@
        metadata=meta$metadata, station.id=meta$station.id,
        coords=meta$coords, elevation=meta$elevation,
        has.coords=meta$has.coords, has.elevation=meta$has.elevation,
+       coordinate.available=meta$coordinate.available,
        expected=expected,
        interval.hours=interval.hours)
 

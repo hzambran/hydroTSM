@@ -79,7 +79,8 @@ the isolated spike/dip test.}
 selected identifier, longitude, and latitude fields are required.}
   \item{station.id}{Name of the metadata station identifier column.}
   \item{coords}{Names of numeric longitude and latitude metadata columns in
-decimal degrees, in that order.}
+decimal degrees, in that order. Individual entries may be \code{NA};
+non-missing values are range-checked.}
   \item{elevation}{\code{NULL}, or the name of an optional numeric metadata
 column containing elevation in metres.}
   \item{elevation.scale}{Positive elevation-decay scale in metres used to
@@ -139,7 +140,9 @@ by calendar group, retains the lowest proximity-adjusted-error eligible
 neighbours, and combines their predictions with geographic/elevation
 proximity and inverse-error-variance weights. The pairwise regression
 intercept estimates systematic station offsets, including persistent height
-effects, without imposing a fixed lapse rate. A flag requires both
+effects, without imposing a fixed lapse rate. Missing target coordinates
+trigger correlation/error-based selection; for a located target, eligible
+located neighbours rank ahead of unlocated fallbacks. A flag requires both
 an absolute and a standardized residual. The equations follow the spatial
 regression test of Hubbard et al. (2007) and Estevez et al. (2018); grouping
 and correlation screening incorporate findings of Cheng et al. (2016) and

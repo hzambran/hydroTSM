@@ -44,7 +44,8 @@ When supplied, it must include the selected identifier, longitude, and
 latitude fields.}
   \item{station.id}{Name of the station identifier column in \code{metadata}.}
   \item{coords}{Names of longitude and latitude metadata columns in decimal
-degrees, in that order.}
+degrees, in that order. Individual entries may be \code{NA}; non-missing
+values are range-checked.}
   \item{elevation}{\code{NULL}, or the name of an optional numeric elevation
 column in metres.}
   \item{elevation.scale}{Positive height-decay scale in metres used in
@@ -118,7 +119,9 @@ terrain.
   \item \emph{Spatial regression}: correlated neighbours are chosen by
   proximity-adjusted regression error and combined with proximity and
   inverse-error-variance weights. Geographic distance and, when supplied,
-  elevation difference define proximity. Models
+  elevation difference define proximity. A target missing either coordinate
+  uses the correlation/regression fallback, while a located target prefers
+  eligible located neighbours. Models
   are fitted separately by month and hour. This implements the SRT family
   evaluated by Hubbard et al. (2007), Cheng et al. (2016), and Estevez et al.
   (2018), while the correlation screen addresses the terrain sensitivity

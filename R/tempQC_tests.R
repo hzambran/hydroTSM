@@ -259,8 +259,13 @@ tempQC_spatial <- function(
   diag(distances) <- 0
   proximity <- matrix(1, NCOL(values), NCOL(values),
                       dimnames=list(stations, stations))
-  if (meta$has.coords)
-    proximity <- exp(-distances / max.distance)
+  if (meta$has.coords) {
+    known.distance <- is.finite(distances)
+    proximity[known.distance] <- exp(-distances[known.distance] /
+                                      max.distance)
+    for (j in which(meta$coordinate.available))
+      proximity[j, !meta$coordinate.available] <- exp(-1)
+  }
   if (meta$has.elevation) {
     heights <- as.numeric(meta$metadata[[meta$elevation]])
     height.difference <- abs(outer(heights, heights, "-"))
@@ -276,8 +281,13 @@ tempQC_spatial <- function(
   names(selected) <- stations
 
   for (j in seq_len(NCOL(values))) {
-    candidates <- which(seq_len(NCOL(values)) != j &
-                        distances[j, ] <= max.distance)
+    if (meta$has.coords) {
+      candidates <- which(seq_len(NCOL(values)) != j &
+                          (!is.finite(distances[j, ]) |
+                           distances[j, ] <= max.distance))
+    } else {
+      candidates <- which(seq_len(NCOL(values)) != j)
+    }
     if (length(candidates) == 0L) next
     correlations <- errors <- rep(NA_real_, length(candidates))
     for (k in seq_along(candidates)) {
@@ -298,7 +308,12 @@ tempQC_spatial <- function(
     adjusted.errors <- errors /
                        sqrt(pmax(proximity[j, candidates],
                                  .Machine$double.xmin))
-    candidates <- candidates[order(adjusted.errors)]
+    if (meta$coordinate.available[j]) {
+      known.distance <- is.finite(distances[j, candidates])
+      candidates <- candidates[order(!known.distance, adjusted.errors)]
+    } else {
+      candidates <- candidates[order(adjusted.errors)]
+    }
     candidates <- utils::head(candidates, n.neighbours)
     selected[[j]] <- stations[candidates]
 

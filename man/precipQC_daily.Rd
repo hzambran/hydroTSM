@@ -64,8 +64,11 @@ Character string naming the metadata column that contains the column names of
 }
   \item{coords}{
 Two character strings naming longitude and latitude columns in
-\code{metadata}, in that order. Both columns must be numeric, finite, and
-expressed in decimal degrees.
+\code{metadata}, in that order. Both columns must be numeric and expressed
+in decimal degrees. Individual entries may be \code{NA}; a station has a
+usable location only when both entries are present. Non-missing longitude and
+latitude values must be finite and lie in \code{[-180, 180]} and
+\code{[-90, 90]}, respectively.
 }
   \item{elevation}{
 \code{NULL}, or a character string naming an optional numeric metadata column
@@ -264,7 +267,11 @@ of treating one statistical anomaly as proof of error.
   default. Geographic distance limits the candidate set. If elevation is
   supplied, height similarity also affects neighbour ranking and the
   inverse-distance weights, which avoids treating a nearby station across a
-  large orographic contrast as equally representative. This combines the
+  large orographic contrast as equally representative. A station missing
+  either coordinate remains testable: its neighbours are selected by temporal
+  correlation. For a located target, eligible located neighbours are preferred
+  and unlocated neighbours are conservative fallbacks that are not subjected
+  to \code{max.distance} because their distance is unknown. This combines the
   neighbour logic of Scherrer et al. (2011) with
   the multi-aggregation critical-ratio idea of El Hachem et al. (2022).
 Relative candidate/reference comparisons are also supported by Stepanek et
@@ -289,7 +296,9 @@ Relative candidate/reference comparisons are also supported by Stepanek et
 Convective precipitation can be genuinely local. Therefore a spatial flag by
 itself is labelled for review, and default correction is disabled. Confirmed
 rejection requires either a hard physical/recording test or at least
-\code{min.evidence} coincident flags.
+\code{min.evidence} coincident flags. Correlation-only results for stations
+without coordinates should be interpreted more cautiously because geographic
+proximity cannot be verified.
 }
 
 \value{
