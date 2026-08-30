@@ -82,7 +82,8 @@ isComplete(x, tz, out.type=c("single", "all"), verbose=TRUE, ...)
   from the first layer of `x` to the last one.
 
   -) missingDateTimes: Numeric, Date, or POSIXct vector showing the
-  DateTime of the missing layers in `x`.
+  DateTime of the missing layers in `x`. It is an empty vector when no
+  DateTime is missing.
 
 ## Author
 

@@ -106,7 +106,8 @@ tempQC_breakpoint(
 - coords:
 
   Names of numeric longitude and latitude metadata columns in decimal
-  degrees, in that order.
+  degrees, in that order. Individual entries may be `NA`; non-missing
+  values are range-checked.
 
 - elevation:
 
@@ -223,11 +224,14 @@ by calendar group, retains the lowest proximity-adjusted-error eligible
 neighbours, and combines their predictions with geographic/elevation
 proximity and inverse-error-variance weights. The pairwise regression
 intercept estimates systematic station offsets, including persistent
-height effects, without imposing a fixed lapse rate. A flag requires
-both an absolute and a standardized residual. The equations follow the
-spatial regression test of Hubbard et al. (2007) and Estevez et al.
-(2018); grouping and correlation screening incorporate findings of Cheng
-et al. (2016) and Xiong et al. (2022, 2024).
+height effects, without imposing a fixed lapse rate. Missing target
+coordinates trigger correlation/error-based selection; for a located
+target, eligible located neighbours rank ahead of unlocated fallbacks. A
+flag requires both an absolute and a standardized residual. The
+equations follow the spatial regression test of Hubbard et al. (2007)
+and Estevez et al. (2018); grouping and correlation screening
+incorporate findings of Cheng et al. (2016) and Xiong et al. (2022,
+2024).
 
 `tempQC_internal` flags Tmin above Tmax, possible interchange relative
 to the adjacent three-day window, and the 40-degree lagged range

@@ -49,7 +49,8 @@ tempQC_subdaily(
 - coords:
 
   Names of longitude and latitude metadata columns in decimal degrees,
-  in that order.
+  in that order. Individual entries may be `NA`; non-missing values are
+  range-checked.
 
 - elevation:
 
@@ -188,8 +189,10 @@ terrain.
 5.  *Spatial regression*: correlated neighbours are chosen by
     proximity-adjusted regression error and combined with proximity and
     inverse-error-variance weights. Geographic distance and, when
-    supplied, elevation difference define proximity. Models are fitted
-    separately by month and hour. This implements the SRT family
+    supplied, elevation difference define proximity. A target missing
+    either coordinate uses the correlation/regression fallback, while a
+    located target prefers eligible located neighbours. Models are
+    fitted separately by month and hour. This implements the SRT family
     evaluated by Hubbard et al. (2007), Cheng et al. (2016), and Estevez
     et al. (2018), while the correlation screen addresses the terrain
     sensitivity discussed by Xiong et al. (2022, 2024).

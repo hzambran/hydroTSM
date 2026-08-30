@@ -13,7 +13,7 @@ station acceptance recommendations without writing files."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,9 @@ interval.</p></dd>
 <dd><p>Station metadata and its identifier/coordinate column names. See
 <code><a href="precipQC_daily.html">precipQC_daily</a></code>. Metadata are optional. When supplied,
 identifier, longitude, and latitude field names are required; elevation in
-metres is optional and is activated by naming its field.</p></dd>
+metres is optional and is activated by naming its field. Individual longitude
+or latitude entries may be <code>NA</code>; see the fallback rules in
+<code><a href="precipQC_daily.html">precipQC_daily</a></code>.</p></dd>
 
   <dt id="arg-checks">checks<a class="anchor" aria-label="anchor" href="#arg-checks"></a></dt>
 <dd><p>Named logical vector. Any subset of <code>"range"</code>, <code>"climatology"</code>,
@@ -221,7 +223,9 @@ cause a discard recommendation. The conservative default is <code>FALSE</code>.<
   accumulation but hidden at another; station-neighbour corroboration also
   follows the spatial consistency stage of Jurczyk et al. (2020). When
   elevation is supplied, neighbour ranking and inverse-distance weights also
-  favour stations with similar height.</p></li>
+  favour stations with similar height. Missing target coordinates trigger
+  correlation-based selection; a located target uses unlocated neighbours only
+  after eligible located neighbours.</p></li>
 <li><p><em>Spatial dry-spell consistency</em>. Fifteen-day dry windows are
   flagged only when neighbours record at least three wet days, adapting the
   GSDR-QC rule described by Lewis et al. (2021) and the regional suspect-zero

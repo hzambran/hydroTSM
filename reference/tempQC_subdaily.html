@@ -11,7 +11,7 @@ method preserves the native time index and writes no files."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,8 @@ latitude fields.</p></dd>
 
   <dt id="arg-coords">coords<a class="anchor" aria-label="anchor" href="#arg-coords"></a></dt>
 <dd><p>Names of longitude and latitude metadata columns in decimal
-degrees, in that order.</p></dd>
+degrees, in that order. Individual entries may be <code>NA</code>; non-missing
+values are range-checked.</p></dd>
 
   <dt id="arg-elevation">elevation<a class="anchor" aria-label="anchor" href="#arg-elevation"></a></dt>
 <dd><p><code>NULL</code>, or the name of an optional numeric elevation
@@ -202,7 +203,9 @@ terrain.</p>
 <li><p><em>Spatial regression</em>: correlated neighbours are chosen by
   proximity-adjusted regression error and combined with proximity and
   inverse-error-variance weights. Geographic distance and, when supplied,
-  elevation difference define proximity. Models
+  elevation difference define proximity. A target missing either coordinate
+  uses the correlation/regression fallback, while a located target prefers
+  eligible located neighbours. Models
   are fitted separately by month and hour. This implements the SRT family
   evaluated by Hubbard et al. (2007), Cheng et al. (2016), and Estevez et al.
   (2018), while the correlation screen addresses the terrain sensitivity

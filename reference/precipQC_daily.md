@@ -61,8 +61,11 @@ precipQC_daily(
 - coords:
 
   Two character strings naming longitude and latitude columns in
-  `metadata`, in that order. Both columns must be numeric, finite, and
-  expressed in decimal degrees.
+  `metadata`, in that order. Both columns must be numeric and expressed
+  in decimal degrees. Individual entries may be `NA`; a station has a
+  usable location only when both entries are present. Non-missing
+  longitude and latitude values must be finite and lie in `[-180, 180]`
+  and `[-90, 90]`, respectively.
 
 - elevation:
 
@@ -307,11 +310,15 @@ instead of treating one statistical anomaly as proof of error.
     set. If elevation is supplied, height similarity also affects
     neighbour ranking and the inverse-distance weights, which avoids
     treating a nearby station across a large orographic contrast as
-    equally representative. This combines the neighbour logic of
-    Scherrer et al. (2011) with the multi-aggregation critical-ratio
-    idea of El Hachem et al. (2022). Relative candidate/reference
-    comparisons are also supported by Stepanek et al. (2009) and
-    Vicente-Serrano et al. (2010).
+    equally representative. A station missing either coordinate remains
+    testable: its neighbours are selected by temporal correlation. For a
+    located target, eligible located neighbours are preferred and
+    unlocated neighbours are conservative fallbacks that are not
+    subjected to `max.distance` because their distance is unknown. This
+    combines the neighbour logic of Scherrer et al. (2011) with the
+    multi-aggregation critical-ratio idea of El Hachem et al. (2022).
+    Relative candidate/reference comparisons are also supported by
+    Stepanek et al. (2009) and Vicente-Serrano et al. (2010).
 
 8.  *Spatially corroborated dry spells*: a long target-station dry
     period is flagged only when the selected neighbours repeatedly
@@ -332,7 +339,9 @@ instead of treating one statistical anomaly as proof of error.
 Convective precipitation can be genuinely local. Therefore a spatial
 flag by itself is labelled for review, and default correction is
 disabled. Confirmed rejection requires either a hard physical/recording
-test or at least `min.evidence` coincident flags.
+test or at least `min.evidence` coincident flags. Correlation-only
+results for stations without coordinates should be interpreted more
+cautiously because geographic proximity cannot be verified.
 
 ## Value
 

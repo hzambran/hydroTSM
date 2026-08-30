@@ -11,7 +11,7 @@ evidence can be inspected or tuned independently."><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -189,7 +189,8 @@ selected identifier, longitude, and latitude fields are required.</p></dd>
 
   <dt id="arg-coords">coords<a class="anchor" aria-label="anchor" href="#arg-coords"></a></dt>
 <dd><p>Names of numeric longitude and latitude columns in decimal degrees, in that
-order.</p></dd>
+order. Individual entries may be <code>NA</code>; non-missing values are
+range-checked.</p></dd>
 
   <dt id="arg-elevation">elevation<a class="anchor" aria-label="anchor" href="#arg-elevation"></a></dt>
 <dd><p><code>NULL</code>, or the name of an optional numeric elevation column in metres.</p></dd>
@@ -203,7 +204,8 @@ spatial weights. It is ignored when <code>elevation=NULL</code>.</p></dd>
 <dd><p>Maximum number of neighbours.</p></dd>
 
   <dt id="arg-max-distance">max.distance<a class="anchor" aria-label="anchor" href="#arg-max-distance"></a></dt>
-<dd><p>Maximum great-circle distance in km when coordinates are available.</p></dd>
+<dd><p>Maximum great-circle distance in km when coordinates are available.
+Pairs for which either station lacks a coordinate are not distance-filtered.</p></dd>
 
   <dt id="arg-min-neighbours">min.neighbours<a class="anchor" aria-label="anchor" href="#arg-min-neighbours"></a></dt>
 <dd><p>Minimum simultaneous valid neighbours for a spatial estimate.</p></dd>
@@ -289,8 +291,11 @@ cannot prove that a reported depth is a longer-period accumulation.</p>
 <code>log1p</code> transformation. Coordinates, overlap, and correspondence select
 up to ten neighbours. If elevation is selected, its exponential similarity
 factor penalizes neighbours separated by large height differences. The
-estimate is a distance- and elevation-weighted median when metadata exist and
-an ordinary median otherwise. The critical ratio uses
+estimate is a distance- and elevation-weighted median when usable metadata
+weights exist and an ordinary median otherwise. A located target ranks eligible located
+neighbours first and uses correlation-qualified unlocated neighbours only as
+fallbacks. A target missing either coordinate uses correlation-based selection
+and remains fully testable. The critical ratio uses
 the larger of the simultaneous neighbour dispersion, historical target
 residual dispersion, and a small numerical floor. Only positive residuals are
 flagged here; isolated dryness is handled separately.</p>

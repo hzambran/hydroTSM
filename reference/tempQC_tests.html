@@ -11,7 +11,7 @@ can be run, inspected, and tuned independently."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -135,7 +135,8 @@ selected identifier, longitude, and latitude fields are required.</p></dd>
 
   <dt id="arg-coords">coords<a class="anchor" aria-label="anchor" href="#arg-coords"></a></dt>
 <dd><p>Names of numeric longitude and latitude metadata columns in
-decimal degrees, in that order.</p></dd>
+decimal degrees, in that order. Individual entries may be <code>NA</code>;
+non-missing values are range-checked.</p></dd>
 
   <dt id="arg-elevation">elevation<a class="anchor" aria-label="anchor" href="#arg-elevation"></a></dt>
 <dd><p><code>NULL</code>, or the name of an optional numeric metadata
@@ -228,7 +229,9 @@ by calendar group, retains the lowest proximity-adjusted-error eligible
 neighbours, and combines their predictions with geographic/elevation
 proximity and inverse-error-variance weights. The pairwise regression
 intercept estimates systematic station offsets, including persistent height
-effects, without imposing a fixed lapse rate. A flag requires both
+effects, without imposing a fixed lapse rate. Missing target coordinates
+trigger correlation/error-based selection; for a located target, eligible
+located neighbours rank ahead of unlocated fallbacks. A flag requires both
 an absolute and a standardized residual. The equations follow the spatial
 regression test of Hubbard et al. (2007) and Estevez et al. (2018); grouping
 and correlation screening incorporate findings of Cheng et al. (2016) and

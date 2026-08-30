@@ -174,7 +174,8 @@ precipQC_breakpoint(
 - coords:
 
   Names of numeric longitude and latitude columns in decimal degrees, in
-  that order.
+  that order. Individual entries may be `NA`; non-missing values are
+  range-checked.
 
 - elevation:
 
@@ -193,6 +194,8 @@ precipQC_breakpoint(
 - max.distance:
 
   Maximum great-circle distance in km when coordinates are available.
+  Pairs for which either station lacks a coordinate are not
+  distance-filtered.
 
 - min.neighbours:
 
@@ -299,11 +302,15 @@ cannot prove that a reported depth is a longer-period accumulation.
 transformation. Coordinates, overlap, and correspondence select up to
 ten neighbours. If elevation is selected, its exponential similarity
 factor penalizes neighbours separated by large height differences. The
-estimate is a distance- and elevation-weighted median when metadata
-exist and an ordinary median otherwise. The critical ratio uses the
-larger of the simultaneous neighbour dispersion, historical target
-residual dispersion, and a small numerical floor. Only positive
-residuals are flagged here; isolated dryness is handled separately.
+estimate is a distance- and elevation-weighted median when usable
+metadata weights exist and an ordinary median otherwise. A located
+target ranks eligible located neighbours first and uses
+correlation-qualified unlocated neighbours only as fallbacks. A target
+missing either coordinate uses correlation-based selection and remains
+fully testable. The critical ratio uses the larger of the simultaneous
+neighbour dispersion, historical target residual dispersion, and a small
+numerical floor. Only positive residuals are flagged here; isolated
+dryness is handled separately.
 
 `precipQC_dryspell` aggregates native observations to wet/dry calendar
 days, locates long dry runs, and flags target values only where the

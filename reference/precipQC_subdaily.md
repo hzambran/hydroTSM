@@ -50,7 +50,9 @@ precipQC_subdaily(
   [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md).
   Metadata are optional. When supplied, identifier, longitude, and
   latitude field names are required; elevation in metres is optional and
-  is activated by naming its field.
+  is activated by naming its field. Individual longitude or latitude
+  entries may be `NA`; see the fallback rules in
+  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md).
 
 - checks:
 
@@ -212,7 +214,9 @@ The sub-daily workflow follows a layered rule base:
     station-neighbour corroboration also follows the spatial consistency
     stage of Jurczyk et al. (2020). When elevation is supplied,
     neighbour ranking and inverse-distance weights also favour stations
-    with similar height.
+    with similar height. Missing target coordinates trigger
+    correlation-based selection; a located target uses unlocated
+    neighbours only after eligible located neighbours.
 
 7.  *Spatial dry-spell consistency*. Fifteen-day dry windows are flagged
     only when neighbours record at least three wet days, adapting the

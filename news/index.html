@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
 </div>
 <div class="section level3">
 <h3 id="user-visible-changes-0-9-0">User-visible changes<a class="anchor" aria-label="anchor" href="#user-visible-changes-0-9-0"></a></h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>    o <span class="st">'precipQC*'</span> and <span class="st">'tempQC*'</span> now accept optional station metadata with user<span class="sc">-</span>selected identifier, longitude, latitude, and elevation fields. Coordinates constrain and weight spatial neighbours; explicitly selected elevation data further influence neighbour ranking and weighting. Correlation<span class="sc">-</span>only spatial QC remains available when metadata are omitted.</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>    o <span class="st">'precipQC*'</span> and <span class="st">'tempQC*'</span> now accept optional station metadata with user<span class="sc">-</span>selected identifier, longitude, latitude, and elevation fields. Coordinates constrain and weight spatial neighbours; explicitly selected elevation data further influence neighbour ranking and weighting. Correlation<span class="sc">-</span>only spatial QC remains available when metadata are omitted or an individual station lacks either coordinate; located targets prefer eligible located neighbours before unlocated fallbacks.</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    o <span class="st">'spi'</span> and <span class="st">'spei'</span> now require an explicit <span class="st">'scale'</span> argument and accept <span class="st">'ref.start'</span><span class="sc">/</span><span class="st">'ref.end'</span> as Date objects or character strings <span class="cf">in</span> <span class="st">"YYYY-MM"</span> or <span class="st">"YYYY-MM-DD"</span> format.</span></code></pre></div>
 </div>
 <div class="section level3">
