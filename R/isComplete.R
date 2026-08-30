@@ -206,9 +206,8 @@ isComplete.zoo <- function(x, tz, out.type=c("single", "all"), verbose=TRUE, ...
   # Identifying any eventual missing time steps 
   ##############################################################################
   missingDT.index <- which(is.na(pmatch(completeTime, datetimes))) 
+  missingDateTimes <- completeTime[missingDT.index]
   missingDT.n     <- length(missingDT.index)
-  if ( missingDT.n > 0 )
-    missingDateTimes <- completeTime[missingDT.index]
 
   ##############################################################################
   # Identifying whether 'x' is complete or not                                 #
@@ -240,4 +239,3 @@ isComplete.zoo <- function(x, tz, out.type=c("single", "all"), verbose=TRUE, ...
   return(out)
   
 } # 'isComplete.SpatRaster' END
-

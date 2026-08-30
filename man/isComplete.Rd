@@ -66,7 +66,7 @@ further arguments passed to or from other methods.
 
     -) \kbd{NumberMissingDT}: integer indicating the amount of missing layers from the first layer of \code{x} to the last one.
 
-    -) \kbd{missingDateTimes}: Numeric, Date, or POSIXct vector showing the DateTime of the missing layers in \code{x}. 
+    -) \kbd{missingDateTimes}: Numeric, Date, or POSIXct vector showing the DateTime of the missing layers in \code{x}. It is an empty vector when no DateTime is missing.
     }
 }
 %% ...
