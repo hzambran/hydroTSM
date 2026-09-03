@@ -9,20 +9,24 @@ series into a WEEKLY one
 daily2weekly(x, ...)
 
 # Default S3 method
-daily2weekly(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
+daily2weekly(x, FUN, na.rm=TRUE, na.rm.max=0,
+        week.date.format = "%Y-%W", week.grouping = "calendar", ...)
 
 # S3 method for class 'zoo'
-daily2weekly(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
+daily2weekly(x, FUN, na.rm=TRUE, na.rm.max=0,
+        week.date.format = "%Y-%W", week.grouping = "calendar", ...)
 
 # S3 method for class 'data.frame'
 daily2weekly(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1, 
-        date.fmt = "%Y-%m-%d", out.type = "data.frame", out.fmt="numeric", 
-        verbose=TRUE, ...)
+        date.fmt = "%Y-%m-%d", week.date.format = "%Y-%W",
+        week.grouping = "calendar", out.type = "data.frame",
+        out.fmt="numeric", verbose=TRUE, ...)
 
 # S3 method for class 'matrix'
 daily2weekly(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1, 
-        date.fmt = "%Y-%m-%d", out.type = "data.frame", out.fmt="numeric", 
-        verbose=TRUE, ...)
+        date.fmt = "%Y-%m-%d", week.date.format = "%Y-%W",
+        week.grouping = "calendar", out.type = "data.frame",
+        out.fmt="numeric", verbose=TRUE, ...)
 ```
 
 ## Arguments
@@ -80,16 +84,39 @@ daily2weekly(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1,
   ONLY required when `class(dates)=="factor"` or
   `class(dates)=="numeric"`.
 
+- week.date.format:
+
+  character indicating how weekly dates are stored in the output object.
+  Valid values are:  
+  -) %Y-%W: year and Monday-based week number, preserving the historical
+  behaviour.  
+  -) %Y-%m-%d: date of the first day available in each weekly
+  aggregation group, returned as a `Date` index in zoo outputs and
+  displayed as YYYY-MM-DD.
+
+- week.grouping:
+
+  character indicating how daily values are grouped into weekly values.
+  Valid values are:  
+  -) calendar: calendar year-week groups defined by %Y-%W, preserving
+  the historical behaviour. Weeks crossing a calendar-year boundary are
+  split.  
+  -) sequential: consecutive 7-day groups starting at the first date in
+  `x`, equivalent to `seq(start(x), end(x), by="weeks")` for a complete
+  daily series.
+
 - out.type:
 
   Character that defines the desired type of output. Valid values are:  
   -) data.frame: a data.frame, with as many columns as stations are
-  included in `x`, and row names indicating the month and year for each
+  included in `x`, and row names indicating the weekly label for each
   value.  
   -) db : a data.frame, with 4 columns will be produced.  
   The first column (StationID) stores the ID of the station,  
   The second column (Year) stores the year  
-  The third column (Month) stores the Month  
+  The third column (Week) stores the week number when
+  `week.date.format="%Y-%W"` and the weekly date when
+  `week.date.format="%Y-%m-%d"`  
   The fourth column (Value) stores the numerical values corresponding to
   the values specified in the three previous columns.  
 
@@ -106,6 +133,37 @@ daily2weekly(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1,
 - ...:
 
   arguments additional to `na.rm` passed to `FUN`.
+
+## Details
+
+The argument `week.grouping` defines how observations are assigned to
+weekly aggregation groups before `FUN` is applied. It is independent
+from `week.date.format`, which only controls how the weekly groups are
+labelled in the output object.
+
+When `week.grouping="calendar"` (default), `daily2weekly` groups the
+input dates using `format(time(x), "%Y-%W")`. This is the historical
+behaviour of the function. The %W conversion uses Monday as the first
+day of the week and numbers weeks within each calendar year. Days before
+the first Monday of a calendar year belong to week `"00"`. Therefore, a
+Monday-Sunday week that crosses from December into January can be split
+into two aggregation groups, one for the ending calendar year and one
+for week `"00"` or `"01"` of the new calendar year.
+
+When `week.grouping="sequential"`, `daily2weekly` groups the input dates
+into consecutive 7-day periods starting at the first date in `x`. For a
+complete daily series, the resulting weekly labels with
+`week.date.format="%Y-%m-%d"` correspond to
+`seq(start(x), end(x), by="weeks")`. This option is useful when the user
+wants uninterrupted 7-day blocks over the full record instead of
+calendar year-week groups.
+
+The argument `week.date.format` controls only the time index returned by
+`daily2weekly`. With `week.date.format="%Y-%W"`, the output is labelled
+with year-week strings. With `week.date.format="%Y-%m-%d"`, the output
+is labelled with the first date of each weekly group. The missing-value
+filter controlled by `na.rm.max` is applied to the same groups defined
+by `week.grouping`.
 
 ## Value
 
@@ -150,6 +208,13 @@ x[na.index] <- NA
 
 ## Agreggating from Daily to Weekly, removing any missing value in 'x'
 w <- daily2weekly(x, FUN=sum, na.rm=TRUE)
+
+## Same aggregation, with the weekly zoo index shown as YYYY-MM-DD dates
+w.dates <- daily2weekly(x, FUN=sum, na.rm=TRUE, week.date.format="%Y-%m-%d")
+
+## Aggregation using consecutive 7-day groups starting at the first date in 'x'
+w.seq <- daily2weekly(x, FUN=sum, na.rm=TRUE, week.grouping="sequential",
+                      week.date.format="%Y-%m-%d")
 
 ######################
 ## Ex2: Computation of Weekly values only when the percentage of NAs in each

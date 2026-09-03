@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-13</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-14</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,20 +47,24 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Default S3 method</span></span>
-<span><span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0</span>,</span>
+<span>        week.date.format <span class="op">=</span> <span class="st">"%Y-%W"</span>, week.grouping <span class="op">=</span> <span class="st">"calendar"</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'zoo'</span></span>
-<span><span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0</span>,</span>
+<span>        week.date.format <span class="op">=</span> <span class="st">"%Y-%W"</span>, week.grouping <span class="op">=</span> <span class="st">"calendar"</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'data.frame'</span></span>
 <span><span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0</span>, dates<span class="op">=</span><span class="fl">1</span>, </span>
-<span>        date.fmt <span class="op">=</span> <span class="st">"%Y-%m-%d"</span>, out.type <span class="op">=</span> <span class="st">"data.frame"</span>, out.fmt<span class="op">=</span><span class="st">"numeric"</span>, </span>
-<span>        verbose<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>        date.fmt <span class="op">=</span> <span class="st">"%Y-%m-%d"</span>, week.date.format <span class="op">=</span> <span class="st">"%Y-%W"</span>,</span>
+<span>        week.grouping <span class="op">=</span> <span class="st">"calendar"</span>, out.type <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
+<span>        out.fmt<span class="op">=</span><span class="st">"numeric"</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'matrix'</span></span>
 <span><span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.rm.max<span class="op">=</span><span class="fl">0</span>, dates<span class="op">=</span><span class="fl">1</span>, </span>
-<span>        date.fmt <span class="op">=</span> <span class="st">"%Y-%m-%d"</span>, out.type <span class="op">=</span> <span class="st">"data.frame"</span>, out.fmt<span class="op">=</span><span class="st">"numeric"</span>, </span>
-<span>        verbose<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span>        date.fmt <span class="op">=</span> <span class="st">"%Y-%m-%d"</span>, week.date.format <span class="op">=</span> <span class="st">"%Y-%W"</span>,</span>
+<span>        week.grouping <span class="op">=</span> <span class="st">"calendar"</span>, out.type <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
+<span>        out.fmt<span class="op">=</span><span class="st">"numeric"</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -92,13 +96,23 @@ If <code>dates</code> is already of Date class, the code verifies that the numbe
 <dd><p>character indicating the format in which the dates are stored in <var>dates</var>, e.g. <kbd>%Y-%m-%d</kbd>. See <code>format</code> in <code><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></code>. <br>
 ONLY required when <code>class(dates)=="factor"</code> or <code>class(dates)=="numeric"</code>.</p></dd>
 
+  <dt id="arg-week-date-format">week.date.format<a class="anchor" aria-label="anchor" href="#arg-week-date-format"></a></dt>
+<dd><p>character indicating how weekly dates are stored in the output object. Valid values are: <br>
+-) <kbd>%Y-%W</kbd>: year and Monday-based week number, preserving the historical behaviour. <br>
+-) <kbd>%Y-%m-%d</kbd>: date of the first day available in each weekly aggregation group, returned as a <code>Date</code> index in zoo outputs and displayed as <kbd>YYYY-MM-DD</kbd>.</p></dd>
+
+  <dt id="arg-week-grouping">week.grouping<a class="anchor" aria-label="anchor" href="#arg-week-grouping"></a></dt>
+<dd><p>character indicating how daily values are grouped into weekly values. Valid values are: <br>
+-) <kbd>calendar</kbd>: calendar year-week groups defined by <kbd>%Y-%W</kbd>, preserving the historical behaviour. Weeks crossing a calendar-year boundary are split. <br>
+-) <kbd>sequential</kbd>: consecutive 7-day groups starting at the first date in <code>x</code>, equivalent to <code>seq(start(x), end(x), by="weeks")</code> for a complete daily series.</p></dd>
+
   <dt id="arg-out-type">out.type<a class="anchor" aria-label="anchor" href="#arg-out-type"></a></dt>
 <dd><p>Character that defines the desired type of output. Valid values are:  <br>
--) <kbd>data.frame</kbd>: a data.frame, with as many columns as stations are included in <code>x</code>, and row names indicating the month and year for each value. <br>
+-) <kbd>data.frame</kbd>: a data.frame, with as many columns as stations are included in <code>x</code>, and row names indicating the weekly label for each value. <br>
 -) <kbd>db</kbd>        : a data.frame, with 4 columns will be produced. <br>
                  The first column (StationID) stores the ID of the station, <br>
                  The second column (Year) stores the year <br>
-                 The third column (Month) stores the Month  <br>
+                 The third column (Week) stores the week number when <code>week.date.format="%Y-%W"</code> and the weekly date when <code>week.date.format="%Y-%m-%d"</code>  <br>
                  The fourth column (Value) stores the numerical values corresponding to the values specified in the three previous columns. <br></p></dd>
 
   <dt id="arg-out-fmt">out.fmt<a class="anchor" aria-label="anchor" href="#arg-out-fmt"></a></dt>
@@ -112,6 +126,34 @@ character, for selecting if the result will be a matrix/data.frame or a zoo obje
 <dd><p>arguments additional to <code>na.rm</code> passed to <code>FUN</code>.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The argument <code>week.grouping</code> defines how observations are assigned to
+weekly aggregation groups before <code>FUN</code> is applied. It is independent from
+<code>week.date.format</code>, which only controls how the weekly groups are labelled
+in the output object.</p>
+<p>When <code>week.grouping="calendar"</code> (default), <code>daily2weekly</code> groups the
+input dates using <code>format(time(x), "%Y-%W")</code>. This is the historical
+behaviour of the function. The <kbd>%W</kbd> conversion uses Monday as the first day
+of the week and numbers weeks within each calendar year. Days before the first
+Monday of a calendar year belong to week <code>"00"</code>. Therefore, a Monday-Sunday
+week that crosses from December into January can be split into two aggregation
+groups, one for the ending calendar year and one for week <code>"00"</code> or
+<code>"01"</code> of the new calendar year.</p>
+<p>When <code>week.grouping="sequential"</code>, <code>daily2weekly</code> groups the input
+dates into consecutive 7-day periods starting at the first date in <code>x</code>.
+For a complete daily series, the resulting weekly labels with
+<code>week.date.format="%Y-%m-%d"</code> correspond to
+<code>seq(start(x), end(x), by="weeks")</code>. This option is useful when the user
+wants uninterrupted 7-day blocks over the full record instead of calendar
+year-week groups.</p>
+<p>The argument <code>week.date.format</code> controls only the time index returned by
+<code>daily2weekly</code>. With <code>week.date.format="%Y-%W"</code>, the output is
+labelled with year-week strings. With
+<code>week.date.format="%Y-%m-%d"</code>, the output is labelled with the first
+date of each weekly group. The missing-value filter controlled by
+<code>na.rm.max</code> is applied to the same groups defined by <code>week.grouping</code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>a zoo object with weekly time frequency</p>
@@ -146,6 +188,13 @@ character, for selecting if the result will be a matrix/data.frame or a zoo obje
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Agreggating from Daily to Weekly, removing any missing value in 'x'</span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Same aggregation, with the weekly zoo index shown as YYYY-MM-DD dates</span></span></span>
+<span class="r-in"><span><span class="va">w.dates</span> <span class="op">&lt;-</span> <span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, week.date.format<span class="op">=</span><span class="st">"%Y-%m-%d"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Aggregation using consecutive 7-day groups starting at the first date in 'x'</span></span></span>
+<span class="r-in"><span><span class="va">w.seq</span> <span class="op">&lt;-</span> <span class="fu">daily2weekly</span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, week.grouping<span class="op">=</span><span class="st">"sequential"</span>,</span></span>
+<span class="r-in"><span>                      week.date.format<span class="op">=</span><span class="st">"%Y-%m-%d"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">######################</span></span></span>
 <span class="r-in"><span><span class="co">## Ex2: Computation of Weekly values only when the percentage of NAs in each</span></span></span>

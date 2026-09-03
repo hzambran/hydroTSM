@@ -92,6 +92,13 @@ matrixplot(x, ColorRamp="Days", ncolors = 10, main = "",
   [`levelplot`](https://rdrr.io/pkg/lattice/man/levelplot.html) function
   (lattice package) or from other methods
 
+## Details
+
+The default
+[`levelplot`](https://rdrr.io/pkg/lattice/man/levelplot.html) panel
+draws dotted grey lines along cell boundaries, making individual matrix
+values easier to distinguish.
+
 ## Author
 
 Mauricio Zambrano-Bigiarini, <mzb.devel@gmail>

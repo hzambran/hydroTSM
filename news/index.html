@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-13</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-14</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,9 @@
 <div class="section level3">
 <h3 id="user-visible-changes-0-9-0">User-visible changes<a class="anchor" aria-label="anchor" href="#user-visible-changes-0-9-0"></a></h3>
 <div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>    o <span class="st">'precipQC*'</span> and <span class="st">'tempQC*'</span> now accept optional station metadata with user<span class="sc">-</span>selected identifier, longitude, latitude, and elevation fields. Coordinates constrain and weight spatial neighbours; explicitly selected elevation data further influence neighbour ranking and weighting. Correlation<span class="sc">-</span>only spatial QC remains available when metadata are omitted or an individual station lacks either coordinate; located targets prefer eligible located neighbours before unlocated fallbacks.</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    o <span class="st">'spi'</span> and <span class="st">'spei'</span> now require an explicit <span class="st">'scale'</span> argument and accept <span class="st">'ref.start'</span><span class="sc">/</span><span class="st">'ref.end'</span> as Date objects or character strings <span class="cf">in</span> <span class="st">"YYYY-MM"</span> or <span class="st">"YYYY-MM-DD"</span> format.</span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    o <span class="st">'spi'</span> and <span class="st">'spei'</span> now require an explicit <span class="st">'scale'</span> argument and accept <span class="st">'ref.start'</span><span class="sc">/</span><span class="st">'ref.end'</span> as Date objects or character strings <span class="cf">in</span> <span class="st">"YYYY-MM"</span> or <span class="st">"YYYY-MM-DD"</span> format.</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    o <span class="st">'matrixplot'</span> now draws dotted grey grid lines at matrix cell boundaries by default, making individual cells easier to distinguish <span class="cf">while</span> preserving user<span class="sc">-</span>supplied <span class="st">'panel'</span> customisations.</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    o <span class="st">'daily2weekly'</span> now accepts <span class="st">'week.date.format'</span> to choose between the historical year<span class="sc">-</span>week output <span class="fu">labels</span> (<span class="st">"%Y-%W"</span>) and weekly Date <span class="fu">labels</span> (<span class="st">"%Y-%m-%d"</span>), and <span class="st">'week.grouping'</span> to choose between historical calendar year<span class="sc">-</span>week groups and sequential <span class="dv">7</span><span class="sc">-</span>day groups from the first date.</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="new-vignettes-0-9-0">New vignettes<a class="anchor" aria-label="anchor" href="#new-vignettes-0-9-0"></a></h3>
@@ -65,7 +67,8 @@
 </div>
 <div class="section level3">
 <h3 id="bug-fixes-0-9-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-0"></a></h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>    o <span class="st">'hydropairs'</span><span class="sc">:</span> fixed incorrect restoring of graphical state. <span class="st">'on.exit(par(usr))'</span> was replaced by <span class="st">'on.exit(par(usr=usr), add=TRUE)'</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>    o <span class="st">'hydropairs'</span><span class="sc">:</span> fixed incorrect restoring of graphical state. <span class="st">'on.exit(par(usr))'</span> was replaced by <span class="st">'on.exit(par(usr=usr), add=TRUE)'</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    o <span class="st">'daily2weekly'</span><span class="sc">:</span> fixed data.frame weekly labels, which were incorrectly handled as monthly dates <span class="cf">in</span> numeric and database<span class="sc">-</span>style outputs.</span></code></pre></div>
 </div>
 </div>
     <div class="section level2">
