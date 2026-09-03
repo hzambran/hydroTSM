@@ -22,17 +22,21 @@ Generic function for transforming a DAILY (or sub-daily) regular time series int
 \usage{
 daily2weekly(x, ...)
 
-\method{daily2weekly}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
+\method{daily2weekly}{default}(x, FUN, na.rm=TRUE, na.rm.max=0,
+        week.date.format = "\%Y-\%W", week.grouping = "calendar", ...)
 
-\method{daily2weekly}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
+\method{daily2weekly}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0,
+        week.date.format = "\%Y-\%W", week.grouping = "calendar", ...)
 
 \method{daily2weekly}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1, 
-        date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", out.fmt="numeric", 
-        verbose=TRUE, ...)
+        date.fmt = "\%Y-\%m-\%d", week.date.format = "\%Y-\%W",
+        week.grouping = "calendar", out.type = "data.frame",
+        out.fmt="numeric", verbose=TRUE, ...)
 
 \method{daily2weekly}{matrix}(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1, 
-        date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", out.fmt="numeric", 
-        verbose=TRUE, ...)
+        date.fmt = "\%Y-\%m-\%d", week.date.format = "\%Y-\%W",
+        week.grouping = "calendar", out.type = "data.frame",
+        out.fmt="numeric", verbose=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -63,13 +67,23 @@ If \code{dates} is already of Date class, the code verifies that the number of d
 character indicating the format in which the dates are stored in \var{dates}, e.g. \kbd{\%Y-\%m-\%d}. See \code{format} in \code{\link[base]{as.Date}}. \cr
 ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
 }
+  \item{week.date.format}{
+character indicating how weekly dates are stored in the output object. Valid values are: \cr
+-) \kbd{\%Y-\%W}: year and Monday-based week number, preserving the historical behaviour. \cr
+-) \kbd{\%Y-\%m-\%d}: date of the first day available in each weekly aggregation group, returned as a \code{Date} index in zoo outputs and displayed as \kbd{YYYY-MM-DD}.
+}
+  \item{week.grouping}{
+character indicating how daily values are grouped into weekly values. Valid values are: \cr
+-) \kbd{calendar}: calendar year-week groups defined by \kbd{\%Y-\%W}, preserving the historical behaviour. Weeks crossing a calendar-year boundary are split. \cr
+-) \kbd{sequential}: consecutive 7-day groups starting at the first date in \code{x}, equivalent to \code{seq(start(x), end(x), by="weeks")} for a complete daily series.
+}
   \item{out.type}{
 Character that defines the desired type of output. Valid values are:  \cr
--) \kbd{data.frame}: a data.frame, with as many columns as stations are included in \code{x}, and row names indicating the month and year for each value. \cr
+-) \kbd{data.frame}: a data.frame, with as many columns as stations are included in \code{x}, and row names indicating the weekly label for each value. \cr
 -) \kbd{db}        : a data.frame, with 4 columns will be produced. \cr
                  The first column (StationID) stores the ID of the station, \cr
                  The second column (Year) stores the year \cr
-                 The third column (Month) stores the Month  \cr
+                 The third column (Week) stores the week number when \code{week.date.format="\%Y-\%W"} and the weekly date when \code{week.date.format="\%Y-\%m-\%d"}  \cr
                  The fourth column (Value) stores the numerical values corresponding to the values specified in the three previous columns. \cr
 }
   \item{out.fmt}{
@@ -83,9 +97,36 @@ logical; if TRUE, progress messages are printed
 arguments additional to \code{na.rm} passed to \code{FUN}.
 }
 }
-%%\details{
-%%  ~~ If necessary, more details than the description above ~~
-%%}
+\details{
+The argument \code{week.grouping} defines how observations are assigned to
+weekly aggregation groups before \code{FUN} is applied. It is independent from
+\code{week.date.format}, which only controls how the weekly groups are labelled
+in the output object.
+
+When \code{week.grouping="calendar"} (default), \code{daily2weekly} groups the
+input dates using \code{format(time(x), "\%Y-\%W")}. This is the historical
+behaviour of the function. The \kbd{\%W} conversion uses Monday as the first day
+of the week and numbers weeks within each calendar year. Days before the first
+Monday of a calendar year belong to week \code{"00"}. Therefore, a Monday-Sunday
+week that crosses from December into January can be split into two aggregation
+groups, one for the ending calendar year and one for week \code{"00"} or
+\code{"01"} of the new calendar year.
+
+When \code{week.grouping="sequential"}, \code{daily2weekly} groups the input
+dates into consecutive 7-day periods starting at the first date in \code{x}.
+For a complete daily series, the resulting weekly labels with
+\code{week.date.format="\%Y-\%m-\%d"} correspond to
+\code{seq(start(x), end(x), by="weeks")}. This option is useful when the user
+wants uninterrupted 7-day blocks over the full record instead of calendar
+year-week groups.
+
+The argument \code{week.date.format} controls only the time index returned by
+\code{daily2weekly}. With \code{week.date.format="\%Y-\%W"}, the output is
+labelled with year-week strings. With
+\code{week.date.format="\%Y-\%m-\%d"}, the output is labelled with the first
+date of each weekly group. The missing-value filter controlled by
+\code{na.rm.max} is applied to the same groups defined by \code{week.grouping}.
+}
 \value{
 a zoo object with weekly time frequency
 }
@@ -124,6 +165,13 @@ x[na.index] <- NA
 
 ## Agreggating from Daily to Weekly, removing any missing value in 'x'
 w <- daily2weekly(x, FUN=sum, na.rm=TRUE)
+
+## Same aggregation, with the weekly zoo index shown as YYYY-MM-DD dates
+w.dates <- daily2weekly(x, FUN=sum, na.rm=TRUE, week.date.format="\%Y-\%m-\%d")
+
+## Aggregation using consecutive 7-day groups starting at the first date in 'x'
+w.seq <- daily2weekly(x, FUN=sum, na.rm=TRUE, week.grouping="sequential",
+                      week.date.format="\%Y-\%m-\%d")
 
 ######################
 ## Ex2: Computation of Weekly values only when the percentage of NAs in each

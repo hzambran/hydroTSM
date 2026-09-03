@@ -21,12 +21,14 @@ NEWS/ChangeLog for hydroTSM
 ## User-visible changes
         o 'precipQC*' and 'tempQC*' now accept optional station metadata with user-selected identifier, longitude, latitude, and elevation fields. Coordinates constrain and weight spatial neighbours; explicitly selected elevation data further influence neighbour ranking and weighting. Correlation-only spatial QC remains available when metadata are omitted or an individual station lacks either coordinate; located targets prefer eligible located neighbours before unlocated fallbacks.
         o 'spi' and 'spei' now require an explicit 'scale' argument and accept 'ref.start'/'ref.end' as Date objects or character strings in "YYYY-MM" or "YYYY-MM-DD" format.
+        o 'daily2weekly' now accepts 'week.date.format' to choose between the historical year-week output labels ("%Y-%W") and weekly Date labels ("%Y-%m-%d"), and 'week.grouping' to choose between historical calendar year-week groups and sequential 7-day groups from the first date.
 
 ## New vignettes
         o 'Theory, computation, and validation of SPI and SPEI with hydroTSM': theoretical guidance on drought-index construction, temporal scales, distributions, fitting methods, and arguments; practical usage; and versioned numerical and graphical comparisons against the SCI and SPEI packages at accumulation scales 1, 3, 6, and 12.
 
 ## Bug fixes
         o 'hydropairs': fixed incorrect restoring of graphical state. 'on.exit(par(usr))' was replaced by 'on.exit(par(usr=usr), add=TRUE)'
+        o 'daily2weekly': fixed data.frame weekly labels, which were incorrectly handled as monthly dates in numeric and database-style outputs.
 
 
 # Changes in version 0.8-6  27-Apr-2026

@@ -21,18 +21,74 @@
 
 daily2weekly <- function(x, ...) UseMethod("daily2weekly")
 
+.daily2weekly_check_week_date_format <- function(week.date.format) {
+  valid <- c("%Y-%W", "%Y-%m-%d")
+
+  if ( (length(week.date.format) != 1) | is.na(week.date.format) |
+       !(week.date.format %in% valid) )
+    stop("Invalid argument: 'week.date.format' must be in c('%Y-%W', '%Y-%m-%d') !")
+
+  week.date.format
+} # '.daily2weekly_check_week_date_format' end
+
+.daily2weekly_check_week_grouping <- function(week.grouping) {
+  valid <- c("calendar", "sequential")
+
+  if ( (length(week.grouping) != 1) | is.na(week.grouping) |
+       !(week.grouping %in% valid) )
+    stop("Invalid argument: 'week.grouping' must be in c('calendar', 'sequential') !")
+
+  week.grouping
+} # '.daily2weekly_check_week_grouping' end
+
+.daily2weekly_week_groups <- function(dates, week.grouping) {
+  if (week.grouping == "calendar") {
+    weeks <- format(dates, "%Y-%W")
+  } else {
+    days <- as.numeric(as.Date(dates) - min(as.Date(dates)))
+    weeks <- sprintf("%06d", floor(days / 7) + 1L)
+  } # ELSE end
+
+  weeks
+} # '.daily2weekly_week_groups' end
+
+.daily2weekly_week_dates <- function(dates, weeks, weeks.unique, week.grouping) {
+  if (week.grouping == "sequential") {
+    week.dates <- min(as.Date(dates)) + 7L * (as.integer(weeks.unique) - 1L)
+  } else {
+    date.index <- tapply(as.Date(dates), weeks, min)
+    week.dates <- as.Date(as.numeric(date.index[as.character(weeks.unique)]),
+                          origin="1970-01-01")
+  } # ELSE end
+
+  week.dates
+} # '.daily2weekly_week_dates' end
+
+.daily2weekly_na_pctg <- function(x, weeks) {
+  smv <- function(x) sum(is.na(x))
+
+  ndata <- aggregate(x, by=weeks, FUN=length)
+  nNA   <- aggregate(x, by=weeks, FUN=smv)
+
+  nNA / ndata
+} # '.daily2weekly_na_pctg' end
+
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
 # Started: 09-Ago-2023                                                         #
 # Updates:                                                                     #
 ################################################################################
-daily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
+daily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
+                                 week.date.format="%Y-%W",
+                                 week.grouping="calendar", ... ) {
 
      # Checking that 'x' is a zoo object
      if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be 'zoo' !")
 
-     daily2weekly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, ...)
+     daily2weekly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max,
+                      week.date.format=week.date.format,
+                      week.grouping=week.grouping, ...)
 
 } # 'daily2weekly.default' end
 
@@ -44,7 +100,9 @@ daily2weekly.default <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 # Updates: 11-Oct-2023 ; 22-Oct-2023 ; 04-Nov-2023                             #
 #          05-Feb-2025                                                         #
 ################################################################################
-daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
+daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
+                             week.date.format="%Y-%W",
+                             week.grouping="calendar", ... ) {
 
   # Checking the user provide a valid value for 'FUN'
   if (missing(FUN))
@@ -57,23 +115,37 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
   # Checking that 'na.rm.max' is in [0, 1]
   if ( (na.rm.max < 0) | (na.rm.max > 1) )
     stop("Invalid argument: 'na.rm.max' must be in [0, 1] !") 
+
+  # Checking that 'week.date.format' is valid
+  week.date.format <- .daily2weekly_check_week_date_format(week.date.format)
+
+  # Checking that 'week.grouping' is valid
+  week.grouping <- .daily2weekly_check_week_grouping(week.grouping)
       
   # Weekly index for 'x'
   dates <- time(x)
-  weeks <- format(dates, "%Y-%W")
+  weeks <- .daily2weekly_week_groups(dates=dates, week.grouping=week.grouping)
  
   # Computing the Weekly time series 
   tmp <- aggregate( x, by=weeks, FUN, na.rm= na.rm, ... ) 
   
   # Getting the weekly time attribute of the aggregated output object
   weeks.unique <- time(tmp)
+  week.dates <- .daily2weekly_week_dates(dates=dates, weeks=weeks,
+                                         weeks.unique=weeks.unique,
+                                         week.grouping=week.grouping)
+  if (week.date.format == "%Y-%m-%d") {
+    weeks.unique <- week.dates
+  } else if (week.grouping == "sequential") {
+    weeks.unique <- format(week.dates, "%Y-%W")
+  } # ELSE end
 
   # Removing weekly values in the output object for weeks with 
   # more than 'na.rm.max' percentage of NAs in a given week
   if ( na.rm ) {
 
     # Computing the percentage of missing values in each week
-    na.pctg <- cmv(x, tscale="weekly")
+    na.pctg <- .daily2weekly_na_pctg(x=x, weeks=weeks)
 
     # identifying weeks with a percentage of missing values higher than 'na.rm.max'
     na.pctg.index <- which( na.pctg > na.rm.max)
@@ -132,6 +204,8 @@ daily2weekly.zoo <- function(x, FUN, na.rm=TRUE, na.rm.max=0, ... ) {
 # 'verbose'      : logical; if TRUE, progress messages are printed
 daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
                                     dates=1, date.fmt="%Y-%m-%d",
+                                    week.date.format="%Y-%W",
+                                    week.grouping="calendar",
 				                            out.type="data.frame",
 				                            out.fmt="numeric",
 				                            verbose=TRUE, ...) {
@@ -151,6 +225,12 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   # Checking that the user provied a valid argument for 'dates'
   if (is.na(match(class(dates), c("numeric", "factor", "Date"))))
     stop("Invalid argument: 'dates' must be of class 'numeric', 'factor', 'Date'")
+
+  # Checking that 'week.date.format' is valid
+  week.date.format <- .daily2weekly_check_week_date_format(week.date.format)
+
+  # Checking that 'week.grouping' is valid
+  week.grouping <- .daily2weekly_check_week_grouping(week.grouping)
 
   # If 'dates' is a number, it indicates the index of the column of 'x' that stores the dates
   # The column with dates is then substracted form 'x' for easening the further computations
@@ -176,12 +256,15 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
   ##############################################################################
   if (out.type == "data.frame") {
   
-    z <- daily2weekly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max, ...)
+    z <- daily2weekly.zoo(x=x, FUN=FUN, na.rm=na.rm, na.rm.max=na.rm.max,
+                          week.date.format=week.date.format,
+                          week.grouping=week.grouping, ...)
     
     if (out.fmt == "numeric") {
-       snames      <- colnames(z)
-       weeks.lab  <- format(time(z), "%b-%Y")
+       snames      <- colnames(x)
+       weeks.lab  <- as.character(time(z))
        z           <- coredata(z)
+       if (is.null(dim(z))) z <- matrix(z, ncol=1)
        colnames(z) <- snames
        rownames(z) <- weeks.lab        
     } # IF end
@@ -206,7 +289,9 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
           # Computing the amount of weeks with data within the desired period
           ndays   <- length(dates) # number of days in the period
           tmp     <- vector2zoo(rep(0,ndays), dates)
-          tmp     <- daily2weekly.default(x= tmp, FUN=FUN, na.rm=na.rm)
+          tmp     <- daily2weekly.default(x= tmp, FUN=FUN, na.rm=na.rm,
+                                          week.date.format=week.date.format,
+                                          week.grouping=week.grouping)
           nweeks  <- length(tmp)
 
           # Creating a vector with the names of the field that will be used for storing the results
@@ -228,7 +313,10 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
                                   "%" )
 
 	        # Computing the weekly values
-	        w     <- daily2weekly.zoo(x= x[,j], FUN=FUN, ..., na.rm=na.rm, na.rm.max=na.rm.max)
+	        w     <- daily2weekly.zoo(x= x[,j], FUN=FUN, ..., na.rm=na.rm,
+                                    na.rm.max=na.rm.max,
+                                    week.date.format=week.date.format,
+                                    week.grouping=week.grouping)
           dates <- time(w)
             
 	        if (out.fmt == "numeric") w <- coredata(w)
@@ -239,8 +327,13 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
           row.fin <-  j*nweeks
 
           z[row.ini:row.fin, 1] <- snames[j] # it is automatically repeated 'nweeks' times
-          z[row.ini:row.fin, 2] <- format(as.Date(dates), "%Y") # zoo::as.Date
-          z[row.ini:row.fin, 3] <- format(as.Date(dates), "%b") # zoo::as.Date
+          if (week.date.format == "%Y-%W") {
+            z[row.ini:row.fin, 2] <- substr(dates, 1, 4)
+            z[row.ini:row.fin, 3] <- substr(dates, 6, 7)
+          } else {
+            z[row.ini:row.fin, 2] <- format(dates, "%Y")
+            z[row.ini:row.fin, 3] <- as.character(dates)
+          } # ELSE end
           z[row.ini:row.fin, 4] <- w
 
         } # FOR end
@@ -260,6 +353,8 @@ daily2weekly.data.frame <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
 ################################################################################
 daily2weekly.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
                                   dates=1, date.fmt="%Y-%m-%d",
+                                  week.date.format="%Y-%W",
+                                  week.grouping="calendar",
 				                          out.type="data.frame",
 				                          out.fmt="numeric",
                                   verbose=TRUE,...) {
@@ -267,10 +362,12 @@ daily2weekly.matrix  <- function(x, FUN, na.rm=TRUE, na.rm.max=0,
    x <- as.data.frame(x)
    #NextMethod("daily2annual")  # I don't know why is redirecting to 'daily2weekly.default' instead of 'daily2weekly.data.frame'....
    daily2weekly.data.frame(x=x, FUN=FUN, na.rm=na.rm, 
-                            na.rm.max=na.rm.max,
-                            dates=dates, date.fmt=date.fmt,
+	                            na.rm.max=na.rm.max,
+	                            dates=dates, date.fmt=date.fmt,
+                              week.date.format=week.date.format,
+                              week.grouping=week.grouping,
 			                      out.type=out.type,
 			                      out.fmt=out.fmt,
-                            verbose=verbose,...)
+	                            verbose=verbose,...)
 
 } # 'daily2weekly.matrix  ' END
