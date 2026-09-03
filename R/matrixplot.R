@@ -152,19 +152,32 @@ matrixplot <- function(x,
   legend.at   <- as.numeric(factor(lcuts))[label.idx]
   
 
-  y <- levelplot(x, 
-                 scales=list(tck=0, x=list(rot=90)),
-                 colorkey = list(title = paste0(legend.title, " \n"),
-                                 title.gpar=list(fontsize=legend.fontsize, font=1), #font=2 -> bold font
-                                 space = "right",
-                                 at=as.numeric(factor(lcuts)),                                                  # equally spaced color bins in the legend
-                                 labels=list(labels=cuts.labels, at=legend.at, cex=legend.cex), # equally spaced color bins in the legend
-                                 col=col                                     
-                                 ), 
-                 main=main,
-                 xlab=NULL, ylab=NULL,...,
-                 at=lcuts, col.regions=col
-                 ) 
+  dots <- list(...)
+  if (is.null(dots$panel)) {
+    xgrid <- seq(0.5, ncol(x) + 0.5, by=1)
+    ygrid <- seq(0.5, nrow(x) + 0.5, by=1)
+    dots$panel <- function(...) {
+      lattice::panel.levelplot(...)
+      lattice::panel.abline(v=xgrid, h=ygrid, col="grey70",
+                            lty="dotted", lwd=0.5)
+    }
+  } # IF end
+
+  y.args <- c(list(x=x,
+                  scales=list(tck=0, x=list(rot=90)),
+                  colorkey = list(title = paste0(legend.title, " \n"),
+                                  title.gpar=list(fontsize=legend.fontsize, font=1), #font=2 -> bold font
+                                  space = "right",
+                                  at=as.numeric(factor(lcuts)),                                                  # equally spaced color bins in the legend
+                                  labels=list(labels=cuts.labels, at=legend.at, cex=legend.cex), # equally spaced color bins in the legend
+                                  col=col                                     
+                                  ), 
+                  main=main,
+                  xlab=NULL, ylab=NULL,
+                  at=lcuts, col.regions=col),
+              dots)
+
+  y <- do.call(levelplot, y.args)
 
   #par(fig=c(0,0.8,0.55,1), new=TRUE)
   #up <- colMeans(x)

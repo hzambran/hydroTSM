@@ -68,9 +68,10 @@ size of text (in points) used in the legend title (e.g., showing the measurement
 further arguments passed to \code{\link[lattice]{levelplot}} function (\pkg{lattice} package) or from other methods
 }
 }
-%%\details{
-%%  ~~ If necessary, more details than the description above ~~
-%%}
+\details{
+The default \code{\link[lattice]{levelplot}} panel draws dotted grey lines along
+cell boundaries, making individual matrix values easier to distinguish.
+}
 %%\value{
 %%  ~Describe the value returned
 %%  If it is a LIST, use
