@@ -54,6 +54,7 @@ Temporal aggregation:
     \code{\link{monthly2annual}}    Aggregation from monthly to annual. \cr
     \code{\link{daily2monthly}}     Aggregation from daily to monthly. \cr
     \code{\link{subdaily2monthly}}  Aggregation from subdaily to monthly. \cr
+    \code{\link{submonthly2monthly}}Aggregation from hourly, daily, weekly or pseudo-weekly to monthly. \cr
     \code{\link{daily2weekly}}      Aggregation from daily to weekly. \cr
     \code{\link{dm2seasonal}}       Aggregation from daily or monthly to seasonal. \cr
     \code{\link{subdaily2seasonal}} Aggregation from subdaily to seasonal. \cr

@@ -1,7 +1,7 @@
 %%File daily2monthly.Rd
 %% Part of the hydroTSM R package, http://www.rforge.net/hydroTSM/ ; 
 %%                                 https://CRAN.R-project.org/package=hydroTSM
-%% Copyright 2008-2025 Mauricio Zambrano-Bigiarini
+%% Copyright 2008-2026 Mauricio Zambrano-Bigiarini
 %% Distributed under GPL 2 or later
 
 \name{(sub)daily2monthly}
@@ -16,17 +16,23 @@
 \alias{subdaily2monthly.zoo}
 \alias{subdaily2monthly.data.frame}
 \alias{subdaily2monthly.matrix}
+\alias{submonthly2monthly}
+\alias{submonthly2monthly.default}
+\alias{submonthly2monthly.zoo}
+\alias{submonthly2monthly.data.frame}
+\alias{submonthly2monthly.matrix}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-(sub)Daily -> Monthly
+Daily/Submonthly -> Monthly
 }
 \description{
-Generic function for transforming a DAILY (sub-daily or weekly) regular time series into a MONTHLY one
+Generic functions for transforming daily, sub-daily, weekly, or pseudo-weekly time series into a MONTHLY one.
 }
 \usage{
 daily2monthly(x, ...)
 subdaily2monthly(x, ...)
+submonthly2monthly(x, ...)
 
 \method{daily2monthly}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
 
@@ -39,11 +45,23 @@ subdaily2monthly(x, ...)
 \method{daily2monthly}{matrix}(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1, 
         date.fmt = "\%Y-\%m-\%d", out.type = "data.frame", out.fmt="numeric", 
         verbose=TRUE, ...)
+
+\method{submonthly2monthly}{default}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
+
+\method{submonthly2monthly}{zoo}(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
+
+\method{submonthly2monthly}{data.frame}(x, FUN, na.rm=TRUE, na.rm.max=0,
+        dates=1, date.fmt = "\%Y-\%m-\%d", tz=NULL, out.type = "data.frame",
+        out.fmt="numeric", verbose=TRUE, ...)
+
+\method{submonthly2monthly}{matrix}(x, FUN, na.rm=TRUE, na.rm.max=0,
+        dates=1, date.fmt = "\%Y-\%m-\%d", tz=NULL, out.type = "data.frame",
+        out.fmt="numeric", verbose=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-zoo, data.frame or matrix object, with (sub)daily time series. \cr
+zoo, data.frame or matrix object, with submonthly time series. \cr
 Measurements at several gauging stations can be stored in a data.frame or matrix object, and in that case, each column of \code{x} represents the time series measured in each gauging station, and the column names of \code{x} have to correspond to the ID of each station (starting by a letter).
 }
   \item{FUN}{
@@ -60,14 +78,17 @@ Logical. Should missing values be removed? \cr
 Numeric in [0, 1]. It is used to define the maximum percentage of missing values allowed in each month to keep the monthly aggregated value in the output object of this function. In other words, if the percentage of missing values in a given month is larger than \code{na.rm.max} the corresponding monthly value will be \code{NA}.
 }
   \item{dates}{
-numeric, factor or Date object indicating how to obtain the dates for each gauging station \cr
+numeric, factor or Date object indicating how to obtain the dates for each gauging station. \code{submonthly2monthly} also accepts character and POSIXt objects. \cr
 If \code{dates} is a number (default), it indicates the index of the column in \var{x} that stores the dates \cr
-If \code{dates} is a factor, it is converted into Date class, using the date format specified by \code{date.fmt}  \cr
-If \code{dates} is already of Date class, the code verifies that the number of days on it be equal to the number of elements in \code{x}
+If \code{dates} is a factor or character, it is converted into Date or POSIXct class, using the date format specified by \code{date.fmt}  \cr
+If \code{dates} is already of Date or POSIXt class, the code verifies that the number of time steps on it be equal to the number of elements in \code{x}
 }
   \item{date.fmt}{
 character indicating the format in which the dates are stored in \var{dates}, e.g. \kbd{\%Y-\%m-\%d}. See \code{format} in \code{\link[base]{as.Date}}. \cr
 ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
+}
+  \item{tz}{
+character, with the specification of the time zone used for parsing POSIXt dates when \code{x} is a matrix or data.frame.
 }
   \item{out.type}{
 Character that defines the desired type of output. Valid values are:  \cr
@@ -89,9 +110,15 @@ logical; if TRUE, progress messages are printed
 arguments additional to \code{na.rm} passed to \code{FUN}.
 }
 }
-%%\details{
-%%  ~~ If necessary, more details than the description above ~~
-%%}
+\details{
+\code{submonthly2monthly} follows the output conventions of \code{daily2monthly},
+but it groups values directly by calendar month without requiring a regular
+sampling frequency. This allows hourly, daily, weekly, and pseudo-weekly zoo
+objects whose Date/POSIXt indexes are not regular enough for automatic frequency
+detection. For \code{na.rm.max}, the percentage of missing values is computed
+using the values observed within each month; missing unobserved regular time
+steps are not inserted.
+}
 \value{
 a zoo object with monthly time frequency
 }
@@ -166,6 +193,13 @@ x <- KarameaAtGorgeQts
 
 # Sub-daily to monthly ts
 subdaily2monthly(x, FUN=mean, na.rm=TRUE)
+
+######################
+## Ex4: Pseudo-weekly dates aggregated directly to monthly values
+dates <- as.Date(c("2023-01-01", "2023-01-08", "2023-01-15",
+                   "2023-01-23", "2023-02-01", "2023-02-10"))
+x <- zoo(c(1, 2, 3, 4, 5, 6), dates)
+submonthly2monthly(x, FUN=sum, na.rm=TRUE)
 }
 
 
