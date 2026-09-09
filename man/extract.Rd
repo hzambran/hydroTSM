@@ -41,7 +41,8 @@ numeric or character indicating the elements to extract from \code{x}. Valid val
    -) \kbd{DJFM}: December, January, February, March  \cr                   
    -) \kbd{AM}  : April, May                    \cr  
    -) \kbd{JJAS}: June, July, August, September \cr            
-   -) \kbd{ON}  : October, November
+   -) \kbd{ON}  : October, November             \cr
+   -) \kbd{SONDEFM}: September, October, November, December, January, February, March
 }
   \item{\dots}{
 further arguments passed to or from other methods
@@ -81,6 +82,9 @@ extract(x, trgt=c(2,4))
 
 ## Extracting all values from September to March
 extract(x, trgt=c(9,10,11,12,1,2,3))
+
+## Extracting all values from September to March using the SONDEFM shortcut
+extract(x, trgt="SONDEFM")
 
 ## Extracting all the values belonging to the year 1970
 extract(x, trgt=1970)

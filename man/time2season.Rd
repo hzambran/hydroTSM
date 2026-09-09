@@ -24,7 +24,10 @@ When \code{type=FrenchPolynesia}
 -) winter = DJFM: December, January, February, March  \cr              
 -) spring = AM  : April, May                          \cr             
 -) summer = JJAS: June, July, August, September       \cr            
--) autumn = ON  : October, November
+-) autumn = ON  : October, November                   \cr
+
+When \code{type=SONDEFM}
+-) SONDEFM: September, October, November, December, January, February, March. Other months are returned as \code{NA}.
 }
 \usage{
 time2season(x, out.fmt = "months", type="default")
@@ -36,13 +39,14 @@ vector with the dates that have to be transformed. class(x) must be Date
 }
   \item{out.fmt}{
 character, indicating the format of the output seasons. Possible values are: \cr
--) \kbd{seasons} =>  c("winter", "spring",  "summer", autumn")  \cr
--) \kbd{months}  =>  c("DJF", "MAM",  "JJA", SON") or c("DJFM", "AM",  "JJAS", ON")
+-) \kbd{seasons} =>  c("winter", "spring",  "summer", autumn") or "SONDEFM" when \code{type="SONDEFM"}  \cr
+-) \kbd{months}  =>  c("DJF", "MAM",  "JJA", SON") or c("DJFM", "AM",  "JJAS", ON") or "SONDEFM"
 }
   \item{type}{
 character, indicating which weather seasons will be used for computing the output. Possible values are: \cr
 -) \kbd{default}          =>  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;       "autumn"= Sep, Oct, Nov  \cr
--) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug, Sep;  "autumn"= Oct, Nov 
+-) \kbd{FrenchPolynesia}  =>  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug, Sep;  "autumn"= Oct, Nov \cr
+-) \kbd{SONDEFM}          =>  "SONDEFM"= Sep, Oct, Nov, Dec, Jan, Feb, Mar; other months are returned as \code{NA}
 }
 }
 %%\details{
@@ -75,6 +79,9 @@ time2season(t)
 t <- mip("1961-01-01", "1961-12-31")
 time2season(t)
 time2season(t, out.fmt="seasons")
+
+## September to March selector
+time2season(t, type="SONDEFM")
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

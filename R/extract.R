@@ -34,6 +34,8 @@ extractzoo <-function(x, ...) UseMethod("extract")
 #              -) "MAM": March, April, May
 #              -) "JJA": June, July, August
 #              -) "SON": September, October, November
+#              -) "SONDEFM": September, October, November, December,
+#                            January, February, March
 
 
 ################################################################################
@@ -92,9 +94,10 @@ extract.zoo <- function(x, trgt, ...) {
     
           seasons.default         <- c("DJF",  "MAM", "JJA",  "SON")
           seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJAS", "ON")
+          seasons.special         <- "SONDEFM"
           
           # Checking that the user provied a valid class for 'trgt'   
-          valid.seasons <- valid.seasons <- union(seasons.default, seasons.FrenchPolynesia)
+          valid.seasons <- union(union(seasons.default, seasons.FrenchPolynesia), seasons.special)
              
           if (length(which(!is.na(match(trgt, valid.seasons )))) <= 0)  
             stop( "Invalid argument: 'trgt' must be in 'c(", paste(valid.seasons, collapse=", "), ")'" ) 
@@ -104,6 +107,8 @@ extract.zoo <- function(x, trgt, ...) {
             season.type <- "default"
           } else if ( trgt %in% seasons.FrenchPolynesia ) {
               season.type <- "FrenchPolynesia"
+            } else if ( trgt %in% seasons.special ) {
+                season.type <- "SONDEFM"
             } # ELSE end
 
 	  # Gets the season each element of 'x' belongs to 'seasons.default' or to 'seasons.FrenchPolynesia'

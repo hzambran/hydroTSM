@@ -9,12 +9,14 @@ x <- zoo::zoo(seq_along(dates), dates)
 
 wet.months <- c(9, 10, 11, 12, 1, 2, 3)
 wet <- extract(x, trgt=wet.months)
+wet.special <- extract(x, trgt="SONDEFM")
 expected.index <- which(as.integer(format(dates, "%m")) %in% wet.months)
 
 stopifnot(
   inherits(wet, "zoo"),
   identical(zoo::index(wet), dates[expected.index]),
   identical(as.numeric(wet), as.numeric(x[expected.index])),
+  identical(wet.special, wet),
   identical(sort(unique(as.integer(format(zoo::index(wet), "%m")))),
             sort(as.integer(wet.months)))
 )
