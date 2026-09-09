@@ -1,13 +1,14 @@
-# (sub)Daily -\> Monthly
+# Daily/Submonthly -\> Monthly
 
-Generic function for transforming a DAILY (sub-daily or weekly) regular
-time series into a MONTHLY one
+Generic functions for transforming daily, sub-daily, weekly, or
+pseudo-weekly time series into a MONTHLY one.
 
 ## Usage
 
 ``` r
 daily2monthly(x, ...)
 subdaily2monthly(x, ...)
+submonthly2monthly(x, ...)
 
 # Default S3 method
 daily2monthly(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
@@ -24,13 +25,29 @@ daily2monthly(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1,
 daily2monthly(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1, 
         date.fmt = "%Y-%m-%d", out.type = "data.frame", out.fmt="numeric", 
         verbose=TRUE, ...)
+
+# Default S3 method
+submonthly2monthly(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
+
+# S3 method for class 'zoo'
+submonthly2monthly(x, FUN, na.rm=TRUE, na.rm.max=0, ...)
+
+# S3 method for class 'data.frame'
+submonthly2monthly(x, FUN, na.rm=TRUE, na.rm.max=0,
+        dates=1, date.fmt = "%Y-%m-%d", tz=NULL, out.type = "data.frame",
+        out.fmt="numeric", verbose=TRUE, ...)
+
+# S3 method for class 'matrix'
+submonthly2monthly(x, FUN, na.rm=TRUE, na.rm.max=0,
+        dates=1, date.fmt = "%Y-%m-%d", tz=NULL, out.type = "data.frame",
+        out.fmt="numeric", verbose=TRUE, ...)
 ```
 
 ## Arguments
 
 - x:
 
-  zoo, data.frame or matrix object, with (sub)daily time series.  
+  zoo, data.frame or matrix object, with submonthly time series.  
   Measurements at several gauging stations can be stored in a data.frame
   or matrix object, and in that case, each column of `x` represents the
   time series measured in each gauging station, and the column names of
@@ -65,13 +82,15 @@ daily2monthly(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1,
 - dates:
 
   numeric, factor or Date object indicating how to obtain the dates for
-  each gauging station  
+  each gauging station. `submonthly2monthly` also accepts character and
+  POSIXt objects.  
   If `dates` is a number (default), it indicates the index of the column
   in `x` that stores the dates  
-  If `dates` is a factor, it is converted into Date class, using the
-  date format specified by `date.fmt`  
-  If `dates` is already of Date class, the code verifies that the number
-  of days on it be equal to the number of elements in `x`
+  If `dates` is a factor or character, it is converted into Date or
+  POSIXct class, using the date format specified by `date.fmt`  
+  If `dates` is already of Date or POSIXt class, the code verifies that
+  the number of time steps on it be equal to the number of elements in
+  `x`
 
 - date.fmt:
 
@@ -80,6 +99,11 @@ daily2monthly(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1,
   [`as.Date`](https://rdrr.io/r/base/as.Date.html).  
   ONLY required when `class(dates)=="factor"` or
   `class(dates)=="numeric"`.
+
+- tz:
+
+  character, with the specification of the time zone used for parsing
+  POSIXt dates when `x` is a matrix or data.frame.
 
 - out.type:
 
@@ -107,6 +131,17 @@ daily2monthly(x, FUN, na.rm=TRUE, na.rm.max=0, dates=1,
 - ...:
 
   arguments additional to `na.rm` passed to `FUN`.
+
+## Details
+
+`submonthly2monthly` follows the output conventions of `daily2monthly`,
+but it groups values directly by calendar month without requiring a
+regular sampling frequency. This allows hourly, daily, weekly, and
+pseudo-weekly zoo objects whose Date/POSIXt indexes are not regular
+enough for automatic frequency detection. For `na.rm.max`, the
+percentage of missing values is computed using the values observed
+within each month; missing unobserved regular time steps are not
+inserted.
 
 ## Value
 
@@ -208,4 +243,13 @@ subdaily2monthly(x, FUN=mean, na.rm=TRUE)
 #>  87.15014  40.92621  82.35111 108.26599  88.46546 131.81391  62.01144 109.56347 
 #>  Dec 1985 
 #> 153.39036 
+
+######################
+## Ex4: Pseudo-weekly dates aggregated directly to monthly values
+dates <- as.Date(c("2023-01-01", "2023-01-08", "2023-01-15",
+                   "2023-01-23", "2023-02-01", "2023-02-10"))
+x <- zoo(c(1, 2, 3, 4, 5, 6), dates)
+submonthly2monthly(x, FUN=sum, na.rm=TRUE)
+#> 2023-01-01 2023-02-01 
+#>         10         11 
 ```

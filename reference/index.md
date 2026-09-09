@@ -33,7 +33,8 @@
   : (sub)Daily/Monthly -\> Annual
 - [`daily2monthly()`](https://hzambran.github.io/hydroTSM/reference/daily2monthly.md)
   [`subdaily2monthly()`](https://hzambran.github.io/hydroTSM/reference/daily2monthly.md)
-  : (sub)Daily -\> Monthly
+  [`submonthly2monthly()`](https://hzambran.github.io/hydroTSM/reference/daily2monthly.md)
+  : Daily/Submonthly -\> Monthly
 - [`daily2weekly()`](https://hzambran.github.io/hydroTSM/reference/daily2weekly.md)
   : Daily -\> Weekly
 - [`dip()`](https://hzambran.github.io/hydroTSM/reference/dip.md) : Days
