@@ -10,7 +10,7 @@
 #########################################################################
 # Author : Mauricio Zambrano-Bigiarini                                  #
 # Started: 16-Apr-2009                                                  #
-# Updates: 15-May-2009; 30-Ago-2009 ; 10-Aug-2011                       #
+# Updates: 15-May-2009; 30-Ago-2009 ; 10-Aug-2011; 09-Sep-2026           #
 #########################################################################
 
 extract <-function(x, ...) UseMethod("extract")
@@ -21,11 +21,11 @@ extractzoo <-function(x, ...) UseMethod("extract")
 # 'x'    : variable of type 'zoo'
 # 'trgt' : numeric or character indicating elements to extract from 'x'
 #          Valid values are:
-#          1) integer from 1 to 12: 'trgt' is considered as a month, and
-#             all the vaues in 'x' belonging to the month specified by 'trgt'
-#             will be extracted  (1=JAN, 2=FEB,...., 12=DEC)
-#          2) integer > 12: 'trgt' is considered as a year, and all the
-#             values in 'x' belonging to the year specified by 'trgt'
+#          1) integer(s) from 1 to 12: 'trgt' is considered as month(s),
+#             and all the values in 'x' belonging to the month(s) specified by
+#             'trgt' will be extracted  (1=JAN, 2=FEB,...., 12=DEC)
+#          2) integer(s) > 12: 'trgt' is considered as year(s), and all the
+#             values in 'x' belonging to the year(s) specified by 'trgt'
 #             will be extracted
 #          3) character: 'trgt' is considered as a weather season, and
 #             all the values in 'x' belonging to the season specified by
@@ -60,24 +60,30 @@ extract.default <- function(x, trgt, ...) {
 ################################################################################
 # Started: 22-Aug-2011                                                         #
 # Updates: 13-Feb-2014 ; 14-Feb-2014                                           #
-#          22-Aug-2022                                                         #
+#          22-Aug-2022; 09-Sep-2026                                            #
 ################################################################################
 extract.zoo <- function(x, trgt, ...) {
 
   # Checking that the user provied a valid argument for 'trgt'
-  if ( is.na( match( class(trgt), c("integer", "numeric", "character") ) ) )
+  if ( !(is.numeric(trgt) | is.character(trgt)) )
       stop("Invalid argument: class('trgt') must be in c('integer', 'numeric','character')")
 
   # If 'trgt' is a month or a year
-  if ( (inherits(trgt, "numeric") ) | ( inherits(trgt, "integer") ) ) {
+  if ( is.numeric(trgt) ) {
 
     # Checking that 'trgt' is integer
     if ( !isTRUE(all.equal(trgt - trunc(trgt), rep(0,length(trgt)) ) ) )
         stop("Invalid argument: 'trgt' must be integer")
 
-	if ( isTRUE(all.equal((trgt %in% 1:12), rep(TRUE, length(trgt)) ) )) {
-	   index <- which(as.numeric(format.Date(time(x), "%m")) %in% trgt)
-	} else index <- which( as.numeric(format.Date(time(x), "%Y")) %in% trgt )
+    trgt <- as.integer(trgt)
+
+    if ( all(trgt %in% 1:12) ) {
+       index <- which(as.integer(format(time(x), "%m")) %in% trgt)
+    } else if ( all(trgt > 12) ) {
+        index <- which( as.integer(format(time(x), "%Y")) %in% trgt )
+      } else {
+          stop("Invalid argument: numeric 'trgt' must contain only months (1:12) or only years (>12)")
+        } # ELSE end
 
   } # if END
 
