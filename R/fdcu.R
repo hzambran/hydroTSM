@@ -172,7 +172,7 @@ fdcu.default <- function (x,
 
          if (new) {
              # Creating the plot, but without anything on it, for allowing the call to polygon            
-             plot(fdc.x, x.sort, type="n", xaxt = "n", yaxt = "n", main=main, xlab=xlab, ylab=ylab, log=log, ylim=ylim, ...)             
+             plot(fdc.x, x.sort, type="n", xaxt = "n", yaxt = "n", main=main, xlab=xlab, ylab=ylab, cex.lab=cex.lab, log=log, ylim=ylim, ...)
          } # IF end
 
          # Plotting the polygons between the lower and upper bands
@@ -631,4 +631,3 @@ fdcu.data.frame <- function(x,
   
   
 # } # 'fdc.zoo' END
-
