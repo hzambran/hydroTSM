@@ -31,7 +31,7 @@ zoo object
 }
   \item{trgt}{
 numeric or character indicating the elements to extract from \code{x}. Valid values are: \cr
-1) integer(s) from 1 to 12: \code{trgt} is considered as month(s) (1=JAN, 2=FEB,...., 12=DEC), and all the values in \code{x} belonging to the month(s) specified by \code{trgt} will be extracted. Month vectors may span the end of the calendar year, e.g., \code{c(9,10,11,12,1,2,3)}. \cr
+1) integer(s) from 1 to 12: \code{trgt} is considered as month(s) (1=JAN, 2=FEB,...., 12=DEC), and all the values in \code{x} belonging to the month(s) specified by \code{trgt} will be extracted. Month-vector order is relevant: \code{c(9,10,11,12,1,2,3)} extracts September to March, with January, February and March belonging to the next calendar year, whereas \code{c(1,2,3,9,10,11,12)} extracts all those months within each calendar year. \cr
 2) integer(s) > 12: \code{trgt} is considered as year(s), and all the values in \code{x} belonging to the year(s) specified by \code{trgt} will be extracted. Numeric vectors must contain either only months or only years. \cr
 3) character: \code{trgt} is considered as a weather season, and all the values in \code{x} belonging to the season specified by \code{trgt} will be extracted. Valid values are: \cr
    -) \kbd{DJF} : December, January, February   \cr                   
@@ -42,7 +42,7 @@ numeric or character indicating the elements to extract from \code{x}. Valid val
    -) \kbd{AM}  : April, May                    \cr  
    -) \kbd{JJAS}: June, July, August, September \cr            
    -) \kbd{ON}  : October, November             \cr
-   -) \kbd{SONDEFM}: September, October, November, December, January, February, March
+   -) \kbd{SONDJFM}: September, October, November, December, January, February, March, with January, February and March belonging to the next calendar year
 }
   \item{\dots}{
 further arguments passed to or from other methods
@@ -83,8 +83,11 @@ extract(x, trgt=c(2,4))
 ## Extracting all values from September to March
 extract(x, trgt=c(9,10,11,12,1,2,3))
 
-## Extracting all values from September to March using the SONDEFM shortcut
-extract(x, trgt="SONDEFM")
+## Extracting January-March and September-December within the same calendar year
+extract(x, trgt=c(1,2,3,9,10,11,12))
+
+## Extracting all values from September to March using the SONDJFM shortcut
+extract(x, trgt="SONDJFM")
 
 ## Extracting all the values belonging to the year 1970
 extract(x, trgt=1970)

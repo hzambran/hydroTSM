@@ -12,7 +12,7 @@
 #               spring = MAM: March, April, May                                #
 #               summer = JJA: June, July, August                               #
 #               autumn = SON: September, October, November                     #
-#               type="SONDEFM" selects September through March                 #
+#               type="SONDJFM" selects September through next March            #
 ################################################################################
 # Author : Mauricio Zambrano-Bigiarini                                         #
 ################################################################################
@@ -27,7 +27,7 @@
 # 'x'       : vector with the dates that have to be transformed. class(x) must be "Date"
 # 'out.fmt' : format of the output seasons. Possible values are:
 #             -) 'seasons' =>  "winter", "spring",  "summer", autumn"
-#             -) 'months'  =>  "DJF", "MAM",  "JJA", SON" or "SONDEFM"
+#             -) 'months'  =>  "DJF", "MAM",  "JJA", SON" or "SONDJFM"
 
 # 'result': vector with the weather season to which each date in 'x' belongs
 
@@ -43,9 +43,9 @@ time2season <- function(x, out.fmt="months", type="default") {
      stop("Invalid argument: 'out.fmt' must be in c('seasons', 'months')")
 
  # Checking that the user provided a valid value for 'type'
- valid.types <- c("default", "FrenchPolynesia", "SONDEFM")
+ valid.types <- c("default", "FrenchPolynesia", "SONDJFM")
  if (length(which(!is.na(match(type, valid.types )))) <= 0)
-     stop("Invalid argument: 'type' must be in c('default', 'FrenchPolynesia', 'SONDEFM')")
+     stop("Invalid argument: 'type' must be in c('default', 'FrenchPolynesia', 'SONDJFM')")
 
  ####################
  months <- format(x, "%m")
@@ -60,8 +60,17 @@ time2season <- function(x, out.fmt="months", type="default") {
    spring <- which( months %in% c("04", "05") )
    summer <- which( months %in% c("06", "07", "08", "09") )
    autumn <- which( months %in% c("10", "11") )
- } else if (type=="SONDEFM") {
-   sondefm <- which( months %in% c("09", "10", "11", "12", "01", "02", "03") )
+ } else if (type=="SONDJFM") {
+   # Selecting September-March, excluding leading Jan-Mar before first September
+   years <- as.integer(format(x, "%Y"))
+   sondjfm.months <- c("09", "10", "11", "12", "01", "02", "03")
+   if (length(years) > 0) {
+     first.year <- min(years, na.rm=TRUE)
+     sondjfm <- which( (months %in% sondjfm.months) &
+                       !((years == first.year) & (months %in% c("01", "02", "03"))) )
+   } else {
+       sondjfm <- integer(0)
+     } # ELSE end
  } # ELSE end
 
  # Creation of the output, with the same length of the 'x' input
@@ -69,8 +78,8 @@ time2season <- function(x, out.fmt="months", type="default") {
 
  if (out.fmt == "seasons") {
 
-    if (type=="SONDEFM") {
-      seasons[sondefm] <- "SONDEFM"
+    if (type=="SONDJFM") {
+      seasons[sondjfm] <- "SONDJFM"
     } else {
       seasons[winter] <- "winter"
       seasons[spring] <- "spring"
@@ -90,8 +99,8 @@ time2season <- function(x, out.fmt="months", type="default") {
        seasons[spring] <- "AM"
        seasons[summer] <- "JJAS"
        seasons[autumn] <- "ON"
-      } else if (type=="SONDEFM") {
-          seasons[sondefm] <- "SONDEFM"
+      } else if (type=="SONDJFM") {
+          seasons[sondjfm] <- "SONDJFM"
       } # IF end
 
  } # IF end

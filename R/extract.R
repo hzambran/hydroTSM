@@ -34,8 +34,8 @@ extractzoo <-function(x, ...) UseMethod("extract")
 #              -) "MAM": March, April, May
 #              -) "JJA": June, July, August
 #              -) "SON": September, October, November
-#              -) "SONDEFM": September, October, November, December,
-#                            January, February, March
+#              -) "SONDJFM": September, October, November, December,
+#                            January, February, March of the next year
 
 
 ################################################################################
@@ -80,7 +80,23 @@ extract.zoo <- function(x, trgt, ...) {
     trgt <- as.integer(trgt)
 
     if ( all(trgt %in% 1:12) ) {
-       index <- which(as.integer(format(time(x), "%m")) %in% trgt)
+       # Checking that month values follow calendar order from the first month
+       trgt.order <- (trgt - trgt[1]) %% 12
+       if (is.unsorted(trgt.order, strictly=FALSE))
+           stop("Invalid argument: month values in 'trgt' must follow calendar order")
+
+       # Selecting months, preserving the chronological order of 'x'
+       x.months <- as.integer(format(time(x), "%m"))
+       index <- which(x.months %in% trgt)
+
+       # Removing leading months that belong to the previous ordered season
+       if ( (length(index) > 0) && any(diff(trgt) < 0) ) {
+          x.years <- as.integer(format(time(x), "%Y"))
+          first.year <- min(x.years, na.rm=TRUE)
+          first.month <- trgt[1]
+          leading.months <- (x.years[index] == first.year) & (x.months[index] < first.month)
+          index <- index[!leading.months]
+       } # IF end
     } else if ( all(trgt > 12) ) {
         index <- which( as.integer(format(time(x), "%Y")) %in% trgt )
       } else {
@@ -94,7 +110,7 @@ extract.zoo <- function(x, trgt, ...) {
     
           seasons.default         <- c("DJF",  "MAM", "JJA",  "SON")
           seasons.FrenchPolynesia <- c("DJFM", "AM",  "JJAS", "ON")
-          seasons.special         <- "SONDEFM"
+          seasons.special         <- "SONDJFM"
           
           # Checking that the user provied a valid class for 'trgt'   
           valid.seasons <- union(union(seasons.default, seasons.FrenchPolynesia), seasons.special)
@@ -108,7 +124,7 @@ extract.zoo <- function(x, trgt, ...) {
           } else if ( trgt %in% seasons.FrenchPolynesia ) {
               season.type <- "FrenchPolynesia"
             } else if ( trgt %in% seasons.special ) {
-                season.type <- "SONDEFM"
+                season.type <- "SONDJFM"
             } # ELSE end
 
 	  # Gets the season each element of 'x' belongs to 'seasons.default' or to 'seasons.FrenchPolynesia'
