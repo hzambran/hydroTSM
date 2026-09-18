@@ -15,8 +15,11 @@ February, March
 -) summer = JJAS: June, July, August, September  
 -) autumn = ON : October, November  
 
-When `type=SONDEFM` -) SONDEFM: September, October, November, December,
-January, February, March. Other months are returned as `NA`.
+When `type=SONDJFM` -) SONDJFM: September, October, November, December,
+January, February, March, with January, February and March belonging to
+the next calendar year. Leading January, February and March values
+before the first September season are returned as `NA`. Other months are
+returned as `NA`.
 
 ## Usage
 
@@ -35,10 +38,10 @@ time2season(x, out.fmt = "months", type="default")
 
   character, indicating the format of the output seasons. Possible
   values are:  
-  -) seasons =\> c("winter", "spring", "summer", autumn") or "SONDEFM"
-  when `type="SONDEFM"`  
+  -) seasons =\> c("winter", "spring", "summer", autumn") or "SONDJFM"
+  when `type="SONDJFM"`  
   -) months =\> c("DJF", "MAM", "JJA", SON") or c("DJFM", "AM", "JJAS",
-  ON") or "SONDEFM"
+  ON") or "SONDJFM"
 
 - type:
 
@@ -48,7 +51,7 @@ time2season(x, out.fmt = "months", type="default")
   "summer"=Jun, Jul, Aug; "autumn"= Sep, Oct, Nov  
   -) FrenchPolynesia =\> "winter"= Dec, Jan, Feb, Mar; "spring"= Apr,
   May; "summer"=Jun, Jul, Aug, Sep; "autumn"= Oct, Nov  
-  -) SONDEFM =\> "SONDEFM"= Sep, Oct, Nov, Dec, Jan, Feb, Mar; other
+  -) SONDJFM =\> "SONDJFM"= Sep, Oct, Nov, Dec, Jan, Feb, Mar; other
   months are returned as `NA`
 
 ## Value
@@ -120,7 +123,7 @@ time2season(t, out.fmt="seasons")
 #>  [9] "autumn" "autumn" "autumn" "winter"
 
 ## September to March selector
-time2season(t, type="SONDEFM")
-#>  [1] "SONDEFM" "SONDEFM" "SONDEFM" NA        NA        NA        NA       
-#>  [8] NA        "SONDEFM" "SONDEFM" "SONDEFM" "SONDEFM"
+time2season(t, type="SONDJFM")
+#>  [1] NA        NA        NA        NA        NA        NA        NA       
+#>  [8] NA        "SONDJFM" "SONDJFM" "SONDJFM" "SONDJFM"
 ```

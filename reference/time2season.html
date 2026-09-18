@@ -10,8 +10,8 @@ When type=FrenchPolynesia
 -) spring = AM  : April, May
 -) summer = JJAS: June, July, August, September
 -) autumn = ON  : October, November
-When type=SONDEFM
--) SONDEFM: September, October, November, December, January, February, March. Other months are returned as NA."><meta property="og:description" content="This function transforms a character vector of Dates or DateTimes into a character vector of seasons (summer, winter, autumn, spring), depending on the value of type:
+When type=SONDJFM
+-) SONDJFM: September, October, November, December, January, February, March, with January, February and March belonging to the next calendar year. Leading January, February and March values before the first September season are returned as NA. Other months are returned as NA."><meta property="og:description" content="This function transforms a character vector of Dates or DateTimes into a character vector of seasons (summer, winter, autumn, spring), depending on the value of type:
 When type=default
 -) winter = DJF: December, January, February
 -) spring = MAM: March, April, May
@@ -22,8 +22,8 @@ When type=FrenchPolynesia
 -) spring = AM  : April, May
 -) summer = JJAS: June, July, August, September
 -) autumn = ON  : October, November
-When type=SONDEFM
--) SONDEFM: September, October, November, December, January, February, March. Other months are returned as NA."><meta property="og:image" content="https://hzambran.github.io/hydroTSM/logo.png"></head><body>
+When type=SONDJFM
+-) SONDJFM: September, October, November, December, January, February, March, with January, February and March belonging to the next calendar year. Leading January, February and March values before the first September season are returned as NA. Other months are returned as NA."><meta property="og:image" content="https://hzambran.github.io/hydroTSM/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +31,7 @@ When type=SONDEFM
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-17</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-18</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,8 @@ When type=SONDEFM
 -) spring = AM  : April, May                          <br>
 -) summer = JJAS: June, July, August, September       <br>
 -) autumn = ON  : October, November                   <br></p>
-<p>When <code>type=SONDEFM</code>
--) SONDEFM: September, October, November, December, January, February, March. Other months are returned as <code>NA</code>.</p>
+<p>When <code>type=SONDJFM</code>
+-) SONDJFM: September, October, November, December, January, February, March, with January, February and March belonging to the next calendar year. Leading January, February and March values before the first September season are returned as <code>NA</code>. Other months are returned as <code>NA</code>.</p>
     </div>
 
     <div class="section level2">
@@ -91,14 +91,14 @@ When type=SONDEFM
 
   <dt id="arg-out-fmt">out.fmt<a class="anchor" aria-label="anchor" href="#arg-out-fmt"></a></dt>
 <dd><p>character, indicating the format of the output seasons. Possible values are: <br>
--) <kbd>seasons</kbd> =&gt;  c("winter", "spring",  "summer", autumn") or "SONDEFM" when <code>type="SONDEFM"</code>  <br>
--) <kbd>months</kbd>  =&gt;  c("DJF", "MAM",  "JJA", SON") or c("DJFM", "AM",  "JJAS", ON") or "SONDEFM"</p></dd>
+-) <kbd>seasons</kbd> =&gt;  c("winter", "spring",  "summer", autumn") or "SONDJFM" when <code>type="SONDJFM"</code>  <br>
+-) <kbd>months</kbd>  =&gt;  c("DJF", "MAM",  "JJA", SON") or c("DJFM", "AM",  "JJAS", ON") or "SONDJFM"</p></dd>
 
   <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>character, indicating which weather seasons will be used for computing the output. Possible values are: <br>
 -) <kbd>default</kbd>          =&gt;  "winter"= Dec, Jan, Feb;      "spring"= Mar, Apr, May;  "summer"=Jun, Jul, Aug;       "autumn"= Sep, Oct, Nov  <br>
 -) <kbd>FrenchPolynesia</kbd>  =&gt;  "winter"= Dec, Jan, Feb, Mar; "spring"= Apr, May;       "summer"=Jun, Jul, Aug, Sep;  "autumn"= Oct, Nov <br>
--) <kbd>SONDEFM</kbd>          =&gt;  "SONDEFM"= Sep, Oct, Nov, Dec, Jan, Feb, Mar; other months are returned as <code>NA</code></p></dd>
+-) <kbd>SONDJFM</kbd>          =&gt;  "SONDJFM"= Sep, Oct, Nov, Dec, Jan, Feb, Mar; other months are returned as <code>NA</code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -164,9 +164,9 @@ When type=SONDEFM
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "autumn" "autumn" "autumn" "winter"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## September to March selector</span></span></span>
-<span class="r-in"><span><span class="fu">time2season</span><span class="op">(</span><span class="va">t</span>, type<span class="op">=</span><span class="st">"SONDEFM"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "SONDEFM" "SONDEFM" "SONDEFM" NA        NA        NA        NA       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] NA        "SONDEFM" "SONDEFM" "SONDEFM" "SONDEFM"</span>
+<span class="r-in"><span><span class="fu">time2season</span><span class="op">(</span><span class="va">t</span>, type<span class="op">=</span><span class="st">"SONDJFM"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] NA        NA        NA        NA        NA        NA        NA       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] NA        "SONDJFM" "SONDJFM" "SONDJFM" "SONDJFM"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

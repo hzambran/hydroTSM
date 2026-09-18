@@ -26,7 +26,7 @@
     o 'spi' and 'spei' now require an explicit 'scale' argument and accept 'ref.start'/'ref.end' as Date objects or character strings in "YYYY-MM" or "YYYY-MM-DD" format.
     o 'matrixplot' now draws dotted grey grid lines at matrix cell boundaries by default, making individual cells easier to distinguish while preserving user-supplied 'panel' customisations.
     o 'daily2weekly' now accepts 'week.date.format' to choose between the historical year-week output labels ("%Y-%W") and weekly Date labels ("%Y-%m-%d"), and 'week.grouping' to choose between historical calendar year-week groups and sequential 7-day groups from the first date.
-    o 'extract' now handles numeric month vectors explicitly, including vectors that span the end of the calendar year such as c(9,10,11,12,1,2,3), accepts the new 'trgt="SONDEFM"' shortcut for September to March, and rejects mixed month/year numeric vectors. 'time2season' now supports the corresponding 'type="SONDEFM"' selector.
+    o 'extract' now handles numeric month vectors explicitly, including vectors that span the end of the calendar year such as c(9,10,11,12,1,2,3), accepts the new 'trgt="SONDJFM"' shortcut for September to March, and rejects mixed month/year numeric vectors. Month-vector order is considered: c(9,10,11,12,1,2,3) treats January-March as belonging to the next calendar year, while c(1,2,3,9,10,11,12) keeps all months in the same calendar year. 'time2season' now supports the corresponding 'type="SONDJFM"' selector.
 ```
 
 ### New vignettes
