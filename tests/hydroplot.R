@@ -31,6 +31,14 @@ plot.error <- try(hydroplot(x, FUN=mean, ptype="ts", pfreq="dma", log="bad"),
                   silent=TRUE)
 after.error <- graphics::par(no.readonly=TRUE)
 
+# Verifying that single plots advance through a user-defined four-panel layout.
+graphics::par(mfcol=c(4, 1))
+panel.positions <- matrix(NA_integer_, nrow=4, ncol=4)
+for (i in seq_len(4)) {
+  hydroplot(x, ptype="ts", pfreq="o")
+  panel.positions[i, ] <- graphics::par("mfg")
+} # FOR end
+
 grDevices::dev.off()
 
 stopifnot(
@@ -38,5 +46,9 @@ stopifnot(
   same.par(before, after.seasonal),
   inherits(plot.error, "try-error"),
   same.par(before, after.error),
+  identical(panel.positions[, 1], seq_len(4)),
+  identical(panel.positions[, 2], rep(1L, 4)),
+  identical(panel.positions[, 3:4], matrix(rep(c(4L, 1L), each=4),
+                                          nrow=4)),
   file.exists(pdf.file), file.info(pdf.file)$size > 0
 )

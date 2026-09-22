@@ -749,9 +749,11 @@ hydroplot.zoo <- function(x,
      # Assigning a dummy value to FUN, which is not used when pfreq="o"
      if (pfreq == "o") FUN <- mean
 
-     # Saving the user's graphical parameters and restoring them on every exit.
-     old.par <- graphics::par(no.readonly=TRUE)
-     on.exit(graphics::par(old.par), add=TRUE)
+     # Saving graphical parameters only when hydroplot defines its own layout.
+     if (pfreq != "o") {
+       old.par <- graphics::par(no.readonly=TRUE)
+       on.exit(graphics::par(old.par), add=TRUE)
+     } # IF end
 
      # IF the user wants SEASONAL plots
      if (pfreq == "seasonal") {
@@ -829,9 +831,7 @@ hydroplot.zoo <- function(x,
      if (ptype=="ts") {
 
        # Setting up the screen with 3 rows and 3 columns
-       if (pfreq == "o") { 
-          par(mfcol=c(1,1))
-       } else if (pfreq == "dma") { 
+       if (pfreq == "dma") {
             par(mfcol=c(3,1))
          } else if (pfreq %in% c("dm", "ma")) { 
             par(mfcol=c(2,1))
