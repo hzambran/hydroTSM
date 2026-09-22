@@ -29,6 +29,7 @@ NEWS/ChangeLog for hydroTSM
         o 'Theory, computation, and validation of SPI and SPEI with hydroTSM': theoretical guidance on drought-index construction, temporal scales, distributions, fitting methods, and arguments; practical usage; and versioned numerical and graphical comparisons against the SCI and SPEI packages at accumulation scales 1, 3, 6, and 12.
 
 ## Bug fixes
+        o 'hydroplot': now preserves the graphical parameters of the user session after successful or interrupted plotting.
         o 'hydropairs': fixed incorrect restoring of graphical state. 'on.exit(par(usr))' was replaced by 'on.exit(par(usr=usr), add=TRUE)'
         o 'daily2weekly': fixed data.frame weekly labels, which were incorrectly handled as monthly dates in numeric and database-style outputs.
 

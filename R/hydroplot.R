@@ -502,12 +502,9 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
       #################################
       # Plotting seasonal time series #
       #################################
-      def.par <- par(no.readonly = TRUE) # save default, for resetting... 
-      # To ensure both graphical parameters (par) and layout are restored deterministically.
-      on.exit({ 
-        par(def.par)
-        layout(1)
-      })
+      # Saving the incoming graphical parameters before defining the layout.
+      old.par <- graphics::par(no.readonly=TRUE)
+      on.exit(graphics::par(old.par), add=TRUE)
       
       layout( matrix( c(1,1,1,1,1,1,1,1,1,5,5,2,2,2,2,2,2,2,2,2,6,6,3,3,3,3,3,3,3,3,3,7,7,4,4,4,4,4,4,4,4,4,8,8), ncol=11, byrow=TRUE) ) 
       
@@ -647,6 +644,7 @@ hydroplot.default <- function(x,
 #          07-Nov-2020                                                         #
 #          04-Sep-2024                                                         #
 #          31-Oct-2025                                                         #
+#          21-Sep-2026                                                         #
 ################################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -751,8 +749,9 @@ hydroplot.zoo <- function(x,
      # Assigning a dummy value to FUN, which is not used when pfreq="o"
      if (pfreq == "o") FUN <- mean
 
-     def.par <- par(no.readonly = TRUE) # save default, for resetting...
-     on.exit(par(def.par))
+     # Saving the user's graphical parameters and restoring them on every exit.
+     old.par <- graphics::par(no.readonly=TRUE)
+     on.exit(graphics::par(old.par), add=TRUE)
 
      # IF the user wants SEASONAL plots
      if (pfreq == "seasonal") {
