@@ -38,6 +38,7 @@
 ### Bug fixes
 
 ``` R
+    o 'hydroplot': now preserves the graphical parameters of the user session after successful or interrupted plotting.
     o 'hydropairs': fixed incorrect restoring of graphical state. 'on.exit(par(usr))' was replaced by 'on.exit(par(usr=usr), add=TRUE)'
     o 'daily2weekly': fixed data.frame weekly labels, which were incorrectly handled as monthly dates in numeric and database-style outputs.
 ```
