@@ -217,6 +217,12 @@ A BibTeX entry for LaTeX users is
   Months in Period
 - [`monthlyfunction()`](https://hzambran.github.io/hydroTSM/reference/monthlyfunction.md)
   : Monthly Function
+- [`nyears()`](https://hzambran.github.io/hydroTSM/reference/nperiods.md)
+  [`nmonths()`](https://hzambran.github.io/hydroTSM/reference/nperiods.md)
+  [`nweeks()`](https://hzambran.github.io/hydroTSM/reference/nperiods.md)
+  [`ndays()`](https://hzambran.github.io/hydroTSM/reference/nperiods.md)
+  [`nhours()`](https://hzambran.github.io/hydroTSM/reference/nperiods.md)
+  : Number of Years, Months, Weeks, Days, or Hours in a zoo Object
 - [`plot_pq()`](https://hzambran.github.io/hydroTSM/reference/plot_pq.md)
   : Plot precipitation and streamflow time series in the same figure.
 - [`print(`*`<precipQC>`*`)`](https://hzambran.github.io/hydroTSM/reference/precipQC-class.md)

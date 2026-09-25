@@ -5,6 +5,7 @@
 ### New functions
 
 ``` R
+    o 'nyears', 'nmonths', 'nweeks', 'ndays', 'nhours': for computing the temporal span of zoo objects in the corresponding units. 'nweeks' uses the same calendar or sequential grouping rules as 'daily2weekly'.
     o 'tempQC'           : frequency-aware wrapper that dispatches daily and minute/hourly air-temperature zoo objects to 'tempQC_daily' or 'tempQC_subdaily'.
     o 'tempQC_daily'     : for applying physical, copied-block, robust climatological, persistence, rate-of-change, spike/dip, spatial-regression and homogeneity tests to daily air-temperature station series.
     o 'tempQC_subdaily'  : corresponding sub-daily air-temperature workflow with month-and-hour-conditioned climatological, temporal and spatial reference models.
