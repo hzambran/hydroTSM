@@ -132,6 +132,27 @@
   Indices
 - [`stdx()`](https://hzambran.github.io/hydroTSM/reference/stdx.md) :
   Standarization
+- [`print(`*`<streamflowQC>`*`)`](https://hzambran.github.io/hydroTSM/reference/streamflowQC-class.md)
+  [`plot(`*`<streamflowQC>`*`)`](https://hzambran.github.io/hydroTSM/reference/streamflowQC-class.md)
+  : Streamflow quality-control result
+- [`streamflowQC()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC.md)
+  : Frequency-aware quality control of streamflow time series
+- [`streamflowQC_daily()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md)
+  : Quality control of daily streamflow time series
+- [`streamflowQC_subdaily()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_subdaily.md)
+  : Quality control of sub-daily streamflow time series
+- [`streamflowQC_range()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_duplicate()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_gap()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_climatology()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_flatline()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_spike()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_rate()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_fluctuation()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_highflow()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_spatial()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  [`streamflowQC_breakpoint()`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_tests.md)
+  : Individual quality-control tests for streamflow
 - [`subdaily2daily()`](https://hzambran.github.io/hydroTSM/reference/subdaily2daily.md)
   : Sub-daily -\> Daily
 - [`subdaily2weekly()`](https://hzambran.github.io/hydroTSM/reference/subdaily2weekly.md)

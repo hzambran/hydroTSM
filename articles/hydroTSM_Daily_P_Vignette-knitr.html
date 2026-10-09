@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-22</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -469,7 +469,7 @@ the following figure will plot a full climograph starting in April
 <p>This tutorial was built under:</p>
 <pre><code><span><span class="co">## [1] "x86_64-pc-linux-gnu"</span></span></code></pre>
 <pre><code><span><span class="co">## [1] "R version 4.6.1 (2026-06-24)"</span></span></code></pre>
-<pre><code><span><span class="co">## [1] "hydroTSM 0.8-21"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "hydroTSM 0.8-22"</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="version-history">Version history<a class="anchor" aria-label="anchor" href="#version-history"></a>
@@ -556,7 +556,7 @@ that show you how to plot two matrixplots in a single Figure:</p>
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hzambran.github.io/hydroTSM/">hydroTSM</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span><span class="op">)</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span>, end<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/yearmon.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1960-12-31"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">SanMartinoPPts</span>, end<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1960-12-31"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/daily2monthly.html">daily2monthly</a></span><span class="op">(</span><span class="va">x</span>, FUN<span class="op">=</span><span class="va">sum</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">m</span>, ncol<span class="op">=</span><span class="fl">12</span>, byrow<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">M</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">month.abb</span></span>
