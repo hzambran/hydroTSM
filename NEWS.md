@@ -5,6 +5,10 @@ NEWS/ChangeLog for hydroTSM
 # Changes in version 0.9-0  Ongoing
 
 ## New functions
+        o 'streamflowQC'           : frequency-aware wrapper that dispatches daily and minute/hourly streamflow zoo objects to 'streamflowQC_daily' or 'streamflowQC_subdaily'.
+        o 'streamflowQC_daily'     : for applying physical, copied-block, gap, seasonal log-outlier, flat-line, spike, rate-of-change, high-flow, spatial-corroboration and homogeneity tests to daily streamflow. It returns auditable point flags and explicit accepted/discarded station data and metadata without writing files.
+        o 'streamflowQC_subdaily'  : corresponding sub-daily streamflow workflow with duration-aware low/high-flow truncation, rapid fluctuation, GEV high-flow diagnostics, and lag-tolerant neighbouring-event support.
+        o 'streamflowQC_*'         : individual streamflow tests with user-selectable thresholds, optional catchment-area/elevation-aware spatial comparison, conservative evidence combination, station recommendations, and S3 print/plot methods.
         o 'nyears', 'nmonths', 'nweeks', 'ndays', 'nhours': for computing the temporal span of zoo objects in the corresponding units. 'nweeks' uses the same calendar or sequential grouping rules as 'daily2weekly'.
         o 'tempQC'           : frequency-aware wrapper that dispatches daily and minute/hourly air-temperature zoo objects to 'tempQC_daily' or 'tempQC_subdaily'.
         o 'tempQC_daily'     : for applying physical, copied-block, robust climatological, persistence, rate-of-change, spike/dip, spatial-regression and homogeneity tests to daily air-temperature station series.
