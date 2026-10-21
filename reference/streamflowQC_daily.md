@@ -34,7 +34,7 @@ streamflowQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=3L, max.missing=0.2, max.review=0.2,
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
-  area=NULL, elevation=NULL, elevation.scale=500
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 ```
 
@@ -244,6 +244,13 @@ streamflowQC_daily(
 
   Positive elevation-decay scale used in neighbour ranking.
 
+- verbose:
+
+  Logical. If `TRUE`, informative messages identify the workflow start,
+  each enabled QC stage, evidence combination, and the final
+  station/observation summary. If `FALSE`, only these informational
+  messages are suppressed; warnings and errors remain visible.
+
 ## Details
 
 The daily climatology test reproduces the GSIM structure: it compares
@@ -305,6 +312,11 @@ qc <- streamflowQC_daily(
               spatial=FALSE, breakpoint=FALSE),
   min.years=0, max.missing=1, max.review=1, max.suspicious=1
 )
+#> [streamflowQC] Starting daily QC for 60 observations at 2 station(s) ...
+#> [streamflowQC] Running physical-range check ...
+#> [streamflowQC] Running gap check ...
+#> [streamflowQC] Combining evidence and station recommendations ...
+#> [streamflowQC] Completed daily QC: 2 accepted, 0 discarded; 1 flagged observation(s), 1 confirmed rejection(s).
 qc$suspicious
 #>         time station original spatial.estimate spatial.score n.tests tests
 #> 1 2020-01-20       A       -1               NA            NA       1 range

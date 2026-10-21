@@ -11,7 +11,7 @@ tempQC_subdaily. No files are written."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-23</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-24</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ tempQC_subdaily. No files are written."><meta property="og:image" content="https
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tempQC</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, <span class="va">...</span>,</span>
-<span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span></span>
+<span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -70,6 +70,12 @@ the selected workflow. See <code><a href="tempQC_daily.html">tempQC_daily</a></c
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Arguments passed unchanged to the selected workflow.</p></dd>
 
+  <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, informative messages report the
+detected frequency, active QC stages, and final QC summary. If <code>FALSE</code>,
+these informational messages are suppressed; warnings and errors are
+unaffected.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -77,7 +83,9 @@ the selected workflow. See <code><a href="tempQC_daily.html">tempQC_daily</a></c
 <code>tempQC_subdaily</code>. Other frequencies are rejected explicitly. Automatic
 dispatch changes only the workflow: test activation, thresholds, metadata,
 correction policy, and station recommendation criteria remain under user
-control. The staged design follows the gross-error, tolerance, temporal,
+control. Progress is reported with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>, so it can be captured or
+suppressed independently of the returned result. The staged design follows the
+gross-error, tolerance, temporal,
 inter-variable, and inter-station QC categories described by Brunet et al.
 (2020).</p>
     </div>
@@ -106,6 +114,11 @@ Change Service.</p>
 <span class="r-in"><span>                          climatology<span class="op">=</span><span class="cn">FALSE</span>, persistence<span class="op">=</span><span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                          step<span class="op">=</span><span class="cn">FALSE</span>, spike<span class="op">=</span><span class="cn">FALSE</span>, spatial<span class="op">=</span><span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                          breakpoint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>, min.years<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Detected daily data; dispatching to tempQC_daily() ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Starting daily QC for 30 observations at 2 station(s) ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Running physical-range check ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Combining evidence and station recommendations ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).</span>
 <span class="r-in"><span><span class="va">qc</span><span class="op">$</span><span class="va">station.summary</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   station expected observed missing.percent review.count review.percent</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A       A       30       30               0            0              0</span>

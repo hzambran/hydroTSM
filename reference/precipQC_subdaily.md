@@ -30,7 +30,7 @@ precipQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 ```
 
@@ -162,6 +162,14 @@ precipQC_subdaily(
   Logical. Whether a large significant homogeneity breakpoint should by
   itself cause a discard recommendation. The conservative default is
   `FALSE`.
+
+- verbose:
+
+  Logical. If `TRUE`, informative messages identify the workflow start,
+  each enabled test and spatial scale, evidence combination, and the
+  final station/observation summary. If `FALSE`, only these
+  informational messages are suppressed; warnings and errors remain
+  visible.
 
 ## Details
 
@@ -332,6 +340,17 @@ qc <- precipQC_subdaily(
   spatial.hours=c(0, 1, 3),
   checks=c(monthly.accumulation=FALSE, breakpoint=FALSE)
 )
+#> [precipQC] Starting sub-daily QC for 960 observations at 3 station(s) ...
+#> [precipQC] Running physical-range check ...
+#> [precipQC] Running climatological-plausibility check ...
+#> [precipQC] Running persistence check ...
+#> [precipQC] Running daily-accumulation check ...
+#> [precipQC] Running weekday false-zero check ...
+#> [precipQC] Running spatial_native spatial-consistency check ...
+#> [precipQC] Running spatial_3h spatial-consistency check ...
+#> [precipQC] Running spatial dry-spell check ...
+#> [precipQC] Combining evidence and station recommendations ...
+#> [precipQC] Completed sub-daily QC: 0 accepted, 3 discarded; 725 flagged observation(s), 251 confirmed rejection(s).
 qc$station.summary
 #>   station expected observed missing.percent review.count review.percent
 #> A       A      960      960               0          275      0.2864583

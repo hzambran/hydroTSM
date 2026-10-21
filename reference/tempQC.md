@@ -13,7 +13,7 @@ No files are written.
 ``` r
 tempQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 ```
 
@@ -33,15 +33,24 @@ tempQC(
 
   Arguments passed unchanged to the selected workflow.
 
+- verbose:
+
+  Logical. If `TRUE`, informative messages report the detected
+  frequency, active QC stages, and final QC summary. If `FALSE`, these
+  informational messages are suppressed; warnings and errors are
+  unaffected.
+
 ## Details
 
 Daily input is sent to `tempQC_daily`; minute or hourly input is sent to
 `tempQC_subdaily`. Other frequencies are rejected explicitly. Automatic
 dispatch changes only the workflow: test activation, thresholds,
 metadata, correction policy, and station recommendation criteria remain
-under user control. The staged design follows the gross-error,
-tolerance, temporal, inter-variable, and inter-station QC categories
-described by Brunet et al. (2020).
+under user control. Progress is reported with
+[`message()`](https://rdrr.io/r/base/message.html), so it can be
+captured or suppressed independently of the returned result. The staged
+design follows the gross-error, tolerance, temporal, inter-variable, and
+inter-station QC categories described by Brunet et al. (2020).
 
 ## Value
 
@@ -71,6 +80,11 @@ qc <- tempQC(x, checks=c(range=TRUE, duplicate=FALSE,
                           climatology=FALSE, persistence=FALSE,
                           step=FALSE, spike=FALSE, spatial=FALSE,
                           breakpoint=FALSE), min.years=0)
+#> [tempQC] Detected daily data; dispatching to tempQC_daily() ...
+#> [tempQC] Starting daily QC for 30 observations at 2 station(s) ...
+#> [tempQC] Running physical-range check ...
+#> [tempQC] Combining evidence and station recommendations ...
+#> [tempQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).
 qc$station.summary
 #>   station expected observed missing.percent review.count review.percent
 #> A       A       30       30               0            0              0

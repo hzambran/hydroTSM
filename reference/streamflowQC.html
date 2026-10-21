@@ -11,7 +11,7 @@ streamflowQC_subdaily. No files are written."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-23</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-24</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ daily data to <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></co
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">streamflowQC</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, <span class="va">...</span>,</span>
-<span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span></span>
+<span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -89,6 +89,12 @@ field.</p></dd>
 <dd><p>Positive elevation-decay scale used in spatial
 neighbour ranking.</p></dd>
 
+  <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, informative messages report the
+detected frequency, enabled QC stages, evidence combination, and final QC
+summary. If <code>FALSE</code>, these messages are suppressed; warnings and errors
+remain visible.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -103,6 +109,8 @@ provenance or agency-quality information not contained in a numeric
 Gudmundsson et al. (2018), the real-time hierarchy of U.S. IOOS (2018), and
 the sub-daily artefact and event-corroboration framework of Fileni et al.
 (2026).</p>
+<p>Progress is emitted with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>, so it can be captured or suppressed
+without redirecting the returned object.</p>
     </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -140,6 +148,11 @@ Quality Control of Stream Flow Data Version 1.0</em>. doi:10.25923/gszc-ha43.</p
 <span class="r-in"><span>              breakpoint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  min.years<span class="op">=</span><span class="fl">0</span>, max.missing<span class="op">=</span><span class="fl">1</span>, max.review<span class="op">=</span><span class="fl">1</span>, max.suspicious<span class="op">=</span><span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Detected daily data; dispatching to streamflowQC_daily() ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Starting daily QC for 30 observations at 2 station(s) ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Running physical-range check ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Combining evidence and station recommendations ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).</span>
 <span class="r-in"><span><span class="va">qc</span><span class="op">$</span><span class="va">station.summary</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   station expected observed missing.percent review.count review.percent</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A       A       30       30               0            0              0</span>

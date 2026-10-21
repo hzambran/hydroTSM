@@ -13,7 +13,7 @@ files."><meta property="og:image" content="https://hzambran.github.io/hydroTSM/l
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-23</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-24</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@ files.</p>
 <span>  correction<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"set_na"</span>, <span class="st">"spatial"</span><span class="op">)</span>,</span>
 <span>  min.evidence<span class="op">=</span><span class="fl">3L</span>, max.missing<span class="op">=</span><span class="fl">0.2</span>, max.review<span class="op">=</span><span class="fl">0.2</span>,</span>
 <span>  max.suspicious<span class="op">=</span><span class="fl">0.05</span>, min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span></span>
+<span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -260,6 +260,12 @@ field used to compare specific discharge spatially.</p></dd>
 <dd><p>Positive elevation-decay scale used in neighbour
 ranking.</p></dd>
 
+  <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, informative messages identify the
+workflow start, each enabled QC stage, evidence combination, and the final
+station/observation summary. If <code>FALSE</code>, only these informational
+messages are suppressed; warnings and errors remain visible.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -321,6 +327,11 @@ doi:10.3390/w10121712.</p>
 <span class="r-in"><span>              spatial<span class="op">=</span><span class="cn">FALSE</span>, breakpoint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  min.years<span class="op">=</span><span class="fl">0</span>, max.missing<span class="op">=</span><span class="fl">1</span>, max.review<span class="op">=</span><span class="fl">1</span>, max.suspicious<span class="op">=</span><span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Starting sub-daily QC for 72 observations at 2 station(s) ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Running physical-range check ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Running gap check ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Combining evidence and station recommendations ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Completed sub-daily QC: 2 accepted, 0 discarded; 1 flagged observation(s), 1 confirmed rejection(s).</span>
 <span class="r-in"><span><span class="va">qc</span><span class="op">$</span><span class="va">suspicious</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  time station original spatial.estimate spatial.score n.tests</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 2020-01-01 19:00:00       A       -1               NA            NA       1</span>

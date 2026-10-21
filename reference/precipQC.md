@@ -13,7 +13,7 @@ No files are written.
 ``` r
 precipQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 ```
 
@@ -36,13 +36,22 @@ precipQC(
   daily and sub-daily functions have resolution-specific arguments, only
   arguments accepted by the detected workflow should be supplied.
 
+- verbose:
+
+  Logical. If `TRUE`, informative messages report the detected
+  frequency, the active QC stages, spatial scales, and the final QC
+  summary. If `FALSE`, these informational messages are suppressed;
+  warnings and errors are unaffected.
+
 ## Details
 
 `sfreq(x)` returning `"daily"` selects `precipQC_daily(x, ...)`. Values
 `"minute"` and `"hourly"` select `precipQC_subdaily(x, ...)`. Weekly,
 monthly, quarterly, annual, or other frequencies are rejected with an
 informative error because the implemented thresholds and tests are not
-valid at those resolutions.
+valid at those resolutions. Progress is emitted with
+[`message()`](https://rdrr.io/r/base/message.html), so it can be
+captured or suppressed without redirecting returned values.
 
 ## Value
 
@@ -71,6 +80,17 @@ qc <- precipQC(
   checks=c(climatology=FALSE, spatial=FALSE, dryspell=FALSE,
            breakpoint=FALSE)
 )
+#> [precipQC] Detected daily data; dispatching to precipQC_daily() ...
+#> [precipQC] Starting daily QC for 40 observations at 2 station(s) ...
+#> [precipQC] Running physical-range check ...
+#> [precipQC] Running copied-block check ...
+#> [precipQC] Running frequent-value check ...
+#> [precipQC] Running distribution-gap check ...
+#> [precipQC] Running persistence check ...
+#> [precipQC] Running accumulated-total check ...
+#> [precipQC] Running weekday false-zero check ...
+#> [precipQC] Combining evidence and station recommendations ...
+#> [precipQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).
 qc$settings$resolution
 #> [1] "daily"
 ```

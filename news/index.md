@@ -27,6 +27,9 @@
 ### User-visible changes
 
 ``` R
+    o 'tempQC', 'tempQC_daily', and 'tempQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages, evidence combination, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.
+    o 'streamflowQC', 'streamflowQC_daily', and 'streamflowQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages, evidence combination, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.
+    o 'precipQC', 'precipQC_daily', and 'precipQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages and spatial scales, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.
     o 'precipQC*' and 'tempQC*' now accept optional station metadata with user-selected identifier, longitude, latitude, and elevation fields. Coordinates constrain and weight spatial neighbours; explicitly selected elevation data further influence neighbour ranking and weighting. Correlation-only spatial QC remains available when metadata are omitted or an individual station lacks either coordinate; located targets prefer eligible located neighbours before unlocated fallbacks.
     o 'spi' and 'spei' now require an explicit 'scale' argument and accept 'ref.start'/'ref.end' as Date objects or character strings in "YYYY-MM" or "YYYY-MM-DD" format.
     o 'matrixplot' now draws dotted grey grid lines at matrix cell boundaries by default, making individual cells easier to distinguish while preserving user-supplied 'panel' customisations.

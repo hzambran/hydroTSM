@@ -12,7 +12,7 @@ No files are written.
 ``` r
 streamflowQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  area=NULL, elevation=NULL, elevation.scale=500
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 ```
 
@@ -51,6 +51,13 @@ streamflowQC(
 
   Positive elevation-decay scale used in spatial neighbour ranking.
 
+- verbose:
+
+  Logical. If `TRUE`, informative messages report the detected
+  frequency, enabled QC stages, evidence combination, and final QC
+  summary. If `FALSE`, these messages are suppressed; warnings and
+  errors remain visible.
+
 ## Details
 
 The wrapper changes only the resolution-specific workflow. Test
@@ -65,6 +72,10 @@ The design combines the point plausibility and homogeneity principles of
 Gudmundsson et al. (2018), the real-time hierarchy of U.S. IOOS (2018),
 and the sub-daily artefact and event-corroboration framework of Fileni
 et al. (2026).
+
+Progress is emitted with
+[`message()`](https://rdrr.io/r/base/message.html), so it can be
+captured or suppressed without redirecting the returned object.
 
 ## Value
 
@@ -107,6 +118,11 @@ qc <- streamflowQC(
               breakpoint=FALSE),
   min.years=0, max.missing=1, max.review=1, max.suspicious=1
 )
+#> [streamflowQC] Detected daily data; dispatching to streamflowQC_daily() ...
+#> [streamflowQC] Starting daily QC for 30 observations at 2 station(s) ...
+#> [streamflowQC] Running physical-range check ...
+#> [streamflowQC] Combining evidence and station recommendations ...
+#> [streamflowQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).
 qc$station.summary
 #>   station expected observed missing.percent review.count review.percent
 #> A       A       30       30               0            0              0

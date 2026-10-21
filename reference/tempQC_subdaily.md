@@ -25,7 +25,7 @@ tempQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 ```
 
@@ -156,6 +156,13 @@ tempQC_subdaily(
   Whether a flagged breakpoint should cause a station discard
   recommendation.
 
+- verbose:
+
+  Logical. If `TRUE`, informative messages identify the workflow start,
+  each enabled test, evidence combination, and the final
+  station/observation summary. If `FALSE`, only these informational
+  messages are suppressed; warnings and errors remain visible.
+
 ## Details
 
 The sub-daily workflow uses the same evidence and audit model as
@@ -259,6 +266,12 @@ qc <- tempQC_subdaily(
               breakpoint=FALSE),
   min.years=0, max.missing=1
 )
+#> [tempQC] Starting sub-daily QC for 72 observations at 2 station(s) ...
+#> [tempQC] Running physical-range check ...
+#> [tempQC] Running persistence check ...
+#> [tempQC] Running isolated-spike check ...
+#> [tempQC] Combining evidence and station recommendations ...
+#> [tempQC] Completed sub-daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).
 qc$station.summary
 #>   station expected observed missing.percent review.count review.percent
 #> A       A       72       72               0            0              0
