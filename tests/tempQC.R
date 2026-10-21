@@ -65,6 +65,41 @@ daily.none <- tempQC_daily(
 )
 stopifnot(length(daily.none$flags) == 0L)
 
+# Verify daily progress output, argument defaults, and the fully quiet mode.
+progress.checks <- no.checks
+progress.checks["range"] <- TRUE
+quiet.messages <- capture.output(
+  quiet.qc <- tempQC(
+    daily[, 1:2], metadata=metadata[1:2, ], checks=progress.checks,
+    min.years=0, max.missing=1, max.suspicious=1, verbose=FALSE
+  ),
+  type="message"
+)
+daily.messages <- capture.output(
+  verbose.qc <- tempQC(
+    daily[, 1:2], metadata=metadata[1:2, ], checks=progress.checks,
+    min.years=0, max.missing=1, max.suspicious=1, verbose=TRUE
+  ),
+  type="message"
+)
+invalid.verbose <- try(tempQC(
+  daily[, 1:2], checks=no.checks, min.years=0,
+  max.missing=1, max.suspicious=1, verbose=NA
+), silent=TRUE)
+stopifnot(
+  identical(formals(tempQC)$verbose, TRUE),
+  identical(formals(tempQC_daily)$verbose, TRUE),
+  identical(formals(tempQC_subdaily)$verbose, TRUE),
+  length(quiet.messages) == 0L,
+  identical(quiet.qc$settings$verbose, FALSE),
+  inherits(quiet.qc, "tempQC"), inherits(verbose.qc, "tempQC"),
+  any(grepl("Detected daily data", daily.messages, fixed=TRUE)),
+  any(grepl("Starting daily QC", daily.messages, fixed=TRUE)),
+  any(grepl("Running physical-range check", daily.messages, fixed=TRUE)),
+  any(grepl("Completed daily QC", daily.messages, fixed=TRUE)),
+  inherits(invalid.verbose, "try-error")
+)
+
 duplicate.dates <- seq(as.Date("2020-01-01"),
                        as.Date("2020-02-29"), by="day")
 duplicate.values <- stats::rnorm(length(duplicate.dates))
@@ -227,6 +262,36 @@ subdaily.wrapper <- tempQC(
   max.missing=1, max.suspicious=1
 )
 stopifnot(identical(subdaily.wrapper$settings$resolution, "subdaily"))
+
+# Verify sub-daily dispatch/stage messages and direct quiet execution.
+subdaily.progress.checks <- subdaily.no.checks
+subdaily.progress.checks["range"] <- TRUE
+subdaily.quiet.messages <- capture.output(
+  subdaily.quiet <- tempQC_subdaily(
+    subdaily[, 1:2], metadata=metadata[1:2, ],
+    checks=subdaily.progress.checks, min.years=0,
+    max.missing=1, max.suspicious=1, verbose=FALSE
+  ),
+  type="message"
+)
+subdaily.messages <- capture.output(
+  subdaily.verbose <- tempQC(
+    subdaily[, 1:2], metadata=metadata[1:2, ],
+    checks=subdaily.progress.checks, min.years=0,
+    max.missing=1, max.suspicious=1, verbose=TRUE
+  ),
+  type="message"
+)
+stopifnot(
+  length(subdaily.quiet.messages) == 0L,
+  identical(subdaily.quiet$settings$verbose, FALSE),
+  inherits(subdaily.quiet, "tempQC"),
+  inherits(subdaily.verbose, "tempQC"),
+  any(grepl("Detected hourly data", subdaily.messages, fixed=TRUE)),
+  any(grepl("Starting sub-daily QC", subdaily.messages, fixed=TRUE)),
+  any(grepl("Running physical-range check", subdaily.messages, fixed=TRUE)),
+  any(grepl("Completed sub-daily QC", subdaily.messages, fixed=TRUE))
+)
 
 plot.file <- tempfile(fileext=".pdf")
 grDevices::pdf(plot.file)

@@ -16,7 +16,7 @@ Detects the sampling frequency of a numeric \code{zoo} object with
 \usage{
 tempQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 }
 
@@ -26,6 +26,10 @@ tempQC(
 station metadata, field-name selectors, and elevation-decay control passed to
 the selected workflow. See \code{\link{tempQC_daily}}.}
   \item{...}{Arguments passed unchanged to the selected workflow.}
+  \item{verbose}{Logical. If \code{TRUE}, informative messages report the
+detected frequency, active QC stages, and final QC summary. If \code{FALSE},
+these informational messages are suppressed; warnings and errors are
+unaffected.}
 }
 
 \details{
@@ -33,7 +37,9 @@ Daily input is sent to \code{tempQC_daily}; minute or hourly input is sent to
 \code{tempQC_subdaily}. Other frequencies are rejected explicitly. Automatic
 dispatch changes only the workflow: test activation, thresholds, metadata,
 correction policy, and station recommendation criteria remain under user
-control. The staged design follows the gross-error, tolerance, temporal,
+control. Progress is reported with \code{message()}, so it can be captured or
+suppressed independently of the returned result. The staged design follows the
+gross-error, tolerance, temporal,
 inter-variable, and inter-station QC categories described by Brunet et al.
 (2020).
 }

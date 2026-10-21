@@ -36,7 +36,7 @@ tempQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 }
 
@@ -112,6 +112,10 @@ fractions for recommending a station for acceptance.}
   \item{discard.breakpoint}{Logical. If \code{TRUE}, a flagged breakpoint
 causes a discard recommendation. The default is conservative because a change
 may be climatic.}
+  \item{verbose}{Logical. If \code{TRUE}, informative messages identify the
+workflow start, each enabled test, evidence combination, and the final
+station/observation summary. If \code{FALSE}, only these informational messages
+are suppressed; warnings and errors remain visible.}
 }
 
 \details{

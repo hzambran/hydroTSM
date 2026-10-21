@@ -32,7 +32,7 @@ tempQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 }
 
@@ -87,6 +87,10 @@ point. Range, persistence, and isolated-spike flags are hard evidence.}
   \item{max.missing, max.suspicious, min.years}{Station acceptance limits.}
   \item{discard.breakpoint}{Whether a flagged breakpoint should cause a
 station discard recommendation.}
+  \item{verbose}{Logical. If \code{TRUE}, informative messages identify the
+workflow start, each enabled test, evidence combination, and the final
+station/observation summary. If \code{FALSE}, only these informational messages
+are suppressed; warnings and errors remain visible.}
 }
 
 \details{

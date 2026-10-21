@@ -8,6 +8,17 @@
 # Daily and sub-daily air-temperature quality-control workflows                 #
 ################################################################################
 
+.tempQC_progress <- function(verbose, ...) {
+
+  # Use message() so progress can be captured independently of results.
+  if (verbose)
+    message("[tempQC] ", ...)
+
+  invisible(NULL)
+
+} # '.tempQC_progress' END
+
+
 .tempQC_run_spatial <- function(prepared, group, metadata, station.id,
                                 coords, n.neighbours, max.distance,
                                 min.neighbours, min.overlap,
@@ -53,8 +64,10 @@ tempQC_daily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500) {
+  elevation=NULL, elevation.scale=500, verbose=TRUE) {
 
+  # Validate controls before emitting any informational output.
+  verbose <- .precipQC_validate_logical(verbose, "verbose")
   defaults <- c(range=TRUE, duplicate=TRUE, climatology=TRUE,
                 persistence=TRUE, step=TRUE, spike=TRUE,
                 spatial=TRUE, breakpoint=TRUE)
@@ -66,31 +79,48 @@ tempQC_daily <- function(
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
   spatial.estimate <- spatial.score <- neighbours <- NULL
 
-  if (checks["range"])
+  # Run each enabled test and announce it immediately before computation.
+  .tempQC_progress(verbose, "Starting daily QC for ",
+                   NROW(prepared$values), " observations at ",
+                   NCOL(prepared$values), " station(s) ...")
+  if (checks["range"]) {
+    .tempQC_progress(verbose, "Running physical-range check ...")
     flags$range <- tempQC_range(prepared$x, lower=lower, upper=upper)
-  if (checks["duplicate"])
+  }
+  if (checks["duplicate"]) {
+    .tempQC_progress(verbose, "Running copied-block check ...")
     flags$duplicate <- tempQC_duplicate(
       prepared$x, min.month.values=duplicate.min.month,
       min.year.values=duplicate.min.year
     )
-  if (checks["climatology"])
+  }
+  if (checks["climatology"]) {
+    .tempQC_progress(verbose, "Running climatological-plausibility check ...")
     flags$climatology <- tempQC_climatology(
       prepared$x, group="dayofyear", window=climatology.window,
       z=climatology.z, min.samples=climatology.min.samples
     )
-  if (checks["persistence"])
+  }
+  if (checks["persistence"]) {
+    .tempQC_progress(verbose, "Running persistence check ...")
     flags$persistence <- tempQC_persistence(
       prepared$x, run=persistence.run, tolerance=persistence.tolerance
     )
-  if (checks["step"])
+  }
+  if (checks["step"]) {
+    .tempQC_progress(verbose, "Running rate-of-change check ...")
     flags$step <- tempQC_step(
       prepared$x, group="month", z=step.z,
       min.samples=step.min.samples, max.rise=step.max.rise,
       max.fall=step.max.fall
     )
-  if (checks["spike"])
+  }
+  if (checks["spike"]) {
+    .tempQC_progress(verbose, "Running isolated-spike check ...")
     flags$spike <- tempQC_spike(prepared$x, threshold=spike.threshold)
+  }
   if (checks["spatial"]) {
+    .tempQC_progress(verbose, "Running spatial-regression check ...")
     spatial <- .tempQC_run_spatial(
       prepared, "month", prepared$metadata, prepared$station.id,
       coords, n.neighbours, max.distance, min.neighbours,
@@ -104,12 +134,14 @@ tempQC_daily <- function(
       neighbours <- spatial$neighbours
     }
   }
-  if (checks["breakpoint"])
+  if (checks["breakpoint"]) {
+    .tempQC_progress(verbose, "Running homogeneity-breakpoint check ...")
     breakpoint <- tempQC_breakpoint(
       prepared$x, min.years=breakpoint.min.years,
       alpha=breakpoint.alpha, min.shift=breakpoint.min.shift,
       min.completeness=breakpoint.min.completeness
     )
+  }
 
   settings <- list(
     resolution="daily", checks=checks, lower=lower, upper=upper,
@@ -126,16 +158,29 @@ tempQC_daily <- function(
     elevation=elevation, elevation.scale=elevation.scale,
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.suspicious=max.suspicious,
-    min.years=min.years
+    min.years=min.years, verbose=verbose
   )
 
-  .precipQC_finish(
+  # Combine test evidence only after all enabled checks have completed.
+  .tempQC_progress(verbose,
+                   "Combining evidence and station recommendations ...")
+  out <- .precipQC_finish(
     prepared, flags, breakpoint, correction, max.missing, max.suspicious,
     min.years, min.evidence,
     hard.tests=c("range", "duplicate", "persistence", "spike"),
     discard.breakpoint, spatial.estimate, spatial.score, neighbours,
     "daily", settings, object.class="tempQC"
   )
+
+  # Close with a concise summary useful in interactive and batch logs.
+  .tempQC_progress(
+    verbose, "Completed daily QC: ",
+    sum(out$station.summary$recommendation == "accept"), " accepted, ",
+    sum(out$station.summary$recommendation == "discard"), " discarded; ",
+    NROW(out$suspicious), " flagged observation(s), ",
+    sum(out$suspicious$action == "reject"), " confirmed rejection(s)."
+  )
+  out
 
 } # 'tempQC_daily' END
 
@@ -158,8 +203,10 @@ tempQC_subdaily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500) {
+  elevation=NULL, elevation.scale=500, verbose=TRUE) {
 
+  # Validate controls before emitting any informational output.
+  verbose <- .precipQC_validate_logical(verbose, "verbose")
   defaults <- c(range=TRUE, climatology=TRUE, persistence=TRUE,
                 step=TRUE, spike=TRUE, spatial=TRUE, breakpoint=TRUE)
   checks <- .precipQC_checks(checks, defaults)
@@ -177,26 +224,41 @@ tempQC_subdaily <- function(
   persistence.run <- max(2L, ceiling(persistence.hours /
                                       prepared$interval.hours) + 1L)
 
-  if (checks["range"])
+  # Run each enabled test and announce it immediately before computation.
+  .tempQC_progress(verbose, "Starting sub-daily QC for ",
+                   NROW(prepared$values), " observations at ",
+                   NCOL(prepared$values), " station(s) ...")
+  if (checks["range"]) {
+    .tempQC_progress(verbose, "Running physical-range check ...")
     flags$range <- tempQC_range(prepared$x, lower=lower, upper=upper)
-  if (checks["climatology"])
+  }
+  if (checks["climatology"]) {
+    .tempQC_progress(verbose, "Running climatological-plausibility check ...")
     flags$climatology <- tempQC_climatology(
       prepared$x, group="month_hour", window=1L,
       z=climatology.z, min.samples=climatology.min.samples
     )
-  if (checks["persistence"])
+  }
+  if (checks["persistence"]) {
+    .tempQC_progress(verbose, "Running persistence check ...")
     flags$persistence <- tempQC_persistence(
       prepared$x, run=persistence.run, tolerance=persistence.tolerance
     )
-  if (checks["step"])
+  }
+  if (checks["step"]) {
+    .tempQC_progress(verbose, "Running rate-of-change check ...")
     flags$step <- tempQC_step(
       prepared$x, group="month_hour", z=step.z,
       min.samples=step.min.samples, max.rise=step.max.rise,
       max.fall=step.max.fall
     )
-  if (checks["spike"])
+  }
+  if (checks["spike"]) {
+    .tempQC_progress(verbose, "Running isolated-spike check ...")
     flags$spike <- tempQC_spike(prepared$x, threshold=spike.threshold)
+  }
   if (checks["spatial"]) {
+    .tempQC_progress(verbose, "Running spatial-regression check ...")
     spatial <- .tempQC_run_spatial(
       prepared, "month_hour", prepared$metadata, prepared$station.id,
       coords, n.neighbours, max.distance, min.neighbours,
@@ -210,12 +272,14 @@ tempQC_subdaily <- function(
       neighbours <- spatial$neighbours
     }
   }
-  if (checks["breakpoint"])
+  if (checks["breakpoint"]) {
+    .tempQC_progress(verbose, "Running homogeneity-breakpoint check ...")
     breakpoint <- tempQC_breakpoint(
       prepared$x, min.years=breakpoint.min.years,
       alpha=breakpoint.alpha, min.shift=breakpoint.min.shift,
       min.completeness=breakpoint.min.completeness
     )
+  }
 
   settings <- list(
     resolution="subdaily", checks=checks, lower=lower, upper=upper,
@@ -232,10 +296,13 @@ tempQC_subdaily <- function(
     elevation=elevation, elevation.scale=elevation.scale,
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.suspicious=max.suspicious,
-    min.years=min.years
+    min.years=min.years, verbose=verbose
   )
 
-  .precipQC_finish(
+  # Combine test evidence only after all enabled checks have completed.
+  .tempQC_progress(verbose,
+                   "Combining evidence and station recommendations ...")
+  out <- .precipQC_finish(
     prepared, flags, breakpoint, correction, max.missing, max.suspicious,
     min.years, min.evidence,
     hard.tests=c("range", "persistence", "spike"),
@@ -243,26 +310,46 @@ tempQC_subdaily <- function(
     "subdaily", settings, object.class="tempQC"
   )
 
+  # Close with a concise summary useful in interactive and batch logs.
+  .tempQC_progress(
+    verbose, "Completed sub-daily QC: ",
+    sum(out$station.summary$recommendation == "accept"), " accepted, ",
+    sum(out$station.summary$recommendation == "discard"), " discarded; ",
+    NROW(out$suspicious), " flagged observation(s), ",
+    sum(out$suspicious$action == "reject"), " confirmed rejection(s)."
+  )
+  out
+
 } # 'tempQC_subdaily' END
 
 
 tempQC <- function(x, metadata=NULL, station.id="station",
                    coords=c("lon", "lat"), ...,
-                   elevation=NULL, elevation.scale=500) {
+                   elevation=NULL, elevation.scale=500, verbose=TRUE) {
 
+  # Validate verbosity at the dispatch boundary for consistent errors.
+  verbose <- .precipQC_validate_logical(verbose, "verbose")
   if (!zoo::is.zoo(x))
     stop("Invalid argument: 'x' must be a zoo object !")
+
   frequency <- sfreq(x)
-  if (identical(frequency, "daily"))
+  if (identical(frequency, "daily")) {
+    .tempQC_progress(verbose,
+                     "Detected daily data; dispatching to tempQC_daily() ...")
     return(tempQC_daily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale
+      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose
     ))
-  if (frequency %in% c("minute", "hourly"))
+  }
+  if (frequency %in% c("minute", "hourly")) {
+    .tempQC_progress(verbose, "Detected ", frequency,
+                     " data; dispatching to tempQC_subdaily() ...")
     return(tempQC_subdaily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale
+      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose
     ))
+  }
+
   stop("Invalid sampling frequency: sfreq(x) returned '", frequency,
        "'; only minute, hourly, and daily air temperature are supported !")
 
