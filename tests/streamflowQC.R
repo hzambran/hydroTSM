@@ -36,7 +36,7 @@ daily.qc <- streamflowQC_daily(
   coords=c("lon", "lat"), area="area_km2", elevation="elevation",
   min.years=0, max.missing=0.2, max.review=1, max.suspicious=1,
   min.overlap=30L, min.correlation=-1, max.distance=1000,
-  correction="set_na", breakpoint.min.years=2L
+  correction="set_na", breakpoint.min.years=2L, verbose=FALSE
 )
 
 # Confirm the public result contract and known injected errors.
@@ -70,7 +70,7 @@ daily.checks.off <- c(
 )
 daily.none <- streamflowQC_daily(
   daily[, 1:2], checks=daily.checks.off, min.years=0,
-  max.missing=1, max.review=1, max.suspicious=1
+  max.missing=1, max.review=1, max.suspicious=1, verbose=FALSE
 )
 stopifnot(length(daily.none$flags) == 0L,
           is.null(daily.none$highflow),
@@ -106,12 +106,36 @@ stopifnot(inherits(high, "streamflowQC_highflow"),
           zoo::is.zoo(high$return.period),
           all(high$diagnostics$n.years == 12L))
 
-# The frequency-aware wrapper selects the daily workflow.
-daily.wrapper <- streamflowQC(
-  daily[, 1:2], checks=daily.checks.off, min.years=0,
-  max.missing=1, max.review=1, max.suspicious=1
+# The wrapper reports dispatch, enabled stages, and the final summary.
+daily.verbose.checks <- daily.checks.off
+daily.verbose.checks["range"] <- TRUE
+daily.messages <- capture.output(
+  daily.wrapper <- streamflowQC(
+    daily[, 1:2], checks=daily.verbose.checks, min.years=0,
+    max.missing=1, max.review=1, max.suspicious=1, verbose=TRUE
+  ),
+  type="message"
 )
-stopifnot(identical(daily.wrapper$settings$resolution, "daily"))
+daily.silent <- capture.output(
+  invisible(streamflowQC(
+    daily[, 1:2], checks=daily.verbose.checks, min.years=0,
+    max.missing=1, max.review=1, max.suspicious=1, verbose=FALSE
+  )),
+  type="message"
+)
+invalid.verbose <- try(
+  streamflowQC(daily[, 1:2], verbose=NA), silent=TRUE
+)
+stopifnot(
+  identical(daily.wrapper$settings$resolution, "daily"),
+  identical(daily.wrapper$settings$verbose, TRUE),
+  any(grepl("Detected daily data", daily.messages, fixed=TRUE)),
+  any(grepl("Running physical-range check", daily.messages, fixed=TRUE)),
+  any(grepl("Completed daily QC", daily.messages, fixed=TRUE)),
+  length(daily.silent) == 0L,
+  inherits(invalid.verbose, "try-error"),
+  grepl("'verbose' must be a logical value", invalid.verbose, fixed=TRUE)
+)
 
 ################################################################################
 # Sub-daily streamflow QC                                                     #
@@ -144,7 +168,7 @@ subdaily.qc <- streamflowQC_subdaily(
   high.flatline.hours=2, climatology.min.samples=20L,
   rate.min.samples=20L, min.overlap=30L, min.correlation=-1,
   max.distance=1000, min.years=0, max.missing=0.2,
-  max.review=1, max.suspicious=1, correction="set_na"
+  max.review=1, max.suspicious=1, correction="set_na", verbose=FALSE
 )
 stopifnot(
   inherits(subdaily.qc, "streamflowQC"),
@@ -158,17 +182,29 @@ stopifnot(
   inherits(zoo::index(subdaily.qc$accepted.data), "POSIXt")
 )
 
-# The frequency-aware wrapper also selects the sub-daily workflow.
+# The frequency-aware wrapper also reports sub-daily dispatch and progress.
 subdaily.checks.off <- c(
   range=FALSE, gap=FALSE, climatology=FALSE, flatline=FALSE,
   spike=FALSE, rate=FALSE, fluctuation=FALSE, highflow=FALSE,
   spatial=FALSE, breakpoint=FALSE
 )
-subdaily.wrapper <- streamflowQC(
-  subdaily[, 1:2], checks=subdaily.checks.off, min.years=0,
-  max.missing=1, max.review=1, max.suspicious=1
+subdaily.verbose.checks <- subdaily.checks.off
+subdaily.verbose.checks["range"] <- TRUE
+subdaily.messages <- capture.output(
+  subdaily.wrapper <- streamflowQC(
+    subdaily[, 1:2], checks=subdaily.verbose.checks, min.years=0,
+    max.missing=1, max.review=1, max.suspicious=1, verbose=TRUE
+  ),
+  type="message"
 )
-stopifnot(identical(subdaily.wrapper$settings$resolution, "subdaily"))
+stopifnot(
+  identical(subdaily.wrapper$settings$resolution, "subdaily"),
+  identical(subdaily.wrapper$settings$verbose, TRUE),
+  any(grepl("Detected hourly data", subdaily.messages, fixed=TRUE)),
+  any(grepl("Starting sub-daily QC", subdaily.messages, fixed=TRUE)),
+  any(grepl("Running physical-range check", subdaily.messages, fixed=TRUE)),
+  any(grepl("Completed sub-daily QC", subdaily.messages, fixed=TRUE))
+)
 
 # Summary plotting writes only to the caller-supplied temporary graphics device.
 plot.file <- tempfile(fileext=".pdf")

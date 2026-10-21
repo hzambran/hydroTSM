@@ -8,6 +8,17 @@
 # Daily and sub-daily streamflow quality-control workflows                     #
 ################################################################################
 
+.streamflowQC_progress <- function(verbose, ...) {
+
+  # Use message() so progress can be captured independently of results.
+  if (verbose)
+    message("[streamflowQC] ", ...)
+
+  invisible(NULL)
+
+} # '.streamflowQC_progress' END
+
+
 .streamflowQC_finish <- function(
   prepared, flags, breakpoint, highflow, correction,
   max.missing, max.review, max.suspicious, min.years, min.evidence,
@@ -100,9 +111,10 @@ streamflowQC_daily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=3L, max.missing=0.2, max.review=0.2,
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
-  area=NULL, elevation=NULL, elevation.scale=500) {
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE) {
 
-  # Resolve partial check vectors against the complete daily workflow.
+  # Validate controls before emitting any informational output.
+  verbose <- .precipQC_validate_logical(verbose, "verbose")
   defaults <- c(range=TRUE, duplicate=TRUE, gap=TRUE, climatology=TRUE,
                 flatline=TRUE, spike=TRUE, rate=TRUE, highflow=TRUE,
                 spatial=TRUE, breakpoint=TRUE)
@@ -115,40 +127,59 @@ streamflowQC_daily <- function(
   highflow <- spatial.estimate <- spatial.score <- spatial.support <-
     neighbours <- NULL
 
-  # Each enabled test contributes one independent family of evidence.
-  if (checks["range"])
+  # Announce each enabled test immediately before its computation.
+  .streamflowQC_progress(verbose, "Starting daily QC for ",
+                         NROW(prepared$values), " observations at ",
+                         NCOL(prepared$values), " station(s) ...")
+  if (checks["range"]) {
+    .streamflowQC_progress(verbose, "Running physical-range check ...")
     flags$range <- streamflowQC_range(prepared$x, lower=lower, upper=upper)
-  if (checks["duplicate"])
+  }
+  if (checks["duplicate"]) {
+    .streamflowQC_progress(verbose, "Running copied-block check ...")
     flags$duplicate <- streamflowQC_duplicate(
       prepared$x, min.month.values=duplicate.min.month,
       min.year.values=duplicate.min.year,
       min.nonzero=duplicate.min.nonzero
     )
-  if (checks["gap"])
+  }
+  if (checks["gap"]) {
+    .streamflowQC_progress(verbose, "Running gap check ...")
     flags$gap <- streamflowQC_gap(prepared$x, interval=1)
-  if (checks["climatology"])
+  }
+  if (checks["climatology"]) {
+    .streamflowQC_progress(verbose,
+                           "Running climatological-plausibility check ...")
     flags$climatology <- streamflowQC_climatology(
       prepared$x, group="dayofyear", window=climatology.window,
       z=climatology.z, min.samples=climatology.min.samples,
       offset=log.offset
     )
-  if (checks["flatline"])
+  }
+  if (checks["flatline"]) {
+    .streamflowQC_progress(verbose, "Running flat-line check ...")
     flags$flatline <- streamflowQC_flatline(
       prepared$x, run=flatline.run, tolerance=flatline.tolerance,
       flag.zero=flag.zero
     )
-  if (checks["spike"])
+  }
+  if (checks["spike"]) {
+    .streamflowQC_progress(verbose, "Running isolated-spike check ...")
     flags$spike <- streamflowQC_spike(
       prepared$x, factor=spike.factor, prob=spike.prob
     )
-  if (checks["rate"])
+  }
+  if (checks["rate"]) {
+    .streamflowQC_progress(verbose, "Running rate-of-change check ...")
     flags$rate <- streamflowQC_rate(
       prepared$x, group="month", z=rate.z,
       min.samples=rate.min.samples, max.rise=rate.max.rise,
       max.fall=rate.max.fall, drop.factor=rate.drop.factor,
       offset=log.offset
     )
+  }
   if (checks["highflow"]) {
+    .streamflowQC_progress(verbose, "Running high-flow checks ...")
     highflow <- streamflowQC_highflow(
       prepared$x, log.z=highflow.log.z,
       amax.ratio=highflow.amax.ratio,
@@ -163,6 +194,8 @@ streamflowQC_daily <- function(
     if (NCOL(prepared$values) < 3L) {
       warning("Spatial checks require at least three station columns; the spatial check was skipped.")
     } else {
+      .streamflowQC_progress(verbose,
+                             "Running spatial-corroboration check ...")
       spatial <- streamflowQC_spatial(
         prepared$x, metadata=metadata, station.id=station.id, coords=coords,
         area=area, elevation=elevation, elevation.scale=elevation.scale,
@@ -179,13 +212,16 @@ streamflowQC_daily <- function(
       neighbours <- spatial$neighbours
     }
   }
-  if (checks["breakpoint"])
+  if (checks["breakpoint"]) {
+    .streamflowQC_progress(verbose,
+                           "Running homogeneity-breakpoint check ...")
     breakpoint <- streamflowQC_breakpoint(
       prepared$x, min.years=breakpoint.min.years,
       alpha=breakpoint.alpha,
       min.relative.change=breakpoint.min.relative.change,
       min.completeness=breakpoint.min.completeness
     )
+  }
 
   # Record every resolved decision parameter for reproducibility.
   settings <- list(
@@ -206,16 +242,29 @@ streamflowQC_daily <- function(
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.review=max.review,
     max.suspicious=max.suspicious, min.years=min.years,
-    discard.breakpoint=discard.breakpoint
+    discard.breakpoint=discard.breakpoint, verbose=verbose
   )
 
-  .streamflowQC_finish(
+  # Combine evidence only after all enabled checks have completed.
+  .streamflowQC_progress(verbose,
+                         "Combining evidence and station recommendations ...")
+  out <- .streamflowQC_finish(
     prepared, flags, breakpoint, highflow, correction,
     max.missing, max.review, max.suspicious, min.years, min.evidence,
     hard.tests=c("range", "duplicate"), discard.breakpoint,
     spatial.estimate, spatial.score, spatial.support, neighbours,
     "daily", settings
   )
+
+  # Close with a concise summary useful in interactive and batch logs.
+  .streamflowQC_progress(
+    verbose, "Completed daily QC: ",
+    sum(out$station.summary$recommendation == "accept"), " accepted, ",
+    sum(out$station.summary$recommendation == "discard"), " discarded; ",
+    NROW(out$suspicious), " flagged observation(s), ",
+    sum(out$suspicious$action == "reject"), " confirmed rejection(s)."
+  )
+  out
 
 } # 'streamflowQC_daily' END
 
@@ -246,9 +295,10 @@ streamflowQC_subdaily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=3L, max.missing=0.2, max.review=0.2,
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
-  area=NULL, elevation=NULL, elevation.scale=500) {
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE) {
 
-  # Resolve partial check vectors against the complete sub-daily workflow.
+  # Validate controls before emitting any informational output.
+  verbose <- .precipQC_validate_logical(verbose, "verbose")
   defaults <- c(range=TRUE, gap=TRUE, climatology=TRUE, flatline=TRUE,
                 spike=TRUE, rate=TRUE, fluctuation=TRUE, highflow=TRUE,
                 spatial=TRUE, breakpoint=TRUE)
@@ -276,42 +326,61 @@ streamflowQC_subdaily <- function(
   spatial.window <- max(1L, ceiling(spatial.window.hours /
                                     prepared$interval.hours))
 
-  # Apply physical, temporal, extreme-flow, and spatial tests independently.
-  if (checks["range"])
+  # Announce each enabled test immediately before its computation.
+  .streamflowQC_progress(verbose, "Starting sub-daily QC for ",
+                         NROW(prepared$values), " observations at ",
+                         NCOL(prepared$values), " station(s) ...")
+  if (checks["range"]) {
+    .streamflowQC_progress(verbose, "Running physical-range check ...")
     flags$range <- streamflowQC_range(prepared$x, lower=lower, upper=upper)
-  if (checks["gap"])
+  }
+  if (checks["gap"]) {
+    .streamflowQC_progress(verbose, "Running gap check ...")
     flags$gap <- streamflowQC_gap(
       prepared$x, interval=prepared$interval.hours * 3600
     )
-  if (checks["climatology"])
+  }
+  if (checks["climatology"]) {
+    .streamflowQC_progress(verbose,
+                           "Running climatological-plausibility check ...")
     flags$climatology <- streamflowQC_climatology(
       prepared$x, group="month", window=1L, z=climatology.z,
       min.samples=climatology.min.samples, offset=log.offset
     )
-  if (checks["flatline"])
+  }
+  if (checks["flatline"]) {
+    .streamflowQC_progress(verbose, "Running flat-line check ...")
     flags$flatline <- streamflowQC_flatline(
       prepared$x, run=flatline.run, high.run=high.flatline.run,
       high.prob=flatline.high.prob, tolerance=flatline.tolerance,
       flag.zero=flag.zero
     )
-  if (checks["spike"])
+  }
+  if (checks["spike"]) {
+    .streamflowQC_progress(verbose, "Running isolated-spike check ...")
     flags$spike <- streamflowQC_spike(
       prepared$x, factor=spike.factor, prob=spike.prob
     )
-  if (checks["rate"])
+  }
+  if (checks["rate"]) {
+    .streamflowQC_progress(verbose, "Running rate-of-change check ...")
     flags$rate <- streamflowQC_rate(
       prepared$x, group="month", z=rate.z,
       min.samples=rate.min.samples, max.rise=rate.max.rise,
       max.fall=rate.max.fall, drop.factor=rate.drop.factor,
       offset=log.offset
     )
-  if (checks["fluctuation"])
+  }
+  if (checks["fluctuation"]) {
+    .streamflowQC_progress(verbose, "Running rapid-fluctuation check ...")
     flags$fluctuation <- streamflowQC_fluctuation(
       prepared$x, window=fluctuation.window,
       minimum=fluctuation.minimum,
       low.diff.prob=fluctuation.low.diff.prob
     )
+  }
   if (checks["highflow"]) {
+    .streamflowQC_progress(verbose, "Running high-flow checks ...")
     highflow <- streamflowQC_highflow(
       prepared$x, log.z=highflow.log.z,
       amax.ratio=highflow.amax.ratio,
@@ -326,6 +395,8 @@ streamflowQC_subdaily <- function(
     if (NCOL(prepared$values) < 3L) {
       warning("Spatial checks require at least three station columns; the spatial check was skipped.")
     } else {
+      .streamflowQC_progress(verbose,
+                             "Running spatial-corroboration check ...")
       spatial <- streamflowQC_spatial(
         prepared$x, metadata=metadata, station.id=station.id, coords=coords,
         area=area, elevation=elevation, elevation.scale=elevation.scale,
@@ -342,13 +413,16 @@ streamflowQC_subdaily <- function(
       neighbours <- spatial$neighbours
     }
   }
-  if (checks["breakpoint"])
+  if (checks["breakpoint"]) {
+    .streamflowQC_progress(verbose,
+                           "Running homogeneity-breakpoint check ...")
     breakpoint <- streamflowQC_breakpoint(
       prepared$x, min.years=breakpoint.min.years,
       alpha=breakpoint.alpha,
       min.relative.change=breakpoint.min.relative.change,
       min.completeness=breakpoint.min.completeness
     )
+  }
 
   # Store resolved durations and thresholds so every result is auditable.
   settings <- list(
@@ -372,10 +446,13 @@ streamflowQC_subdaily <- function(
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.review=max.review,
     max.suspicious=max.suspicious, min.years=min.years,
-    discard.breakpoint=discard.breakpoint
+    discard.breakpoint=discard.breakpoint, verbose=verbose
   )
 
-  .streamflowQC_finish(
+  # Combine evidence only after all enabled checks have completed.
+  .streamflowQC_progress(verbose,
+                         "Combining evidence and station recommendations ...")
+  out <- .streamflowQC_finish(
     prepared, flags, breakpoint, highflow, correction,
     max.missing, max.review, max.suspicious, min.years, min.evidence,
     hard.tests="range", discard.breakpoint,
@@ -383,28 +460,50 @@ streamflowQC_subdaily <- function(
     "subdaily", settings
   )
 
+  # Close with a concise summary useful in interactive and batch logs.
+  .streamflowQC_progress(
+    verbose, "Completed sub-daily QC: ",
+    sum(out$station.summary$recommendation == "accept"), " accepted, ",
+    sum(out$station.summary$recommendation == "discard"), " discarded; ",
+    NROW(out$suspicious), " flagged observation(s), ",
+    sum(out$suspicious$action == "reject"), " confirmed rejection(s)."
+  )
+  out
+
 } # 'streamflowQC_subdaily' END
 
 
 streamflowQC <- function(x, metadata=NULL, station.id="station",
                          coords=c("lon", "lat"), ...,
                          area=NULL, elevation=NULL,
-                         elevation.scale=500) {
+                         elevation.scale=500, verbose=TRUE) {
 
-  # Dispatch only supported regular daily and sub-daily zoo frequencies.
+  # Validate verbosity at the dispatch boundary for consistent errors.
+  verbose <- .precipQC_validate_logical(verbose, "verbose")
   if (!zoo::is.zoo(x))
     stop("Invalid argument: 'x' must be a zoo object !")
   frequency <- sfreq(x)
-  if (identical(frequency, "daily"))
+  if (identical(frequency, "daily")) {
+    .streamflowQC_progress(
+      verbose, "Detected daily data; dispatching to streamflowQC_daily() ..."
+    )
     return(streamflowQC_daily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      area=area, elevation=elevation, elevation.scale=elevation.scale
+      area=area, elevation=elevation, elevation.scale=elevation.scale,
+      verbose=verbose
     ))
-  if (frequency %in% c("minute", "hourly"))
+  }
+  if (frequency %in% c("minute", "hourly")) {
+    .streamflowQC_progress(
+      verbose, "Detected ", frequency,
+      " data; dispatching to streamflowQC_subdaily() ..."
+    )
     return(streamflowQC_subdaily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      area=area, elevation=elevation, elevation.scale=elevation.scale
+      area=area, elevation=elevation, elevation.scale=elevation.scale,
+      verbose=verbose
     ))
+  }
 
   stop("Invalid sampling frequency: sfreq(x) returned '", frequency,
        "'; only minute, hourly, and daily streamflow are supported !")

@@ -40,7 +40,7 @@ streamflowQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=3L, max.missing=0.2, max.review=0.2,
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
-  area=NULL, elevation=NULL, elevation.scale=500
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 }
 
@@ -128,6 +128,10 @@ field used to compare specific discharge spatially.}
 field.}
   \item{elevation.scale}{Positive elevation-decay scale used in neighbour
 ranking.}
+  \item{verbose}{Logical. If \code{TRUE}, informative messages identify the
+workflow start, each enabled QC stage, evidence combination, and the final
+station/observation summary. If \code{FALSE}, only these informational
+messages are suppressed; warnings and errors remain visible.}
 }
 
 \details{

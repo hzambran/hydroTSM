@@ -230,6 +230,40 @@ daily.wrapper <- precipQC(
 )
 stopifnot(identical(daily.wrapper$settings$resolution, "daily"))
 
+# Verify daily progress output and the fully quiet mode.
+progress.checks <- no.checks
+progress.checks["range"] <- TRUE
+quiet.messages <- capture.output(
+  quiet.qc <- precipQC(
+    daily[, 1:2], metadata=metadata[1:2, ], checks=progress.checks,
+    min.years=0, max.missing=1, max.suspicious=1, verbose=FALSE
+  ),
+  type="message"
+)
+daily.messages <- capture.output(
+  verbose.qc <- precipQC(
+    daily[, 1:2], metadata=metadata[1:2, ], checks=progress.checks,
+    min.years=0, max.missing=1, max.suspicious=1, verbose=TRUE
+  ),
+  type="message"
+)
+invalid.verbose <- try(precipQC(
+  daily[, 1:2], checks=no.checks, min.years=0,
+  max.missing=1, max.suspicious=1, verbose=NA
+), silent=TRUE)
+stopifnot(
+  identical(formals(precipQC)$verbose, TRUE),
+  identical(formals(precipQC_daily)$verbose, TRUE),
+  identical(formals(precipQC_subdaily)$verbose, TRUE),
+  length(quiet.messages) == 0L,
+  inherits(quiet.qc, "precipQC"), inherits(verbose.qc, "precipQC"),
+  any(grepl("Detected daily data", daily.messages, fixed=TRUE)),
+  any(grepl("Starting daily QC", daily.messages, fixed=TRUE)),
+  any(grepl("Running physical-range check", daily.messages, fixed=TRUE)),
+  any(grepl("Completed daily QC", daily.messages, fixed=TRUE)),
+  inherits(invalid.verbose, "try-error")
+)
+
 ################################################################################
 # Sub-daily precipitation QC                                                  #
 ################################################################################
@@ -330,6 +364,35 @@ subdaily.wrapper <- precipQC(
   max.missing=1, max.suspicious=1
 )
 stopifnot(identical(subdaily.wrapper$settings$resolution, "subdaily"))
+
+# Verify sub-daily dispatch/stage messages and direct quiet execution.
+subdaily.progress.checks <- subdaily.no.checks
+subdaily.progress.checks["range"] <- TRUE
+subdaily.quiet.messages <- capture.output(
+  subdaily.quiet <- precipQC_subdaily(
+    subdaily[, 1:2], metadata=metadata[1:2, ],
+    checks=subdaily.progress.checks, min.years=0,
+    max.missing=1, max.suspicious=1, verbose=FALSE
+  ),
+  type="message"
+)
+subdaily.messages <- capture.output(
+  subdaily.verbose <- precipQC(
+    subdaily[, 1:2], metadata=metadata[1:2, ],
+    checks=subdaily.progress.checks, min.years=0,
+    max.missing=1, max.suspicious=1, verbose=TRUE
+  ),
+  type="message"
+)
+stopifnot(
+  length(subdaily.quiet.messages) == 0L,
+  inherits(subdaily.quiet, "precipQC"),
+  inherits(subdaily.verbose, "precipQC"),
+  any(grepl("Detected hourly data", subdaily.messages, fixed=TRUE)),
+  any(grepl("Starting sub-daily QC", subdaily.messages, fixed=TRUE)),
+  any(grepl("Running physical-range check", subdaily.messages, fixed=TRUE)),
+  any(grepl("Completed sub-daily QC", subdaily.messages, fixed=TRUE))
+)
 
 monthly <- zoo::zoo(matrix(seq_len(12), ncol=1,
                            dimnames=list(NULL, "S1")),

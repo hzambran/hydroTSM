@@ -18,7 +18,7 @@ Detects the sampling frequency of a precipitation \code{zoo} object with
 \usage{
 precipQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 }
 
@@ -36,6 +36,12 @@ Arguments passed unchanged to the selected QC function. Because the daily and
 sub-daily functions have resolution-specific arguments, only arguments
 accepted by the detected workflow should be supplied.
 }
+  \item{verbose}{
+Logical. If \code{TRUE}, informative messages report the detected frequency,
+the active QC stages, spatial scales, and the final QC summary. If
+\code{FALSE}, these informational messages are suppressed; warnings and errors
+are unaffected.
+}
 }
 
 \details{
@@ -43,7 +49,9 @@ accepted by the detected workflow should be supplied.
 \code{precipQC_daily(x, ...)}. Values \code{"minute"} and \code{"hourly"}
 select \code{precipQC_subdaily(x, ...)}. Weekly, monthly, quarterly, annual,
 or other frequencies are rejected with an informative error because the
-implemented thresholds and tests are not valid at those resolutions.
+implemented thresholds and tests are not valid at those resolutions. Progress
+is emitted with \code{message()}, so it can be captured or suppressed without
+redirecting returned values.
 }
 
 \value{

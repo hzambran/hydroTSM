@@ -40,7 +40,7 @@ precipQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 }
 
@@ -210,6 +210,12 @@ usually require substantially longer records.
 Logical. If \code{TRUE}, a large significant breakpoint also causes a station
 recommendation of \code{"discard"}. It is \code{FALSE} by default because an
 apparent change may be climatic rather than instrumental.
+}
+  \item{verbose}{
+Logical. If \code{TRUE}, informative messages identify the workflow start,
+each enabled test and spatial scale, evidence combination, and the final
+station/observation summary. If \code{FALSE}, only these informational messages
+are suppressed; warnings and errors remain visible.
 }
 }
 

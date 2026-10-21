@@ -16,7 +16,7 @@ daily data to \code{\link{streamflowQC_daily}} or minute/hourly data to
 \usage{
 streamflowQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  area=NULL, elevation=NULL, elevation.scale=500
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 }
 
@@ -35,6 +35,10 @@ field. Units may be chosen by the user but must be consistent among stations.}
 field.}
   \item{elevation.scale}{Positive elevation-decay scale used in spatial
 neighbour ranking.}
+  \item{verbose}{Logical. If \code{TRUE}, informative messages report the
+detected frequency, enabled QC stages, evidence combination, and final QC
+summary. If \code{FALSE}, these messages are suppressed; warnings and errors
+remain visible.}
 }
 
 \details{
@@ -50,6 +54,9 @@ The design combines the point plausibility and homogeneity principles of
 Gudmundsson et al. (2018), the real-time hierarchy of U.S. IOOS (2018), and
 the sub-daily artefact and event-corroboration framework of Fileni et al.
 (2026).
+
+Progress is emitted with \code{message()}, so it can be captured or suppressed
+without redirecting the returned object.
 }
 
 \value{

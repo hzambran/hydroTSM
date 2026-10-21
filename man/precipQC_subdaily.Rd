@@ -38,7 +38,7 @@ precipQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500
+  elevation=NULL, elevation.scale=500, verbose=TRUE
 )
 }
 
@@ -145,6 +145,12 @@ record length used for station acceptance recommendations.
   \item{discard.breakpoint}{
 Logical. Whether a large significant homogeneity breakpoint should by itself
 cause a discard recommendation. The conservative default is \code{FALSE}.
+}
+  \item{verbose}{
+Logical. If \code{TRUE}, informative messages identify the workflow start,
+each enabled test and spatial scale, evidence combination, and the final
+station/observation summary. If \code{FALSE}, only these informational messages
+are suppressed; warnings and errors remain visible.
 }
 }
 
