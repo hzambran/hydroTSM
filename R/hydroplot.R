@@ -139,7 +139,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
                    main=main, xlab=xlab, ylab=ylab, 
                    cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                    lty=lty, lwd=lwd, ...)
-          axis(2, cex.lab=1.3, cex.axis=1.3)
+          axis(2, cex.axis=cex.axis)
           # Draws monthly ticks in the X axis, but labels only in years
           drawTimeAxis(x, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                     cex.lab=cex.lab, cex.axis=cex.axis, ...)
@@ -515,7 +515,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
                  main=paste(season.names[1], " (", seasons.lab[1], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
-        axis(2, cex.lab=1.3, cex.axis=1.3)
+        axis(2, cex.axis=cex.axis)
         drawTimeAxis(winter, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                      cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[1], col="red", lty=2)
@@ -528,7 +528,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
                  main=paste(season.names[2], " (", seasons.lab[2], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
-        axis(2, cex.lab=1.3, cex.axis=1.3)
+        axis(2, cex.axis=cex.axis)
         drawTimeAxis(spring, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                      cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[2], col="red", lty=2)
@@ -541,7 +541,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
                  main=paste(season.names[3], " (", seasons.lab[3], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
-        axis(2, cex.lab=1.3, cex.axis=1.3)
+        axis(2, cex.axis=cex.axis)
         drawTimeAxis(summer, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                      cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[3], col="red", lty=2)
@@ -554,7 +554,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
                  main=paste(season.names[4], " (", seasons.lab[4], ")", sep=""), xlab=xlab, ylab=ylab, 
                  cex.main=cex.main, cex.lab=cex.lab, cex.axis=cex.axis, col=col, 
                  lty=lty, lwd=lwd, ...)
-        axis(2, cex.lab=1.3, cex.axis=1.3)
+        axis(2, cex.axis=cex.axis)
         drawTimeAxis(autumm, tick.tstep=tick.tstep, lab.tstep=lab.tstep, lab.fmt=lab.fmt,
                      cex.lab=cex.lab, cex.axis=cex.axis, ...)
         abline(h=h[4], col="red", lty=2)
@@ -596,6 +596,7 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 #          04-Apr-2013 ; 29-May-2013                                           #
 #          07-Nov-2020                                                         #
 #          31-Oct-2025                                                         #
+#          22-Oct-2026                                                         #
 ################################################################################
 hydroplot.default <- function(x, 
                               FUN, na.rm=TRUE,
@@ -628,7 +629,8 @@ hydroplot.default <- function(x,
               var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
               win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
               lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
-              cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h, ...)
+              cex.axis=cex.axis, col=col, from=from, to=to, date.fmt=date.fmt,
+              tz=tz, stype=stype, season.names=season.names, h=h, ...)
 
 } # 'hydroplot.default' end
 
@@ -645,6 +647,7 @@ hydroplot.default <- function(x,
 #          04-Sep-2024                                                         #
 #          31-Oct-2025                                                         #
 #          21-Sep-2026                                                         #
+#          22-Oct-2026                                                         #
 ################################################################################
 # 9 plots:
 # 1: Line plot with Daily time series, with 2 moving averages, specified by 'win.len1' and 'win.len2'
@@ -739,7 +742,7 @@ hydroplot.zoo <- function(x,
      ndates <- length(dates)
      
      # Checking the validity of the 'from' and 'to' arguments and 
-     if ( sfreq(x) %in% c("minute", "hourly") )
+     if ( missing(date.fmt) & sfreq(x) %in% c("minute", "hourly") )
        date.fmt <- "%Y-%m-%d %H:%M:%S"
      x <- check_from_and_to_and_subset(x, from=from, to=to, date.fmt=date.fmt, tz)
 
@@ -934,6 +937,7 @@ hydroplot.zoo <- function(x,
 #          07-Nov-2020                                                         #
 #          23-Aug-2022                                                         #
 #          31-Oct-2025                                                         #
+#          22-Oct-2026                                                         #
 ################################################################################
 hydroplot.data.frame <- function(x, 
                                  FUN, na.rm=TRUE,
@@ -988,6 +992,7 @@ hydroplot.data.frame <- function(x,
               var.type=var.type, var.unit=var.unit, main=main, xlab=xlab, ylab=ylab,
               win.len1=win.len1, win.len2=win.len2, tick.tstep=tick.tstep, 
               lab.tstep=lab.tstep, lab.fmt=lab.fmt, cex=cex, cex.main=cex.main, cex.lab=cex.lab,
-              cex.axis=cex.axis, col=col, from=from, to=to, stype=stype, season.names=season.names, h=h, ...)
+              cex.axis=cex.axis, col=col, from=from, to=to, date.fmt=date.fmt,
+              tz=tz, stype=stype, season.names=season.names, h=h, ...)
 
 } # 'hydroplot.data.frame' END

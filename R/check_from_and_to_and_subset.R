@@ -38,10 +38,9 @@ check_from_and_to_and_subset <- function(x, from= start(x), to= end(x),
   } # IF end
 
   # Automatic detection of 'tz'
-  missingTZ <- FALSE
   if (is.null(tz)) {
-    missingTZ <- TRUE
-    tz        <- attr(tx, "tzone")
+    tz <- attr(tx, "tzone")
+    if (is.null(tz) || !length(tz)) tz <- ""
   } else {
       if ( subdaily.ts ) {
         # For the Date/Time of 'x' to be in the time zone specified by 'tz'
@@ -59,9 +58,38 @@ check_from_and_to_and_subset <- function(x, from= start(x), to= end(x),
   if ( is.factor(x) | is.character(x) )
     ifelse(subdaily.date.fmt, time(x) <- as.POSIXct(time(x), format=date.fmt),
                               time(x) <- as.Date(time(x), format=date.fmt) )
-      
+
+  # Checking that 'date.fmt' and the sampling frequency of 'x' are compatible.
+  if ( subdaily.ts ) {
+    if (!subdaily.date.fmt)
+      stop("Invalid argument: 'date.fmt' (", date.fmt,
+           ") is not compatible with a sub-daily time series !!")
+  } else {
+      if (subdaily.date.fmt) {
+        time(x) <- as.POSIXct(time(x))
+        warning("'date.fmt' (", date.fmt, ") is sub-daily, while 'x' is a '",
+                x.freq, "' ts => 'time(x)=as.POSIXct(time(x), tz)'")
+      } # IF end
+    } # ELSE end
+
+  # Parsing 'from' and 'to' with the user-provided format before comparing them.
+  if (subdaily.ts) {
+    from.parsed <- try(as.POSIXct(from, format=date.fmt, tz=tz), silent=TRUE)
+  } else from.parsed <- try(as.Date(from, format=date.fmt), silent=TRUE)
+
+  if (inherits(from.parsed, "try-error") || anyNA(from.parsed))
+    stop("Invalid argument: format of 'from' is not compatible with 'date.fmt' !")
+  from <- from.parsed
+
+  if (subdaily.ts) {
+    to.parsed <- try(as.POSIXct(to, format=date.fmt, tz=tz), silent=TRUE)
+  } else to.parsed <- try(as.Date(to, format=date.fmt), silent=TRUE)
+
+  if (inherits(to.parsed, "try-error") || anyNA(to.parsed))
+    stop("Invalid argument: format of 'to' is not compatible with 'date.fmt' !")
+  to <- to.parsed
   
-  # If 'from' was given as Date, but 'x' is sub-daily
+  # Checking the parsed starting date against the available time period.
   if (!missing(from)) {
 
     if ( from > to ) stop("Invalid argument: 'from > to' !")
@@ -70,14 +98,9 @@ check_from_and_to_and_subset <- function(x, from= start(x), to= end(x),
 
     if ( from > end(x) ) stop("Invalid argument: 'from > end(x)' !")
 
-    if ( subdaily.date.fmt & !(grepl(":", from, fixed=TRUE) ) )
-      from <- paste(from, "00:00:00")
-
-    if ( subdaily.date.fmt & missingTZ )
-      from <- as.POSIXct(from, tz=tz)
   } # IF end
 
-  # If 'to' was given as Date, but 'x' is sub-daily
+  # Checking the parsed ending date against the available time period.
   if (!missing(to)) {
     if ( to < from ) stop("Invalid argument: 'to < from' !")
 
@@ -85,46 +108,7 @@ check_from_and_to_and_subset <- function(x, from= start(x), to= end(x),
 
     if ( to < start(x) ) stop("Invalid argument: 'to < start(x)' !")
 
-    if ( subdaily.date.fmt & !(grepl(":", to, fixed=TRUE) ) )
-      to <- paste(to, "00:00:00")
-
-    if ( subdaily.date.fmt & missingTZ )
-      to <- as.POSIXct(to, tz=tz)
   } # IF end
-        
-  # checking that date.fmt and the sampling frequency of 'x' are compatible 
-  if ( subdaily.ts ) {
-    if (!subdaily.date.fmt) 
-      stop("Invalid argument: 'date.fmt' (", date.fmt, 
-           ") is not compatible with a sub-daily time series !!")
-  } else {
-           if (subdaily.date.fmt) {
-             #time(x) <- as.POSIXct(time(x), tz=tz)
-             time(x) <- as.POSIXct(time(x))
-             warning("'date.fmt' (", date.fmt, ") is sub-daily, while 'x' is a '", 
-                     x.freq, "' ts => 'time(x)=as.POSIXct(time(x), tz)'")
-           } # IF end    
-          } # ELSE end
-
-  if (subdaily.ts) {
-    dt <-  try(as.POSIXct(from, format=date.fmt, tz=tz))
-  } else dt <- try(as.Date(from, format=date.fmt))
-
-  if ("try-error" %in% class(dt) || is.na(dt)) {
-    stop("Invalid argument: format of 'from' is not compatible with 'date.fmt' !")
-  } else if (subdaily.ts) {
-      from <- as.POSIXct(from, format=date.fmt, tz=tz)
-    } else from <- as.Date(from, format=date.fmt)
-
-  if (subdaily.ts) {
-    dt <-  try(as.POSIXct(to, format=date.fmt, tz=tz))
-  } else dt <- try(as.Date(to, format=date.fmt))
-
-  if ("try-error" %in% class(dt) || is.na(dt)) {
-    stop("Invalid argument: format of 'to' is not compatible with 'date.fmt' !")
-  } else if (subdaily.ts) {
-      to <- as.POSIXct(to, format=date.fmt, tz=tz)
-    } else to <- as.Date(to, format=date.fmt)
 
   return ( window(x, start=from, end=to) )
 

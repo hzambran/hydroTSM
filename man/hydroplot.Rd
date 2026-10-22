@@ -181,7 +181,7 @@ If \code{dates} is already of Date class, the code verifies that the number of d
 }
   \item{date.fmt}{
 Character indicating the format in which the dates are stored in \var{dates}, \var{from} and \var{to}. See \code{format} in \code{\link[base]{as.Date}}. \cr
-ONLY required when \code{class(dates)=="factor"} or \code{class(dates)=="numeric"}.
+It is used whenever character values are supplied in \code{dates}, \code{from}, or \code{to}. For sub-daily series, it must include the time components used by those arguments.
 }
   \item{tz}{
 character, with the specification of the time zone used for \code{x}, \code{from}, and \code{to}. System-specific (see time zones), but \code{""} is the current time zone, and \code{"GMT"} is UTC (Universal Time, Coordinated). See \code{\link[base]{Sys.timezone}} and \code{\link[base]{as.POSIXct}}. \cr
