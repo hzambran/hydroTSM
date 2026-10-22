@@ -240,8 +240,9 @@ sname2plot(x, sname, FUN, na.rm=TRUE, ptype="ts+boxplot+hist",
   Character indicating the format in which the dates are stored in
   `dates`, `from` and `to`. See `format` in
   [`as.Date`](https://rdrr.io/r/base/as.Date.html).  
-  ONLY required when `class(dates)=="factor"` or
-  `class(dates)=="numeric"`.
+  It is used whenever character values are supplied in `dates`, `from`,
+  or `to`. For sub-daily series, it must include the time components
+  used by those arguments.
 
 - tz:
 

@@ -9,7 +9,7 @@ sname2plot: When x is a data frame whose columns contain the time series of seve
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-24</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-25</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -211,7 +211,7 @@ If <code>dates</code> is already of Date class, the code verifies that the numbe
 
   <dt id="arg-date-fmt">date.fmt<a class="anchor" aria-label="anchor" href="#arg-date-fmt"></a></dt>
 <dd><p>Character indicating the format in which the dates are stored in <var>dates</var>, <var>from</var> and <var>to</var>. See <code>format</code> in <code><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></code>. <br>
-ONLY required when <code>class(dates)=="factor"</code> or <code>class(dates)=="numeric"</code>.</p></dd>
+It is used whenever character values are supplied in <code>dates</code>, <code>from</code>, or <code>to</code>. For sub-daily series, it must include the time components used by those arguments.</p></dd>
 
   <dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>
 <dd><p>character, with the specification of the time zone used for <code>x</code>, <code>from</code>, and <code>to</code>. System-specific (see time zones), but <code>""</code> is the current time zone, and <code>"GMT"</code> is UTC (Universal Time, Coordinated). See <code><a href="https://rdrr.io/r/base/timezones.html" class="external-link">Sys.timezone</a></code> and <code><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></code>. <br></p>

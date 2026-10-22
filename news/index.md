@@ -46,6 +46,8 @@
 ### Bug fixes
 
 ``` R
+    o 'hydroplot': 'cex.axis' now controls the Y-axis annotation in the original-series and seasonal plots instead of using a hard-coded value.
+    o 'hydroplot': 'date.fmt' is now forwarded by every method and used to parse 'dates', 'from', and 'to', including user-defined sub-daily formats.
     o 'hydroplot': now preserves the graphical parameters of the user session after successful or interrupted multi-plot plotting, while 'pfreq="o"' respects and advances through a user-defined multi-panel layout.
     o 'hydropairs': fixed incorrect restoring of graphical state. 'on.exit(par(usr))' was replaced by 'on.exit(par(usr=usr), add=TRUE)'
     o 'daily2weekly': fixed data.frame weekly labels, which were incorrectly handled as monthly dates in numeric and database-style outputs.
