@@ -9,7 +9,7 @@ sname2plot: When x is a data frame whose columns contain the time series of seve
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-25</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-26</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,9 @@ sname2plot: When x is a data frame whose columns contain the time series of seve
 <span><span class="fu">sname2plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Default S3 method</span></span>
-<span><span class="fu">hydroplot</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, ptype<span class="op">=</span><span class="st">"ts+boxplot+hist"</span>, pfreq<span class="op">=</span><span class="st">"dma"</span>,                      </span>
+<span><span class="fu">hydroplot</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>          ptype<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ts+boxplot+hist"</span>, <span class="st">"ts+boxplot"</span>, <span class="st">"ts+hist"</span>, <span class="st">"ts"</span><span class="op">)</span>,</span>
+<span>          pfreq<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dma"</span>, <span class="st">"dm"</span>, <span class="st">"ma"</span>, <span class="st">"seasonal"</span>, <span class="st">"o"</span><span class="op">)</span>,</span>
 <span>          <span class="va">var.type</span>, var.unit<span class="op">=</span><span class="st">"units"</span>, main<span class="op">=</span><span class="cn">NULL</span>, xlab<span class="op">=</span><span class="st">"Time"</span>, <span class="va">ylab</span>,</span>
 <span>          win.len1<span class="op">=</span><span class="fl">0</span>, win.len2<span class="op">=</span><span class="fl">0</span>, tick.tstep<span class="op">=</span><span class="st">"auto"</span>, lab.tstep<span class="op">=</span><span class="st">"auto"</span>, </span>
 <span>          lab.fmt<span class="op">=</span><span class="cn">NULL</span>, cex<span class="op">=</span><span class="fl">0.3</span>, cex.main<span class="op">=</span><span class="fl">1.3</span>, cex.lab<span class="op">=</span><span class="fl">1.3</span>, cex.axis<span class="op">=</span><span class="fl">1.3</span>, </span>
@@ -61,7 +63,9 @@ sname2plot: When x is a data frame whose columns contain the time series of seve
 <span>          h<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'zoo'</span></span>
-<span><span class="fu">hydroplot</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, ptype<span class="op">=</span><span class="st">"ts+boxplot+hist"</span>, pfreq<span class="op">=</span><span class="st">"dma"</span>,                      </span>
+<span><span class="fu">hydroplot</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>          ptype<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ts+boxplot+hist"</span>, <span class="st">"ts+boxplot"</span>, <span class="st">"ts+hist"</span>, <span class="st">"ts"</span><span class="op">)</span>,</span>
+<span>          pfreq<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dma"</span>, <span class="st">"dm"</span>, <span class="st">"ma"</span>, <span class="st">"seasonal"</span>, <span class="st">"o"</span><span class="op">)</span>,</span>
 <span>          <span class="va">var.type</span>, var.unit<span class="op">=</span><span class="st">"units"</span>, main<span class="op">=</span><span class="cn">NULL</span>, xlab<span class="op">=</span><span class="st">"Time"</span>, <span class="va">ylab</span>,</span>
 <span>          win.len1<span class="op">=</span><span class="fl">0</span>, win.len2<span class="op">=</span><span class="fl">0</span>, tick.tstep<span class="op">=</span><span class="st">"auto"</span>, lab.tstep<span class="op">=</span><span class="st">"auto"</span>, </span>
 <span>          lab.fmt<span class="op">=</span><span class="cn">NULL</span>, cex<span class="op">=</span><span class="fl">0.3</span>, cex.main<span class="op">=</span><span class="fl">1.3</span>, cex.lab<span class="op">=</span><span class="fl">1.3</span>, cex.axis<span class="op">=</span><span class="fl">1.3</span>, </span>
@@ -71,7 +75,9 @@ sname2plot: When x is a data frame whose columns contain the time series of seve
 <span>          h<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'data.frame'</span></span>
-<span><span class="fu">hydroplot</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, ptype<span class="op">=</span><span class="st">"ts+boxplot+hist"</span>, pfreq<span class="op">=</span><span class="st">"dma"</span>,                      </span>
+<span><span class="fu">hydroplot</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>          ptype<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ts+boxplot+hist"</span>, <span class="st">"ts+boxplot"</span>, <span class="st">"ts+hist"</span>, <span class="st">"ts"</span><span class="op">)</span>,</span>
+<span>          pfreq<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dma"</span>, <span class="st">"dm"</span>, <span class="st">"ma"</span>, <span class="st">"seasonal"</span>, <span class="st">"o"</span><span class="op">)</span>,</span>
 <span>          <span class="va">var.type</span>, var.unit<span class="op">=</span><span class="st">"units"</span>, main<span class="op">=</span><span class="cn">NULL</span>, xlab<span class="op">=</span><span class="st">"Time"</span>, <span class="va">ylab</span>,</span>
 <span>          win.len1<span class="op">=</span><span class="fl">0</span>, win.len2<span class="op">=</span><span class="fl">0</span>, tick.tstep<span class="op">=</span><span class="st">"auto"</span>, lab.tstep<span class="op">=</span><span class="st">"auto"</span>, </span>
 <span>          lab.fmt<span class="op">=</span><span class="cn">NULL</span>, cex<span class="op">=</span><span class="fl">0.3</span>, cex.main<span class="op">=</span><span class="fl">1.3</span>, cex.lab<span class="op">=</span><span class="fl">1.3</span>, cex.axis<span class="op">=</span><span class="fl">1.3</span>, </span>

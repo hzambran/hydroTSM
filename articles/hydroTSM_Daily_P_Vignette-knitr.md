@@ -367,6 +367,8 @@ Plotting the time evolution of the seasonal precipitation values
 hydroplot(x, pfreq="seasonal", FUN=sum, stype="default")
 ```
 
+    ## [Note: 'pfreq=seasonal' => 'ptype' has been changed to 'ts+boxplot']
+
 ![](hydroTSM_Daily_P_Vignette-knitr_files/figure-html/hydroplot2-1.png)
 
 ## Some extreme indices
@@ -579,7 +581,7 @@ This tutorial was built under:
 
     ## [1] "R version 4.6.1 (2026-06-24)"
 
-    ## [1] "hydroTSM 0.8-25"
+    ## [1] "hydroTSM 0.8-26"
 
 ## Version history
 

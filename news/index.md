@@ -27,6 +27,7 @@
 ### User-visible changes
 
 ``` R
+    o 'hydroplot': 'ptype' and 'pfreq' now expose their valid choices as default vectors and use 'match.arg', removing duplicated manual argument checks.
     o 'tempQC', 'tempQC_daily', and 'tempQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages, evidence combination, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.
     o 'streamflowQC', 'streamflowQC_daily', and 'streamflowQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages, evidence combination, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.
     o 'precipQC', 'precipQC_daily', and 'precipQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages and spatial scales, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.
