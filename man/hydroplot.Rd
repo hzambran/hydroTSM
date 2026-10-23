@@ -28,7 +28,9 @@ Hydrological time series plotting and extraction.
 hydroplot(x, ...)
 sname2plot(x, ...)
 
-\method{hydroplot}{default}(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
+\method{hydroplot}{default}(x, FUN, na.rm=TRUE,
+          ptype=c("ts+boxplot+hist", "ts+boxplot", "ts+hist", "ts"),
+          pfreq=c("dma", "dm", "ma", "seasonal", "o"),
           var.type, var.unit="units", main=NULL, xlab="Time", ylab,
           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
@@ -37,7 +39,9 @@ sname2plot(x, ...)
           stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
           h=NULL, ...)
 
-\method{hydroplot}{zoo}(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
+\method{hydroplot}{zoo}(x, FUN, na.rm=TRUE,
+          ptype=c("ts+boxplot+hist", "ts+boxplot", "ts+hist", "ts"),
+          pfreq=c("dma", "dm", "ma", "seasonal", "o"),
           var.type, var.unit="units", main=NULL, xlab="Time", ylab,
           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 
@@ -46,7 +50,9 @@ sname2plot(x, ...)
           stype="default", season.names=c("Winter", "Spring", "Summer", "Autumn"), 
           h=NULL, ...)
 
-\method{hydroplot}{data.frame}(x, FUN, na.rm=TRUE, ptype="ts+boxplot+hist", pfreq="dma",                      
+\method{hydroplot}{data.frame}(x, FUN, na.rm=TRUE,
+          ptype=c("ts+boxplot+hist", "ts+boxplot", "ts+hist", "ts"),
+          pfreq=c("dma", "dm", "ma", "seasonal", "o"),
           var.type, var.unit="units", main=NULL, xlab="Time", ylab,
           win.len1=0, win.len2=0, tick.tstep="auto", lab.tstep="auto", 
           lab.fmt=NULL, cex=0.3, cex.main=1.3, cex.lab=1.3, cex.axis=1.3, 

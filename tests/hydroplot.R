@@ -7,6 +7,18 @@ library(hydroTSM)
 dates <- seq(as.Date("2000-01-01"), as.Date("2002-12-31"), by="day")
 x <- zoo::zoo(seq_along(dates), dates)
 
+# Checking the documented choice-vector defaults in every public method.
+ptype.choices <- c("ts+boxplot+hist", "ts+boxplot", "ts+hist", "ts")
+pfreq.choices <- c("dma", "dm", "ma", "seasonal", "o")
+hydroplot.methods <- lapply(c("default", "zoo", "data.frame"),
+                            function(method) getS3method("hydroplot", method))
+ptype.defaults <- vapply(hydroplot.methods,
+                         function(method) identical(eval(formals(method)$ptype),
+                                                    ptype.choices), logical(1))
+pfreq.defaults <- vapply(hydroplot.methods,
+                         function(method) identical(eval(formals(method)$pfreq),
+                                                    pfreq.choices), logical(1))
+
 # Comparing all writable graphical parameters before and after plotting.
 same.par <- function(before, after) {
   isTRUE(all.equal(before, after, check.attributes=TRUE))
@@ -20,7 +32,7 @@ graphics::par(mfrow=c(2, 2), mar=c(3.1, 4.2, 2.3, 1.4),
               mgp=c(2.2, 0.7, 0), las=2, xpd=NA)
 before <- graphics::par(no.readonly=TRUE)
 
-hydroplot(x, FUN=mean, ptype="ts+boxplot+hist", pfreq="dma")
+hydroplot(x, FUN=mean)
 after.regular <- graphics::par(no.readonly=TRUE)
 
 hydroplot(x, FUN=mean, pfreq="seasonal")
@@ -30,6 +42,14 @@ after.seasonal <- graphics::par(no.readonly=TRUE)
 plot.error <- try(hydroplot(x, FUN=mean, ptype="ts", pfreq="dma", log="bad"),
                   silent=TRUE)
 after.error <- graphics::par(no.readonly=TRUE)
+
+# Invalid choices are rejected by 'match.arg'.
+invalid.ptype <- try(hydroplot(x, ptype="invalid", pfreq="o"), silent=TRUE)
+invalid.pfreq <- try(hydroplot(x, FUN=mean, pfreq="invalid"), silent=TRUE)
+monthly.dates <- seq(as.Date("2000-01-01"), by="month", length.out=24)
+monthly <- zoo::zoo(seq_along(monthly.dates), monthly.dates)
+invalid.monthly.pfreq <- try(hydroplot(monthly, FUN=mean, pfreq="dm"),
+                             silent=TRUE)
 
 # Verifying that single plots advance through a user-defined four-panel layout.
 graphics::par(mfcol=c(4, 1))
@@ -73,9 +93,14 @@ untrace("axis", where=asNamespace("hydroTSM"))
 grDevices::dev.off()
 
 stopifnot(
+  all(ptype.defaults),
+  all(pfreq.defaults),
   same.par(before, after.regular),
   same.par(before, after.seasonal),
   inherits(plot.error, "try-error"),
+  inherits(invalid.ptype, "try-error"),
+  inherits(invalid.pfreq, "try-error"),
+  inherits(invalid.monthly.pfreq, "try-error"),
   same.par(before, after.error),
   identical(panel.positions[, 1], seq_len(4)),
   identical(panel.positions[, 2], rep(1L, 4)),

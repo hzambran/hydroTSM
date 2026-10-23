@@ -24,6 +24,7 @@ NEWS/ChangeLog for hydroTSM
         o 'spei'               : for computing the Standardized Precipitation-Evapotranspiration Index from monthly zoo climatic water-balance objects using the four candidate distributions evaluated by Stagge et al. (2015). It provides the same supplied-parameter, starting-value, and progress-message controls as 'spi'. Both drought-index functions use base R and do not require SCI, SPEI, or lmomco.
 
 ## User-visible changes
+        o 'hydroplot': 'ptype' and 'pfreq' now expose their valid choices as default vectors and use 'match.arg', removing duplicated manual argument checks.
         o 'tempQC', 'tempQC_daily', and 'tempQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages, evidence combination, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.
         o 'streamflowQC', 'streamflowQC_daily', and 'streamflowQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages, evidence combination, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.
         o 'precipQC', 'precipQC_daily', and 'precipQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages and spatial scales, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.

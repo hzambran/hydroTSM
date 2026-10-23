@@ -600,8 +600,8 @@ hydroplot <-function(x, ...) UseMethod("hydroplot")
 ################################################################################
 hydroplot.default <- function(x, 
                               FUN, na.rm=TRUE,
-                              ptype="ts+boxplot+hist",
-                              pfreq="dma",                      
+                              ptype=c("ts+boxplot+hist", "ts+boxplot", "ts+hist", "ts"),
+                              pfreq=c("dma", "dm", "ma", "seasonal", "o"),
                               var.type,                      
                               var.unit="units",
                               main=NULL, xlab="Time", ylab,
@@ -661,8 +661,8 @@ hydroplot.default <- function(x,
 # 9: Histogram of the annual time series
 hydroplot.zoo <- function(x, 
                           FUN, na.rm=TRUE,
-                          ptype="ts+boxplot+hist",
-                          pfreq="dma",                      
+                          ptype=c("ts+boxplot+hist", "ts+boxplot", "ts+hist", "ts"),
+                          pfreq=c("dma", "dm", "ma", "seasonal", "o"),
                           var.type,                      
                           var.unit="units",
                           main=NULL, xlab="Time", ylab,
@@ -695,18 +695,13 @@ hydroplot.zoo <- function(x,
        ylab <- xname
      } else if ( is.null(ylab) ) ylab <- xname
 
-     # Checking that the user provied a valid argument for 'ptype'
-     if (is.na(match(ptype, c("ts", "ts+boxplot", "ts+hist", "ts+boxplot+hist"))))
-            stop("Invalid argument: 'ptype' must be in c('ts', 'ts+boxplot', 'ts+hist', 'ts+boxplot+hist')")
+     # Selecting one valid plot type and plotting frequency.
+     ptype <- match.arg(ptype)
+     pfreq <- match.arg(pfreq)
 
-     # Checking that the user provied a valid argument for 'pfreq'
-     if ( sfreq(x) == "daily" ) {
-       if (is.na(match(pfreq, c("o", "dma", "dm", "ma", "seasonal"))))
-          stop("Invalid argument: 'pfreq' must be in c('o', 'dma', 'ma', 'dm', 'seasonal')")
-     } else if ( sfreq(x) == "monthly" ) {
-         if (is.na(match(pfreq, c("o", "ma", "seasonal")))) 
-           stop("Invalid argument: 'pfreq' must be in c('o', 'ma', 'seasonal')")
-       } # ELSE end
+     # Monthly series do not provide original daily values for daily panels.
+     if ( sfreq(x) == "monthly" & !pfreq %in% c("ma", "seasonal", "o") )
+       stop("Invalid argument: for monthly 'x', 'pfreq' must be in c('ma', 'seasonal', 'o')")
 
      if ( (pfreq == "o") & (ptype != "ts") ) {
           message(paste("[Note: pfreq='o' => ptype has been changed to 'ts']" , sep="") )
@@ -941,8 +936,8 @@ hydroplot.zoo <- function(x,
 ################################################################################
 hydroplot.data.frame <- function(x, 
                                  FUN, na.rm=TRUE,
-                                 ptype="ts+boxplot+hist",
-                                 pfreq="dma",                      
+                                 ptype=c("ts+boxplot+hist", "ts+boxplot", "ts+hist", "ts"),
+                                 pfreq=c("dma", "dm", "ma", "seasonal", "o"),
                                  var.type,                      
                                  var.unit="units",
                                  main=NULL, xlab="Time", ylab,
