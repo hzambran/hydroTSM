@@ -34,7 +34,9 @@ streamflowQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=3L, max.missing=0.2, max.review=0.2,
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
-  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL
 )
 ```
 
@@ -247,9 +249,17 @@ streamflowQC_subdaily(
 - verbose:
 
   Logical. If `TRUE`, informative messages identify the workflow start,
-  each enabled QC stage, evidence combination, and the final
-  station/observation summary. If `FALSE`, only these informational
-  messages are suppressed; warnings and errors remain visible.
+  effective workers/nodes, each enabled QC stage, evidence combination,
+  and the final station/observation summary. If `FALSE`, only these
+  informational messages are suppressed; warnings and errors remain
+  visible.
+
+- ncores, parallel.type, cluster.nodes:
+
+  Requested worker count, parallel backend, and optional PSOCK host
+  names. See
+  [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md)
+  for backend behaviour and network requirements.
 
 ## Details
 
@@ -274,6 +284,11 @@ three-family default reduces the risk of rejecting genuine flash floods,
 reservoir operations, tidal behaviour, intermittent zeros, or
 high-baseflow plateaus. The review fraction can still recommend
 discarding a station with pervasive single-test artefacts.
+
+Station-local, high-flow, breakpoint, neighbour-selection, and
+target-station spatial calculations are divided into balanced station
+chunks when multiple workers are requested. Result columns retain input
+order, and workers created by the call are stopped on exit.
 
 ## Value
 
@@ -320,6 +335,7 @@ qc <- streamflowQC_subdaily(
   min.years=0, max.missing=1, max.review=1, max.suspicious=1
 )
 #> [streamflowQC] Starting sub-daily QC for 72 observations at 2 station(s) ...
+#> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
 #> [streamflowQC] Running physical-range check ...
 #> [streamflowQC] Running gap check ...
 #> [streamflowQC] Combining evidence and station recommendations ...

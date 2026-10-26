@@ -13,7 +13,8 @@ No files are written.
 ``` r
 tempQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 ```
 
@@ -36,9 +37,15 @@ tempQC(
 - verbose:
 
   Logical. If `TRUE`, informative messages report the detected
-  frequency, active QC stages, and final QC summary. If `FALSE`, these
-  informational messages are suppressed; warnings and errors are
-  unaffected.
+  frequency, parallel workers/nodes, active QC stages, and final QC
+  summary. If `FALSE`, these informational messages are suppressed;
+  warnings and errors are unaffected.
+
+- ncores, parallel.type, cluster.nodes:
+
+  Requested worker count, parallel backend, and optional PSOCK host
+  names passed to the selected workflow. See
+  [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md).
 
 ## Details
 
@@ -50,7 +57,8 @@ under user control. Progress is reported with
 [`message()`](https://rdrr.io/r/base/message.html), so it can be
 captured or suppressed independently of the returned result. The staged
 design follows the gross-error, tolerance, temporal, inter-variable, and
-inter-station QC categories described by Brunet et al. (2020).
+inter-station QC categories described by Brunet et al. (2020). The
+default `ncores=1L` is serial and preserves the historical behaviour.
 
 ## Value
 
@@ -82,6 +90,7 @@ qc <- tempQC(x, checks=c(range=TRUE, duplicate=FALSE,
                           breakpoint=FALSE), min.years=0)
 #> [tempQC] Detected daily data; dispatching to tempQC_daily() ...
 #> [tempQC] Starting daily QC for 30 observations at 2 station(s) ...
+#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
 #> [tempQC] Running physical-range check ...
 #> [tempQC] Combining evidence and station recommendations ...
 #> [tempQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).

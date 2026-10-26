@@ -31,7 +31,8 @@ precipQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 ```
 
@@ -255,15 +256,46 @@ precipQC_daily(
 - verbose:
 
   Logical. If `TRUE`, informative messages identify the workflow start,
-  each enabled test and spatial scale, evidence combination, and the
-  final station/observation summary. If `FALSE`, only these
-  informational messages are suppressed; warnings and errors remain
-  visible.
+  the effective workers/nodes, each enabled test and spatial scale,
+  evidence combination, and the final station/observation summary. If
+  `FALSE`, only these informational messages are suppressed; warnings
+  and errors remain visible.
+
+- ncores:
+
+  Positive integer giving the requested number of worker processes. The
+  effective count is capped at the number of station columns and is
+  recorded in `result$settings$ncores`. The CRAN-safe default, one, uses
+  no parallel workers.
+
+- parallel.type:
+
+  Parallel backend. `"socket"` uses portable PSOCK workers and supports
+  local or network hosts; `"fork"` uses copy-on-write workers on
+  Unix-like systems and is unavailable on Windows; `"serial"` explicitly
+  requires `ncores=1L`.
+
+- cluster.nodes:
+
+  `NULL` for local workers, or a character vector of host names used by
+  the `"socket"` backend. Host names are recycled to `ncores`. Remote
+  nodes require non-interactive access, a compatible R installation, and
+  the same hydroTSM version in a visible or shared library.
 
 ## Details
 
 The workflow combines tests that address different error mechanisms
 instead of treating one statistical anomaly as proof of error.
+
+Station-local tests are evaluated in balanced, contiguous column chunks.
+Neighbour selection and target-station spatial calculations are also
+distributed, while already vectorized range checks remain in the master
+process. Result columns retain their input order and serial and parallel
+calls use the same algorithms. Socket workers copy their assigned
+station chunks; `"fork"` can use less memory on a single Unix-like
+machine. The verbose startup message reports the effective backend,
+worker count, and distinct nodes, and all workers created by the call
+are stopped on exit.
 
 1.  *Physical range*: negative depths and values above a defensible
     record limit are impossible or require review. Record limits are
@@ -456,6 +488,7 @@ qc <- precipQC_daily(pcp, metadata=meta, station.id="code",
                      elevation="altitude_m", min.years=0,
                      checks=c(breakpoint=FALSE))
 #> [precipQC] Starting daily QC for 400 observations at 3 station(s) ...
+#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
 #> [precipQC] Running physical-range check ...
 #> [precipQC] Running copied-block check ...
 #> [precipQC] Running frequent-value check ...

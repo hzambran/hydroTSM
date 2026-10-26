@@ -11,7 +11,7 @@ can be run, inspected, and tuned independently."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-26</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,8 @@ can be run, inspected, and tuned independently.</p>
 <span>  max.distance<span class="op">=</span><span class="fl">200</span>, min.neighbours<span class="op">=</span><span class="fl">2L</span>, min.overlap<span class="op">=</span><span class="fl">90L</span>,</span>
 <span>  min.group.overlap<span class="op">=</span><span class="fl">20L</span>, min.correlation<span class="op">=</span><span class="fl">0.6</span>,</span>
 <span>  f<span class="op">=</span><span class="fl">4</span>, min.difference<span class="op">=</span><span class="fl">8</span>, min.se<span class="op">=</span><span class="fl">0.1</span>, elevation<span class="op">=</span><span class="cn">NULL</span>,</span>
-<span>  elevation.scale<span class="op">=</span><span class="fl">500</span></span>
+<span>  elevation.scale<span class="op">=</span><span class="fl">500</span>, ncores<span class="op">=</span><span class="fl">1L</span>,</span>
+<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">tempQC_internal</span><span class="op">(</span><span class="va">tmin</span>, <span class="va">tmax</span>, lagged<span class="op">=</span><span class="cn">TRUE</span>, max.range<span class="op">=</span><span class="fl">40</span><span class="op">)</span></span>
@@ -145,6 +146,12 @@ column containing elevation in metres.</p></dd>
   <dt id="arg-elevation-scale">elevation.scale<a class="anchor" aria-label="anchor" href="#arg-elevation-scale"></a></dt>
 <dd><p>Positive elevation-decay scale in metres used to
 penalize neighbours with large height differences.</p></dd>
+
+  <dt id="arg-ncores-parallel-type-cluster-nodes">ncores, parallel.type, cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-ncores-parallel-type-cluster-nodes"></a></dt>
+<dd><p>Requested worker count,
+parallel backend, and optional PSOCK host names for
+<code>tempQC_spatial</code>. See <code><a href="tempQC_daily.html">tempQC_daily</a></code> for backend behaviour
+and network requirements.</p></dd>
 
   <dt id="arg-n-neighbours">n.neighbours<a class="anchor" aria-label="anchor" href="#arg-n-neighbours"></a></dt>
 <dd><p>Maximum selected spatial-regression neighbours.</p></dd>
@@ -235,7 +242,9 @@ located neighbours rank ahead of unlocated fallbacks. A flag requires both
 an absolute and a standardized residual. The equations follow the spatial
 regression test of Hubbard et al. (2007) and Estevez et al. (2018); grouping
 and correlation screening incorporate findings of Cheng et al. (2016) and
-Xiong et al. (2022, 2024).</p>
+Xiong et al. (2022, 2024).
+Neighbour selection and target-station regressions are divided into balanced
+station chunks when multiple workers are requested.</p>
 <p><code>tempQC_internal</code> flags Tmin above Tmax, possible interchange relative to
 the adjacent three-day window, and the 40-degree lagged range conditions in
 Durre et al. (2010). It returns separate flags because the erroneous member of

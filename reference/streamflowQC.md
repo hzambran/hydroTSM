@@ -12,7 +12,9 @@ No files are written.
 ``` r
 streamflowQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL
 )
 ```
 
@@ -54,9 +56,15 @@ streamflowQC(
 - verbose:
 
   Logical. If `TRUE`, informative messages report the detected
-  frequency, enabled QC stages, evidence combination, and final QC
-  summary. If `FALSE`, these messages are suppressed; warnings and
-  errors remain visible.
+  frequency, effective parallel workers and nodes, enabled QC stages,
+  evidence combination, and final QC summary. If `FALSE`, these messages
+  are suppressed; warnings and errors remain visible.
+
+- ncores, parallel.type, cluster.nodes:
+
+  Requested worker count, parallel backend, and optional PSOCK host
+  names passed to the selected workflow. See
+  [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md).
 
 ## Details
 
@@ -75,7 +83,8 @@ et al. (2026).
 
 Progress is emitted with
 [`message()`](https://rdrr.io/r/base/message.html), so it can be
-captured or suppressed without redirecting the returned object.
+captured or suppressed without redirecting the returned object. The
+default `ncores=1L` is serial and preserves the historical behaviour.
 
 ## Value
 
@@ -120,6 +129,7 @@ qc <- streamflowQC(
 )
 #> [streamflowQC] Detected daily data; dispatching to streamflowQC_daily() ...
 #> [streamflowQC] Starting daily QC for 30 observations at 2 station(s) ...
+#> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
 #> [streamflowQC] Running physical-range check ...
 #> [streamflowQC] Combining evidence and station recommendations ...
 #> [streamflowQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).

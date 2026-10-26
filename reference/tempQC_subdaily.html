@@ -11,7 +11,7 @@ method preserves the native time index and writes no files."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-26</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,8 @@ method preserves the native time index and writes no files.</p>
 <span>  correction<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"set_na"</span>, <span class="st">"spatial"</span><span class="op">)</span>,</span>
 <span>  min.evidence<span class="op">=</span><span class="fl">2L</span>, max.missing<span class="op">=</span><span class="fl">0.2</span>, max.suspicious<span class="op">=</span><span class="fl">0.05</span>,</span>
 <span>  min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span></span>
+<span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>, ncores<span class="op">=</span><span class="fl">1L</span>,</span>
+<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -179,9 +180,14 @@ station discard recommendation.</p></dd>
 
   <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, informative messages identify the
-workflow start, each enabled test, evidence combination, and the final
+workflow start, effective workers/nodes, each enabled test, evidence combination, and the final
 station/observation summary. If <code>FALSE</code>, only these informational messages
 are suppressed; warnings and errors remain visible.</p></dd>
+
+  <dt id="arg-ncores-parallel-type-cluster-nodes">ncores, parallel.type, cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-ncores-parallel-type-cluster-nodes"></a></dt>
+<dd><p>Requested worker count,
+parallel backend, and optional PSOCK host names. See
+<code><a href="tempQC_daily.html">tempQC_daily</a></code> for backend behaviour and network requirements.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -192,6 +198,11 @@ spatial-regression reference groups are conditioned jointly on calendar month
 and hour of day. Cheng et al. (2016) showed that hourly reference-station
 relations can change sharply by hour and season, especially across complex
 terrain.</p>
+<p>With multiple workers, station-local tests, neighbour selection, and
+target-station spatial regressions are divided into balanced station chunks.
+The serial, socket, and fork backends preserve input station order and QC
+results. The effective backend, workers, and distinct nodes are reported when
+<code>verbose=TRUE</code>, and created socket workers are stopped on exit.</p>
 <ol><li><p><em>Range</em>: global physical limits screen gross coding and unit
   errors. Local limits may be supplied; elevation-adjusted regional limits are
   preferable where established (Cheng et al., 2016).</p></li>
@@ -268,6 +279,7 @@ temperature observations for complex physical geography.
 <span class="r-in"><span>  min.years<span class="op">=</span><span class="fl">0</span>, max.missing<span class="op">=</span><span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Starting sub-daily QC for 72 observations at 2 station(s) ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Running physical-range check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Running persistence check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Running isolated-spike check ...</span>

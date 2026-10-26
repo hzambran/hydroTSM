@@ -13,7 +13,8 @@ No files are written.
 ``` r
 precipQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 ```
 
@@ -39,9 +40,15 @@ precipQC(
 - verbose:
 
   Logical. If `TRUE`, informative messages report the detected
-  frequency, the active QC stages, spatial scales, and the final QC
-  summary. If `FALSE`, these informational messages are suppressed;
-  warnings and errors are unaffected.
+  frequency, the active QC stages, parallel workers/nodes, spatial
+  scales, and the final QC summary. If `FALSE`, these informational
+  messages are suppressed; warnings and errors are unaffected.
+
+- ncores, parallel.type, cluster.nodes:
+
+  Parallel worker count, backend, and optional PSOCK host names passed
+  to the selected workflow. See
+  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md).
 
 ## Details
 
@@ -51,7 +58,8 @@ monthly, quarterly, annual, or other frequencies are rejected with an
 informative error because the implemented thresholds and tests are not
 valid at those resolutions. Progress is emitted with
 [`message()`](https://rdrr.io/r/base/message.html), so it can be
-captured or suppressed without redirecting returned values.
+captured or suppressed without redirecting returned values. The default
+`ncores=1L` is serial and preserves the historical behaviour.
 
 ## Value
 
@@ -82,6 +90,7 @@ qc <- precipQC(
 )
 #> [precipQC] Detected daily data; dispatching to precipQC_daily() ...
 #> [precipQC] Starting daily QC for 40 observations at 2 station(s) ...
+#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
 #> [precipQC] Running physical-range check ...
 #> [precipQC] Running copied-block check ...
 #> [precipQC] Running frequent-value check ...

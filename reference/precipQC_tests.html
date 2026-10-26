@@ -11,7 +11,7 @@ evidence can be inspected or tuned independently."><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-26</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,14 +89,18 @@ evidence can be inspected or tuned independently.</p>
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>,</span>
 <span>  n.neighbours<span class="op">=</span><span class="fl">10L</span>, max.distance<span class="op">=</span><span class="cn">Inf</span>, min.neighbours<span class="op">=</span><span class="fl">2L</span>,</span>
 <span>  min.overlap<span class="op">=</span><span class="fl">30L</span>, min.correlation<span class="op">=</span><span class="fl">0</span>, cr.threshold<span class="op">=</span><span class="fl">3</span>,</span>
-<span>  wet.threshold<span class="op">=</span><span class="fl">0.1</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span></span>
+<span>  wet.threshold<span class="op">=</span><span class="fl">0.1</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>,</span>
+<span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">precipQC_dryspell</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>,</span>
 <span>  n.neighbours<span class="op">=</span><span class="fl">10L</span>, max.distance<span class="op">=</span><span class="cn">Inf</span>, window.days<span class="op">=</span><span class="fl">15L</span>,</span>
 <span>  neighbour.wet.days<span class="op">=</span><span class="fl">3L</span>, neighbour.fraction<span class="op">=</span><span class="fl">1</span>,</span>
-<span>  wet.threshold<span class="op">=</span><span class="fl">0.1</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span></span>
+<span>  wet.threshold<span class="op">=</span><span class="fl">0.1</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>,</span>
+<span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">precipQC_breakpoint</span><span class="op">(</span></span>
@@ -200,6 +204,11 @@ range-checked.</p></dd>
 <code>exp(-abs(dz) / elevation.scale)</code> and influences neighbour ranking and
 spatial weights. It is ignored when <code>elevation=NULL</code>.</p></dd>
 
+  <dt id="arg-ncores-parallel-type-cluster-nodes">ncores, parallel.type, cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-ncores-parallel-type-cluster-nodes"></a></dt>
+<dd><p>Requested worker count, parallel backend, and optional PSOCK host names for
+the spatial and dry-spell tests. See <code><a href="precipQC_daily.html">precipQC_daily</a></code> for backend
+behaviour and network requirements.</p></dd>
+
   <dt id="arg-n-neighbours">n.neighbours<a class="anchor" aria-label="anchor" href="#arg-n-neighbours"></a></dt>
 <dd><p>Maximum number of neighbours.</p></dd>
 
@@ -298,7 +307,9 @@ fallbacks. A target missing either coordinate uses correlation-based selection
 and remains fully testable. The critical ratio uses
 the larger of the simultaneous neighbour dispersion, historical target
 residual dispersion, and a small numerical floor. Only positive residuals are
-flagged here; isolated dryness is handled separately.</p>
+flagged here; isolated dryness is handled separately.
+Neighbour selection and target-station calculations are divided into balanced
+station chunks when multiple workers are requested.</p>
 <p><code>precipQC_dryspell</code> aggregates native observations to wet/dry calendar
 days, locates long dry runs, and flags target values only where the requested
 fraction of neighbours records enough wet days in the same window.</p>

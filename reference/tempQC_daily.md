@@ -29,7 +29,8 @@ tempQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 ```
 
@@ -205,15 +206,44 @@ tempQC_daily(
 - verbose:
 
   Logical. If `TRUE`, informative messages identify the workflow start,
-  each enabled test, evidence combination, and the final
-  station/observation summary. If `FALSE`, only these informational
-  messages are suppressed; warnings and errors remain visible.
+  effective workers/nodes, each enabled test, evidence combination, and
+  the final station/observation summary. If `FALSE`, only these
+  informational messages are suppressed; warnings and errors remain
+  visible.
+
+- ncores:
+
+  Positive integer giving the requested number of worker processes. The
+  effective count is capped at the number of stations, reported when
+  `verbose=TRUE`, and stored in `result$settings$ncores`. One is the
+  serial default.
+
+- parallel.type:
+
+  Parallel backend: `"socket"` for portable local or network PSOCK
+  workers, `"fork"` for copy-on-write workers on Unix-like systems, or
+  `"serial"` with `ncores=1L`.
+
+- cluster.nodes:
+
+  `NULL` for local workers, or host names for the `"socket"` backend,
+  recycled to `ncores`. Network nodes require non-interactive access,
+  compatible R installations, and the same hydroTSM version in a visible
+  or shared library.
 
 ## Details
 
 The tests represent independent error mechanisms and are deliberately
 combined as evidence instead of interpreting every statistical outlier
 as an error.
+
+Station-local tests are evaluated in balanced, contiguous column chunks,
+and neighbour selection plus target-station spatial regressions are
+distributed over the same backend. Already vectorized range checks
+remain in the master process. Result columns retain input order and use
+the same algorithm in serial and parallel calls. Socket workers copy
+assigned data, whereas `"fork"` may reduce memory use on one Unix-like
+machine. Workers created by the call are stopped on exit.
 
 1.  *Physical range and copied blocks*. Values beyond observed world
     limits and exactly duplicated months or years are gross-integrity
@@ -327,6 +357,7 @@ qc <- tempQC_daily(
   min.years=0, max.missing=1
 )
 #> [tempQC] Starting daily QC for 90 observations at 2 station(s) ...
+#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
 #> [tempQC] Running physical-range check ...
 #> [tempQC] Running persistence check ...
 #> [tempQC] Running isolated-spike check ...

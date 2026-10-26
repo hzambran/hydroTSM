@@ -27,6 +27,8 @@
 ### User-visible changes
 
 ``` R
+    o 'streamflowQC*' now supports serial, local PSOCK, Unix fork, and multi-node PSOCK execution through 'ncores', 'parallel.type', and 'cluster.nodes'. Station-local, high-flow, homogeneity, neighbour-selection, and spatial target calculations use balanced station chunks, while verbose output reports the effective workers and nodes.
+    o 'precipQC*' and 'tempQC*' now support serial, local PSOCK, Unix fork, and multi-node PSOCK execution through 'ncores', 'parallel.type', and 'cluster.nodes'. Station-local and spatial target calculations are split into balanced chunks, while verbose output reports the effective workers and nodes.
     o 'hydroplot': 'ptype' and 'pfreq' now expose their valid choices as default vectors and use 'match.arg', removing duplicated manual argument checks.
     o 'tempQC', 'tempQC_daily', and 'tempQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages, evidence combination, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.
     o 'streamflowQC', 'streamflowQC_daily', and 'streamflowQC_subdaily' now provide a 'verbose=TRUE' argument that reports frequency dispatch, enabled QC stages, evidence combination, and a final acceptance/flag summary. 'verbose=FALSE' suppresses these informational messages without suppressing warnings or errors.

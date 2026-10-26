@@ -30,7 +30,8 @@ precipQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 ```
 
@@ -166,14 +167,28 @@ precipQC_subdaily(
 - verbose:
 
   Logical. If `TRUE`, informative messages identify the workflow start,
-  each enabled test and spatial scale, evidence combination, and the
-  final station/observation summary. If `FALSE`, only these
-  informational messages are suppressed; warnings and errors remain
-  visible.
+  the effective workers/nodes, each enabled test and spatial scale,
+  evidence combination, and the final station/observation summary. If
+  `FALSE`, only these informational messages are suppressed; warnings
+  and errors remain visible.
+
+- ncores, parallel.type, cluster.nodes:
+
+  Requested worker count, parallel backend, and optional PSOCK host
+  names. See
+  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md)
+  for backend behaviour and network requirements.
 
 ## Details
 
 The sub-daily workflow follows a layered rule base:
+
+Station-local tests, neighbour selection, and target-station spatial
+calculations are divided into balanced station chunks when `ncores > 1`.
+Column order and QC results are preserved across serial, socket, and
+fork execution. The effective backend, worker count, and distinct node
+count are reported when `verbose=TRUE`; created socket workers are
+stopped on exit.
 
 1.  *Range and temporal-resolution validation*. Negative depths and
     depths exceeding a duration-adjusted screening record are flagged.
@@ -341,6 +356,7 @@ qc <- precipQC_subdaily(
   checks=c(monthly.accumulation=FALSE, breakpoint=FALSE)
 )
 #> [precipQC] Starting sub-daily QC for 960 observations at 3 station(s) ...
+#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
 #> [precipQC] Running physical-range check ...
 #> [precipQC] Running climatological-plausibility check ...
 #> [precipQC] Running persistence check ...

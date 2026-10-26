@@ -13,7 +13,7 @@ station acceptance recommendations without writing files."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-26</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,8 @@ station acceptance recommendations without writing files.</p>
 <span>  correction<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"set_na"</span>, <span class="st">"spatial"</span><span class="op">)</span>,</span>
 <span>  min.evidence<span class="op">=</span><span class="fl">2L</span>, max.missing<span class="op">=</span><span class="fl">0.2</span>, max.suspicious<span class="op">=</span><span class="fl">0.05</span>,</span>
 <span>  min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span></span>
+<span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>, ncores<span class="op">=</span><span class="fl">1L</span>,</span>
+<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -186,14 +187,23 @@ cause a discard recommendation. The conservative default is <code>FALSE</code>.<
 
   <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, informative messages identify the workflow start,
-each enabled test and spatial scale, evidence combination, and the final
+the effective workers/nodes, each enabled test and spatial scale, evidence combination, and the final
 station/observation summary. If <code>FALSE</code>, only these informational messages
 are suppressed; warnings and errors remain visible.</p></dd>
+
+  <dt id="arg-ncores-parallel-type-cluster-nodes">ncores, parallel.type, cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-ncores-parallel-type-cluster-nodes"></a></dt>
+<dd><p>Requested worker count, parallel backend, and optional PSOCK host names. See
+<code><a href="precipQC_daily.html">precipQC_daily</a></code> for backend behaviour and network requirements.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The sub-daily workflow follows a layered rule base:</p>
+<p>Station-local tests, neighbour selection, and target-station spatial
+calculations are divided into balanced station chunks when <code>ncores &gt; 1</code>.
+Column order and QC results are preserved across serial, socket, and fork
+execution. The effective backend, worker count, and distinct node count are
+reported when <code>verbose=TRUE</code>; created socket workers are stopped on exit.</p>
 <ol><li><p><em>Range and temporal-resolution validation</em>. Negative depths and
   depths exceeding a duration-adjusted screening record are flagged. The time
   index is checked for strict ordering and a consistent modal interval. This
@@ -329,6 +339,7 @@ long-term series of daily precipitation data in a semiarid environment.
 <span class="r-in"><span>  checks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>monthly.accumulation<span class="op">=</span><span class="cn">FALSE</span>, breakpoint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Starting sub-daily QC for 960 observations at 3 station(s) ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Running physical-range check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Running climatological-plausibility check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Running persistence check ...</span>

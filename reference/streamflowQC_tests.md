@@ -49,7 +49,9 @@ streamflowQC_spatial(
   area=NULL, elevation=NULL, elevation.scale=500,
   n.neighbours=5L, max.distance=400, min.neighbours=2L,
   min.support=1L, min.overlap=90L, min.correlation=0.5,
-  window=3L, high.prob=0.99, support.prob=0.95, f=3
+  window=3L, high.prob=0.99, support.prob=0.95, f=3,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL
 )
 
 streamflowQC_breakpoint(
@@ -187,6 +189,13 @@ streamflowQC_breakpoint(
 
   Positive elevation-decay scale used in neighbour ranking.
 
+- ncores, parallel.type, cluster.nodes:
+
+  Requested worker count, parallel backend, and optional PSOCK host
+  names for `streamflowQC_spatial`. See
+  [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md)
+  for backend behaviour and network requirements.
+
 - n.neighbours:
 
   Maximum selected neighbours per station.
@@ -281,7 +290,8 @@ log-specific-discharge space when catchment area is available, and
 combines predictions using inverse-error weighted medians. A rare target
 event is flagged only when its residual score exceeds `f` and fewer than
 `min.support` neighbours exceed their support quantile in the search
-window.
+window. Neighbour selection and target-station calculations are divided
+into balanced station chunks when multiple workers are requested.
 
 `streamflowQC_breakpoint` aggregates sub-daily input to daily means,
 calculates complete annual indicators, applies Pettitt rank tests, and

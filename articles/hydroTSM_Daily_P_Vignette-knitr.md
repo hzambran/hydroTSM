@@ -581,7 +581,7 @@ This tutorial was built under:
 
     ## [1] "R version 4.6.1 (2026-06-24)"
 
-    ## [1] "hydroTSM 0.8-26"
+    ## [1] "hydroTSM 0.8-27"
 
 ## Version history
 

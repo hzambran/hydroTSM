@@ -25,7 +25,8 @@ tempQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 ```
 
@@ -159,9 +160,17 @@ tempQC_subdaily(
 - verbose:
 
   Logical. If `TRUE`, informative messages identify the workflow start,
-  each enabled test, evidence combination, and the final
-  station/observation summary. If `FALSE`, only these informational
-  messages are suppressed; warnings and errors remain visible.
+  effective workers/nodes, each enabled test, evidence combination, and
+  the final station/observation summary. If `FALSE`, only these
+  informational messages are suppressed; warnings and errors remain
+  visible.
+
+- ncores, parallel.type, cluster.nodes:
+
+  Requested worker count, parallel backend, and optional PSOCK host
+  names. See
+  [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md)
+  for backend behaviour and network requirements.
 
 ## Details
 
@@ -172,6 +181,13 @@ reference groups are conditioned jointly on calendar month and hour of
 day. Cheng et al. (2016) showed that hourly reference-station relations
 can change sharply by hour and season, especially across complex
 terrain.
+
+With multiple workers, station-local tests, neighbour selection, and
+target-station spatial regressions are divided into balanced station
+chunks. The serial, socket, and fork backends preserve input station
+order and QC results. The effective backend, workers, and distinct nodes
+are reported when `verbose=TRUE`, and created socket workers are stopped
+on exit.
 
 1.  *Range*: global physical limits screen gross coding and unit errors.
     Local limits may be supplied; elevation-adjusted regional limits are
@@ -267,6 +283,7 @@ qc <- tempQC_subdaily(
   min.years=0, max.missing=1
 )
 #> [tempQC] Starting sub-daily QC for 72 observations at 2 station(s) ...
+#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
 #> [tempQC] Running physical-range check ...
 #> [tempQC] Running persistence check ...
 #> [tempQC] Running isolated-spike check ...

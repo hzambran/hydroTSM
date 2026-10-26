@@ -11,7 +11,7 @@ flags and station acceptance recommendations without writing files."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-26</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,9 @@ flags and station acceptance recommendations without writing files.</p>
 <span>  correction<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"set_na"</span>, <span class="st">"spatial"</span><span class="op">)</span>,</span>
 <span>  min.evidence<span class="op">=</span><span class="fl">3L</span>, max.missing<span class="op">=</span><span class="fl">0.2</span>, max.review<span class="op">=</span><span class="fl">0.2</span>,</span>
 <span>  max.suspicious<span class="op">=</span><span class="fl">0.05</span>, min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span></span>
+<span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -260,9 +262,27 @@ ranking.</p></dd>
 
   <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, informative messages identify the
-workflow start, each enabled QC stage, evidence combination, and the final
-station/observation summary. If <code>FALSE</code>, only these informational
-messages are suppressed; warnings and errors remain visible.</p></dd>
+workflow start, effective workers/nodes, each enabled QC stage, evidence
+combination, and the final station/observation summary. If <code>FALSE</code>, only
+these informational messages are suppressed; warnings and errors remain
+visible.</p></dd>
+
+  <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
+<dd><p>Positive integer giving the requested number of worker
+processes. The effective count is capped at the number of stations, reported
+when <code>verbose=TRUE</code>, and stored in <code>result$settings$ncores</code>. One is
+the serial default.</p></dd>
+
+  <dt id="arg-parallel-type">parallel.type<a class="anchor" aria-label="anchor" href="#arg-parallel-type"></a></dt>
+<dd><p>Parallel backend: <code>"socket"</code> for portable local
+or network PSOCK workers, <code>"fork"</code> for copy-on-write workers on
+Unix-like systems, or <code>"serial"</code> with <code>ncores=1L</code>.</p></dd>
+
+  <dt id="arg-cluster-nodes">cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-cluster-nodes"></a></dt>
+<dd><p><code>NULL</code> for local workers, or host names for the
+<code>"socket"</code> backend, recycled to <code>ncores</code>. Network nodes require
+non-interactive access, compatible R installations, and the same hydroTSM
+version in a visible or shared library.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -283,6 +303,13 @@ neighbours show high flow within the search window.</p>
 <p>Station acceptance requires all user-defined completeness, review, confirmed
 suspicion, duration, and optional breakpoint criteria. Point and station
 decisions are therefore related but distinct.</p>
+<p>Station-local tests are evaluated in balanced, contiguous column chunks.
+Neighbour selection and target-station spatial calculations are distributed
+over the same backend, while the vectorized range check stays in the master
+process. Input column order and algorithms are identical in serial and
+parallel calls. Socket workers copy assigned data; <code>"fork"</code> may reduce
+memory use on one Unix-like machine. Workers created by the call are stopped
+on exit.</p>
     </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -320,6 +347,7 @@ Quality Control of Stream Flow Data Version 1.0</em>. doi:10.25923/gszc-ha43.</p
 <span class="r-in"><span>  min.years<span class="op">=</span><span class="fl">0</span>, max.missing<span class="op">=</span><span class="fl">1</span>, max.review<span class="op">=</span><span class="fl">1</span>, max.suspicious<span class="op">=</span><span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Starting daily QC for 60 observations at 2 station(s) ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Running physical-range check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Running gap check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Combining evidence and station recommendations ...</span>

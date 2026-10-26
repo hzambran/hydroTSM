@@ -11,7 +11,7 @@ evidence can be run, inspected, deactivated, and tuned independently."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-26</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,9 @@ evidence can be run, inspected, deactivated, and tuned independently.</p>
 <span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>,</span>
 <span>  n.neighbours<span class="op">=</span><span class="fl">5L</span>, max.distance<span class="op">=</span><span class="fl">400</span>, min.neighbours<span class="op">=</span><span class="fl">2L</span>,</span>
 <span>  min.support<span class="op">=</span><span class="fl">1L</span>, min.overlap<span class="op">=</span><span class="fl">90L</span>, min.correlation<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span>  window<span class="op">=</span><span class="fl">3L</span>, high.prob<span class="op">=</span><span class="fl">0.99</span>, support.prob<span class="op">=</span><span class="fl">0.95</span>, f<span class="op">=</span><span class="fl">3</span></span>
+<span>  window<span class="op">=</span><span class="fl">3L</span>, high.prob<span class="op">=</span><span class="fl">0.99</span>, support.prob<span class="op">=</span><span class="fl">0.95</span>, f<span class="op">=</span><span class="fl">3</span>,</span>
+<span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">streamflowQC_breakpoint</span><span class="op">(</span></span>
@@ -206,6 +208,12 @@ field.</p></dd>
 <dd><p>Positive elevation-decay scale used in neighbour
 ranking.</p></dd>
 
+  <dt id="arg-ncores-parallel-type-cluster-nodes">ncores, parallel.type, cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-ncores-parallel-type-cluster-nodes"></a></dt>
+<dd><p>Requested worker count,
+parallel backend, and optional PSOCK host names for
+<code>streamflowQC_spatial</code>. See <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></code> for backend
+behaviour and network requirements.</p></dd>
+
   <dt id="arg-n-neighbours">n.neighbours<a class="anchor" aria-label="anchor" href="#arg-n-neighbours"></a></dt>
 <dd><p>Maximum selected neighbours per station.</p></dd>
 
@@ -283,7 +291,8 @@ log-specific-discharge space when catchment area is available, and combines
 predictions using inverse-error weighted medians. A rare target event is
 flagged only when its residual score exceeds <code>f</code> and fewer than
 <code>min.support</code> neighbours exceed their support quantile in the search
-window.</p>
+window. Neighbour selection and target-station calculations are divided into
+balanced station chunks when multiple workers are requested.</p>
 <p><code>streamflowQC_breakpoint</code> aggregates sub-daily input to daily means,
 calculates complete annual indicators, applies Pettitt rank tests, and
 Holm-adjusts p-values. Its station flag is separate from point QC because an
