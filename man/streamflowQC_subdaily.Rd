@@ -41,7 +41,9 @@ streamflowQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=3L, max.missing=0.2, max.review=0.2,
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
-  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL
 )
 }
 
@@ -125,9 +127,14 @@ field used to compare specific discharge spatially.}
   \item{elevation.scale}{Positive elevation-decay scale used in neighbour
 ranking.}
   \item{verbose}{Logical. If \code{TRUE}, informative messages identify the
-workflow start, each enabled QC stage, evidence combination, and the final
-station/observation summary. If \code{FALSE}, only these informational
-messages are suppressed; warnings and errors remain visible.}
+workflow start, effective workers/nodes, each enabled QC stage, evidence
+combination, and the final station/observation summary. If \code{FALSE}, only
+these informational messages are suppressed; warnings and errors remain
+visible.}
+  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
+parallel backend, and optional PSOCK host names. See
+\code{\link{streamflowQC_daily}} for backend behaviour and network
+requirements.}
 }
 
 \details{
@@ -151,6 +158,11 @@ default reduces the risk of rejecting genuine flash floods, reservoir
 operations, tidal behaviour, intermittent zeros, or high-baseflow plateaus.
 The review fraction can still recommend discarding a station with pervasive
 single-test artefacts.
+
+Station-local, high-flow, breakpoint, neighbour-selection, and target-station
+spatial calculations are divided into balanced station chunks when multiple
+workers are requested. Result columns retain input order, and workers created
+by the call are stopped on exit.
 }
 
 \value{

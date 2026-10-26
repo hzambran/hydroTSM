@@ -16,7 +16,9 @@ daily data to \code{\link{streamflowQC_daily}} or minute/hourly data to
 \usage{
 streamflowQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL
 )
 }
 
@@ -36,9 +38,12 @@ field.}
   \item{elevation.scale}{Positive elevation-decay scale used in spatial
 neighbour ranking.}
   \item{verbose}{Logical. If \code{TRUE}, informative messages report the
-detected frequency, enabled QC stages, evidence combination, and final QC
-summary. If \code{FALSE}, these messages are suppressed; warnings and errors
-remain visible.}
+detected frequency, effective parallel workers and nodes, enabled QC stages,
+evidence combination, and final QC summary. If \code{FALSE}, these messages
+are suppressed; warnings and errors remain visible.}
+  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
+parallel backend, and optional PSOCK host names passed to the selected
+workflow. See \code{\link{streamflowQC_daily}}.}
 }
 
 \details{
@@ -57,6 +62,7 @@ the sub-daily artefact and event-corroboration framework of Fileni et al.
 
 Progress is emitted with \code{message()}, so it can be captured or suppressed
 without redirecting the returned object.
+The default \code{ncores=1L} is serial and preserves the historical behaviour.
 }
 
 \value{

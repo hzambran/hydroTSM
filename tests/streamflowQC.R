@@ -206,6 +206,77 @@ stopifnot(
   any(grepl("Completed sub-daily QC", subdaily.messages, fixed=TRUE))
 )
 
+# The sub-daily station worker must preserve serial flags and diagnostics.
+subdaily.parallel.checks <- subdaily.checks.off
+subdaily.parallel.checks[c("gap", "flatline", "rate", "fluctuation",
+                           "highflow")] <- TRUE
+subdaily.serial <- streamflowQC_subdaily(
+  subdaily[1:300, 1:2], checks=subdaily.parallel.checks,
+  flatline.hours=3, high.flatline.hours=2,
+  rate.max.rise=c(Inf, Inf), rate.max.fall=c(Inf, Inf),
+  min.years=0, max.missing=1, max.review=1, max.suspicious=1,
+  verbose=FALSE
+)
+subdaily.socket <- streamflowQC_subdaily(
+  subdaily[1:300, 1:2], checks=subdaily.parallel.checks,
+  flatline.hours=3, high.flatline.hours=2,
+  rate.max.rise=c(Inf, Inf), rate.max.fall=c(Inf, Inf),
+  min.years=0, max.missing=1, max.review=1, max.suspicious=1,
+  verbose=FALSE, ncores=2L, parallel.type="socket"
+)
+stopifnot(
+  identical(subdaily.serial$flags, subdaily.socket$flags),
+  identical(subdaily.serial$station.summary,
+            subdaily.socket$station.summary),
+  identical(subdaily.serial$highflow, subdaily.socket$highflow)
+)
+
+# PSOCK execution must preserve daily results and report effective resources.
+parallel.checks <- c(
+  range=TRUE, duplicate=FALSE, gap=TRUE, climatology=FALSE,
+  flatline=TRUE, spike=TRUE, rate=TRUE, highflow=TRUE,
+  spatial=TRUE, breakpoint=FALSE
+)
+parallel.serial <- streamflowQC_daily(
+  daily[1:120, ], metadata=metadata, station.id="gauge",
+  coords=c("lon", "lat"), area="area_km2", elevation="elevation",
+  checks=parallel.checks, rate.max.rise=rep(Inf, 4),
+  rate.max.fall=rep(Inf, 4), min.overlap=30, min.correlation=-1,
+  max.distance=1000, min.years=0, max.missing=1,
+  max.review=1, max.suspicious=1, verbose=FALSE
+)
+parallel.messages <- capture.output(
+  parallel.socket <- streamflowQC_daily(
+    daily[1:120, ], metadata=metadata, station.id="gauge",
+    coords=c("lon", "lat"), area="area_km2", elevation="elevation",
+    checks=parallel.checks, rate.max.rise=rep(Inf, 4),
+    rate.max.fall=rep(Inf, 4), min.overlap=30, min.correlation=-1,
+    max.distance=1000, min.years=0, max.missing=1,
+    max.review=1, max.suspicious=1, verbose=TRUE,
+    ncores=2L, parallel.type="socket", cluster.nodes="localhost"
+  ), type="message"
+)
+stopifnot(
+  identical(parallel.serial$flags, parallel.socket$flags),
+  identical(parallel.serial$station.summary,
+            parallel.socket$station.summary),
+  identical(parallel.serial$neighbours, parallel.socket$neighbours),
+  identical(parallel.serial$highflow, parallel.socket$highflow),
+  identical(parallel.socket$settings$ncores, 2L),
+  identical(parallel.socket$settings$parallel.type, "socket"),
+  any(grepl("Using socket backend with 2 worker(s) across 1 node(s)",
+            parallel.messages, fixed=TRUE))
+)
+
+# Invalid backend controls fail before QC calculations begin.
+invalid.cores <- try(streamflowQC_daily(daily, ncores=0), silent=TRUE)
+invalid.nodes <- try(
+  streamflowQC_daily(daily, ncores=2, parallel.type="fork",
+                     cluster.nodes="localhost"), silent=TRUE
+)
+stopifnot(inherits(invalid.cores, "try-error"),
+          inherits(invalid.nodes, "try-error"))
+
 # Summary plotting writes only to the caller-supplied temporary graphics device.
 plot.file <- tempfile(fileext=".pdf")
 grDevices::pdf(plot.file)

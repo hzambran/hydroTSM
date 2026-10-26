@@ -85,6 +85,197 @@
 } # '.streamflowQC_finish' END
 
 
+.streamflowQC_daily_station_part <- function(part, checks, parameters) {
+
+  # Run station-local daily tests on one balanced column subset.
+  x <- part$x
+  flags <- list()
+  if (checks["duplicate"])
+    flags$duplicate <- streamflowQC_duplicate(
+      x, min.month.values=parameters$duplicate.min.month,
+      min.year.values=parameters$duplicate.min.year,
+      min.nonzero=parameters$duplicate.min.nonzero
+    )
+  if (checks["gap"])
+    flags$gap <- streamflowQC_gap(x, interval=1)
+  if (checks["climatology"])
+    flags$climatology <- streamflowQC_climatology(
+      x, group="dayofyear", window=parameters$climatology.window,
+      z=parameters$climatology.z,
+      min.samples=parameters$climatology.min.samples,
+      offset=parameters$log.offset
+    )
+  if (checks["flatline"])
+    flags$flatline <- streamflowQC_flatline(
+      x, run=parameters$flatline.run,
+      tolerance=parameters$flatline.tolerance,
+      flag.zero=parameters$flag.zero
+    )
+  if (checks["spike"])
+    flags$spike <- streamflowQC_spike(
+      x, factor=parameters$spike.factor, prob=parameters$spike.prob
+    )
+  if (checks["rate"]) {
+    max.rise <- .QC_station_parameter(
+      parameters$rate.max.rise, part$index, parameters$nstations,
+      "rate.max.rise"
+    )
+    max.fall <- .QC_station_parameter(
+      parameters$rate.max.fall, part$index, parameters$nstations,
+      "rate.max.fall"
+    )
+    flags$rate <- streamflowQC_rate(
+      x, group="month", z=parameters$rate.z,
+      min.samples=parameters$rate.min.samples,
+      max.rise=max.rise, max.fall=max.fall,
+      drop.factor=parameters$rate.drop.factor,
+      offset=parameters$log.offset
+    )
+  }
+
+  # Keep correlated high-flow diagnostics together as one evidence family.
+  highflow <- NULL
+  if (checks["highflow"]) {
+    highflow <- streamflowQC_highflow(
+      x, log.z=parameters$highflow.log.z,
+      amax.ratio=parameters$highflow.amax.ratio,
+      return.period=parameters$highflow.return.period,
+      min.years=parameters$highflow.min.years,
+      offset=parameters$log.offset
+    )
+    flags$highflow <- highflow$flags
+  }
+
+  # Keep homogeneity diagnostics aligned with the same station subset.
+  breakpoint <- if (checks["breakpoint"]) {
+    streamflowQC_breakpoint(
+      x, min.years=parameters$breakpoint.min.years,
+      alpha=parameters$breakpoint.alpha,
+      min.relative.change=parameters$breakpoint.min.relative.change,
+      min.completeness=parameters$breakpoint.min.completeness
+    )
+  } else {
+    .precipQC_empty_breakpoint(colnames(x))
+  }
+
+  list(flags=flags, breakpoint=breakpoint, highflow=highflow)
+
+} # '.streamflowQC_daily_station_part' END
+
+
+.streamflowQC_subdaily_station_part <- function(part, checks, parameters) {
+
+  # Run station-local sub-daily tests on one balanced column subset.
+  x <- part$x
+  flags <- list()
+  if (checks["gap"])
+    flags$gap <- streamflowQC_gap(x, interval=parameters$interval.seconds)
+  if (checks["climatology"])
+    flags$climatology <- streamflowQC_climatology(
+      x, group="month", window=1L, z=parameters$climatology.z,
+      min.samples=parameters$climatology.min.samples,
+      offset=parameters$log.offset
+    )
+  if (checks["flatline"])
+    flags$flatline <- streamflowQC_flatline(
+      x, run=parameters$flatline.run,
+      high.run=parameters$high.flatline.run,
+      high.prob=parameters$flatline.high.prob,
+      tolerance=parameters$flatline.tolerance,
+      flag.zero=parameters$flag.zero
+    )
+  if (checks["spike"])
+    flags$spike <- streamflowQC_spike(
+      x, factor=parameters$spike.factor, prob=parameters$spike.prob
+    )
+  if (checks["rate"]) {
+    max.rise <- .QC_station_parameter(
+      parameters$rate.max.rise, part$index, parameters$nstations,
+      "rate.max.rise"
+    )
+    max.fall <- .QC_station_parameter(
+      parameters$rate.max.fall, part$index, parameters$nstations,
+      "rate.max.fall"
+    )
+    flags$rate <- streamflowQC_rate(
+      x, group="month", z=parameters$rate.z,
+      min.samples=parameters$rate.min.samples,
+      max.rise=max.rise, max.fall=max.fall,
+      drop.factor=parameters$rate.drop.factor,
+      offset=parameters$log.offset
+    )
+  }
+  if (checks["fluctuation"])
+    flags$fluctuation <- streamflowQC_fluctuation(
+      x, window=parameters$fluctuation.window,
+      minimum=parameters$fluctuation.minimum,
+      low.diff.prob=parameters$fluctuation.low.diff.prob
+    )
+
+  # Keep correlated high-flow diagnostics together as one evidence family.
+  highflow <- NULL
+  if (checks["highflow"]) {
+    highflow <- streamflowQC_highflow(
+      x, log.z=parameters$highflow.log.z,
+      amax.ratio=parameters$highflow.amax.ratio,
+      return.period=parameters$highflow.return.period,
+      min.years=parameters$highflow.min.years,
+      offset=parameters$log.offset
+    )
+    flags$highflow <- highflow$flags
+  }
+
+  # Keep homogeneity diagnostics aligned with the same station subset.
+  breakpoint <- if (checks["breakpoint"]) {
+    streamflowQC_breakpoint(
+      x, min.years=parameters$breakpoint.min.years,
+      alpha=parameters$breakpoint.alpha,
+      min.relative.change=parameters$breakpoint.min.relative.change,
+      min.completeness=parameters$breakpoint.min.completeness
+    )
+  } else {
+    .precipQC_empty_breakpoint(colnames(x))
+  }
+
+  list(flags=flags, breakpoint=breakpoint, highflow=highflow)
+
+} # '.streamflowQC_subdaily_station_part' END
+
+
+.streamflowQC_combine_station_results <- function(parts, x,
+                                                   combine.highflow) {
+
+  # Reuse the common deterministic flag and breakpoint reconstruction.
+  combined <- .QC_combine_station_results(parts, x)
+  if (!combine.highflow) {
+    combined$highflow <- NULL
+    return(combined)
+  }
+
+  # Reassemble the correlated high-flow diagnostics without changing order.
+  highflow.parts <- lapply(parts, `[[`, "highflow")
+  component.names <- names(highflow.parts[[1L]]$components)
+  components <- stats::setNames(lapply(component.names, function(name) {
+    values <- do.call(cbind, lapply(highflow.parts, function(part)
+      .precipQC_matrix(part$components[[name]], allow.logical=TRUE)))
+    .precipQC_zoo(values, x)
+  }), component.names)
+  return.values <- do.call(cbind, lapply(highflow.parts, function(part)
+    .precipQC_matrix(part$return.period)))
+  diagnostics <- do.call(rbind, lapply(highflow.parts, `[[`, "diagnostics"))
+  rownames(diagnostics) <- NULL
+  highflow <- list(
+    flags=combined$flags$highflow, components=components,
+    return.period=.precipQC_zoo(return.values, x),
+    diagnostics=diagnostics
+  )
+  class(highflow) <- c("streamflowQC_highflow", "list")
+  combined$highflow <- highflow
+  combined
+
+} # '.streamflowQC_combine_station_results' END
+
+
 streamflowQC_daily <- function(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, gap=TRUE, climatology=TRUE,
@@ -111,7 +302,9 @@ streamflowQC_daily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=3L, max.missing=0.2, max.review=0.2,
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
-  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE) {
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -122,6 +315,9 @@ streamflowQC_daily <- function(
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "daily", elevation=elevation
   )
+  backend <- .QC_parallel_setup(ncores, parallel.type, cluster.nodes,
+                                NCOL(prepared$values))
+  on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
   highflow <- spatial.estimate <- spatial.score <- spatial.support <-
@@ -131,63 +327,65 @@ streamflowQC_daily <- function(
   .streamflowQC_progress(verbose, "Starting daily QC for ",
                          NROW(prepared$values), " observations at ",
                          NCOL(prepared$values), " station(s) ...")
+  .streamflowQC_progress(verbose, .QC_parallel_description(backend))
   if (checks["range"]) {
     .streamflowQC_progress(verbose, "Running physical-range check ...")
     flags$range <- streamflowQC_range(prepared$x, lower=lower, upper=upper)
   }
-  if (checks["duplicate"]) {
+  if (checks["duplicate"])
     .streamflowQC_progress(verbose, "Running copied-block check ...")
-    flags$duplicate <- streamflowQC_duplicate(
-      prepared$x, min.month.values=duplicate.min.month,
-      min.year.values=duplicate.min.year,
-      min.nonzero=duplicate.min.nonzero
-    )
-  }
-  if (checks["gap"]) {
+  if (checks["gap"])
     .streamflowQC_progress(verbose, "Running gap check ...")
-    flags$gap <- streamflowQC_gap(prepared$x, interval=1)
-  }
-  if (checks["climatology"]) {
+  if (checks["climatology"])
     .streamflowQC_progress(verbose,
                            "Running climatological-plausibility check ...")
-    flags$climatology <- streamflowQC_climatology(
-      prepared$x, group="dayofyear", window=climatology.window,
-      z=climatology.z, min.samples=climatology.min.samples,
-      offset=log.offset
-    )
-  }
-  if (checks["flatline"]) {
+  if (checks["flatline"])
     .streamflowQC_progress(verbose, "Running flat-line check ...")
-    flags$flatline <- streamflowQC_flatline(
-      prepared$x, run=flatline.run, tolerance=flatline.tolerance,
-      flag.zero=flag.zero
-    )
-  }
-  if (checks["spike"]) {
+  if (checks["spike"])
     .streamflowQC_progress(verbose, "Running isolated-spike check ...")
-    flags$spike <- streamflowQC_spike(
-      prepared$x, factor=spike.factor, prob=spike.prob
-    )
-  }
-  if (checks["rate"]) {
+  if (checks["rate"])
     .streamflowQC_progress(verbose, "Running rate-of-change check ...")
-    flags$rate <- streamflowQC_rate(
-      prepared$x, group="month", z=rate.z,
-      min.samples=rate.min.samples, max.rise=rate.max.rise,
-      max.fall=rate.max.fall, drop.factor=rate.drop.factor,
-      offset=log.offset
-    )
-  }
-  if (checks["highflow"]) {
+  if (checks["highflow"])
     .streamflowQC_progress(verbose, "Running high-flow checks ...")
-    highflow <- streamflowQC_highflow(
-      prepared$x, log.z=highflow.log.z,
-      amax.ratio=highflow.amax.ratio,
-      return.period=highflow.return.period,
-      min.years=highflow.min.years, offset=log.offset
-    )
-    flags$highflow <- highflow$flags
-  }
+  if (checks["breakpoint"])
+    .streamflowQC_progress(verbose,
+                           "Running homogeneity-breakpoint check ...")
+
+  # Distribute all station-local checks in balanced column chunks.
+  parameters <- list(
+    nstations=NCOL(prepared$values),
+    duplicate.min.month=duplicate.min.month,
+    duplicate.min.year=duplicate.min.year,
+    duplicate.min.nonzero=duplicate.min.nonzero,
+    climatology.window=climatology.window,
+    climatology.z=climatology.z,
+    climatology.min.samples=climatology.min.samples,
+    log.offset=log.offset, flatline.run=flatline.run,
+    flatline.tolerance=flatline.tolerance, flag.zero=flag.zero,
+    spike.factor=spike.factor, spike.prob=spike.prob,
+    rate.z=rate.z, rate.min.samples=rate.min.samples,
+    rate.max.rise=rate.max.rise, rate.max.fall=rate.max.fall,
+    rate.drop.factor=rate.drop.factor,
+    highflow.log.z=highflow.log.z,
+    highflow.amax.ratio=highflow.amax.ratio,
+    highflow.return.period=highflow.return.period,
+    highflow.min.years=highflow.min.years,
+    breakpoint.min.years=breakpoint.min.years,
+    breakpoint.alpha=breakpoint.alpha,
+    breakpoint.min.relative.change=breakpoint.min.relative.change,
+    breakpoint.min.completeness=breakpoint.min.completeness
+  )
+  parts <- .QC_parallel_parts(prepared$x, backend)
+  local <- .QC_parallel_apply(
+    backend, parts, ".streamflowQC_daily_station_part", checks=checks,
+    parameters=parameters
+  )
+  local <- .streamflowQC_combine_station_results(
+    local, prepared$x, checks["highflow"]
+  )
+  flags <- c(flags, local$flags)
+  breakpoint <- local$breakpoint
+  highflow <- local$highflow
 
   # Spatial corroboration is meaningful only with a target and two alternatives.
   if (checks["spatial"]) {
@@ -196,14 +394,14 @@ streamflowQC_daily <- function(
     } else {
       .streamflowQC_progress(verbose,
                              "Running spatial-corroboration check ...")
-      spatial <- streamflowQC_spatial(
+      spatial <- .streamflowQC_spatial_core(
         prepared$x, metadata=metadata, station.id=station.id, coords=coords,
         area=area, elevation=elevation, elevation.scale=elevation.scale,
         n.neighbours=n.neighbours, max.distance=max.distance,
         min.neighbours=min.neighbours, min.support=min.support,
         min.overlap=min.overlap, min.correlation=min.correlation,
         window=spatial.window.days, high.prob=spatial.high.prob,
-        support.prob=spatial.support.prob, f=spatial.f
+        support.prob=spatial.support.prob, f=spatial.f, backend=backend
       )
       flags$spatial <- spatial$flags
       spatial.estimate <- spatial$estimate
@@ -211,16 +409,6 @@ streamflowQC_daily <- function(
       spatial.support <- spatial$support.count
       neighbours <- spatial$neighbours
     }
-  }
-  if (checks["breakpoint"]) {
-    .streamflowQC_progress(verbose,
-                           "Running homogeneity-breakpoint check ...")
-    breakpoint <- streamflowQC_breakpoint(
-      prepared$x, min.years=breakpoint.min.years,
-      alpha=breakpoint.alpha,
-      min.relative.change=breakpoint.min.relative.change,
-      min.completeness=breakpoint.min.completeness
-    )
   }
 
   # Record every resolved decision parameter for reproducibility.
@@ -242,7 +430,9 @@ streamflowQC_daily <- function(
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.review=max.review,
     max.suspicious=max.suspicious, min.years=min.years,
-    discard.breakpoint=discard.breakpoint, verbose=verbose
+    discard.breakpoint=discard.breakpoint, verbose=verbose,
+    ncores=backend$nworkers, parallel.type=backend$type,
+    cluster.nodes=backend$nodes
   )
 
   # Combine evidence only after all enabled checks have completed.
@@ -295,7 +485,9 @@ streamflowQC_subdaily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=3L, max.missing=0.2, max.review=0.2,
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
-  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE) {
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -306,6 +498,9 @@ streamflowQC_subdaily <- function(
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "subdaily", elevation=elevation
   )
+  backend <- .QC_parallel_setup(ncores, parallel.type, cluster.nodes,
+                                NCOL(prepared$values))
+  on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
   highflow <- spatial.estimate <- spatial.score <- spatial.support <-
@@ -330,65 +525,67 @@ streamflowQC_subdaily <- function(
   .streamflowQC_progress(verbose, "Starting sub-daily QC for ",
                          NROW(prepared$values), " observations at ",
                          NCOL(prepared$values), " station(s) ...")
+  .streamflowQC_progress(verbose, .QC_parallel_description(backend))
   if (checks["range"]) {
     .streamflowQC_progress(verbose, "Running physical-range check ...")
     flags$range <- streamflowQC_range(prepared$x, lower=lower, upper=upper)
   }
-  if (checks["gap"]) {
+  if (checks["gap"])
     .streamflowQC_progress(verbose, "Running gap check ...")
-    flags$gap <- streamflowQC_gap(
-      prepared$x, interval=prepared$interval.hours * 3600
-    )
-  }
-  if (checks["climatology"]) {
+  if (checks["climatology"])
     .streamflowQC_progress(verbose,
                            "Running climatological-plausibility check ...")
-    flags$climatology <- streamflowQC_climatology(
-      prepared$x, group="month", window=1L, z=climatology.z,
-      min.samples=climatology.min.samples, offset=log.offset
-    )
-  }
-  if (checks["flatline"]) {
+  if (checks["flatline"])
     .streamflowQC_progress(verbose, "Running flat-line check ...")
-    flags$flatline <- streamflowQC_flatline(
-      prepared$x, run=flatline.run, high.run=high.flatline.run,
-      high.prob=flatline.high.prob, tolerance=flatline.tolerance,
-      flag.zero=flag.zero
-    )
-  }
-  if (checks["spike"]) {
+  if (checks["spike"])
     .streamflowQC_progress(verbose, "Running isolated-spike check ...")
-    flags$spike <- streamflowQC_spike(
-      prepared$x, factor=spike.factor, prob=spike.prob
-    )
-  }
-  if (checks["rate"]) {
+  if (checks["rate"])
     .streamflowQC_progress(verbose, "Running rate-of-change check ...")
-    flags$rate <- streamflowQC_rate(
-      prepared$x, group="month", z=rate.z,
-      min.samples=rate.min.samples, max.rise=rate.max.rise,
-      max.fall=rate.max.fall, drop.factor=rate.drop.factor,
-      offset=log.offset
-    )
-  }
-  if (checks["fluctuation"]) {
+  if (checks["fluctuation"])
     .streamflowQC_progress(verbose, "Running rapid-fluctuation check ...")
-    flags$fluctuation <- streamflowQC_fluctuation(
-      prepared$x, window=fluctuation.window,
-      minimum=fluctuation.minimum,
-      low.diff.prob=fluctuation.low.diff.prob
-    )
-  }
-  if (checks["highflow"]) {
+  if (checks["highflow"])
     .streamflowQC_progress(verbose, "Running high-flow checks ...")
-    highflow <- streamflowQC_highflow(
-      prepared$x, log.z=highflow.log.z,
-      amax.ratio=highflow.amax.ratio,
-      return.period=highflow.return.period,
-      min.years=highflow.min.years, offset=log.offset
-    )
-    flags$highflow <- highflow$flags
-  }
+  if (checks["breakpoint"])
+    .streamflowQC_progress(verbose,
+                           "Running homogeneity-breakpoint check ...")
+
+  # Distribute all station-local checks in balanced column chunks.
+  parameters <- list(
+    nstations=NCOL(prepared$values),
+    interval.seconds=prepared$interval.hours * 3600,
+    climatology.z=climatology.z,
+    climatology.min.samples=climatology.min.samples,
+    log.offset=log.offset, flatline.run=flatline.run,
+    high.flatline.run=high.flatline.run,
+    flatline.high.prob=flatline.high.prob,
+    flatline.tolerance=flatline.tolerance, flag.zero=flag.zero,
+    spike.factor=spike.factor, spike.prob=spike.prob,
+    rate.z=rate.z, rate.min.samples=rate.min.samples,
+    rate.max.rise=rate.max.rise, rate.max.fall=rate.max.fall,
+    rate.drop.factor=rate.drop.factor,
+    fluctuation.window=fluctuation.window,
+    fluctuation.minimum=fluctuation.minimum,
+    fluctuation.low.diff.prob=fluctuation.low.diff.prob,
+    highflow.log.z=highflow.log.z,
+    highflow.amax.ratio=highflow.amax.ratio,
+    highflow.return.period=highflow.return.period,
+    highflow.min.years=highflow.min.years,
+    breakpoint.min.years=breakpoint.min.years,
+    breakpoint.alpha=breakpoint.alpha,
+    breakpoint.min.relative.change=breakpoint.min.relative.change,
+    breakpoint.min.completeness=breakpoint.min.completeness
+  )
+  parts <- .QC_parallel_parts(prepared$x, backend)
+  local <- .QC_parallel_apply(
+    backend, parts, ".streamflowQC_subdaily_station_part", checks=checks,
+    parameters=parameters
+  )
+  local <- .streamflowQC_combine_station_results(
+    local, prepared$x, checks["highflow"]
+  )
+  flags <- c(flags, local$flags)
+  breakpoint <- local$breakpoint
+  highflow <- local$highflow
 
   # Neighbour-event support uses a three-day default expressed in input steps.
   if (checks["spatial"]) {
@@ -397,14 +594,14 @@ streamflowQC_subdaily <- function(
     } else {
       .streamflowQC_progress(verbose,
                              "Running spatial-corroboration check ...")
-      spatial <- streamflowQC_spatial(
+      spatial <- .streamflowQC_spatial_core(
         prepared$x, metadata=metadata, station.id=station.id, coords=coords,
         area=area, elevation=elevation, elevation.scale=elevation.scale,
         n.neighbours=n.neighbours, max.distance=max.distance,
         min.neighbours=min.neighbours, min.support=min.support,
         min.overlap=min.overlap, min.correlation=min.correlation,
         window=spatial.window, high.prob=spatial.high.prob,
-        support.prob=spatial.support.prob, f=spatial.f
+        support.prob=spatial.support.prob, f=spatial.f, backend=backend
       )
       flags$spatial <- spatial$flags
       spatial.estimate <- spatial$estimate
@@ -412,16 +609,6 @@ streamflowQC_subdaily <- function(
       spatial.support <- spatial$support.count
       neighbours <- spatial$neighbours
     }
-  }
-  if (checks["breakpoint"]) {
-    .streamflowQC_progress(verbose,
-                           "Running homogeneity-breakpoint check ...")
-    breakpoint <- streamflowQC_breakpoint(
-      prepared$x, min.years=breakpoint.min.years,
-      alpha=breakpoint.alpha,
-      min.relative.change=breakpoint.min.relative.change,
-      min.completeness=breakpoint.min.completeness
-    )
   }
 
   # Store resolved durations and thresholds so every result is auditable.
@@ -446,7 +633,9 @@ streamflowQC_subdaily <- function(
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.review=max.review,
     max.suspicious=max.suspicious, min.years=min.years,
-    discard.breakpoint=discard.breakpoint, verbose=verbose
+    discard.breakpoint=discard.breakpoint, verbose=verbose,
+    ncores=backend$nworkers, parallel.type=backend$type,
+    cluster.nodes=backend$nodes
   )
 
   # Combine evidence only after all enabled checks have completed.
@@ -476,7 +665,9 @@ streamflowQC_subdaily <- function(
 streamflowQC <- function(x, metadata=NULL, station.id="station",
                          coords=c("lon", "lat"), ...,
                          area=NULL, elevation=NULL,
-                         elevation.scale=500, verbose=TRUE) {
+                         elevation.scale=500, verbose=TRUE, ncores=1L,
+                         parallel.type=c("socket", "fork", "serial"),
+                         cluster.nodes=NULL) {
 
   # Validate verbosity at the dispatch boundary for consistent errors.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -490,7 +681,8 @@ streamflowQC <- function(x, metadata=NULL, station.id="station",
     return(streamflowQC_daily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
       area=area, elevation=elevation, elevation.scale=elevation.scale,
-      verbose=verbose
+      verbose=verbose, ncores=ncores, parallel.type=parallel.type,
+      cluster.nodes=cluster.nodes
     ))
   }
   if (frequency %in% c("minute", "hourly")) {
@@ -501,7 +693,8 @@ streamflowQC <- function(x, metadata=NULL, station.id="station",
     return(streamflowQC_subdaily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
       area=area, elevation=elevation, elevation.scale=elevation.scale,
-      verbose=verbose
+      verbose=verbose, ncores=ncores, parallel.type=parallel.type,
+      cluster.nodes=cluster.nodes
     ))
   }
 

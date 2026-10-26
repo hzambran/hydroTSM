@@ -520,12 +520,106 @@ streamflowQC_highflow <- function(
 } # '.streamflowQC_weighted_median' END
 
 
-streamflowQC_spatial <- function(
+.streamflowQC_spatial_chunk <- function(
+  targets, values, transformed, neighbour.index, min.neighbours,
+  min.support, min.overlap, window, high.prob, support.prob, spatial.f) {
+
+  # Evaluate independent target stations while retaining the full network.
+  estimate.t <- score <- matrix(
+    NA_real_, nrow=NROW(values), ncol=length(targets),
+    dimnames=list(rownames(values), colnames(values)[targets])
+  )
+  support.count <- matrix(
+    NA_integer_, nrow=NROW(values), ncol=length(targets),
+    dimnames=dimnames(estimate.t)
+  )
+  flags <- matrix(FALSE, nrow=NROW(values), ncol=length(targets),
+                  dimnames=dimnames(estimate.t))
+  selected <- vector("list", length(targets))
+  names(selected) <- colnames(values)[targets]
+
+  for (position in seq_along(targets)) {
+    j <- targets[position]
+    candidates <- neighbour.index[[j]]
+    if (length(candidates) < min.neighbours)
+      next
+    selected[[position]] <- colnames(values)[candidates]
+
+    # Pairwise log-flow regressions allow different basin magnitudes.
+    predictions <- matrix(NA_real_, nrow=NROW(values),
+                          ncol=length(candidates))
+    errors <- rep(NA_real_, length(candidates))
+    for (k in seq_along(candidates)) {
+      neighbour <- candidates[k]
+      ok <- is.finite(transformed[, j]) &
+            is.finite(transformed[, neighbour])
+      if (sum(ok) < min.overlap)
+        next
+      design <- cbind(1, transformed[ok, neighbour])
+      fit <- stats::lm.fit(design, transformed[ok, j])
+      if (any(!is.finite(fit$coefficients)))
+        next
+      predictions[, k] <- fit$coefficients[1L] +
+                           fit$coefficients[2L] * transformed[, neighbour]
+      errors[k] <- stats::mad(fit$residuals, constant=1.4826)
+      if (!is.finite(errors[k]) || errors[k] <= sqrt(.Machine$double.eps))
+        errors[k] <- stats::IQR(fit$residuals) / 1.349
+    }
+
+    # Combine simultaneous predictions using inverse residual error.
+    for (i in seq_len(NROW(values))) {
+      ok <- is.finite(predictions[i, ]) & is.finite(errors) & errors > 0
+      if (sum(ok) < min.neighbours)
+        next
+      estimate.t[i, position] <- .streamflowQC_weighted_median(
+        predictions[i, ok], 1 / errors[ok]^2
+      )
+    }
+
+    residual <- transformed[, j] - estimate.t[, position]
+    scale <- stats::mad(residual, na.rm=TRUE, constant=1.4826)
+    if (!is.finite(scale) || scale <= sqrt(.Machine$double.eps))
+      scale <- stats::IQR(residual, na.rm=TRUE) / 1.349
+    if (is.finite(scale) && scale > sqrt(.Machine$double.eps))
+      score[, position] <- abs(residual) / scale
+
+    # A rare target event needs at least one high-flow neighbour in the window.
+    target.threshold <- as.numeric(stats::quantile(
+      values[is.finite(values[, j]), j], high.prob,
+      names=FALSE, type=8, na.rm=TRUE
+    ))
+    neighbour.threshold <- vapply(candidates, function(k) {
+      as.numeric(stats::quantile(values[is.finite(values[, k]), k],
+                                 support.prob, names=FALSE, type=8,
+                                 na.rm=TRUE))
+    }, numeric(1))
+    events <- which(is.finite(values[, j]) &
+                    values[, j] > target.threshold)
+    for (i in events) {
+      rows <- max(1L, i - window):min(NROW(values), i + window)
+      supported <- vapply(seq_along(candidates), function(k) {
+        any(values[rows, candidates[k]] > neighbour.threshold[k],
+            na.rm=TRUE)
+      }, logical(1))
+      support.count[i, position] <- sum(supported)
+      flags[i, position] <- support.count[i, position] < min.support &&
+                            is.finite(score[i, position]) &&
+                            score[i, position] >= spatial.f
+    }
+  }
+
+  list(estimate.t=estimate.t, scores=score, flags=flags,
+       support.count=support.count, neighbours=selected)
+
+} # '.streamflowQC_spatial_chunk' END
+
+
+.streamflowQC_spatial_core <- function(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   area=NULL, elevation=NULL, elevation.scale=500,
   n.neighbours=5L, max.distance=400, min.neighbours=2L,
   min.support=1L, min.overlap=90L, min.correlation=0.5,
-  window=3L, high.prob=0.99, support.prob=0.95, f=3) {
+  window=3L, high.prob=0.99, support.prob=0.95, f=3, backend) {
 
   # Validate neighbour and event-corroboration controls.
   values <- .precipQC_matrix(x)
@@ -560,81 +654,23 @@ streamflowQC_spatial <- function(
     coords=coords, n.neighbours=n.neighbours,
     max.distance=max.distance, min.overlap=min.overlap,
     min.correlation=min.correlation, elevation=elevation,
-    elevation.scale=elevation.scale
+    elevation.scale=elevation.scale, backend=backend
   )
   transformed <- log1p(pmax(sweep(values, 2L, areas, "/"), 0))
-  estimate.t <- score <- matrix(NA_real_, nrow=NROW(values),
-                                ncol=NCOL(values), dimnames=dimnames(values))
-  support.count <- matrix(NA_integer_, nrow=NROW(values),
-                          ncol=NCOL(values), dimnames=dimnames(values))
-  flags <- matrix(FALSE, nrow=NROW(values), ncol=NCOL(values),
-                  dimnames=dimnames(values))
-  selected <- vector("list", NCOL(values))
-  names(selected) <- colnames(values)
-
-  for (j in seq_len(NCOL(values))) {
-    candidates <- neighbours$index[[j]]
-    if (length(candidates) < min.neighbours) next
-    selected[[j]] <- colnames(values)[candidates]
-
-    # Pairwise log-flow regressions allow different basin magnitudes.
-    predictions <- matrix(NA_real_, nrow=NROW(values),
-                          ncol=length(candidates))
-    errors <- rep(NA_real_, length(candidates))
-    for (k in seq_along(candidates)) {
-      neighbour <- candidates[k]
-      ok <- is.finite(transformed[, j]) &
-            is.finite(transformed[, neighbour])
-      if (sum(ok) < min.overlap) next
-      design <- cbind(1, transformed[ok, neighbour])
-      fit <- stats::lm.fit(design, transformed[ok, j])
-      if (any(!is.finite(fit$coefficients))) next
-      predictions[, k] <- fit$coefficients[1L] +
-                           fit$coefficients[2L] * transformed[, neighbour]
-      errors[k] <- stats::mad(fit$residuals, constant=1.4826)
-      if (!is.finite(errors[k]) || errors[k] <= sqrt(.Machine$double.eps))
-        errors[k] <- stats::IQR(fit$residuals) / 1.349
-    }
-
-    # Combine simultaneous predictions using inverse residual error.
-    for (i in seq_len(NROW(values))) {
-      ok <- is.finite(predictions[i, ]) & is.finite(errors) & errors > 0
-      if (sum(ok) < min.neighbours) next
-      estimate.t[i, j] <- .streamflowQC_weighted_median(
-        predictions[i, ok], 1 / errors[ok]^2
-      )
-    }
-
-    residual <- transformed[, j] - estimate.t[, j]
-    scale <- stats::mad(residual, na.rm=TRUE, constant=1.4826)
-    if (!is.finite(scale) || scale <= sqrt(.Machine$double.eps))
-      scale <- stats::IQR(residual, na.rm=TRUE) / 1.349
-    if (is.finite(scale) && scale > sqrt(.Machine$double.eps))
-      score[, j] <- abs(residual) / scale
-
-    # A rare target event needs at least one high-flow neighbour in the window.
-    target.threshold <- as.numeric(stats::quantile(
-      values[is.finite(values[, j]), j], high.prob,
-      names=FALSE, type=8, na.rm=TRUE
-    ))
-    neighbour.threshold <- vapply(candidates, function(k) {
-      as.numeric(stats::quantile(values[is.finite(values[, k]), k],
-                                 support.prob, names=FALSE, type=8,
-                                 na.rm=TRUE))
-    }, numeric(1))
-    events <- which(is.finite(values[, j]) &
-                    values[, j] > target.threshold)
-    for (i in events) {
-      rows <- max(1L, i - window):min(NROW(values), i + window)
-      supported <- vapply(seq_along(candidates), function(k) {
-        any(values[rows, candidates[k]] > neighbour.threshold[k],
-            na.rm=TRUE)
-      }, logical(1))
-      support.count[i, j] <- sum(supported)
-      flags[i, j] <- support.count[i, j] < min.support &&
-                     is.finite(score[i, j]) && score[i, j] >= f
-    }
-  }
+  chunks <- .QC_parallel_chunks(NCOL(values), backend$nworkers)
+  parts <- .QC_parallel_apply(
+    backend, chunks, ".streamflowQC_spatial_chunk", values=values,
+    transformed=transformed, neighbour.index=neighbours$index,
+    min.neighbours=min.neighbours, min.support=min.support,
+    min.overlap=min.overlap, window=window, high.prob=high.prob,
+    support.prob=support.prob, spatial.f=f
+  )
+  estimate.t <- do.call(cbind, lapply(parts, `[[`, "estimate.t"))
+  score <- do.call(cbind, lapply(parts, `[[`, "scores"))
+  support.count <- do.call(cbind, lapply(parts, `[[`, "support.count"))
+  flags <- do.call(cbind, lapply(parts, `[[`, "flags"))
+  selected <- unlist(lapply(parts, `[[`, "neighbours"), recursive=FALSE)
+  selected <- selected[colnames(values)]
 
   # Convert the specific-flow estimate back to each target station's units.
   estimate <- sweep(expm1(estimate.t), 2L, areas, "*")
@@ -645,6 +681,34 @@ streamflowQC_spatial <- function(
               neighbours=selected)
   class(out) <- c("streamflowQC_spatial", "list")
   out
+
+} # '.streamflowQC_spatial_core' END
+
+
+streamflowQC_spatial <- function(
+  x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
+  area=NULL, elevation=NULL, elevation.scale=500,
+  n.neighbours=5L, max.distance=400, min.neighbours=2L,
+  min.support=1L, min.overlap=90L, min.correlation=0.5,
+  window=3L, high.prob=0.99, support.prob=0.95, f=3,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL) {
+
+  # Create and clean up a backend for standalone spatial-test calls.
+  nstations <- NCOL(.precipQC_matrix(x))
+  backend <- .QC_parallel_setup(ncores, parallel.type, cluster.nodes,
+                                nstations)
+  on.exit(.QC_parallel_stop(backend), add=TRUE)
+
+  .streamflowQC_spatial_core(
+    x, metadata=metadata, station.id=station.id, coords=coords,
+    area=area, elevation=elevation, elevation.scale=elevation.scale,
+    n.neighbours=n.neighbours, max.distance=max.distance,
+    min.neighbours=min.neighbours, min.support=min.support,
+    min.overlap=min.overlap, min.correlation=min.correlation,
+    window=window, high.prob=high.prob,
+    support.prob=support.prob, f=f, backend=backend
+  )
 
 } # 'streamflowQC_spatial' END
 

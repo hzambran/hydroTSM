@@ -40,7 +40,9 @@ streamflowQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=3L, max.missing=0.2, max.review=0.2,
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
-  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE
+  area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL
 )
 }
 
@@ -129,9 +131,21 @@ field.}
   \item{elevation.scale}{Positive elevation-decay scale used in neighbour
 ranking.}
   \item{verbose}{Logical. If \code{TRUE}, informative messages identify the
-workflow start, each enabled QC stage, evidence combination, and the final
-station/observation summary. If \code{FALSE}, only these informational
-messages are suppressed; warnings and errors remain visible.}
+workflow start, effective workers/nodes, each enabled QC stage, evidence
+combination, and the final station/observation summary. If \code{FALSE}, only
+these informational messages are suppressed; warnings and errors remain
+visible.}
+  \item{ncores}{Positive integer giving the requested number of worker
+processes. The effective count is capped at the number of stations, reported
+when \code{verbose=TRUE}, and stored in \code{result$settings$ncores}. One is
+the serial default.}
+  \item{parallel.type}{Parallel backend: \code{"socket"} for portable local
+or network PSOCK workers, \code{"fork"} for copy-on-write workers on
+Unix-like systems, or \code{"serial"} with \code{ncores=1L}.}
+  \item{cluster.nodes}{\code{NULL} for local workers, or host names for the
+\code{"socket"} backend, recycled to \code{ncores}. Network nodes require
+non-interactive access, compatible R installations, and the same hydroTSM
+version in a visible or shared library.}
 }
 
 \details{
@@ -153,6 +167,14 @@ neighbours show high flow within the search window.
 Station acceptance requires all user-defined completeness, review, confirmed
 suspicion, duration, and optional breakpoint criteria. Point and station
 decisions are therefore related but distinct.
+
+Station-local tests are evaluated in balanced, contiguous column chunks.
+Neighbour selection and target-station spatial calculations are distributed
+over the same backend, while the vectorized range check stays in the master
+process. Input column order and algorithms are identical in serial and
+parallel calls. Socket workers copy assigned data; \code{"fork"} may reduce
+memory use on one Unix-like machine. Workers created by the call are stopped
+on exit.
 }
 
 \value{

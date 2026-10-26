@@ -64,7 +64,9 @@ streamflowQC_spatial(
   area=NULL, elevation=NULL, elevation.scale=500,
   n.neighbours=5L, max.distance=400, min.neighbours=2L,
   min.support=1L, min.overlap=90L, min.correlation=0.5,
-  window=3L, high.prob=0.99, support.prob=0.95, f=3
+  window=3L, high.prob=0.99, support.prob=0.95, f=3,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL
 )
 
 streamflowQC_breakpoint(
@@ -119,6 +121,10 @@ field.}
 field.}
   \item{elevation.scale}{Positive elevation-decay scale used in neighbour
 ranking.}
+  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
+parallel backend, and optional PSOCK host names for
+\code{streamflowQC_spatial}. See \code{\link{streamflowQC_daily}} for backend
+behaviour and network requirements.}
   \item{n.neighbours}{Maximum selected neighbours per station.}
   \item{max.distance}{Maximum geographic distance in km.}
   \item{min.neighbours}{Minimum simultaneous spatial predictions.}
@@ -179,7 +185,8 @@ log-specific-discharge space when catchment area is available, and combines
 predictions using inverse-error weighted medians. A rare target event is
 flagged only when its residual score exceeds \code{f} and fewer than
 \code{min.support} neighbours exceed their support quantile in the search
-window.
+window. Neighbour selection and target-station calculations are divided into
+balanced station chunks when multiple workers are requested.
 
 \code{streamflowQC_breakpoint} aggregates sub-daily input to daily means,
 calculates complete annual indicators, applies Pettitt rank tests, and
