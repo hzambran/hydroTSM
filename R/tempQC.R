@@ -24,23 +24,113 @@
                                 min.neighbours, min.overlap,
                                 min.group.overlap, min.correlation,
                                 f, min.difference, elevation=NULL,
-                                elevation.scale=500) {
+                                elevation.scale=500, backend) {
 
   if (NCOL(prepared$values) < min.neighbours + 1L) {
     warning("Spatial checks require the target plus at least 'min.neighbours' station columns; the spatial check was skipped.")
     return(NULL)
   }
-  tempQC_spatial(
+  .tempQC_spatial_core(
     prepared$x, metadata=metadata, station.id=station.id, coords=coords,
     group=group, n.neighbours=n.neighbours,
     max.distance=max.distance, min.neighbours=min.neighbours,
     min.overlap=min.overlap, min.group.overlap=min.group.overlap,
     min.correlation=min.correlation, f=f,
     min.difference=min.difference, elevation=elevation,
-    elevation.scale=elevation.scale
+    elevation.scale=elevation.scale, backend=backend
   )
 
 } # '.tempQC_run_spatial' END
+
+
+.tempQC_daily_station_part <- function(part, checks, parameters) {
+
+  # Run station-local daily tests on one balanced column subset.
+  x <- part$x
+  flags <- list()
+  if (checks["duplicate"])
+    flags$duplicate <- tempQC_duplicate(
+      x, min.month.values=parameters$duplicate.min.month,
+      min.year.values=parameters$duplicate.min.year
+    )
+  if (checks["climatology"])
+    flags$climatology <- tempQC_climatology(
+      x, group="dayofyear", window=parameters$climatology.window,
+      z=parameters$climatology.z,
+      min.samples=parameters$climatology.min.samples
+    )
+  if (checks["persistence"])
+    flags$persistence <- tempQC_persistence(
+      x, run=parameters$persistence.run,
+      tolerance=parameters$persistence.tolerance
+    )
+  if (checks["step"])
+    flags$step <- tempQC_step(
+      x, group="month", z=parameters$step.z,
+      min.samples=parameters$step.min.samples,
+      max.rise=parameters$step.max.rise,
+      max.fall=parameters$step.max.fall
+    )
+  if (checks["spike"])
+    flags$spike <- tempQC_spike(x, threshold=parameters$spike.threshold)
+
+  # Keep homogeneity diagnostics aligned with the same station subset.
+  breakpoint <- if (checks["breakpoint"]) {
+    tempQC_breakpoint(
+      x, min.years=parameters$breakpoint.min.years,
+      alpha=parameters$breakpoint.alpha,
+      min.shift=parameters$breakpoint.min.shift,
+      min.completeness=parameters$breakpoint.min.completeness
+    )
+  } else {
+    .precipQC_empty_breakpoint(colnames(x))
+  }
+
+  list(flags=flags, breakpoint=breakpoint)
+
+} # '.tempQC_daily_station_part' END
+
+
+.tempQC_subdaily_station_part <- function(part, checks, parameters) {
+
+  # Run station-local sub-daily tests on one balanced column subset.
+  x <- part$x
+  flags <- list()
+  if (checks["climatology"])
+    flags$climatology <- tempQC_climatology(
+      x, group="month_hour", window=1L, z=parameters$climatology.z,
+      min.samples=parameters$climatology.min.samples
+    )
+  if (checks["persistence"])
+    flags$persistence <- tempQC_persistence(
+      x, run=parameters$persistence.run,
+      tolerance=parameters$persistence.tolerance
+    )
+  if (checks["step"])
+    flags$step <- tempQC_step(
+      x, group="month_hour", z=parameters$step.z,
+      min.samples=parameters$step.min.samples,
+      max.rise=parameters$step.max.rise,
+      max.fall=parameters$step.max.fall
+    )
+  if (checks["spike"])
+    flags$spike <- tempQC_spike(x, threshold=parameters$spike.threshold)
+
+  # Keep homogeneity diagnostics aligned with the same station subset.
+  breakpoint <- if (checks["breakpoint"]) {
+    tempQC_breakpoint(
+      x, min.years=parameters$breakpoint.min.years,
+      alpha=parameters$breakpoint.alpha,
+      min.shift=parameters$breakpoint.min.shift,
+      min.completeness=parameters$breakpoint.min.completeness
+    )
+  } else {
+    .precipQC_empty_breakpoint(colnames(x))
+  }
+
+  list(flags=flags, breakpoint=breakpoint)
+
+} # '.tempQC_subdaily_station_part' END
 
 
 tempQC_daily <- function(
@@ -64,7 +154,8 @@ tempQC_daily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE) {
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -75,6 +166,9 @@ tempQC_daily <- function(
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "daily", elevation=elevation
   )
+  backend <- .QC_parallel_setup(ncores, parallel.type, cluster.nodes,
+                                NCOL(prepared$values))
+  on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
   spatial.estimate <- spatial.score <- neighbours <- NULL
@@ -83,49 +177,57 @@ tempQC_daily <- function(
   .tempQC_progress(verbose, "Starting daily QC for ",
                    NROW(prepared$values), " observations at ",
                    NCOL(prepared$values), " station(s) ...")
+  .tempQC_progress(verbose, .QC_parallel_description(backend))
   if (checks["range"]) {
     .tempQC_progress(verbose, "Running physical-range check ...")
     flags$range <- tempQC_range(prepared$x, lower=lower, upper=upper)
   }
-  if (checks["duplicate"]) {
+  if (checks["duplicate"])
     .tempQC_progress(verbose, "Running copied-block check ...")
-    flags$duplicate <- tempQC_duplicate(
-      prepared$x, min.month.values=duplicate.min.month,
-      min.year.values=duplicate.min.year
-    )
-  }
-  if (checks["climatology"]) {
+  if (checks["climatology"])
     .tempQC_progress(verbose, "Running climatological-plausibility check ...")
-    flags$climatology <- tempQC_climatology(
-      prepared$x, group="dayofyear", window=climatology.window,
-      z=climatology.z, min.samples=climatology.min.samples
-    )
-  }
-  if (checks["persistence"]) {
+  if (checks["persistence"])
     .tempQC_progress(verbose, "Running persistence check ...")
-    flags$persistence <- tempQC_persistence(
-      prepared$x, run=persistence.run, tolerance=persistence.tolerance
-    )
-  }
-  if (checks["step"]) {
+  if (checks["step"])
     .tempQC_progress(verbose, "Running rate-of-change check ...")
-    flags$step <- tempQC_step(
-      prepared$x, group="month", z=step.z,
-      min.samples=step.min.samples, max.rise=step.max.rise,
-      max.fall=step.max.fall
-    )
-  }
-  if (checks["spike"]) {
+  if (checks["spike"])
     .tempQC_progress(verbose, "Running isolated-spike check ...")
-    flags$spike <- tempQC_spike(prepared$x, threshold=spike.threshold)
-  }
+  if (checks["breakpoint"])
+    .tempQC_progress(verbose, "Running homogeneity-breakpoint check ...")
+
+  # Distribute all station-local checks in balanced column chunks.
+  parameters <- list(
+    duplicate.min.month=duplicate.min.month,
+    duplicate.min.year=duplicate.min.year,
+    climatology.window=climatology.window,
+    climatology.z=climatology.z,
+    climatology.min.samples=climatology.min.samples,
+    persistence.run=persistence.run,
+    persistence.tolerance=persistence.tolerance,
+    step.z=step.z, step.min.samples=step.min.samples,
+    step.max.rise=step.max.rise, step.max.fall=step.max.fall,
+    spike.threshold=spike.threshold,
+    breakpoint.min.years=breakpoint.min.years,
+    breakpoint.alpha=breakpoint.alpha,
+    breakpoint.min.shift=breakpoint.min.shift,
+    breakpoint.min.completeness=breakpoint.min.completeness
+  )
+  parts <- .QC_parallel_parts(prepared$x, backend)
+  local <- .QC_parallel_apply(
+    backend, parts, ".tempQC_daily_station_part", checks=checks,
+    parameters=parameters
+  )
+  local <- .QC_combine_station_results(local, prepared$x)
+  flags <- c(flags, local$flags)
+  breakpoint <- local$breakpoint
   if (checks["spatial"]) {
     .tempQC_progress(verbose, "Running spatial-regression check ...")
     spatial <- .tempQC_run_spatial(
-      prepared, "month", prepared$metadata, prepared$station.id,
+      prepared, "month", metadata, prepared$station.id,
       coords, n.neighbours, max.distance, min.neighbours,
       min.overlap, min.group.overlap, min.correlation,
-      spatial.f, spatial.min.difference, elevation, elevation.scale
+      spatial.f, spatial.min.difference, elevation, elevation.scale,
+      backend
     )
     if (!is.null(spatial)) {
       flags$spatial <- spatial$flags
@@ -134,15 +236,6 @@ tempQC_daily <- function(
       neighbours <- spatial$neighbours
     }
   }
-  if (checks["breakpoint"]) {
-    .tempQC_progress(verbose, "Running homogeneity-breakpoint check ...")
-    breakpoint <- tempQC_breakpoint(
-      prepared$x, min.years=breakpoint.min.years,
-      alpha=breakpoint.alpha, min.shift=breakpoint.min.shift,
-      min.completeness=breakpoint.min.completeness
-    )
-  }
-
   settings <- list(
     resolution="daily", checks=checks, lower=lower, upper=upper,
     duplicate.min.month=duplicate.min.month,
@@ -158,7 +251,8 @@ tempQC_daily <- function(
     elevation=elevation, elevation.scale=elevation.scale,
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.suspicious=max.suspicious,
-    min.years=min.years, verbose=verbose
+    min.years=min.years, verbose=verbose, ncores=backend$nworkers,
+    parallel.type=backend$type, cluster.nodes=backend$nodes
   )
 
   # Combine test evidence only after all enabled checks have completed.
@@ -203,7 +297,8 @@ tempQC_subdaily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE) {
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -213,6 +308,9 @@ tempQC_subdaily <- function(
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "subdaily", elevation=elevation
   )
+  backend <- .QC_parallel_setup(ncores, parallel.type, cluster.nodes,
+                                NCOL(prepared$values))
+  on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
   spatial.estimate <- spatial.score <- neighbours <- NULL
@@ -228,42 +326,52 @@ tempQC_subdaily <- function(
   .tempQC_progress(verbose, "Starting sub-daily QC for ",
                    NROW(prepared$values), " observations at ",
                    NCOL(prepared$values), " station(s) ...")
+  .tempQC_progress(verbose, .QC_parallel_description(backend))
   if (checks["range"]) {
     .tempQC_progress(verbose, "Running physical-range check ...")
     flags$range <- tempQC_range(prepared$x, lower=lower, upper=upper)
   }
-  if (checks["climatology"]) {
+  if (checks["climatology"])
     .tempQC_progress(verbose, "Running climatological-plausibility check ...")
-    flags$climatology <- tempQC_climatology(
-      prepared$x, group="month_hour", window=1L,
-      z=climatology.z, min.samples=climatology.min.samples
-    )
-  }
-  if (checks["persistence"]) {
+  if (checks["persistence"])
     .tempQC_progress(verbose, "Running persistence check ...")
-    flags$persistence <- tempQC_persistence(
-      prepared$x, run=persistence.run, tolerance=persistence.tolerance
-    )
-  }
-  if (checks["step"]) {
+  if (checks["step"])
     .tempQC_progress(verbose, "Running rate-of-change check ...")
-    flags$step <- tempQC_step(
-      prepared$x, group="month_hour", z=step.z,
-      min.samples=step.min.samples, max.rise=step.max.rise,
-      max.fall=step.max.fall
-    )
-  }
-  if (checks["spike"]) {
+  if (checks["spike"])
     .tempQC_progress(verbose, "Running isolated-spike check ...")
-    flags$spike <- tempQC_spike(prepared$x, threshold=spike.threshold)
-  }
+  if (checks["breakpoint"])
+    .tempQC_progress(verbose, "Running homogeneity-breakpoint check ...")
+
+  # Distribute all station-local checks in balanced column chunks.
+  parameters <- list(
+    climatology.z=climatology.z,
+    climatology.min.samples=climatology.min.samples,
+    persistence.run=persistence.run,
+    persistence.tolerance=persistence.tolerance,
+    step.z=step.z, step.min.samples=step.min.samples,
+    step.max.rise=step.max.rise, step.max.fall=step.max.fall,
+    spike.threshold=spike.threshold,
+    breakpoint.min.years=breakpoint.min.years,
+    breakpoint.alpha=breakpoint.alpha,
+    breakpoint.min.shift=breakpoint.min.shift,
+    breakpoint.min.completeness=breakpoint.min.completeness
+  )
+  parts <- .QC_parallel_parts(prepared$x, backend)
+  local <- .QC_parallel_apply(
+    backend, parts, ".tempQC_subdaily_station_part", checks=checks,
+    parameters=parameters
+  )
+  local <- .QC_combine_station_results(local, prepared$x)
+  flags <- c(flags, local$flags)
+  breakpoint <- local$breakpoint
   if (checks["spatial"]) {
     .tempQC_progress(verbose, "Running spatial-regression check ...")
     spatial <- .tempQC_run_spatial(
-      prepared, "month_hour", prepared$metadata, prepared$station.id,
+      prepared, "month_hour", metadata, prepared$station.id,
       coords, n.neighbours, max.distance, min.neighbours,
       min.overlap, min.group.overlap, min.correlation,
-      spatial.f, spatial.min.difference, elevation, elevation.scale
+      spatial.f, spatial.min.difference, elevation, elevation.scale,
+      backend
     )
     if (!is.null(spatial)) {
       flags$spatial <- spatial$flags
@@ -272,15 +380,6 @@ tempQC_subdaily <- function(
       neighbours <- spatial$neighbours
     }
   }
-  if (checks["breakpoint"]) {
-    .tempQC_progress(verbose, "Running homogeneity-breakpoint check ...")
-    breakpoint <- tempQC_breakpoint(
-      prepared$x, min.years=breakpoint.min.years,
-      alpha=breakpoint.alpha, min.shift=breakpoint.min.shift,
-      min.completeness=breakpoint.min.completeness
-    )
-  }
-
   settings <- list(
     resolution="subdaily", checks=checks, lower=lower, upper=upper,
     interval.hours=prepared$interval.hours,
@@ -296,7 +395,8 @@ tempQC_subdaily <- function(
     elevation=elevation, elevation.scale=elevation.scale,
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.suspicious=max.suspicious,
-    min.years=min.years, verbose=verbose
+    min.years=min.years, verbose=verbose, ncores=backend$nworkers,
+    parallel.type=backend$type, cluster.nodes=backend$nodes
   )
 
   # Combine test evidence only after all enabled checks have completed.
@@ -325,7 +425,10 @@ tempQC_subdaily <- function(
 
 tempQC <- function(x, metadata=NULL, station.id="station",
                    coords=c("lon", "lat"), ...,
-                   elevation=NULL, elevation.scale=500, verbose=TRUE) {
+                   elevation=NULL, elevation.scale=500, verbose=TRUE,
+                   ncores=1L,
+                   parallel.type=c("socket", "fork", "serial"),
+                   cluster.nodes=NULL) {
 
   # Validate verbosity at the dispatch boundary for consistent errors.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -338,7 +441,9 @@ tempQC <- function(x, metadata=NULL, station.id="station",
                      "Detected daily data; dispatching to tempQC_daily() ...")
     return(tempQC_daily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose
+      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose,
+      ncores=ncores, parallel.type=parallel.type,
+      cluster.nodes=cluster.nodes
     ))
   }
   if (frequency %in% c("minute", "hourly")) {
@@ -346,7 +451,9 @@ tempQC <- function(x, metadata=NULL, station.id="station",
                      " data; dispatching to tempQC_subdaily() ...")
     return(tempQC_subdaily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose
+      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose,
+      ncores=ncores, parallel.type=parallel.type,
+      cluster.nodes=cluster.nodes
     ))
   }
 

@@ -66,14 +66,18 @@ precipQC_spatial(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   n.neighbours=10L, max.distance=Inf, min.neighbours=2L,
   min.overlap=30L, min.correlation=0, cr.threshold=3,
-  wet.threshold=0.1, elevation=NULL, elevation.scale=500
+  wet.threshold=0.1, elevation=NULL, elevation.scale=500,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL
 )
 
 precipQC_dryspell(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   n.neighbours=10L, max.distance=Inf, window.days=15L,
   neighbour.wet.days=3L, neighbour.fraction=1,
-  wet.threshold=0.1, elevation=NULL, elevation.scale=500
+  wet.threshold=0.1, elevation=NULL, elevation.scale=500,
+  ncores=1L, parallel.type=c("socket", "fork", "serial"),
+  cluster.nodes=NULL
 )
 
 precipQC_breakpoint(
@@ -174,6 +178,11 @@ range-checked.
 Positive elevation-decay scale in metres. Height similarity is
 \code{exp(-abs(dz) / elevation.scale)} and influences neighbour ranking and
 spatial weights. It is ignored when \code{elevation=NULL}.
+}
+  \item{ncores, parallel.type, cluster.nodes}{
+Requested worker count, parallel backend, and optional PSOCK host names for
+the spatial and dry-spell tests. See \code{\link{precipQC_daily}} for backend
+behaviour and network requirements.
 }
   \item{n.neighbours}{
 Maximum number of neighbours.
@@ -282,6 +291,8 @@ and remains fully testable. The critical ratio uses
 the larger of the simultaneous neighbour dispersion, historical target
 residual dispersion, and a small numerical floor. Only positive residuals are
 flagged here; isolated dryness is handled separately.
+Neighbour selection and target-station calculations are divided into balanced
+station chunks when multiple workers are requested.
 
 \code{precipQC_dryspell} aggregates native observations to wet/dry calendar
 days, locates long dry runs, and flags target values only where the requested

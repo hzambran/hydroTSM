@@ -32,7 +32,8 @@ tempQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 }
 
@@ -88,9 +89,12 @@ point. Range, persistence, and isolated-spike flags are hard evidence.}
   \item{discard.breakpoint}{Whether a flagged breakpoint should cause a
 station discard recommendation.}
   \item{verbose}{Logical. If \code{TRUE}, informative messages identify the
-workflow start, each enabled test, evidence combination, and the final
+workflow start, effective workers/nodes, each enabled test, evidence combination, and the final
 station/observation summary. If \code{FALSE}, only these informational messages
 are suppressed; warnings and errors remain visible.}
+  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
+parallel backend, and optional PSOCK host names. See
+\code{\link{tempQC_daily}} for backend behaviour and network requirements.}
 }
 
 \details{
@@ -100,6 +104,12 @@ spatial-regression reference groups are conditioned jointly on calendar month
 and hour of day. Cheng et al. (2016) showed that hourly reference-station
 relations can change sharply by hour and season, especially across complex
 terrain.
+
+With multiple workers, station-local tests, neighbour selection, and
+target-station spatial regressions are divided into balanced station chunks.
+The serial, socket, and fork backends preserve input station order and QC
+results. The effective backend, workers, and distinct nodes are reported when
+\code{verbose=TRUE}, and created socket workers are stopped on exit.
 
 \enumerate{
   \item \emph{Range}: global physical limits screen gross coding and unit

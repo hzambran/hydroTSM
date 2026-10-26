@@ -47,7 +47,8 @@ tempQC_spatial(
   max.distance=200, min.neighbours=2L, min.overlap=90L,
   min.group.overlap=20L, min.correlation=0.6,
   f=4, min.difference=8, min.se=0.1, elevation=NULL,
-  elevation.scale=500
+  elevation.scale=500, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 
 tempQC_internal(tmin, tmax, lagged=TRUE, max.range=40)
@@ -85,6 +86,10 @@ non-missing values are range-checked.}
 column containing elevation in metres.}
   \item{elevation.scale}{Positive elevation-decay scale in metres used to
 penalize neighbours with large height differences.}
+  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
+parallel backend, and optional PSOCK host names for
+\code{tempQC_spatial}. See \code{\link{tempQC_daily}} for backend behaviour
+and network requirements.}
   \item{n.neighbours}{Maximum selected spatial-regression neighbours.}
   \item{max.distance}{Maximum target-neighbour distance in km.}
   \item{min.neighbours}{Minimum simultaneous valid regression estimates.}
@@ -147,6 +152,8 @@ an absolute and a standardized residual. The equations follow the spatial
 regression test of Hubbard et al. (2007) and Estevez et al. (2018); grouping
 and correlation screening incorporate findings of Cheng et al. (2016) and
 Xiong et al. (2022, 2024).
+Neighbour selection and target-station regressions are divided into balanced
+station chunks when multiple workers are requested.
 
 \code{tempQC_internal} flags Tmin above Tmax, possible interchange relative to
 the adjacent three-day window, and the 40-degree lagged range conditions in

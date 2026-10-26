@@ -36,7 +36,8 @@ tempQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 }
 
@@ -113,14 +114,33 @@ fractions for recommending a station for acceptance.}
 causes a discard recommendation. The default is conservative because a change
 may be climatic.}
   \item{verbose}{Logical. If \code{TRUE}, informative messages identify the
-workflow start, each enabled test, evidence combination, and the final
+workflow start, effective workers/nodes, each enabled test, evidence combination, and the final
 station/observation summary. If \code{FALSE}, only these informational messages
 are suppressed; warnings and errors remain visible.}
+  \item{ncores}{Positive integer giving the requested number of worker
+processes. The effective count is capped at the number of stations, reported
+when \code{verbose=TRUE}, and stored in \code{result$settings$ncores}. One is
+the serial default.}
+  \item{parallel.type}{Parallel backend: \code{"socket"} for portable local
+or network PSOCK workers, \code{"fork"} for copy-on-write workers on
+Unix-like systems, or \code{"serial"} with \code{ncores=1L}.}
+  \item{cluster.nodes}{\code{NULL} for local workers, or host names for the
+\code{"socket"} backend, recycled to \code{ncores}. Network nodes require
+non-interactive access, compatible R installations, and the same hydroTSM
+version in a visible or shared library.}
 }
 
 \details{
 The tests represent independent error mechanisms and are deliberately combined
 as evidence instead of interpreting every statistical outlier as an error.
+
+Station-local tests are evaluated in balanced, contiguous column chunks, and
+neighbour selection plus target-station spatial regressions are distributed
+over the same backend. Already vectorized range checks remain in the master
+process. Result columns retain input order and use the same algorithm in
+serial and parallel calls. Socket workers copy assigned data, whereas
+\code{"fork"} may reduce memory use on one Unix-like machine. Workers created
+by the call are stopped on exit.
 
 \enumerate{
   \item \emph{Physical range and copied blocks}. Values beyond observed world

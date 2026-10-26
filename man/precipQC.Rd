@@ -18,7 +18,8 @@ Detects the sampling frequency of a precipitation \code{zoo} object with
 \usage{
 precipQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 }
 
@@ -38,9 +39,13 @@ accepted by the detected workflow should be supplied.
 }
   \item{verbose}{
 Logical. If \code{TRUE}, informative messages report the detected frequency,
-the active QC stages, spatial scales, and the final QC summary. If
+the active QC stages, parallel workers/nodes, spatial scales, and the final QC summary. If
 \code{FALSE}, these informational messages are suppressed; warnings and errors
 are unaffected.
+}
+  \item{ncores, parallel.type, cluster.nodes}{
+Parallel worker count, backend, and optional PSOCK host names passed to the
+selected workflow. See \code{\link{precipQC_daily}}.
 }
 }
 
@@ -52,6 +57,7 @@ or other frequencies are rejected with an informative error because the
 implemented thresholds and tests are not valid at those resolutions. Progress
 is emitted with \code{message()}, so it can be captured or suppressed without
 redirecting returned values.
+The default \code{ncores=1L} is serial and preserves the historical behaviour.
 }
 
 \value{

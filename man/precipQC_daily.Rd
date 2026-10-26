@@ -40,7 +40,8 @@ precipQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 }
 
@@ -213,15 +214,42 @@ apparent change may be climatic rather than instrumental.
 }
   \item{verbose}{
 Logical. If \code{TRUE}, informative messages identify the workflow start,
-each enabled test and spatial scale, evidence combination, and the final
+the effective workers/nodes, each enabled test and spatial scale, evidence combination, and the final
 station/observation summary. If \code{FALSE}, only these informational messages
 are suppressed; warnings and errors remain visible.
+}
+  \item{ncores}{
+Positive integer giving the requested number of worker processes. The
+effective count is capped at the number of station columns and is recorded in
+\code{result$settings$ncores}. The CRAN-safe default, one, uses no parallel
+workers.
+}
+  \item{parallel.type}{
+Parallel backend. \code{"socket"} uses portable PSOCK workers and supports
+local or network hosts; \code{"fork"} uses copy-on-write workers on Unix-like
+systems and is unavailable on Windows; \code{"serial"} explicitly requires
+\code{ncores=1L}.
+}
+  \item{cluster.nodes}{
+\code{NULL} for local workers, or a character vector of host names used by the
+\code{"socket"} backend. Host names are recycled to \code{ncores}. Remote
+nodes require non-interactive access, a compatible R installation, and the
+same hydroTSM version in a visible or shared library.
 }
 }
 
 \details{
 The workflow combines tests that address different error mechanisms instead
 of treating one statistical anomaly as proof of error.
+
+Station-local tests are evaluated in balanced, contiguous column chunks.
+Neighbour selection and target-station spatial calculations are also
+distributed, while already vectorized range checks remain in the master
+process. Result columns retain their input order and serial and parallel calls
+use the same algorithms. Socket workers copy their assigned station chunks;
+\code{"fork"} can use less memory on a single Unix-like machine. The verbose
+startup message reports the effective backend, worker count, and distinct
+nodes, and all workers created by the call are stopped on exit.
 
 \enumerate{
   \item \emph{Physical range}: negative depths and values above a defensible

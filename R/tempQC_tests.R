@@ -211,13 +211,115 @@ tempQC_spike <- function(x, threshold=25) {
 } # '.tempQC_linear_fit' END
 
 
-tempQC_spatial <- function(
+.tempQC_spatial_chunk <- function(targets, values, groups, distances,
+                                  proximity, coordinate.available,
+                                  has.coords, n.neighbours, max.distance,
+                                  min.neighbours, min.overlap,
+                                  min.group.overlap, min.correlation,
+                                  spatial.f, min.difference, min.se) {
+
+  # Fit spatial-regression models for independent target stations.
+  estimate <- score <- matrix(
+    NA_real_, nrow=NROW(values), ncol=length(targets),
+    dimnames=list(rownames(values), colnames(values)[targets])
+  )
+  flags <- matrix(FALSE, nrow=NROW(values), ncol=length(targets),
+                  dimnames=dimnames(estimate))
+  selected <- vector("list", length(targets))
+  names(selected) <- colnames(values)[targets]
+
+  for (position in seq_along(targets)) {
+    j <- targets[position]
+    if (has.coords) {
+      candidates <- which(seq_len(NCOL(values)) != j &
+                          (!is.finite(distances[j, ]) |
+                           distances[j, ] <= max.distance))
+    } else {
+      candidates <- which(seq_len(NCOL(values)) != j)
+    }
+    if (length(candidates) == 0L)
+      next
+
+    correlations <- errors <- rep(NA_real_, length(candidates))
+    for (k in seq_along(candidates)) {
+      neighbour <- candidates[k]
+      ok <- is.finite(values[, j]) & is.finite(values[, neighbour])
+      if (sum(ok) < min.overlap)
+        next
+      correlations[k] <- suppressWarnings(stats::cor(
+        values[ok, j], values[ok, neighbour]
+      ))
+      fit <- .tempQC_linear_fit(values[, neighbour], values[, j],
+                                min.overlap)
+      if (!is.null(fit))
+        errors[k] <- fit$rmse
+    }
+
+    eligible <- is.finite(correlations) & is.finite(errors) &
+                correlations >= min.correlation
+    candidates <- candidates[eligible]
+    errors <- errors[eligible]
+    if (length(candidates) < min.neighbours)
+      next
+    adjusted.errors <- errors /
+                       sqrt(pmax(proximity[j, candidates],
+                                 .Machine$double.xmin))
+    if (coordinate.available[j]) {
+      known.distance <- is.finite(distances[j, candidates])
+      candidates <- candidates[order(!known.distance, adjusted.errors)]
+    } else {
+      candidates <- candidates[order(adjusted.errors)]
+    }
+    candidates <- utils::head(candidates, n.neighbours)
+    selected[[position]] <- colnames(values)[candidates]
+
+    for (group in unique(groups)) {
+      rows <- which(groups == group)
+      predictions <- matrix(NA_real_, nrow=length(rows),
+                            ncol=length(candidates))
+      standard.errors <- rep(NA_real_, length(candidates))
+      for (k in seq_along(candidates)) {
+        neighbour <- candidates[k]
+        fit <- .tempQC_linear_fit(values[rows, neighbour],
+                                  values[rows, j], min.group.overlap)
+        if (is.null(fit))
+          next
+        predictions[, k] <- fit$coefficients[1L] +
+                             fit$coefficients[2L] * values[rows, neighbour]
+        standard.errors[k] <- max(fit$rmse, min.se)
+      }
+      for (i in seq_along(rows)) {
+        ok <- is.finite(predictions[i, ]) & is.finite(standard.errors)
+        if (sum(ok) < min.neighbours)
+          next
+        weights <- proximity[j, candidates[ok]] / standard.errors[ok]^2
+        estimate[rows[i], position] <-
+          sum(predictions[i, ok] * weights) / sum(weights)
+        combined.se <- sqrt(sum(ok) / sum(weights))
+        residual <- values[rows[i], j] - estimate[rows[i], position]
+        if (is.finite(residual)) {
+          score[rows[i], position] <- abs(residual) / combined.se
+          flags[rows[i], position] <-
+            abs(residual) >= min.difference &&
+            score[rows[i], position] >= spatial.f
+        }
+      }
+    }
+  }
+
+  list(estimate=estimate, scores=score, flags=flags,
+       neighbours=selected)
+
+} # '.tempQC_spatial_chunk' END
+
+
+.tempQC_spatial_core <- function(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   group=c("month", "month_hour"), n.neighbours=5L,
   max.distance=200, min.neighbours=2L, min.overlap=90L,
   min.group.overlap=20L, min.correlation=0.6,
   f=4, min.difference=8, min.se=0.1, elevation=NULL,
-  elevation.scale=500) {
+  elevation.scale=500, backend) {
 
   values <- .precipQC_matrix(x)
   group <- match.arg(group)
@@ -273,81 +375,22 @@ tempQC_spatial <- function(
   }
   diag(proximity) <- 1
   groups <- .tempQC_group(x, group)
-  estimate <- score <- matrix(NA_real_, nrow=NROW(values),
-                              ncol=NCOL(values), dimnames=dimnames(values))
-  flags <- matrix(FALSE, nrow=NROW(values), ncol=NCOL(values),
-                  dimnames=dimnames(values))
-  selected <- vector("list", NCOL(values))
-  names(selected) <- stations
-
-  for (j in seq_len(NCOL(values))) {
-    if (meta$has.coords) {
-      candidates <- which(seq_len(NCOL(values)) != j &
-                          (!is.finite(distances[j, ]) |
-                           distances[j, ] <= max.distance))
-    } else {
-      candidates <- which(seq_len(NCOL(values)) != j)
-    }
-    if (length(candidates) == 0L) next
-    correlations <- errors <- rep(NA_real_, length(candidates))
-    for (k in seq_along(candidates)) {
-      neighbour <- candidates[k]
-      ok <- is.finite(values[, j]) & is.finite(values[, neighbour])
-      if (sum(ok) < min.overlap) next
-      correlations[k] <- suppressWarnings(stats::cor(
-        values[ok, j], values[ok, neighbour]))
-      fit <- .tempQC_linear_fit(values[, neighbour], values[, j],
-                                min.overlap)
-      if (!is.null(fit)) errors[k] <- fit$rmse
-    }
-    eligible <- is.finite(correlations) & is.finite(errors) &
-                correlations >= min.correlation
-    candidates <- candidates[eligible]
-    errors <- errors[eligible]
-    if (length(candidates) < min.neighbours) next
-    adjusted.errors <- errors /
-                       sqrt(pmax(proximity[j, candidates],
-                                 .Machine$double.xmin))
-    if (meta$coordinate.available[j]) {
-      known.distance <- is.finite(distances[j, candidates])
-      candidates <- candidates[order(!known.distance, adjusted.errors)]
-    } else {
-      candidates <- candidates[order(adjusted.errors)]
-    }
-    candidates <- utils::head(candidates, n.neighbours)
-    selected[[j]] <- stations[candidates]
-
-    for (g in unique(groups)) {
-      rows <- which(groups == g)
-      predictions <- matrix(NA_real_, nrow=length(rows),
-                            ncol=length(candidates))
-      standard.errors <- rep(NA_real_, length(candidates))
-      for (k in seq_along(candidates)) {
-        neighbour <- candidates[k]
-        fit <- .tempQC_linear_fit(values[rows, neighbour],
-                                  values[rows, j], min.group.overlap)
-        if (is.null(fit)) next
-        predictions[, k] <- fit$coefficients[1L] +
-                             fit$coefficients[2L] * values[rows, neighbour]
-        standard.errors[k] <- max(fit$rmse, min.se)
-      }
-      for (i in seq_along(rows)) {
-        ok <- is.finite(predictions[i, ]) & is.finite(standard.errors)
-        if (sum(ok) < min.neighbours) next
-        weights <- proximity[j, candidates[ok]] /
-                   standard.errors[ok]^2
-        estimate[rows[i], j] <- sum(predictions[i, ok] * weights) /
-                                sum(weights)
-        combined.se <- sqrt(sum(ok) / sum(weights))
-        residual <- values[rows[i], j] - estimate[rows[i], j]
-        if (is.finite(residual)) {
-          score[rows[i], j] <- abs(residual) / combined.se
-          flags[rows[i], j] <- abs(residual) >= min.difference &&
-                               score[rows[i], j] >= f
-        }
-      }
-    }
-  }
+  chunks <- .QC_parallel_chunks(NCOL(values), backend$nworkers)
+  parts <- .QC_parallel_apply(
+    backend, chunks, ".tempQC_spatial_chunk", values=values, groups=groups,
+    distances=distances, proximity=proximity,
+    coordinate.available=meta$coordinate.available,
+    has.coords=meta$has.coords, n.neighbours=n.neighbours,
+    max.distance=max.distance, min.neighbours=min.neighbours,
+    min.overlap=min.overlap, min.group.overlap=min.group.overlap,
+    min.correlation=min.correlation, spatial.f=f,
+    min.difference=min.difference, min.se=min.se
+  )
+  estimate <- do.call(cbind, lapply(parts, `[[`, "estimate"))
+  score <- do.call(cbind, lapply(parts, `[[`, "scores"))
+  flags <- do.call(cbind, lapply(parts, `[[`, "flags"))
+  selected <- unlist(lapply(parts, `[[`, "neighbours"), recursive=FALSE)
+  selected <- selected[stations]
 
   out <- list(flags=.precipQC_zoo(flags, x),
               scores=.precipQC_zoo(score, x),
@@ -355,6 +398,35 @@ tempQC_spatial <- function(
               neighbours=selected)
   class(out) <- c("tempQC_spatial", "list")
   out
+
+} # '.tempQC_spatial_core' END
+
+
+tempQC_spatial <- function(
+  x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
+  group=c("month", "month_hour"), n.neighbours=5L,
+  max.distance=200, min.neighbours=2L, min.overlap=90L,
+  min.group.overlap=20L, min.correlation=0.6,
+  f=4, min.difference=8, min.se=0.1, elevation=NULL,
+  elevation.scale=500, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL) {
+
+  # Create and clean up a backend for standalone spatial-test calls.
+  nstations <- NCOL(.precipQC_matrix(x))
+  backend <- .QC_parallel_setup(ncores, parallel.type, cluster.nodes,
+                                nstations)
+  on.exit(.QC_parallel_stop(backend), add=TRUE)
+
+  .tempQC_spatial_core(
+    x, metadata=metadata, station.id=station.id, coords=coords,
+    group=group, n.neighbours=n.neighbours, max.distance=max.distance,
+    min.neighbours=min.neighbours, min.overlap=min.overlap,
+    min.group.overlap=min.group.overlap,
+    min.correlation=min.correlation, f=f,
+    min.difference=min.difference, min.se=min.se,
+    elevation=elevation, elevation.scale=elevation.scale,
+    backend=backend
+  )
 
 } # 'tempQC_spatial' END
 

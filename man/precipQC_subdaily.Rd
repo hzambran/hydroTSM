@@ -38,7 +38,8 @@ precipQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 }
 
@@ -148,14 +149,24 @@ cause a discard recommendation. The conservative default is \code{FALSE}.
 }
   \item{verbose}{
 Logical. If \code{TRUE}, informative messages identify the workflow start,
-each enabled test and spatial scale, evidence combination, and the final
+the effective workers/nodes, each enabled test and spatial scale, evidence combination, and the final
 station/observation summary. If \code{FALSE}, only these informational messages
 are suppressed; warnings and errors remain visible.
+}
+  \item{ncores, parallel.type, cluster.nodes}{
+Requested worker count, parallel backend, and optional PSOCK host names. See
+\code{\link{precipQC_daily}} for backend behaviour and network requirements.
 }
 }
 
 \details{
 The sub-daily workflow follows a layered rule base:
+
+Station-local tests, neighbour selection, and target-station spatial
+calculations are divided into balanced station chunks when \code{ncores > 1}.
+Column order and QC results are preserved across serial, socket, and fork
+execution. The effective backend, worker count, and distinct node count are
+reported when \code{verbose=TRUE}; created socket workers are stopped on exit.
 
 \enumerate{
   \item \emph{Range and temporal-resolution validation}. Negative depths and

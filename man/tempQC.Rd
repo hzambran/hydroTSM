@@ -16,7 +16,8 @@ Detects the sampling frequency of a numeric \code{zoo} object with
 \usage{
 tempQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500, verbose=TRUE
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 }
 
@@ -27,9 +28,12 @@ station metadata, field-name selectors, and elevation-decay control passed to
 the selected workflow. See \code{\link{tempQC_daily}}.}
   \item{...}{Arguments passed unchanged to the selected workflow.}
   \item{verbose}{Logical. If \code{TRUE}, informative messages report the
-detected frequency, active QC stages, and final QC summary. If \code{FALSE},
+detected frequency, parallel workers/nodes, active QC stages, and final QC summary. If \code{FALSE},
 these informational messages are suppressed; warnings and errors are
 unaffected.}
+  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
+parallel backend, and optional PSOCK host names passed to the selected
+workflow. See \code{\link{tempQC_daily}}.}
 }
 
 \details{
@@ -42,6 +46,7 @@ suppressed independently of the returned result. The staged design follows the
 gross-error, tolerance, temporal,
 inter-variable, and inter-station QC categories described by Brunet et al.
 (2020).
+The default \code{ncores=1L} is serial and preserves the historical behaviour.
 }
 
 \value{

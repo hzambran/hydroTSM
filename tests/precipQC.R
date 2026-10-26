@@ -394,6 +394,22 @@ stopifnot(
   any(grepl("Completed sub-daily QC", subdaily.messages, fixed=TRUE))
 )
 
+# The separate sub-daily station worker must also match serial execution.
+subdaily.parallel.checks <- subdaily.no.checks
+subdaily.parallel.checks["persistence"] <- TRUE
+subdaily.serial <- precipQC_subdaily(
+  subdaily[, 1:2], checks=subdaily.parallel.checks,
+  min.years=0, max.missing=1, max.suspicious=1, verbose=FALSE
+)
+subdaily.socket <- precipQC_subdaily(
+  subdaily[, 1:2], checks=subdaily.parallel.checks,
+  min.years=0, max.missing=1, max.suspicious=1, verbose=FALSE,
+  ncores=2L, parallel.type="socket"
+)
+stopifnot(identical(subdaily.serial$flags, subdaily.socket$flags),
+          identical(subdaily.serial$station.summary,
+                    subdaily.socket$station.summary))
+
 monthly <- zoo::zoo(matrix(seq_len(12), ncol=1,
                            dimnames=list(NULL, "S1")),
                     zoo::as.yearmon(seq(as.Date("2020-01-01"),
@@ -411,6 +427,43 @@ invalid.daily <- try(
 )
 stopifnot(inherits(invalid.subdaily, "try-error"),
           inherits(invalid.daily, "try-error"))
+
+# Parallel PSOCK execution must preserve serial flags and station order.
+parallel.checks <- c(
+  range=TRUE, duplicate=FALSE, frequency=FALSE, gap=FALSE,
+  climatology=FALSE, persistence=TRUE, accumulation=FALSE,
+  weekday=FALSE, spatial=TRUE, dryspell=FALSE, breakpoint=FALSE
+)
+parallel.serial <- precipQC_daily(
+  daily[1:120, ], checks=parallel.checks, min.overlap=30,
+  min.years=0, max.missing=1, max.suspicious=1, verbose=FALSE
+)
+parallel.messages <- capture.output(
+  parallel.socket <- precipQC_daily(
+    daily[1:120, ], checks=parallel.checks, min.overlap=30,
+    min.years=0, max.missing=1, max.suspicious=1, verbose=TRUE,
+    ncores=2L, parallel.type="socket", cluster.nodes="localhost"
+  ), type="message"
+)
+stopifnot(
+  identical(parallel.serial$flags, parallel.socket$flags),
+  identical(parallel.serial$station.summary,
+            parallel.socket$station.summary),
+  identical(parallel.serial$neighbours, parallel.socket$neighbours),
+  identical(parallel.socket$settings$ncores, 2L),
+  identical(parallel.socket$settings$parallel.type, "socket"),
+  any(grepl("Using socket backend with 2 worker(s) across 1 node(s)",
+            parallel.messages, fixed=TRUE))
+)
+
+# Invalid backend controls fail before QC is started.
+invalid.cores <- try(precipQC_daily(daily, ncores=0), silent=TRUE)
+invalid.nodes <- try(
+  precipQC_daily(daily, ncores=2, parallel.type="fork",
+                 cluster.nodes="localhost"), silent=TRUE
+)
+stopifnot(inherits(invalid.cores, "try-error"),
+          inherits(invalid.nodes, "try-error"))
 
 plot.file <- tempfile(fileext=".pdf")
 grDevices::pdf(plot.file)

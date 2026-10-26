@@ -192,7 +192,7 @@
                                   min.overlap, min.correlation,
                                   cr.threshold, wet.threshold,
                                   elevation=NULL, elevation.scale=500,
-                                  verbose=FALSE) {
+                                  verbose=FALSE, backend) {
 
   native.estimate <- NULL
   native.score <- NULL
@@ -204,13 +204,13 @@
                        " spatial-consistency check ...")
     width <- widths[i]
     aggregated <- .precipQC_rollsum(x, width)
-    result <- precipQC_spatial(
+    result <- .precipQC_spatial_core(
       aggregated, metadata=metadata, station.id=station.id, coords=coords,
       n.neighbours=n.neighbours, max.distance=max.distance,
       min.neighbours=min.neighbours, min.overlap=min.overlap,
       min.correlation=min.correlation, cr.threshold=cr.threshold,
       wet.threshold=wet.threshold, elevation=elevation,
-      elevation.scale=elevation.scale
+      elevation.scale=elevation.scale, backend=backend
     )
     flags[[labels[i]]] <- .precipQC_expand_aggregate_flags(result$flags,
                                                             width, x)
@@ -446,6 +446,140 @@
 } # '.precipQC_finish' END
 
 
+.precipQC_daily_station_part <- function(part, checks, parameters,
+                                         nstations) {
+
+  # Run station-local daily tests on one balanced column subset.
+  x <- part$x
+  flags <- list()
+  if (checks["duplicate"])
+    flags$duplicate <- precipQC_duplicate(
+      x, min.month.values=parameters$duplicate.min.month,
+      min.year.values=parameters$duplicate.min.year,
+      min.nonzero=parameters$duplicate.min.nonzero,
+      wet.threshold=parameters$wet.threshold
+    )
+  if (checks["frequency"])
+    flags$frequency <- precipQC_frequency(
+      x, window=parameters$frequency.window,
+      min.samples=parameters$frequency.min.samples,
+      wet.threshold=parameters$wet.threshold
+    )
+  if (checks["gap"])
+    flags$gap <- precipQC_gap(
+      x, gap=parameters$gap.threshold,
+      min.samples=parameters$gap.min.samples,
+      wet.threshold=parameters$wet.threshold
+    )
+  if (checks["climatology"])
+    flags$climatology <- precipQC_climatology(
+      x, group="dayofyear", window=parameters$climatology.window,
+      prob=parameters$climatology.prob, z=parameters$climatology.z,
+      min.samples=parameters$climatology.min.samples,
+      wet.threshold=parameters$wet.threshold
+    )
+  if (checks["persistence"]) {
+    threshold <- .QC_station_parameter(
+      parameters$persistence.threshold, part$index, nstations,
+      "persistence.threshold"
+    )
+    flags$persistence <- precipQC_persistence(
+      x, high.threshold=threshold, high.run=parameters$persistence.run,
+      long.run=Inf, wet.threshold=parameters$wet.threshold
+    )
+  }
+  if (checks["accumulation"])
+    flags$accumulation <- precipQC_accumulation(
+      x, interval.hours=24, preceding.hours=24, following.hours=0,
+      threshold.factor=2, wet.threshold=parameters$wet.threshold,
+      missing.only=TRUE
+    )
+  if (checks["weekday"])
+    flags$weekday <- precipQC_weekday(
+      x, wet.threshold=parameters$wet.threshold,
+      min.wet.days=parameters$weekday.min.wet,
+      alpha=parameters$weekday.alpha,
+      underreporting.ratio=parameters$weekday.ratio
+    )
+
+  # Keep homogeneity diagnostics aligned with the same station subset.
+  breakpoint <- if (checks["breakpoint"]) {
+    precipQC_breakpoint(x, wet.threshold=parameters$wet.threshold)
+  } else {
+    .precipQC_empty_breakpoint(colnames(x))
+  }
+
+  list(flags=flags, breakpoint=breakpoint)
+
+} # '.precipQC_daily_station_part' END
+
+
+.precipQC_subdaily_station_part <- function(part, checks, parameters,
+                                            nstations) {
+
+  # Run station-local sub-daily tests on one balanced column subset.
+  x <- part$x
+  flags <- list()
+  if (checks["climatology"])
+    flags$climatology <- precipQC_climatology(
+      x, group="month", window=1L, prob=parameters$climatology.prob,
+      z=parameters$climatology.z,
+      min.samples=parameters$climatology.min.samples,
+      wet.threshold=parameters$wet.threshold
+    )
+  if (checks["persistence"]) {
+    threshold <- .QC_station_parameter(
+      parameters$persistence.threshold, part$index, nstations,
+      "persistence.threshold"
+    )
+    if (is.null(threshold)) {
+      threshold <- 2 * .precipQC_wet_day_mean(x,
+                                               parameters$wet.threshold)
+      threshold[!is.finite(threshold)] <- parameters$upper
+    }
+    flags$persistence <- precipQC_persistence(
+      x, high.threshold=threshold,
+      high.run=parameters$persistence.high.run,
+      long.run=parameters$long.run,
+      wet.threshold=parameters$wet.threshold
+    )
+  }
+  if (checks["daily.accumulation"])
+    flags$daily_accumulation <- precipQC_accumulation(
+      x, interval.hours=parameters$interval.hours,
+      preceding.hours=23, following.hours=23,
+      threshold.factor=parameters$accumulation.factor,
+      wet.threshold=parameters$wet.threshold, missing.only=FALSE
+    )
+  if (checks["monthly.accumulation"])
+    flags$monthly_accumulation <- precipQC_accumulation(
+      x, interval.hours=parameters$interval.hours,
+      preceding.hours=24 * 28, following.hours=23,
+      threshold.factor=parameters$accumulation.factor,
+      wet.threshold=parameters$wet.threshold, missing.only=FALSE
+    )
+  if (checks["weekday"])
+    flags$weekday <- .precipQC_weekday_subdaily(
+      x, interval.hours=parameters$interval.hours,
+      min.coverage=parameters$weekday.min.coverage,
+      wet.threshold=parameters$wet.threshold,
+      min.wet.days=parameters$weekday.min.wet,
+      alpha=parameters$weekday.alpha,
+      underreporting.ratio=parameters$weekday.ratio
+    )
+
+  # Keep homogeneity diagnostics aligned with the same station subset.
+  breakpoint <- if (checks["breakpoint"]) {
+    precipQC_breakpoint(x, wet.threshold=parameters$wet.threshold)
+  } else {
+    .precipQC_empty_breakpoint(colnames(x))
+  }
+
+  list(flags=flags, breakpoint=breakpoint)
+
+} # '.precipQC_subdaily_station_part' END
+
+
 precipQC_daily <- function(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, frequency=TRUE, gap=TRUE,
@@ -469,7 +603,8 @@ precipQC_daily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE) {
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -480,6 +615,9 @@ precipQC_daily <- function(
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "daily", elevation=elevation
   )
+  backend <- .QC_parallel_setup(ncores, parallel.type, cluster.nodes,
+                                NCOL(prepared$values))
+  on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
   spatial.estimate <- spatial.score <- neighbours <- NULL
@@ -488,64 +626,53 @@ precipQC_daily <- function(
   .precipQC_progress(verbose, "Starting daily QC for ",
                      NROW(prepared$values), " observations at ",
                      NCOL(prepared$values), " station(s) ...")
+  .precipQC_progress(verbose, .QC_parallel_description(backend))
   if (checks["range"]) {
     .precipQC_progress(verbose, "Running physical-range check ...")
     flags$range <- precipQC_range(prepared$x, lower=lower, upper=upper)
   }
-  if (checks["duplicate"]) {
+  if (checks["duplicate"])
     .precipQC_progress(verbose, "Running copied-block check ...")
-    flags$duplicate <- precipQC_duplicate(
-      prepared$x, min.month.values=duplicate.min.month,
-      min.year.values=duplicate.min.year,
-      min.nonzero=duplicate.min.nonzero, wet.threshold=wet.threshold
-    )
-  }
-  if (checks["frequency"]) {
+  if (checks["frequency"])
     .precipQC_progress(verbose, "Running frequent-value check ...")
-    flags$frequency <- precipQC_frequency(
-      prepared$x, window=frequency.window,
-      min.samples=frequency.min.samples, wet.threshold=wet.threshold
-    )
-  }
-  if (checks["gap"]) {
+  if (checks["gap"])
     .precipQC_progress(verbose, "Running distribution-gap check ...")
-    flags$gap <- precipQC_gap(
-      prepared$x, gap=gap.threshold, min.samples=gap.min.samples,
-      wet.threshold=wet.threshold
-    )
-  }
-  if (checks["climatology"]) {
+  if (checks["climatology"])
     .precipQC_progress(verbose, "Running climatological-plausibility check ...")
-    flags$climatology <- precipQC_climatology(
-      prepared$x, group="dayofyear", window=climatology.window,
-      prob=climatology.prob, z=climatology.z,
-      min.samples=climatology.min.samples, wet.threshold=wet.threshold
-    )
-  }
-  if (checks["persistence"]) {
+  if (checks["persistence"])
     .precipQC_progress(verbose, "Running persistence check ...")
-    flags$persistence <- precipQC_persistence(
-      prepared$x, high.threshold=persistence.threshold,
-      high.run=persistence.run, long.run=Inf,
-      wet.threshold=wet.threshold
-    )
-  }
-  if (checks["accumulation"]) {
+  if (checks["accumulation"])
     .precipQC_progress(verbose, "Running accumulated-total check ...")
-    flags$accumulation <- precipQC_accumulation(
-      prepared$x, interval.hours=24, preceding.hours=24,
-      following.hours=0, threshold.factor=2,
-      wet.threshold=wet.threshold, missing.only=TRUE
-    )
-  }
-  if (checks["weekday"]) {
+  if (checks["weekday"])
     .precipQC_progress(verbose, "Running weekday false-zero check ...")
-    flags$weekday <- precipQC_weekday(
-      prepared$x, wet.threshold=wet.threshold,
-      min.wet.days=weekday.min.wet, alpha=weekday.alpha,
-      underreporting.ratio=weekday.ratio
-    )
-  }
+  if (checks["breakpoint"])
+    .precipQC_progress(verbose, "Running homogeneity-breakpoint check ...")
+
+  # Distribute all station-local checks in balanced column chunks.
+  parameters <- list(
+    wet.threshold=wet.threshold,
+    duplicate.min.month=duplicate.min.month,
+    duplicate.min.year=duplicate.min.year,
+    duplicate.min.nonzero=duplicate.min.nonzero,
+    frequency.window=frequency.window,
+    frequency.min.samples=frequency.min.samples,
+    gap.threshold=gap.threshold, gap.min.samples=gap.min.samples,
+    climatology.window=climatology.window,
+    climatology.prob=climatology.prob, climatology.z=climatology.z,
+    climatology.min.samples=climatology.min.samples,
+    persistence.threshold=persistence.threshold,
+    persistence.run=persistence.run,
+    weekday.min.wet=weekday.min.wet, weekday.alpha=weekday.alpha,
+    weekday.ratio=weekday.ratio
+  )
+  parts <- .QC_parallel_parts(prepared$x, backend)
+  local <- .QC_parallel_apply(
+    backend, parts, ".precipQC_daily_station_part", checks=checks,
+    parameters=parameters, nstations=NCOL(prepared$values)
+  )
+  local <- .QC_combine_station_results(local, prepared$x)
+  flags <- c(flags, local$flags)
+  breakpoint <- local$breakpoint
   if (checks["spatial"]) {
     if (NCOL(prepared$values) < 3L) {
       warning("Spatial checks require at least three station columns; the spatial check was skipped.")
@@ -558,10 +685,10 @@ precipQC_daily <- function(
       widths <- unique(as.integer(round(spatial.days)))
       labels <- paste0("spatial_", widths, "d")
       spatial <- .precipQC_add_spatial(
-        flags, prepared$x, widths, labels, prepared$metadata,
+        flags, prepared$x, widths, labels, metadata,
         prepared$station.id, coords, n.neighbours, max.distance,
         min.neighbours, min.overlap, min.correlation, spatial.cr,
-        wet.threshold, elevation, elevation.scale, verbose
+        wet.threshold, elevation, elevation.scale, verbose, backend
       )
       flags <- spatial$flags
       spatial.estimate <- spatial$estimate
@@ -571,22 +698,16 @@ precipQC_daily <- function(
   }
   if (checks["dryspell"] && NCOL(prepared$values) >= 2L) {
     .precipQC_progress(verbose, "Running spatial dry-spell check ...")
-    flags$dryspell <- precipQC_dryspell(
-      prepared$x, metadata=prepared$metadata,
+    flags$dryspell <- .precipQC_dryspell_core(
+      prepared$x, metadata=metadata,
       station.id=prepared$station.id, coords=coords,
       n.neighbours=n.neighbours, max.distance=max.distance,
       window.days=dryspell.days, neighbour.wet.days=neighbour.wet.days,
       neighbour.fraction=neighbour.fraction,
       wet.threshold=wet.threshold, elevation=elevation,
-      elevation.scale=elevation.scale
+      elevation.scale=elevation.scale, backend=backend
     )
   }
-  if (checks["breakpoint"]) {
-    .precipQC_progress(verbose, "Running homogeneity-breakpoint check ...")
-    breakpoint <- precipQC_breakpoint(prepared$x,
-      wet.threshold=wet.threshold)
-  }
-
   settings <- list(resolution="daily", checks=checks, lower=lower,
                    upper=upper, wet.threshold=wet.threshold,
                    duplicate.min.month=duplicate.min.month,
@@ -604,7 +725,9 @@ precipQC_daily <- function(
                    spatial.days=spatial.days, correction=match.arg(correction),
                    min.evidence=min.evidence, max.missing=max.missing,
                    max.suspicious=max.suspicious, min.years=min.years,
-                   verbose=verbose)
+                   verbose=verbose, ncores=backend$nworkers,
+                   parallel.type=backend$type,
+                   cluster.nodes=backend$nodes)
 
   # Combine test evidence only after all enabled checks have completed.
   .precipQC_progress(verbose,
@@ -652,7 +775,8 @@ precipQC_subdaily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE) {
+  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -663,6 +787,9 @@ precipQC_subdaily <- function(
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "subdaily", elevation=elevation
   )
+  backend <- .QC_parallel_setup(ncores, parallel.type, cluster.nodes,
+                                NCOL(prepared$values))
+  on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
   spatial.estimate <- spatial.score <- neighbours <- NULL
@@ -671,66 +798,51 @@ precipQC_subdaily <- function(
       !is.finite(max.rate) || max.rate <= 0)
     stop("Invalid argument: 'max.rate' must be a positive number !")
   upper <- max.rate * prepared$interval.hours
+  long.run <- max(1L, ceiling(persistence.long.hours /
+                              prepared$interval.hours))
 
   # Run each enabled test and announce it immediately before computation.
   .precipQC_progress(verbose, "Starting sub-daily QC for ",
                      NROW(prepared$values), " observations at ",
                      NCOL(prepared$values), " station(s) ...")
+  .precipQC_progress(verbose, .QC_parallel_description(backend))
   if (checks["range"]) {
     .precipQC_progress(verbose, "Running physical-range check ...")
     flags$range <- precipQC_range(prepared$x, lower=lower, upper=upper)
   }
-  if (checks["climatology"]) {
+  if (checks["climatology"])
     .precipQC_progress(verbose, "Running climatological-plausibility check ...")
-    flags$climatology <- precipQC_climatology(
-      prepared$x, group="month", window=1L, prob=climatology.prob,
-      z=climatology.z, min.samples=climatology.min.samples,
-      wet.threshold=wet.threshold
-    )
-  }
-  if (checks["persistence"]) {
+  if (checks["persistence"])
     .precipQC_progress(verbose, "Running persistence check ...")
-    if (is.null(persistence.threshold)) {
-      persistence.threshold <- 2 * .precipQC_wet_day_mean(
-        prepared$x, wet.threshold
-      )
-      persistence.threshold[!is.finite(persistence.threshold)] <- upper
-    }
-    long.run <- max(1L, ceiling(persistence.long.hours /
-                                prepared$interval.hours))
-    flags$persistence <- precipQC_persistence(
-      prepared$x, high.threshold=persistence.threshold,
-      high.run=persistence.high.run, long.run=long.run,
-      wet.threshold=wet.threshold
-    )
-  }
-  if (checks["daily.accumulation"]) {
+  if (checks["daily.accumulation"])
     .precipQC_progress(verbose, "Running daily-accumulation check ...")
-    flags$daily_accumulation <- precipQC_accumulation(
-      prepared$x, interval.hours=prepared$interval.hours,
-      preceding.hours=23, following.hours=23,
-      threshold.factor=accumulation.factor,
-      wet.threshold=wet.threshold, missing.only=FALSE
-    )
-  }
-  if (checks["monthly.accumulation"]) {
+  if (checks["monthly.accumulation"])
     .precipQC_progress(verbose, "Running monthly-accumulation check ...")
-    flags$monthly_accumulation <- precipQC_accumulation(
-      prepared$x, interval.hours=prepared$interval.hours,
-      preceding.hours=24 * 28, following.hours=23,
-      threshold.factor=accumulation.factor,
-      wet.threshold=wet.threshold, missing.only=FALSE
-    )
-  }
-  if (checks["weekday"]) {
+  if (checks["weekday"])
     .precipQC_progress(verbose, "Running weekday false-zero check ...")
-    flags$weekday <- .precipQC_weekday_subdaily(
-      prepared$x, interval.hours=prepared$interval.hours,
-      min.coverage=weekday.min.coverage, wet.threshold=wet.threshold,
-      min.wet.days=weekday.min.wet, alpha=weekday.alpha,
-      underreporting.ratio=weekday.ratio
-    )
-  }
+  if (checks["breakpoint"])
+    .precipQC_progress(verbose, "Running homogeneity-breakpoint check ...")
+
+  # Distribute all station-local checks in balanced column chunks.
+  parameters <- list(
+    climatology.prob=climatology.prob, climatology.z=climatology.z,
+    climatology.min.samples=climatology.min.samples,
+    persistence.threshold=persistence.threshold,
+    persistence.high.run=persistence.high.run, long.run=long.run,
+    interval.hours=prepared$interval.hours,
+    accumulation.factor=accumulation.factor,
+    weekday.min.coverage=weekday.min.coverage,
+    weekday.min.wet=weekday.min.wet, weekday.alpha=weekday.alpha,
+    weekday.ratio=weekday.ratio, wet.threshold=wet.threshold, upper=upper
+  )
+  parts <- .QC_parallel_parts(prepared$x, backend)
+  local <- .QC_parallel_apply(
+    backend, parts, ".precipQC_subdaily_station_part", checks=checks,
+    parameters=parameters, nstations=NCOL(prepared$values)
+  )
+  local <- .QC_combine_station_results(local, prepared$x)
+  flags <- c(flags, local$flags)
+  breakpoint <- local$breakpoint
   if (checks["spatial"]) {
     if (NCOL(prepared$values) < 3L) {
       warning("Spatial checks require at least three station columns; the spatial check was skipped.")
@@ -752,10 +864,10 @@ precipQC_subdaily <- function(
       labels <- ifelse(hours == 0, "spatial_native",
                        paste0("spatial_", format(hours, trim=TRUE), "h"))
       spatial <- .precipQC_add_spatial(
-        flags, prepared$x, widths, labels, prepared$metadata,
+        flags, prepared$x, widths, labels, metadata,
         prepared$station.id, coords, n.neighbours, max.distance,
         min.neighbours, min.overlap, min.correlation, spatial.cr,
-        wet.threshold, elevation, elevation.scale, verbose
+        wet.threshold, elevation, elevation.scale, verbose, backend
       )
       flags <- spatial$flags
       spatial.estimate <- spatial$estimate
@@ -765,22 +877,16 @@ precipQC_subdaily <- function(
   }
   if (checks["dryspell"] && NCOL(prepared$values) >= 2L) {
     .precipQC_progress(verbose, "Running spatial dry-spell check ...")
-    flags$dryspell <- precipQC_dryspell(
-      prepared$x, metadata=prepared$metadata,
+    flags$dryspell <- .precipQC_dryspell_core(
+      prepared$x, metadata=metadata,
       station.id=prepared$station.id, coords=coords,
       n.neighbours=n.neighbours, max.distance=max.distance,
       window.days=dryspell.days, neighbour.wet.days=neighbour.wet.days,
       neighbour.fraction=neighbour.fraction,
       wet.threshold=wet.threshold, elevation=elevation,
-      elevation.scale=elevation.scale
+      elevation.scale=elevation.scale, backend=backend
     )
   }
-  if (checks["breakpoint"]) {
-    .precipQC_progress(verbose, "Running homogeneity-breakpoint check ...")
-    breakpoint <- precipQC_breakpoint(prepared$x,
-      wet.threshold=wet.threshold)
-  }
-
   settings <- list(resolution="subdaily", checks=checks, lower=lower,
                    max.rate=max.rate, interval.hours=prepared$interval.hours,
                    wet.threshold=wet.threshold,
@@ -794,7 +900,9 @@ precipQC_subdaily <- function(
                    correction=match.arg(correction),
                    min.evidence=min.evidence, max.missing=max.missing,
                    max.suspicious=max.suspicious, min.years=min.years,
-                   verbose=verbose)
+                   verbose=verbose, ncores=backend$nworkers,
+                   parallel.type=backend$type,
+                   cluster.nodes=backend$nodes)
 
   # Combine test evidence only after all enabled checks have completed.
   .precipQC_progress(verbose,
@@ -823,7 +931,10 @@ precipQC_subdaily <- function(
 
 precipQC <- function(x, metadata=NULL, station.id="station",
                      coords=c("lon", "lat"), ...,
-                     elevation=NULL, elevation.scale=500, verbose=TRUE) {
+                     elevation=NULL, elevation.scale=500, verbose=TRUE,
+                     ncores=1L,
+                     parallel.type=c("socket", "fork", "serial"),
+                     cluster.nodes=NULL) {
 
   # Validate verbosity at the dispatch boundary for consistent errors.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -836,7 +947,9 @@ precipQC <- function(x, metadata=NULL, station.id="station",
                        "Detected daily data; dispatching to precipQC_daily() ...")
     return(precipQC_daily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose
+      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose,
+      ncores=ncores, parallel.type=parallel.type,
+      cluster.nodes=cluster.nodes
     ))
   }
   if (frequency %in% c("minute", "hourly")) {
@@ -844,7 +957,9 @@ precipQC <- function(x, metadata=NULL, station.id="station",
                        " data; dispatching to precipQC_subdaily() ...")
     return(precipQC_subdaily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose
+      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose,
+      ncores=ncores, parallel.type=parallel.type,
+      cluster.nodes=cluster.nodes
     ))
   }
 
