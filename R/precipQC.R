@@ -584,7 +584,8 @@ precipQC_daily <- function(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, frequency=TRUE, gap=TRUE,
            climatology=TRUE, persistence=TRUE, accumulation=TRUE,
-           weekday=TRUE, spatial=TRUE, dryspell=TRUE, breakpoint=TRUE),
+           weekday=TRUE, spatial=!is.null(metadata), dryspell=TRUE,
+           breakpoint=TRUE),
   lower=0, upper=1825, wet.threshold=0.1,
   duplicate.min.month=20L, duplicate.min.year=300L,
   duplicate.min.nonzero=3L,
@@ -604,13 +605,18 @@ precipQC_daily <- function(
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL) {
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
+  if (!zoo::is.zoo(x))
+    stop("Invalid argument: 'x' must be a zoo object !")
+  x <- check_from_and_to_and_subset(x, from=from, to=to)
   defaults <- c(range=TRUE, duplicate=TRUE, frequency=TRUE, gap=TRUE,
                 climatology=TRUE, persistence=TRUE, accumulation=TRUE,
-                weekday=TRUE, spatial=TRUE, dryspell=TRUE, breakpoint=TRUE)
+                weekday=TRUE, spatial=!is.null(metadata), dryspell=TRUE,
+                breakpoint=TRUE)
   checks <- .precipQC_checks(checks, defaults)
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "daily", elevation=elevation
@@ -727,7 +733,8 @@ precipQC_daily <- function(
                    max.suspicious=max.suspicious, min.years=min.years,
                    verbose=verbose, ncores=backend$nworkers,
                    parallel.type=backend$type,
-                   cluster.nodes=backend$nodes)
+                   cluster.nodes=backend$nodes,
+                   from=start(prepared$x), to=end(prepared$x))
 
   # Combine test evidence only after all enabled checks have completed.
   .precipQC_progress(verbose,
@@ -758,7 +765,8 @@ precipQC_subdaily <- function(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, climatology=TRUE, persistence=TRUE,
            daily.accumulation=TRUE, monthly.accumulation=TRUE,
-           weekday=TRUE, spatial=TRUE, dryspell=TRUE, breakpoint=TRUE),
+           weekday=TRUE, spatial=!is.null(metadata), dryspell=TRUE,
+           breakpoint=TRUE),
   lower=0, max.rate=401, wet.threshold=0.1,
   climatology.prob=0.999, climatology.z=8,
   climatology.min.samples=100L,
@@ -776,13 +784,18 @@ precipQC_subdaily <- function(
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL) {
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
+  if (!zoo::is.zoo(x))
+    stop("Invalid argument: 'x' must be a zoo object !")
+  x <- check_from_and_to_and_subset(x, from=from, to=to)
   defaults <- c(range=TRUE, climatology=TRUE, persistence=TRUE,
                 daily.accumulation=TRUE, monthly.accumulation=TRUE,
-                weekday=TRUE, spatial=TRUE, dryspell=TRUE, breakpoint=TRUE)
+                weekday=TRUE, spatial=!is.null(metadata), dryspell=TRUE,
+                breakpoint=TRUE)
   checks <- .precipQC_checks(checks, defaults)
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "subdaily", elevation=elevation
@@ -902,7 +915,8 @@ precipQC_subdaily <- function(
                    max.suspicious=max.suspicious, min.years=min.years,
                    verbose=verbose, ncores=backend$nworkers,
                    parallel.type=backend$type,
-                   cluster.nodes=backend$nodes)
+                   cluster.nodes=backend$nodes,
+                   from=start(prepared$x), to=end(prepared$x))
 
   # Combine test evidence only after all enabled checks have completed.
   .precipQC_progress(verbose,
@@ -934,13 +948,21 @@ precipQC <- function(x, metadata=NULL, station.id="station",
                      elevation=NULL, elevation.scale=500, verbose=TRUE,
                      ncores=1L,
                      parallel.type=c("socket", "fork", "serial"),
-                     cluster.nodes=NULL) {
+                     cluster.nodes=NULL, from=start(x), to=end(x)) {
 
   # Validate verbosity at the dispatch boundary for consistent errors.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
   if (!zoo::is.zoo(x))
     stop("Invalid argument: 'x' must be a zoo object !")
 
+  # Reject unsupported index classes before Date/POSIXct subsetting.
+  index <- zoo::index(x)
+  if (!(inherits(index, "Date") || inherits(index, "POSIXt"))) {
+    frequency <- sfreq(x)
+    stop("Invalid sampling frequency: sfreq(x) returned '", frequency,
+         "'; only minute, hourly, and daily precipitation are supported !")
+  }
+  x <- check_from_and_to_and_subset(x, from=from, to=to)
   frequency <- sfreq(x)
   if (identical(frequency, "daily")) {
     .precipQC_progress(verbose,
@@ -963,9 +985,8 @@ precipQC <- function(x, metadata=NULL, station.id="station",
     ))
   }
 
-  stop("Invalid sampling frequency: sfreq(x) returned '", frequency,
-       "'; only minute, hourly, and daily precipitation are supported !")
-
+  stop("Invalid sampling frequency after applying 'from' and 'to': '",
+       frequency, "' !")
 } # 'precipQC' END
 
 

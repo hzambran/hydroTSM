@@ -6,6 +6,7 @@
 \name{precipQC-class}
 \Rdversion{1.1}
 \alias{precipQC-class}
+\alias{precipQC_class}
 \alias{print.precipQC}
 \alias{plot.precipQC}
 
@@ -48,6 +49,10 @@ The plot contains four panels: numbers of accepted and discarded stations;
 missing and confirmed-suspicious percentages for the most affected stations;
 flag counts by individual test; and the number of confirmed suspicious values
 through time.
+
+Because an unquoted hyphen is the subtraction operator in R, use
+\code{?precipQC_class}, \code{?`precipQC-class`}, or
+\code{help("precipQC-class")} to open this page.
 }
 
 \value{

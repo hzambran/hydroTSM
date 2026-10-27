@@ -17,7 +17,8 @@ Detects the sampling frequency of a numeric \code{zoo} object with
 tempQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 }
 
@@ -34,6 +35,8 @@ unaffected.}
   \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
 parallel backend, and optional PSOCK host names passed to the selected
 workflow. See \code{\link{tempQC_daily}}.}
+  \item{from, to}{Starting and ending index bounds used to subset \code{x}
+before frequency detection and QC. See \code{\link{tempQC_daily}}.}
 }
 
 \details{
@@ -47,6 +50,8 @@ gross-error, tolerance, temporal,
 inter-variable, and inter-station QC categories described by Brunet et al.
 (2020).
 The default \code{ncores=1L} is serial and preserves the historical behaviour.
+When \code{checks} is not supplied through \code{...}, spatial QC is enabled
+by default only when \code{metadata} is supplied.
 }
 
 \value{

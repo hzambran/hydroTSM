@@ -19,7 +19,7 @@ streamflowQC_subdaily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, gap=TRUE, climatology=TRUE, flatline=TRUE,
            spike=TRUE, rate=TRUE, fluctuation=TRUE, highflow=TRUE,
-           spatial=TRUE, breakpoint=TRUE),
+           spatial=!is.null(metadata), breakpoint=TRUE),
   lower=0, upper=Inf,
   climatology.z=6, climatology.min.samples=100L, log.offset=0.01,
   flatline.hours=168, high.flatline.hours=24,
@@ -43,7 +43,7 @@ streamflowQC_subdaily(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL
+  cluster.nodes=NULL, from=start(x), to=end(x)
 )
 }
 
@@ -55,8 +55,10 @@ streamflowQC_subdaily(
   \item{station.id}{Name of the unique metadata station-identifier field.}
   \item{coords}{Names of longitude and latitude fields, in that order.
 Individual coordinates may be missing.}
-  \item{checks}{Named logical vector. Omitted names retain their defaults;
-all sub-daily tests are enabled by default.}
+  \item{checks}{Named logical vector. Omitted names retain their defaults.
+All sub-daily tests except spatial QC are enabled by default; spatial QC
+defaults to \code{!is.null(metadata)}. An explicitly supplied
+\code{spatial} value always takes precedence.}
   \item{lower, upper}{Physical limits, scalar or station-specific. The
 default rejects negative flow without imposing a region-specific maximum.}
   \item{climatology.z}{Standard-deviation multiplier for monthly log-flow.}
@@ -135,6 +137,9 @@ visible.}
 parallel backend, and optional PSOCK host names. See
 \code{\link{streamflowQC_daily}} for backend behaviour and network
 requirements.}
+  \item{from, to}{Start and end of the period retained before quality
+control. Defaults retain the complete time span of \code{x}. Bounds are
+validated against the available index.}
 }
 
 \details{
@@ -143,6 +148,10 @@ interval. Thus, ordinary flat lines use 168 hours and high-flow flat lines use
 24 hours rather than fixed counts of 672 and 96. Relative spikes and abrupt
 falls use a factor of five; absolute spikes use the station 0.99 quantile; and
 rapid fluctuations use more than eight sign reversals over 16 observations.
+
+The \code{from}--\code{to} subset is applied before interval-dependent
+durations and all quality-control diagnostics are calculated. Therefore all
+output data and station recommendations describe only the selected period.
 
 High-flow diagnostics include unusually large log-flow, an annual-maximum
 ratio, and a base-R maximum-likelihood GEV fit after at least 10 years. These
@@ -167,7 +176,7 @@ by the call are stopped on exit.
 
 \value{
 An object of class \code{"streamflowQC"}; see
-\code{\link{streamflowQC-class}}.
+\code{\link{streamflowQC_class}}.
 }
 
 \references{

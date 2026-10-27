@@ -19,7 +19,8 @@ Detects the sampling frequency of a precipitation \code{zoo} object with
 precipQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 }
 
@@ -47,6 +48,11 @@ are unaffected.
 Parallel worker count, backend, and optional PSOCK host names passed to the
 selected workflow. See \code{\link{precipQC_daily}}.
 }
+  \item{from, to}{
+Starting and ending index bounds used to subset \code{x} before frequency
+detection and QC. They default to the complete record. See
+\code{\link{precipQC_daily}}.
+}
 }
 
 \details{
@@ -58,6 +64,8 @@ implemented thresholds and tests are not valid at those resolutions. Progress
 is emitted with \code{message()}, so it can be captured or suppressed without
 redirecting returned values.
 The default \code{ncores=1L} is serial and preserves the historical behaviour.
+When \code{checks} is not supplied through \code{...}, spatial QC is enabled
+by default only when \code{metadata} is supplied.
 }
 
 \value{

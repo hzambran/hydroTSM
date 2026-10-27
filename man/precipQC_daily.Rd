@@ -21,7 +21,8 @@ precipQC_daily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, frequency=TRUE, gap=TRUE,
            climatology=TRUE, persistence=TRUE, accumulation=TRUE,
-           weekday=TRUE, spatial=TRUE, dryspell=TRUE, breakpoint=TRUE),
+           weekday=TRUE, spatial=!is.null(metadata), dryspell=TRUE,
+           breakpoint=TRUE),
   lower=0, upper=1825, wet.threshold=0.1,
   duplicate.min.month=20L, duplicate.min.year=300L,
   duplicate.min.nonzero=3L,
@@ -41,7 +42,8 @@ precipQC_daily(
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 }
 
@@ -87,7 +89,8 @@ Named logical vector. Any subset of \code{"range"}, \code{"climatology"},
 \code{"duplicate"}, \code{"frequency"}, \code{"gap"},
 \code{"persistence"}, \code{"accumulation"}, \code{"weekday"},
 \code{"spatial"}, \code{"dryspell"}, and \code{"breakpoint"} can be supplied
-to override the default of running every check.
+to override the defaults. All checks except \code{"spatial"} are active by
+default; \code{"spatial"} defaults to \code{!is.null(metadata)}.
 }
   \item{duplicate.min.month, duplicate.min.year, duplicate.min.nonzero}{
 Minimum complete paired month positions, complete paired year positions, and
@@ -235,6 +238,12 @@ systems and is unavailable on Windows; \code{"serial"} explicitly requires
 \code{"socket"} backend. Host names are recycled to \code{ncores}. Remote
 nodes require non-interactive access, a compatible R installation, and the
 same hydroTSM version in a visible or shared library.
+}
+  \item{from, to}{
+Starting and ending bounds used by \code{window} to subset \code{x} before
+validation and QC. Values must be compatible with the time-index class, lie
+inside the available record, and satisfy \code{from <= to}. Defaults are
+\code{start(x)} and \code{end(x)}.
 }
 }
 

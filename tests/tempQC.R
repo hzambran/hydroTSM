@@ -90,6 +90,8 @@ stopifnot(
   identical(formals(tempQC)$verbose, TRUE),
   identical(formals(tempQC_daily)$verbose, TRUE),
   identical(formals(tempQC_subdaily)$verbose, TRUE),
+  identical(formals(tempQC)$from, quote(start(x))),
+  identical(formals(tempQC)$to, quote(end(x))),
   length(quiet.messages) == 0L,
   identical(quiet.qc$settings$verbose, FALSE),
   inherits(quiet.qc, "tempQC"), inherits(verbose.qc, "tempQC"),
@@ -98,6 +100,45 @@ stopifnot(
   any(grepl("Running physical-range check", daily.messages, fixed=TRUE)),
   any(grepl("Completed daily QC", daily.messages, fixed=TRUE)),
   inherits(invalid.verbose, "try-error")
+)
+
+# Time bounds are applied before dispatch and retained in the audit settings.
+daily.subset <- tempQC(
+  daily[, 1:2], metadata=metadata[1:2, ], checks=no.checks,
+  from=daily.dates[101], to=daily.dates[200], min.years=0,
+  max.missing=1, max.suspicious=1, verbose=FALSE
+)
+invalid.period <- try(
+  tempQC(daily[, 1:2], checks=no.checks,
+         from=daily.dates[200], to=daily.dates[101]), silent=TRUE
+)
+stopifnot(
+  identical(start(daily.subset$accepted.data), daily.dates[101]),
+  identical(end(daily.subset$accepted.data), daily.dates[200]),
+  identical(daily.subset$settings$from, daily.dates[101]),
+  identical(daily.subset$settings$to, daily.dates[200]),
+  inherits(invalid.period, "try-error")
+)
+
+# Spatial QC defaults to metadata-aware activation but remains overridable.
+implicit.checks <- no.checks[names(no.checks) != "spatial"]
+implicit.no.metadata <- tempQC_daily(
+  daily[1:120, 1:3], checks=implicit.checks,
+  min.years=0, max.missing=1, max.suspicious=1, verbose=FALSE
+)
+implicit.metadata <- tempQC_daily(
+  daily[1:120, 1:3], metadata=metadata[1:3, ],
+  checks=implicit.checks, min.overlap=30, min.group.overlap=10,
+  min.correlation=-1, min.years=0, max.missing=1,
+  max.suspicious=1, verbose=FALSE
+)
+stopifnot(
+  identical(unname(implicit.no.metadata$settings$checks["spatial"]), FALSE),
+  is.null(implicit.no.metadata$neighbours),
+  identical(unname(implicit.metadata$settings$checks["spatial"]), TRUE),
+  is.list(implicit.metadata$neighbours),
+  length(utils::help("tempQC-class", package="hydroTSM")) > 0L,
+  length(utils::help("tempQC_class", package="hydroTSM")) > 0L
 )
 
 duplicate.dates <- seq(as.Date("2020-01-01"),
@@ -259,9 +300,14 @@ stopifnot(
 subdaily.wrapper <- tempQC(
   subdaily[, 1:2], metadata=metadata[1:2, ],
   checks=subdaily.no.checks, min.years=0,
-  max.missing=1, max.suspicious=1
+  max.missing=1, max.suspicious=1,
+  from=subdaily.times[25], to=subdaily.times[120]
 )
-stopifnot(identical(subdaily.wrapper$settings$resolution, "subdaily"))
+stopifnot(
+  identical(subdaily.wrapper$settings$resolution, "subdaily"),
+  identical(start(subdaily.wrapper$accepted.data), subdaily.times[25]),
+  identical(end(subdaily.wrapper$accepted.data), subdaily.times[120])
+)
 
 # Verify sub-daily dispatch/stage messages and direct quiet execution.
 subdaily.progress.checks <- subdaily.no.checks

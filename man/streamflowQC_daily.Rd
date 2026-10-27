@@ -18,7 +18,7 @@ streamflowQC_daily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, gap=TRUE, climatology=TRUE,
            flatline=TRUE, spike=TRUE, rate=TRUE, highflow=TRUE,
-           spatial=TRUE, breakpoint=TRUE),
+           spatial=!is.null(metadata), breakpoint=TRUE),
   lower=0, upper=Inf,
   duplicate.min.month=20L, duplicate.min.year=300L,
   duplicate.min.nonzero=1L,
@@ -42,7 +42,7 @@ streamflowQC_daily(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL
+  cluster.nodes=NULL, from=start(x), to=end(x)
 )
 }
 
@@ -56,8 +56,10 @@ the index is \code{Date} or \code{POSIXt}.}
   \item{coords}{Names of numeric longitude and latitude fields, in that
 order. Missing coordinates are allowed; non-missing coordinates are
 range-checked.}
-  \item{checks}{Named logical vector. Omitted names retain their defaults;
-all daily tests are enabled by default.}
+  \item{checks}{Named logical vector. Omitted names retain their defaults.
+All daily tests except spatial QC are enabled by default; spatial QC defaults
+to \code{!is.null(metadata)}. An explicitly supplied \code{spatial} value
+always takes precedence.}
   \item{lower, upper}{Physical limits, scalar or station-specific. The
 default rejects negative flow but deliberately imposes no universal upper
 limit.}
@@ -146,6 +148,9 @@ Unix-like systems, or \code{"serial"} with \code{ncores=1L}.}
 \code{"socket"} backend, recycled to \code{ncores}. Network nodes require
 non-interactive access, compatible R installations, and the same hydroTSM
 version in a visible or shared library.}
+  \item{from, to}{Start and end of the period retained before quality
+control. Defaults retain the complete time span of \code{x}. Bounds are
+validated against the available index.}
 }
 
 \details{
@@ -156,6 +161,11 @@ calendar blocks are hard failures. Other tests remain evidence for review;
 the default requires three independent families before point rejection because
 floods, regulation, and intermittent flow can legitimately trigger individual
 statistical rules.
+
+The \code{from}--\code{to} subset is applied before completeness, record
+duration, climatology, high-flow, breakpoint, and spatial diagnostics are
+calculated. Therefore all output data and station recommendations describe
+only the selected period.
 
 High-flow diagnostics combine the six-standard-deviation, largest-AMAX ratio,
 and GEV return-period tests into one evidence family so correlated extreme
@@ -179,7 +189,7 @@ on exit.
 
 \value{
 An object of class \code{"streamflowQC"}; see
-\code{\link{streamflowQC-class}}.
+\code{\link{streamflowQC_class}}.
 }
 
 \references{

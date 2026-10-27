@@ -18,7 +18,7 @@ streamflowQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL
+  cluster.nodes=NULL, from=start(x), to=end(x)
 )
 }
 
@@ -44,6 +44,9 @@ are suppressed; warnings and errors remain visible.}
   \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
 parallel backend, and optional PSOCK host names passed to the selected
 workflow. See \code{\link{streamflowQC_daily}}.}
+  \item{from, to}{Start and end of the period retained before frequency
+detection and quality control. Defaults retain the complete time span of
+\code{x}.}
 }
 
 \details{
@@ -54,6 +57,12 @@ observations must be in consistent discharge units. Duplicate timestamps are
 rejected because selecting among contradictory measurements would require
 provenance or agency-quality information not contained in a numeric
 \code{zoo} object.
+
+The selected \code{from}--\code{to} period is applied before sampling
+frequency is detected. In the selected daily or sub-daily workflow,
+\code{spatial} defaults to \code{TRUE} when \code{metadata} is supplied and
+to \code{FALSE} when it is \code{NULL}. An explicit named
+\code{checks["spatial"]} value always takes precedence.
 
 The design combines the point plausibility and homogeneity principles of
 Gudmundsson et al. (2018), the real-time hierarchy of U.S. IOOS (2018), and
@@ -67,7 +76,7 @@ The default \code{ncores=1L} is serial and preserves the historical behaviour.
 
 \value{
 An object of class \code{"streamflowQC"}; see
-\code{\link{streamflowQC-class}}.
+\code{\link{streamflowQC_class}}.
 }
 
 \references{

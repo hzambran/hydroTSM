@@ -17,7 +17,8 @@ method preserves the native time index and writes no files.
 tempQC_subdaily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, climatology=TRUE, persistence=TRUE,
-           step=TRUE, spike=TRUE, spatial=TRUE, breakpoint=TRUE),
+           step=TRUE, spike=TRUE, spatial=!is.null(metadata),
+           breakpoint=TRUE),
   lower=-89.4, upper=57.7,
   climatology.z=6, climatology.min.samples=30L,
   persistence.hours=3, persistence.tolerance=0.05,
@@ -33,7 +34,8 @@ tempQC_subdaily(
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 }
 
@@ -53,7 +55,8 @@ column in metres.}
 neighbour selection and weighting when \code{elevation} is supplied.}
   \item{checks}{Named logical vector that overrides any of \code{"range"},
 \code{"climatology"}, \code{"persistence"}, \code{"step"},
-\code{"spike"}, \code{"spatial"}, and \code{"breakpoint"}.}
+\code{"spike"}, \code{"spatial"}, and \code{"breakpoint"}. Spatial QC
+defaults to \code{!is.null(metadata)}; all other checks default to \code{TRUE}.}
   \item{lower, upper}{Physical screening limits, scalar or station-specific.}
   \item{climatology.z}{Absolute robust anomaly threshold within each
 calendar-month and hour-of-day group.}
@@ -95,6 +98,8 @@ are suppressed; warnings and errors remain visible.}
   \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
 parallel backend, and optional PSOCK host names. See
 \code{\link{tempQC_daily}} for backend behaviour and network requirements.}
+  \item{from, to}{Starting and ending time-index bounds used to subset
+\code{x} before QC. See \code{\link{tempQC_daily}}.}
 }
 
 \details{

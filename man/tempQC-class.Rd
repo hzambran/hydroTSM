@@ -4,6 +4,7 @@
 \name{tempQC-class}
 \Rdversion{1.1}
 \alias{tempQC-class}
+\alias{tempQC_class}
 \alias{print.tempQC}
 \alias{plot.tempQC}
 
@@ -37,6 +38,10 @@ time-series panel.}
 The plot summarizes station recommendations, missing and confirmed-suspicious
 fractions, counts by active test, and the time distribution of rejected
 observations. It is diagnostic and does not alter the result.
+
+Because an unquoted hyphen is the subtraction operator in R, use
+\code{?tempQC_class}, \code{?`tempQC-class`}, or
+\code{help("tempQC-class")} to open this page.
 }
 
 \value{

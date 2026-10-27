@@ -1,8 +1,9 @@
 %%File streamflowQC-class.Rd
 %% Part of the hydroTSM R package
 
-\name{streamflowQC-class}
+\name{streamflowQC_class}
 \Rdversion{1.1}
+\alias{streamflowQC_class}
 \alias{streamflowQC-class}
 \alias{print.streamflowQC}
 \alias{plot.streamflowQC}
@@ -38,6 +39,10 @@ The plot summarizes station recommendations, missing/review/rejected
 fractions, counts by active test, and the time distribution of confirmed
 suspicious observations. Plotting is diagnostic and does not alter the
 result or write a file unless the caller explicitly opens a file device.
+
+Use \code{?streamflowQC_class} to open this page. R interprets an unquoted
+hyphen as subtraction, so the legacy topic requires
+\code{?"streamflowQC-class"}.
 }
 
 \value{

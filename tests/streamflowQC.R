@@ -59,7 +59,8 @@ stopifnot(
   isTRUE(daily.qc$flags$spike[300, "S3"]),
   is.na(daily.qc$accepted.corrected[10, "S1"]),
   inherits(daily.qc$highflow, "streamflowQC_highflow"),
-  identical(daily.qc$settings$area, "area_km2")
+  identical(daily.qc$settings$area, "area_km2"),
+  isTRUE(daily.qc$settings$checks["spatial"])
 )
 
 # Every test can be disabled with one named logical vector.
@@ -75,6 +76,64 @@ daily.none <- streamflowQC_daily(
 stopifnot(length(daily.none$flags) == 0L,
           is.null(daily.none$highflow),
           NCOL(daily.none$discarded.data) == 0L)
+
+# Date bounds subset before QC and retain the resolved period in settings.
+daily.window <- streamflowQC_daily(
+  daily[, 1:2], checks=daily.checks.off,
+  from=as.Date("2019-02-01"), to=as.Date("2019-03-31"),
+  min.years=0, max.missing=1, max.review=1, max.suspicious=1,
+  verbose=FALSE
+)
+stopifnot(
+  identical(zoo::index(daily.window$accepted.data),
+            daily.dates[daily.dates >= as.Date("2019-02-01") &
+                        daily.dates <= as.Date("2019-03-31")]),
+  identical(as.character(daily.window$settings$from), "2019-02-01"),
+  identical(as.character(daily.window$settings$to), "2019-03-31")
+)
+
+# Spatial QC defaults to off without metadata when not explicitly supplied.
+daily.nonspatial.off <- daily.checks.off[names(daily.checks.off) != "spatial"]
+daily.no.metadata <- streamflowQC_daily(
+  daily[, 1:3], checks=daily.nonspatial.off,
+  min.years=0, max.missing=1, max.review=1, max.suspicious=1,
+  verbose=FALSE
+)
+stopifnot(identical(unname(daily.no.metadata$settings$checks["spatial"]),
+                    FALSE),
+          is.null(daily.no.metadata$spatial.estimate))
+
+# Explicit spatial choices remain authoritative with or without metadata.
+daily.spatial.on <- daily.checks.off
+daily.spatial.on["spatial"] <- TRUE
+daily.explicit.spatial <- streamflowQC_daily(
+  daily[1:120, 1:3], checks=daily.spatial.on,
+  min.overlap=30L, min.correlation=-1,
+  min.years=0, max.missing=1, max.review=1, max.suspicious=1,
+  verbose=FALSE
+)
+daily.explicit.no.spatial <- streamflowQC_daily(
+  daily[1:120, 1:3], metadata=metadata[metadata$gauge != "S4", ],
+  station.id="gauge", checks=daily.checks.off,
+  min.years=0, max.missing=1, max.review=1, max.suspicious=1,
+  verbose=FALSE
+)
+stopifnot(isTRUE(daily.explicit.spatial$settings$checks["spatial"]),
+          "spatial" %in% names(daily.explicit.spatial$flags),
+          identical(unname(
+            daily.explicit.no.spatial$settings$checks["spatial"]), FALSE),
+          is.null(daily.explicit.no.spatial$spatial.estimate))
+
+# Invalid date windows fail before any QC calculation is started.
+invalid.window <- try(
+  streamflowQC_daily(
+    daily[, 1:2], checks=daily.checks.off,
+    from=as.Date("2019-03-01"), to=as.Date("2019-02-01"),
+    verbose=FALSE
+  ), silent=TRUE
+)
+stopifnot(inherits(invalid.window, "try-error"),
+          grepl("'from > to'", invalid.window, fixed=TRUE))
 
 # Exact copied daily calendar blocks are independently auditable.
 duplicate.dates <- seq(as.Date("2020-01-01"),
@@ -137,6 +196,16 @@ stopifnot(
   grepl("'verbose' must be a logical value", invalid.verbose, fixed=TRUE)
 )
 
+# The wrapper applies its date window before detecting the input frequency.
+daily.wrapper.window <- streamflowQC(
+  daily[, 1:2], checks=daily.checks.off,
+  from=as.Date("2019-04-01"), to=as.Date("2019-04-30"),
+  min.years=0, max.missing=1, max.review=1, max.suspicious=1,
+  verbose=FALSE
+)
+stopifnot(identical(zoo::index(daily.wrapper.window$accepted.data),
+                    daily.dates[91:120]))
+
 ################################################################################
 # Sub-daily streamflow QC                                                     #
 ################################################################################
@@ -182,12 +251,30 @@ stopifnot(
   inherits(zoo::index(subdaily.qc$accepted.data), "POSIXt")
 )
 
-# The frequency-aware wrapper also reports sub-daily dispatch and progress.
+# Disable all checks for focused sub-daily API tests below.
 subdaily.checks.off <- c(
   range=FALSE, gap=FALSE, climatology=FALSE, flatline=FALSE,
   spike=FALSE, rate=FALSE, fluctuation=FALSE, highflow=FALSE,
   spatial=FALSE, breakpoint=FALSE
 )
+
+# POSIXct bounds retain the sub-daily index class and exact endpoints.
+subdaily.from <- subdaily.times[25L]
+subdaily.to <- subdaily.times[72L]
+subdaily.window <- streamflowQC_subdaily(
+  subdaily[, 1:2], checks=subdaily.checks.off,
+  from=subdaily.from, to=subdaily.to,
+  min.years=0, max.missing=1, max.review=1, max.suspicious=1,
+  verbose=FALSE
+)
+stopifnot(
+  identical(zoo::index(subdaily.window$accepted.data),
+            subdaily.times[25:72]),
+  identical(subdaily.window$settings$from, subdaily.from),
+  identical(subdaily.window$settings$to, subdaily.to)
+)
+
+# The frequency-aware wrapper also reports sub-daily dispatch and progress.
 subdaily.verbose.checks <- subdaily.checks.off
 subdaily.verbose.checks["range"] <- TRUE
 subdaily.messages <- capture.output(
@@ -276,6 +363,11 @@ invalid.nodes <- try(
 )
 stopifnot(inherits(invalid.cores, "try-error"),
           inherits(invalid.nodes, "try-error"))
+
+# The class help page has a syntactically valid topic for '?'.
+class.help <- utils::help("streamflowQC_class", package="hydroTSM")
+legacy.class.help <- utils::help("streamflowQC-class", package="hydroTSM")
+stopifnot(length(class.help) == 1L, length(legacy.class.help) == 1L)
 
 # Summary plotting writes only to the caller-supplied temporary graphics device.
 plot.file <- tempfile(fileext=".pdf")

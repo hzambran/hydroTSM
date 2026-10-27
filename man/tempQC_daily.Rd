@@ -19,7 +19,7 @@ tempQC_daily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, climatology=TRUE,
            persistence=TRUE, step=TRUE, spike=TRUE,
-           spatial=TRUE, breakpoint=TRUE),
+           spatial=!is.null(metadata), breakpoint=TRUE),
   lower=-89.4, upper=57.7,
   duplicate.min.month=20L, duplicate.min.year=300L,
   climatology.window=15L, climatology.z=6,
@@ -37,7 +37,8 @@ tempQC_daily(
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 }
 
@@ -62,7 +63,8 @@ regression weights. It is ignored when \code{elevation=NULL}.}
   \item{checks}{Named logical vector used to activate or deactivate any of
 \code{"range"}, \code{"duplicate"}, \code{"climatology"},
 \code{"persistence"}, \code{"step"}, \code{"spike"},
-\code{"spatial"}, and \code{"breakpoint"}. All are active by default.}
+\code{"spatial"}, and \code{"breakpoint"}. All non-spatial checks are active
+by default; \code{"spatial"} defaults to \code{!is.null(metadata)}.}
   \item{lower, upper}{Physical screening limits. Each can be scalar or contain
 one value per station. Regionally authoritative limits should replace the
 defaults when available.}
@@ -128,6 +130,9 @@ Unix-like systems, or \code{"serial"} with \code{ncores=1L}.}
 \code{"socket"} backend, recycled to \code{ncores}. Network nodes require
 non-interactive access, compatible R installations, and the same hydroTSM
 version in a visible or shared library.}
+  \item{from, to}{Starting and ending time-index bounds used to subset
+\code{x} before validation and QC. They must lie inside the record and satisfy
+\code{from <= to}; their defaults retain the complete series.}
 }
 
 \details{

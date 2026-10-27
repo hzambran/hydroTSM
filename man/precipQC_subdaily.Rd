@@ -21,7 +21,8 @@ precipQC_subdaily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, climatology=TRUE, persistence=TRUE,
            daily.accumulation=TRUE, monthly.accumulation=TRUE,
-           weekday=TRUE, spatial=TRUE, dryspell=TRUE, breakpoint=TRUE),
+           weekday=TRUE, spatial=!is.null(metadata), dryspell=TRUE,
+           breakpoint=TRUE),
   lower=0, max.rate=401, wet.threshold=0.1,
   climatology.prob=0.999, climatology.z=8,
   climatology.min.samples=100L,
@@ -39,7 +40,8 @@ precipQC_subdaily(
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 }
 
@@ -64,7 +66,8 @@ Named logical vector. Any subset of \code{"range"}, \code{"climatology"},
 \code{"persistence"}, \code{"daily.accumulation"},
 \code{"monthly.accumulation"}, \code{"weekday"}, \code{"spatial"},
 \code{"dryspell"}, and \code{"breakpoint"} can override the default of
-running every check.
+running every non-spatial check. Spatial QC defaults to
+\code{!is.null(metadata)}.
 }
   \item{lower}{
 Physical lower limit in mm per interval.
@@ -156,6 +159,10 @@ are suppressed; warnings and errors remain visible.
   \item{ncores, parallel.type, cluster.nodes}{
 Requested worker count, parallel backend, and optional PSOCK host names. See
 \code{\link{precipQC_daily}} for backend behaviour and network requirements.
+}
+  \item{from, to}{
+Starting and ending time-index bounds used to subset \code{x} before QC. See
+\code{\link{precipQC_daily}}.
 }
 }
 

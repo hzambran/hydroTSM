@@ -280,7 +280,7 @@ streamflowQC_daily <- function(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, gap=TRUE, climatology=TRUE,
            flatline=TRUE, spike=TRUE, rate=TRUE, highflow=TRUE,
-           spatial=TRUE, breakpoint=TRUE),
+           spatial=!is.null(metadata), breakpoint=TRUE),
   lower=0, upper=Inf,
   duplicate.min.month=20L, duplicate.min.year=300L,
   duplicate.min.nonzero=1L,
@@ -304,13 +304,16 @@ streamflowQC_daily <- function(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL) {
+  cluster.nodes=NULL, from=start(x), to=end(x)) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
+  if (!zoo::is.zoo(x))
+    stop("Invalid argument: 'x' must be a zoo object !")
+  x <- check_from_and_to_and_subset(x, from=from, to=to)
   defaults <- c(range=TRUE, duplicate=TRUE, gap=TRUE, climatology=TRUE,
                 flatline=TRUE, spike=TRUE, rate=TRUE, highflow=TRUE,
-                spatial=TRUE, breakpoint=TRUE)
+                spatial=!is.null(metadata), breakpoint=TRUE)
   checks <- .precipQC_checks(checks, defaults)
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "daily", elevation=elevation
@@ -432,7 +435,7 @@ streamflowQC_daily <- function(
     max.suspicious=max.suspicious, min.years=min.years,
     discard.breakpoint=discard.breakpoint, verbose=verbose,
     ncores=backend$nworkers, parallel.type=backend$type,
-    cluster.nodes=backend$nodes
+    cluster.nodes=backend$nodes, from=start(prepared$x), to=end(prepared$x)
   )
 
   # Combine evidence only after all enabled checks have completed.
@@ -463,7 +466,7 @@ streamflowQC_subdaily <- function(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, gap=TRUE, climatology=TRUE, flatline=TRUE,
            spike=TRUE, rate=TRUE, fluctuation=TRUE, highflow=TRUE,
-           spatial=TRUE, breakpoint=TRUE),
+           spatial=!is.null(metadata), breakpoint=TRUE),
   lower=0, upper=Inf,
   climatology.z=6, climatology.min.samples=100L, log.offset=0.01,
   flatline.hours=168, high.flatline.hours=24,
@@ -487,13 +490,16 @@ streamflowQC_subdaily <- function(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL) {
+  cluster.nodes=NULL, from=start(x), to=end(x)) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
+  if (!zoo::is.zoo(x))
+    stop("Invalid argument: 'x' must be a zoo object !")
+  x <- check_from_and_to_and_subset(x, from=from, to=to)
   defaults <- c(range=TRUE, gap=TRUE, climatology=TRUE, flatline=TRUE,
                 spike=TRUE, rate=TRUE, fluctuation=TRUE, highflow=TRUE,
-                spatial=TRUE, breakpoint=TRUE)
+                spatial=!is.null(metadata), breakpoint=TRUE)
   checks <- .precipQC_checks(checks, defaults)
   prepared <- .precipQC_validate_common(
     x, metadata, station.id, coords, "subdaily", elevation=elevation
@@ -635,7 +641,7 @@ streamflowQC_subdaily <- function(
     max.suspicious=max.suspicious, min.years=min.years,
     discard.breakpoint=discard.breakpoint, verbose=verbose,
     ncores=backend$nworkers, parallel.type=backend$type,
-    cluster.nodes=backend$nodes
+    cluster.nodes=backend$nodes, from=start(prepared$x), to=end(prepared$x)
   )
 
   # Combine evidence only after all enabled checks have completed.
@@ -667,12 +673,13 @@ streamflowQC <- function(x, metadata=NULL, station.id="station",
                          area=NULL, elevation=NULL,
                          elevation.scale=500, verbose=TRUE, ncores=1L,
                          parallel.type=c("socket", "fork", "serial"),
-                         cluster.nodes=NULL) {
+                         cluster.nodes=NULL, from=start(x), to=end(x)) {
 
   # Validate verbosity at the dispatch boundary for consistent errors.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
   if (!zoo::is.zoo(x))
     stop("Invalid argument: 'x' must be a zoo object !")
+  x <- check_from_and_to_and_subset(x, from=from, to=to)
   frequency <- sfreq(x)
   if (identical(frequency, "daily")) {
     .streamflowQC_progress(
