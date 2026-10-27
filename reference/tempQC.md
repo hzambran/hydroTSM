@@ -14,7 +14,8 @@ No files are written.
 tempQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 ```
 
@@ -47,6 +48,12 @@ tempQC(
   names passed to the selected workflow. See
   [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md).
 
+- from, to:
+
+  Starting and ending index bounds used to subset `x` before frequency
+  detection and QC. See
+  [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md).
+
 ## Details
 
 Daily input is sent to `tempQC_daily`; minute or hourly input is sent to
@@ -59,6 +66,8 @@ captured or suppressed independently of the returned result. The staged
 design follows the gross-error, tolerance, temporal, inter-variable, and
 inter-station QC categories described by Brunet et al. (2020). The
 default `ncores=1L` is serial and preserves the historical behaviour.
+When `checks` is not supplied through `...`, spatial QC is enabled by
+default only when `metadata` is supplied.
 
 ## Value
 

@@ -13,7 +13,7 @@ station acceptance recommendations without writing files."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-28</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,8 @@ station acceptance recommendations without writing files.</p>
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>,</span>
 <span>  checks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>range<span class="op">=</span><span class="cn">TRUE</span>, climatology<span class="op">=</span><span class="cn">TRUE</span>, persistence<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>           daily.accumulation<span class="op">=</span><span class="cn">TRUE</span>, monthly.accumulation<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>           weekday<span class="op">=</span><span class="cn">TRUE</span>, spatial<span class="op">=</span><span class="cn">TRUE</span>, dryspell<span class="op">=</span><span class="cn">TRUE</span>, breakpoint<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>           weekday<span class="op">=</span><span class="cn">TRUE</span>, spatial<span class="op">=</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">)</span>, dryspell<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>           breakpoint<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  lower<span class="op">=</span><span class="fl">0</span>, max.rate<span class="op">=</span><span class="fl">401</span>, wet.threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span>  climatology.prob<span class="op">=</span><span class="fl">0.999</span>, climatology.z<span class="op">=</span><span class="fl">8</span>,</span>
 <span>  climatology.min.samples<span class="op">=</span><span class="fl">100L</span>,</span>
@@ -75,7 +76,8 @@ station acceptance recommendations without writing files.</p>
 <span>  min.evidence<span class="op">=</span><span class="fl">2L</span>, max.missing<span class="op">=</span><span class="fl">0.2</span>, max.suspicious<span class="op">=</span><span class="fl">0.05</span>,</span>
 <span>  min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
 <span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>, ncores<span class="op">=</span><span class="fl">1L</span>,</span>
-<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
+<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span>,</span>
+<span>  from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -102,7 +104,8 @@ or latitude entries may be <code>NA</code>; see the fallback rules in
 <code>"persistence"</code>, <code>"daily.accumulation"</code>,
 <code>"monthly.accumulation"</code>, <code>"weekday"</code>, <code>"spatial"</code>,
 <code>"dryspell"</code>, and <code>"breakpoint"</code> can override the default of
-running every check.</p></dd>
+running every non-spatial check. Spatial QC defaults to
+<code>!is.null(metadata)</code>.</p></dd>
 
   <dt id="arg-lower">lower<a class="anchor" aria-label="anchor" href="#arg-lower"></a></dt>
 <dd><p>Physical lower limit in mm per interval.</p></dd>
@@ -194,6 +197,10 @@ are suppressed; warnings and errors remain visible.</p></dd>
   <dt id="arg-ncores-parallel-type-cluster-nodes">ncores, parallel.type, cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-ncores-parallel-type-cluster-nodes"></a></dt>
 <dd><p>Requested worker count, parallel backend, and optional PSOCK host names. See
 <code><a href="precipQC_daily.html">precipQC_daily</a></code> for backend behaviour and network requirements.</p></dd>
+
+  <dt id="arg-from-to">from, to<a class="anchor" aria-label="anchor" href="#arg-from-to"></a></dt>
+<dd><p>Starting and ending time-index bounds used to subset <code>x</code> before QC. See
+<code><a href="precipQC_daily.html">precipQC_daily</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

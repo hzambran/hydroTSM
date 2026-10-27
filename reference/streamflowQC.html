@@ -11,7 +11,7 @@ streamflowQC_subdaily. No files are written."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-28</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@ daily data to <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></co
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, <span class="va">...</span>,</span>
 <span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
-<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span>, from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -102,6 +102,11 @@ are suppressed; warnings and errors remain visible.</p></dd>
 parallel backend, and optional PSOCK host names passed to the selected
 workflow. See <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></code>.</p></dd>
 
+  <dt id="arg-from-to">from, to<a class="anchor" aria-label="anchor" href="#arg-from-to"></a></dt>
+<dd><p>Start and end of the period retained before frequency
+detection and quality control. Defaults retain the complete time span of
+<code>x</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -112,6 +117,11 @@ observations must be in consistent discharge units. Duplicate timestamps are
 rejected because selecting among contradictory measurements would require
 provenance or agency-quality information not contained in a numeric
 <code>zoo</code> object.</p>
+<p>The selected <code>from</code>–<code>to</code> period is applied before sampling
+frequency is detected. In the selected daily or sub-daily workflow,
+<code>spatial</code> defaults to <code>TRUE</code> when <code>metadata</code> is supplied and
+to <code>FALSE</code> when it is <code>NULL</code>. An explicit named
+<code>checks["spatial"]</code> value always takes precedence.</p>
 <p>The design combines the point plausibility and homogeneity principles of
 Gudmundsson et al. (2018), the real-time hierarchy of U.S. IOOS (2018), and
 the sub-daily artefact and event-corroboration framework of Fileni et al.
@@ -123,7 +133,7 @@ The default <code>ncores=1L</code> is serial and preserves the historical behavi
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>"streamflowQC"</code>; see
-<code><a href="streamflowQC-class.html">streamflowQC-class</a></code>.</p>
+<code><a href="streamflowQC-class.html">streamflowQC_class</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

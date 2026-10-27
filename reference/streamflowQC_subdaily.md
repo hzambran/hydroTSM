@@ -12,7 +12,7 @@ streamflowQC_subdaily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, gap=TRUE, climatology=TRUE, flatline=TRUE,
            spike=TRUE, rate=TRUE, fluctuation=TRUE, highflow=TRUE,
-           spatial=TRUE, breakpoint=TRUE),
+           spatial=!is.null(metadata), breakpoint=TRUE),
   lower=0, upper=Inf,
   climatology.z=6, climatology.min.samples=100L, log.offset=0.01,
   flatline.hours=168, high.flatline.hours=24,
@@ -36,7 +36,7 @@ streamflowQC_subdaily(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL
+  cluster.nodes=NULL, from=start(x), to=end(x)
 )
 ```
 
@@ -63,8 +63,10 @@ streamflowQC_subdaily(
 
 - checks:
 
-  Named logical vector. Omitted names retain their defaults; all
-  sub-daily tests are enabled by default.
+  Named logical vector. Omitted names retain their defaults. All
+  sub-daily tests except spatial QC are enabled by default; spatial QC
+  defaults to `!is.null(metadata)`. An explicitly supplied `spatial`
+  value always takes precedence.
 
 - lower, upper:
 
@@ -261,6 +263,12 @@ streamflowQC_subdaily(
   [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md)
   for backend behaviour and network requirements.
 
+- from, to:
+
+  Start and end of the period retained before quality control. Defaults
+  retain the complete time span of `x`. Bounds are validated against the
+  available index.
+
 ## Details
 
 The defaults generalize the 15-minute UK-Flow15-QC rules to the actual
@@ -269,6 +277,10 @@ flat lines use 24 hours rather than fixed counts of 672 and 96. Relative
 spikes and abrupt falls use a factor of five; absolute spikes use the
 station 0.99 quantile; and rapid fluctuations use more than eight sign
 reversals over 16 observations.
+
+The `from`–`to` subset is applied before interval-dependent durations
+and all quality-control diagnostics are calculated. Therefore all output
+data and station recommendations describe only the selected period.
 
 High-flow diagnostics include unusually large log-flow, an
 annual-maximum ratio, and a base-R maximum-likelihood GEV fit after at
@@ -293,7 +305,7 @@ order, and workers created by the call are stopped on exit.
 ## Value
 
 An object of class `"streamflowQC"`; see
-[`streamflowQC-class`](https://hzambran.github.io/hydroTSM/reference/streamflowQC-class.md).
+[`streamflowQC_class`](https://hzambran.github.io/hydroTSM/reference/streamflowQC-class.md).
 
 ## References
 

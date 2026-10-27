@@ -14,7 +14,8 @@ No files are written.
 precipQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 ```
 
@@ -50,6 +51,12 @@ precipQC(
   to the selected workflow. See
   [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md).
 
+- from, to:
+
+  Starting and ending index bounds used to subset `x` before frequency
+  detection and QC. They default to the complete record. See
+  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md).
+
 ## Details
 
 `sfreq(x)` returning `"daily"` selects `precipQC_daily(x, ...)`. Values
@@ -59,7 +66,9 @@ informative error because the implemented thresholds and tests are not
 valid at those resolutions. Progress is emitted with
 [`message()`](https://rdrr.io/r/base/message.html), so it can be
 captured or suppressed without redirecting returned values. The default
-`ncores=1L` is serial and preserves the historical behaviour.
+`ncores=1L` is serial and preserves the historical behaviour. When
+`checks` is not supplied through `...`, spatial QC is enabled by default
+only when `metadata` is supplied.
 
 ## Value
 

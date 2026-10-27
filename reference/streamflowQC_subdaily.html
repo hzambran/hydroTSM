@@ -13,7 +13,7 @@ files."><meta property="og:image" content="https://hzambran.github.io/hydroTSM/l
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-28</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@ files.</p>
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>,</span>
 <span>  checks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>range<span class="op">=</span><span class="cn">TRUE</span>, gap<span class="op">=</span><span class="cn">TRUE</span>, climatology<span class="op">=</span><span class="cn">TRUE</span>, flatline<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>           spike<span class="op">=</span><span class="cn">TRUE</span>, rate<span class="op">=</span><span class="cn">TRUE</span>, fluctuation<span class="op">=</span><span class="cn">TRUE</span>, highflow<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>           spatial<span class="op">=</span><span class="cn">TRUE</span>, breakpoint<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>           spatial<span class="op">=</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">)</span>, breakpoint<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  lower<span class="op">=</span><span class="fl">0</span>, upper<span class="op">=</span><span class="cn">Inf</span>,</span>
 <span>  climatology.z<span class="op">=</span><span class="fl">6</span>, climatology.min.samples<span class="op">=</span><span class="fl">100L</span>, log.offset<span class="op">=</span><span class="fl">0.01</span>,</span>
 <span>  flatline.hours<span class="op">=</span><span class="fl">168</span>, high.flatline.hours<span class="op">=</span><span class="fl">24</span>,</span>
@@ -81,7 +81,7 @@ files.</p>
 <span>  max.suspicious<span class="op">=</span><span class="fl">0.05</span>, min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
 <span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
-<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span>, from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -104,8 +104,10 @@ files.</p>
 Individual coordinates may be missing.</p></dd>
 
   <dt id="arg-checks">checks<a class="anchor" aria-label="anchor" href="#arg-checks"></a></dt>
-<dd><p>Named logical vector. Omitted names retain their defaults;
-all sub-daily tests are enabled by default.</p></dd>
+<dd><p>Named logical vector. Omitted names retain their defaults.
+All sub-daily tests except spatial QC are enabled by default; spatial QC
+defaults to <code>!is.null(metadata)</code>. An explicitly supplied
+<code>spatial</code> value always takes precedence.</p></dd>
 
   <dt id="arg-lower-upper">lower, upper<a class="anchor" aria-label="anchor" href="#arg-lower-upper"></a></dt>
 <dd><p>Physical limits, scalar or station-specific. The
@@ -275,6 +277,11 @@ parallel backend, and optional PSOCK host names. See
 <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></code> for backend behaviour and network
 requirements.</p></dd>
 
+  <dt id="arg-from-to">from, to<a class="anchor" aria-label="anchor" href="#arg-from-to"></a></dt>
+<dd><p>Start and end of the period retained before quality
+control. Defaults retain the complete time span of <code>x</code>. Bounds are
+validated against the available index.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -283,6 +290,9 @@ interval. Thus, ordinary flat lines use 168 hours and high-flow flat lines use
 24 hours rather than fixed counts of 672 and 96. Relative spikes and abrupt
 falls use a factor of five; absolute spikes use the station 0.99 quantile; and
 rapid fluctuations use more than eight sign reversals over 16 observations.</p>
+<p>The <code>from</code>–<code>to</code> subset is applied before interval-dependent
+durations and all quality-control diagnostics are calculated. Therefore all
+output data and station recommendations describe only the selected period.</p>
 <p>High-flow diagnostics include unusually large log-flow, an annual-maximum
 ratio, and a base-R maximum-likelihood GEV fit after at least 10 years. These
 correlated diagnostics contribute one evidence family. A spatial flag
@@ -304,7 +314,7 @@ by the call are stopped on exit.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>"streamflowQC"</code>; see
-<code><a href="streamflowQC-class.html">streamflowQC-class</a></code>.</p>
+<code><a href="streamflowQC-class.html">streamflowQC_class</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

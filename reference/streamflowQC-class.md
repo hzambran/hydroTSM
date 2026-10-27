@@ -46,6 +46,10 @@ fractions, counts by active test, and the time distribution of confirmed
 suspicious observations. Plotting is diagnostic and does not alter the
 result or write a file unless the caller explicitly opens a file device.
 
+Use `?streamflowQC_class` to open this page. R interprets an unquoted
+hyphen as subtraction, so the legacy topic requires
+`?"streamflowQC-class"`.
+
 ## Value
 
 Both methods return `x` invisibly. A `"streamflowQC"` object is a list

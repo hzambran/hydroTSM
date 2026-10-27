@@ -13,7 +13,7 @@ discarding, and no files are written."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-28</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,8 @@ discarding, and no files are written.</p>
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>,</span>
 <span>  checks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>range<span class="op">=</span><span class="cn">TRUE</span>, duplicate<span class="op">=</span><span class="cn">TRUE</span>, frequency<span class="op">=</span><span class="cn">TRUE</span>, gap<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>           climatology<span class="op">=</span><span class="cn">TRUE</span>, persistence<span class="op">=</span><span class="cn">TRUE</span>, accumulation<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>           weekday<span class="op">=</span><span class="cn">TRUE</span>, spatial<span class="op">=</span><span class="cn">TRUE</span>, dryspell<span class="op">=</span><span class="cn">TRUE</span>, breakpoint<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>           weekday<span class="op">=</span><span class="cn">TRUE</span>, spatial<span class="op">=</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">)</span>, dryspell<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>           breakpoint<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  lower<span class="op">=</span><span class="fl">0</span>, upper<span class="op">=</span><span class="fl">1825</span>, wet.threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span>  duplicate.min.month<span class="op">=</span><span class="fl">20L</span>, duplicate.min.year<span class="op">=</span><span class="fl">300L</span>,</span>
 <span>  duplicate.min.nonzero<span class="op">=</span><span class="fl">3L</span>,</span>
@@ -77,7 +78,8 @@ discarding, and no files are written.</p>
 <span>  min.evidence<span class="op">=</span><span class="fl">2L</span>, max.missing<span class="op">=</span><span class="fl">0.2</span>, max.suspicious<span class="op">=</span><span class="fl">0.05</span>,</span>
 <span>  min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
 <span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>, ncores<span class="op">=</span><span class="fl">1L</span>,</span>
-<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
+<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span>,</span>
+<span>  from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -125,7 +127,8 @@ difference more influence. The argument has no effect when
 <code>"duplicate"</code>, <code>"frequency"</code>, <code>"gap"</code>,
 <code>"persistence"</code>, <code>"accumulation"</code>, <code>"weekday"</code>,
 <code>"spatial"</code>, <code>"dryspell"</code>, and <code>"breakpoint"</code> can be supplied
-to override the default of running every check.</p></dd>
+to override the defaults. All checks except <code>"spatial"</code> are active by
+default; <code>"spatial"</code> defaults to <code>!is.null(metadata)</code>.</p></dd>
 
   <dt id="arg-duplicate-min-month-duplicate-min-year-duplicate-min-nonzero">duplicate.min.month, duplicate.min.year, duplicate.min.nonzero<a class="anchor" aria-label="anchor" href="#arg-duplicate-min-month-duplicate-min-year-duplicate-min-nonzero"></a></dt>
 <dd><p>Minimum complete paired month positions, complete paired year positions, and
@@ -273,6 +276,12 @@ systems and is unavailable on Windows; <code>"serial"</code> explicitly requires
 <code>"socket"</code> backend. Host names are recycled to <code>ncores</code>. Remote
 nodes require non-interactive access, a compatible R installation, and the
 same hydroTSM version in a visible or shared library.</p></dd>
+
+  <dt id="arg-from-to">from, to<a class="anchor" aria-label="anchor" href="#arg-from-to"></a></dt>
+<dd><p>Starting and ending bounds used by <code>window</code> to subset <code>x</code> before
+validation and QC. Values must be compatible with the time-index class, lie
+inside the available record, and satisfy <code>from &lt;= to</code>. Defaults are
+<code>start(x)</code> and <code>end(x)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

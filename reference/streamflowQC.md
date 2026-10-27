@@ -14,7 +14,7 @@ streamflowQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL
+  cluster.nodes=NULL, from=start(x), to=end(x)
 )
 ```
 
@@ -66,6 +66,11 @@ streamflowQC(
   names passed to the selected workflow. See
   [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md).
 
+- from, to:
+
+  Start and end of the period retained before frequency detection and
+  quality control. Defaults retain the complete time span of `x`.
+
 ## Details
 
 The wrapper changes only the resolution-specific workflow. Test
@@ -75,6 +80,12 @@ controls. Daily and sub-daily observations must be in consistent
 discharge units. Duplicate timestamps are rejected because selecting
 among contradictory measurements would require provenance or
 agency-quality information not contained in a numeric `zoo` object.
+
+The selected `from`–`to` period is applied before sampling frequency is
+detected. In the selected daily or sub-daily workflow, `spatial`
+defaults to `TRUE` when `metadata` is supplied and to `FALSE` when it is
+`NULL`. An explicit named `checks["spatial"]` value always takes
+precedence.
 
 The design combines the point plausibility and homogeneity principles of
 Gudmundsson et al. (2018), the real-time hierarchy of U.S. IOOS (2018),
@@ -89,7 +100,7 @@ default `ncores=1L` is serial and preserves the historical behaviour.
 ## Value
 
 An object of class `"streamflowQC"`; see
-[`streamflowQC-class`](https://hzambran.github.io/hydroTSM/reference/streamflowQC-class.md).
+[`streamflowQC_class`](https://hzambran.github.io/hydroTSM/reference/streamflowQC-class.md).
 
 ## References
 

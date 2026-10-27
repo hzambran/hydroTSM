@@ -12,7 +12,8 @@ precipQC_daily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, frequency=TRUE, gap=TRUE,
            climatology=TRUE, persistence=TRUE, accumulation=TRUE,
-           weekday=TRUE, spatial=TRUE, dryspell=TRUE, breakpoint=TRUE),
+           weekday=TRUE, spatial=!is.null(metadata), dryspell=TRUE,
+           breakpoint=TRUE),
   lower=0, upper=1825, wet.threshold=0.1,
   duplicate.min.month=20L, duplicate.min.year=300L,
   duplicate.min.nonzero=3L,
@@ -32,7 +33,8 @@ precipQC_daily(
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 ```
 
@@ -87,8 +89,9 @@ precipQC_daily(
   Named logical vector. Any subset of `"range"`, `"climatology"`,
   `"duplicate"`, `"frequency"`, `"gap"`, `"persistence"`,
   `"accumulation"`, `"weekday"`, `"spatial"`, `"dryspell"`, and
-  `"breakpoint"` can be supplied to override the default of running
-  every check.
+  `"breakpoint"` can be supplied to override the defaults. All checks
+  except `"spatial"` are active by default; `"spatial"` defaults to
+  `!is.null(metadata)`.
 
 - duplicate.min.month, duplicate.min.year, duplicate.min.nonzero:
 
@@ -281,6 +284,13 @@ precipQC_daily(
   the `"socket"` backend. Host names are recycled to `ncores`. Remote
   nodes require non-interactive access, a compatible R installation, and
   the same hydroTSM version in a visible or shared library.
+
+- from, to:
+
+  Starting and ending bounds used by `window` to subset `x` before
+  validation and QC. Values must be compatible with the time-index
+  class, lie inside the available record, and satisfy `from <= to`.
+  Defaults are `start(x)` and `end(x)`.
 
 ## Details
 

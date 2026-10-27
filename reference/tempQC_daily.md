@@ -12,7 +12,7 @@ tempQC_daily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, climatology=TRUE,
            persistence=TRUE, step=TRUE, spike=TRUE,
-           spatial=TRUE, breakpoint=TRUE),
+           spatial=!is.null(metadata), breakpoint=TRUE),
   lower=-89.4, upper=57.7,
   duplicate.min.month=20L, duplicate.min.year=300L,
   climatology.window=15L, climatology.z=6,
@@ -30,7 +30,8 @@ tempQC_daily(
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 ```
 
@@ -74,7 +75,8 @@ tempQC_daily(
 
   Named logical vector used to activate or deactivate any of `"range"`,
   `"duplicate"`, `"climatology"`, `"persistence"`, `"step"`, `"spike"`,
-  `"spatial"`, and `"breakpoint"`. All are active by default.
+  `"spatial"`, and `"breakpoint"`. All non-spatial checks are active by
+  default; `"spatial"` defaults to `!is.null(metadata)`.
 
 - lower, upper:
 
@@ -230,6 +232,12 @@ tempQC_daily(
   recycled to `ncores`. Network nodes require non-interactive access,
   compatible R installations, and the same hydroTSM version in a visible
   or shared library.
+
+- from, to:
+
+  Starting and ending time-index bounds used to subset `x` before
+  validation and QC. They must lie inside the record and satisfy
+  `from <= to`; their defaults retain the complete series.
 
 ## Details
 

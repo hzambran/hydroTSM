@@ -49,6 +49,10 @@ stations; missing and confirmed-suspicious percentages for the most
 affected stations; flag counts by individual test; and the number of
 confirmed suspicious values through time.
 
+Because an unquoted hyphen is the subtraction operator in R, use
+`?precipQC_class`, `` ?`precipQC-class` ``, or `help("precipQC-class")`
+to open this page.
+
 ## Value
 
 Both methods return `x` invisibly. The print method writes a compact

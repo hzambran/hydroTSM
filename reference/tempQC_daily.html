@@ -13,7 +13,7 @@ recommendations without writing to disk."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-28</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@ recommendations without writing to disk.</p>
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>,</span>
 <span>  checks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>range<span class="op">=</span><span class="cn">TRUE</span>, duplicate<span class="op">=</span><span class="cn">TRUE</span>, climatology<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>           persistence<span class="op">=</span><span class="cn">TRUE</span>, step<span class="op">=</span><span class="cn">TRUE</span>, spike<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>           spatial<span class="op">=</span><span class="cn">TRUE</span>, breakpoint<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>           spatial<span class="op">=</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">)</span>, breakpoint<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  lower<span class="op">=</span><span class="op">-</span><span class="fl">89.4</span>, upper<span class="op">=</span><span class="fl">57.7</span>,</span>
 <span>  duplicate.min.month<span class="op">=</span><span class="fl">20L</span>, duplicate.min.year<span class="op">=</span><span class="fl">300L</span>,</span>
 <span>  climatology.window<span class="op">=</span><span class="fl">15L</span>, climatology.z<span class="op">=</span><span class="fl">6</span>,</span>
@@ -75,7 +75,8 @@ recommendations without writing to disk.</p>
 <span>  min.evidence<span class="op">=</span><span class="fl">2L</span>, max.missing<span class="op">=</span><span class="fl">0.2</span>, max.suspicious<span class="op">=</span><span class="fl">0.05</span>,</span>
 <span>  min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
 <span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>, ncores<span class="op">=</span><span class="fl">1L</span>,</span>
-<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
+<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span>,</span>
+<span>  from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -115,7 +116,8 @@ regression weights. It is ignored when <code>elevation=NULL</code>.</p></dd>
 <dd><p>Named logical vector used to activate or deactivate any of
 <code>"range"</code>, <code>"duplicate"</code>, <code>"climatology"</code>,
 <code>"persistence"</code>, <code>"step"</code>, <code>"spike"</code>,
-<code>"spatial"</code>, and <code>"breakpoint"</code>. All are active by default.</p></dd>
+<code>"spatial"</code>, and <code>"breakpoint"</code>. All non-spatial checks are active
+by default; <code>"spatial"</code> defaults to <code>!is.null(metadata)</code>.</p></dd>
 
   <dt id="arg-lower-upper">lower, upper<a class="anchor" aria-label="anchor" href="#arg-lower-upper"></a></dt>
 <dd><p>Physical screening limits. Each can be scalar or contain
@@ -245,6 +247,11 @@ Unix-like systems, or <code>"serial"</code> with <code>ncores=1L</code>.</p></dd
 <code>"socket"</code> backend, recycled to <code>ncores</code>. Network nodes require
 non-interactive access, compatible R installations, and the same hydroTSM
 version in a visible or shared library.</p></dd>
+
+  <dt id="arg-from-to">from, to<a class="anchor" aria-label="anchor" href="#arg-from-to"></a></dt>
+<dd><p>Starting and ending time-index bounds used to subset
+<code>x</code> before validation and QC. They must lie inside the record and satisfy
+<code>from &lt;= to</code>; their defaults retain the complete series.</p></dd>
 
 </dl></div>
     <div class="section level2">

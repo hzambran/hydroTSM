@@ -11,7 +11,7 @@ precipQC_subdaily. No files are written."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-27</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-28</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,8 @@ precipQC_subdaily. No files are written."><meta property="og:image" content="htt
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">precipQC</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, <span class="va">...</span>,</span>
 <span>  elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>, ncores<span class="op">=</span><span class="fl">1L</span>,</span>
-<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
+<span>  parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>, cluster.nodes<span class="op">=</span><span class="cn">NULL</span>,</span>
+<span>  from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -83,6 +84,11 @@ are unaffected.</p></dd>
 <dd><p>Parallel worker count, backend, and optional PSOCK host names passed to the
 selected workflow. See <code><a href="precipQC_daily.html">precipQC_daily</a></code>.</p></dd>
 
+  <dt id="arg-from-to">from, to<a class="anchor" aria-label="anchor" href="#arg-from-to"></a></dt>
+<dd><p>Starting and ending index bounds used to subset <code>x</code> before frequency
+detection and QC. They default to the complete record. See
+<code><a href="precipQC_daily.html">precipQC_daily</a></code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -93,7 +99,9 @@ or other frequencies are rejected with an informative error because the
 implemented thresholds and tests are not valid at those resolutions. Progress
 is emitted with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>, so it can be captured or suppressed without
 redirecting returned values.
-The default <code>ncores=1L</code> is serial and preserves the historical behaviour.</p>
+The default <code>ncores=1L</code> is serial and preserves the historical behaviour.
+When <code>checks</code> is not supplied through <code>...</code>, spatial QC is enabled
+by default only when <code>metadata</code> is supplied.</p>
     </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>

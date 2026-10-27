@@ -45,6 +45,10 @@ confirmed-suspicious fractions, counts by active test, and the time
 distribution of rejected observations. It is diagnostic and does not
 alter the result.
 
+Because an unquoted hyphen is the subtraction operator in R, use
+`?tempQC_class`, `` ?`tempQC-class` ``, or `help("tempQC-class")` to
+open this page.
+
 ## Value
 
 Both methods return `x` invisibly. A `"tempQC"` object is a list with:

@@ -12,7 +12,7 @@ streamflowQC_daily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, duplicate=TRUE, gap=TRUE, climatology=TRUE,
            flatline=TRUE, spike=TRUE, rate=TRUE, highflow=TRUE,
-           spatial=TRUE, breakpoint=TRUE),
+           spatial=!is.null(metadata), breakpoint=TRUE),
   lower=0, upper=Inf,
   duplicate.min.month=20L, duplicate.min.year=300L,
   duplicate.min.nonzero=1L,
@@ -36,7 +36,7 @@ streamflowQC_daily(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL
+  cluster.nodes=NULL, from=start(x), to=end(x)
 )
 ```
 
@@ -64,8 +64,10 @@ streamflowQC_daily(
 
 - checks:
 
-  Named logical vector. Omitted names retain their defaults; all daily
-  tests are enabled by default.
+  Named logical vector. Omitted names retain their defaults. All daily
+  tests except spatial QC are enabled by default; spatial QC defaults to
+  `!is.null(metadata)`. An explicitly supplied `spatial` value always
+  takes precedence.
 
 - lower, upper:
 
@@ -274,6 +276,12 @@ streamflowQC_daily(
   compatible R installations, and the same hydroTSM version in a visible
   or shared library.
 
+- from, to:
+
+  Start and end of the period retained before quality control. Defaults
+  retain the complete time span of `x`. Bounds are validated against the
+  available index.
+
 ## Details
 
 The daily climatology test reproduces the GSIM structure: it compares
@@ -283,6 +291,11 @@ and exact copied calendar blocks are hard failures. Other tests remain
 evidence for review; the default requires three independent families
 before point rejection because floods, regulation, and intermittent flow
 can legitimately trigger individual statistical rules.
+
+The `from`–`to` subset is applied before completeness, record duration,
+climatology, high-flow, breakpoint, and spatial diagnostics are
+calculated. Therefore all output data and station recommendations
+describe only the selected period.
 
 High-flow diagnostics combine the six-standard-deviation, largest-AMAX
 ratio, and GEV return-period tests into one evidence family so
@@ -307,7 +320,7 @@ created by the call are stopped on exit.
 ## Value
 
 An object of class `"streamflowQC"`; see
-[`streamflowQC-class`](https://hzambran.github.io/hydroTSM/reference/streamflowQC-class.md).
+[`streamflowQC_class`](https://hzambran.github.io/hydroTSM/reference/streamflowQC-class.md).
 
 ## References
 

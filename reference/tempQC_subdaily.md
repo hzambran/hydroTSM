@@ -10,7 +10,8 @@ object. The method preserves the native time index and writes no files.
 tempQC_subdaily(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   checks=c(range=TRUE, climatology=TRUE, persistence=TRUE,
-           step=TRUE, spike=TRUE, spatial=TRUE, breakpoint=TRUE),
+           step=TRUE, spike=TRUE, spatial=!is.null(metadata),
+           breakpoint=TRUE),
   lower=-89.4, upper=57.7,
   climatology.z=6, climatology.min.samples=30L,
   persistence.hours=3, persistence.tolerance=0.05,
@@ -26,7 +27,8 @@ tempQC_subdaily(
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
   elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
-  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
+  parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
+  from=start(x), to=end(x)
 )
 ```
 
@@ -66,6 +68,8 @@ tempQC_subdaily(
 
   Named logical vector that overrides any of `"range"`, `"climatology"`,
   `"persistence"`, `"step"`, `"spike"`, `"spatial"`, and `"breakpoint"`.
+  Spatial QC defaults to `!is.null(metadata)`; all other checks default
+  to `TRUE`.
 
 - lower, upper:
 
@@ -171,6 +175,12 @@ tempQC_subdaily(
   names. See
   [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md)
   for backend behaviour and network requirements.
+
+- from, to:
+
+  Starting and ending time-index bounds used to subset `x` before QC.
+  See
+  [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md).
 
 ## Details
 
