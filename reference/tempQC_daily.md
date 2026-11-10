@@ -29,7 +29,8 @@ tempQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -152,6 +153,20 @@ tempQC_daily(
 
   Minimum Pearson correlation for an eligible neighbour.
 
+- max.candidates:
+
+  Maximum candidate stations retained per target before exact regression
+  screening. Located targets retain the nearest distance/elevation
+  candidates; targets without usable coordinates use a deterministic
+  low-cost correlation screen. Use `Inf` for exhaustive selection.
+
+- selection.samples:
+
+  Maximum evenly spaced timestamps used for initial target–candidate
+  correlation and regression errors. All timestamps are used for records
+  shorter than this value and for the final grouped models. Use `Inf`
+  for exhaustive initial fitting.
+
 - spatial.f:
 
   Minimum standardized spatial-regression residual.
@@ -245,13 +260,15 @@ The tests represent independent error mechanisms and are deliberately
 combined as evidence instead of interpreting every statistical outlier
 as an error.
 
-Station-local tests are evaluated in balanced, contiguous column chunks,
-and neighbour selection plus target-station spatial regressions are
-distributed over the same backend. Already vectorized range checks
-remain in the master process. Result columns retain input order and use
-the same algorithm in serial and parallel calls. Socket workers copy
-assigned data, whereas `"fork"` may reduce memory use on one Unix-like
-machine. Workers created by the call are stopped on exit.
+Station-local tests are evaluated in balanced, contiguous column chunks.
+Spatial metadata are cached as compact target-specific candidate lists;
+candidate and timestamp bounds prevent exhaustive all-pairs fitting.
+Pairwise regression statistics and timestamp predictions are calculated
+with vectorized sufficient-statistic formulas. Spatial target chunks are
+distributed over the same backend. Result columns retain input order and
+use the same algorithm in serial and parallel calls. `"fork"` may reduce
+memory use on one Unix-like machine. Workers created by the call are
+stopped on exit.
 
 1.  *Physical range and copied blocks*. Values beyond observed world
     limits and exactly duplicated months or years are gross-integrity
@@ -365,7 +382,7 @@ qc <- tempQC_daily(
   min.years=0, max.missing=1
 )
 #> [tempQC] Starting daily QC for 90 observations at 2 station(s) ...
-#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
+#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmwuk1x.
 #> [tempQC] Running physical-range check ...
 #> [tempQC] Running persistence check ...
 #> [tempQC] Running isolated-spike check ...

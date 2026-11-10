@@ -34,7 +34,8 @@ tempQC_spatial(
   max.distance=200, min.neighbours=2L, min.overlap=90L,
   min.group.overlap=20L, min.correlation=0.6,
   f=4, min.difference=8, min.se=0.1, elevation=NULL,
-  elevation.scale=500, ncores=1L,
+  elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 
@@ -151,6 +152,17 @@ tempQC_breakpoint(
 
   Minimum target-neighbour Pearson correlation.
 
+- max.candidates:
+
+  Maximum candidate stations retained per target before exact regression
+  screening, or `Inf` for all candidates.
+
+- selection.samples:
+
+  Maximum evenly spaced timestamps used for initial neighbour screening,
+  or `Inf` for the full record. Final calendar-group regressions use all
+  timestamps.
+
 - f:
 
   Standardized residual threshold for spatial regression.
@@ -239,8 +251,11 @@ flag requires both an absolute and a standardized residual. The
 equations follow the spatial regression test of Hubbard et al. (2007)
 and Estevez et al. (2018); grouping and correlation screening
 incorporate findings of Cheng et al. (2016) and Xiong et al. (2022,
-2024). Neighbour selection and target-station regressions are divided
-into balanced station chunks when multiple workers are requested.
+2024). Candidate geometry is cached, initial selection is bounded by
+`max.candidates` and `selection.samples`, and pairwise/model
+calculations use vectorized sufficient statistics. Target-station
+regressions are divided into balanced station chunks when multiple
+workers are requested.
 
 `tempQC_internal` flags Tmin above Tmax, possible interchange relative
 to the adjacent three-day window, and the 40-degree lagged range

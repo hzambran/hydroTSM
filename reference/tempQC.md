@@ -13,7 +13,9 @@ No files are written.
 ``` r
 tempQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
+  verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -34,6 +36,11 @@ tempQC(
 - ...:
 
   Arguments passed unchanged to the selected workflow.
+
+- max.candidates, selection.samples:
+
+  Candidate and time-sample bounds passed to the selected workflow. See
+  [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md).
 
 - verbose:
 
@@ -99,7 +106,7 @@ qc <- tempQC(x, checks=c(range=TRUE, duplicate=FALSE,
                           breakpoint=FALSE), min.years=0)
 #> [tempQC] Detected daily data; dispatching to tempQC_daily() ...
 #> [tempQC] Starting daily QC for 30 observations at 2 station(s) ...
-#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
+#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmwuk1x.
 #> [tempQC] Running physical-range check ...
 #> [tempQC] Combining evidence and station recommendations ...
 #> [tempQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).

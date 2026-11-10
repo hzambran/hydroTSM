@@ -50,6 +50,7 @@ precipQC_spatial(
   n.neighbours=10L, max.distance=Inf, min.neighbours=2L,
   min.overlap=30L, min.correlation=0, cr.threshold=3,
   wet.threshold=0.1, elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
   cluster.nodes=NULL
 )
@@ -59,6 +60,7 @@ precipQC_dryspell(
   n.neighbours=10L, max.distance=Inf, window.days=15L,
   neighbour.wet.days=3L, neighbour.fraction=1,
   wet.threshold=0.1, elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
   cluster.nodes=NULL
 )
@@ -220,6 +222,18 @@ precipQC_breakpoint(
 
   Preferred minimum Spearman correlation between target and neighbour.
 
+- max.candidates:
+
+  Maximum candidate stations retained per target before exact selection,
+  or `Inf` for exhaustive selection. Geographic filtering is applied
+  first when target coordinates are available.
+
+- selection.samples:
+
+  Maximum evenly spaced timestamps used to select neighbours, or `Inf`
+  to use the full record. The exact spatial scores still use every
+  timestamp.
+
 - cr.threshold:
 
   Critical ratio for the absolute transformed residual divided by robust
@@ -311,19 +325,23 @@ cannot prove that a reported depth is a longer-period accumulation.
 
 `precipQC_spatial` applies a leave-one-station-out test after `log1p`
 transformation. Coordinates, overlap, and correspondence select up to
-ten neighbours. If elevation is selected, its exponential similarity
-factor penalizes neighbours separated by large height differences. The
-estimate is a distance- and elevation-weighted median when usable
-metadata weights exist and an ordinary median otherwise. A located
-target ranks eligible located neighbours first and uses
-correlation-qualified unlocated neighbours only as fallbacks. A target
-missing either coordinate uses correlation-based selection and remains
-fully testable. The critical ratio uses the larger of the simultaneous
-neighbour dispersion, historical target residual dispersion, and a small
-numerical floor. Only positive residuals are flagged here; isolated
-dryness is handled separately. Neighbour selection and target-station
-calculations are divided into balanced station chunks when multiple
-workers are requested.
+ten neighbours. Candidate discovery is bounded before exact selection,
+and the correlation screen uses at most `selection.samples` timestamps;
+the final estimates and scores use the complete record. If elevation is
+selected, its exponential similarity factor penalizes neighbours
+separated by large height differences. The estimate is a distance- and
+elevation-weighted median when usable metadata weights exist and an
+ordinary median otherwise. A located target ranks eligible located
+neighbours first and uses correlation-qualified unlocated neighbours
+only as fallbacks. A target missing either coordinate uses
+correlation-based selection and remains fully testable. The critical
+ratio uses the larger of the simultaneous neighbour dispersion,
+historical target residual dispersion, and a small numerical floor. Only
+positive residuals are flagged here; isolated dryness is handled
+separately. Neighbour selection and target-station calculations are
+divided into balanced station chunks when multiple workers are
+requested. Row-wise ordinary or weighted medians and MAD values are
+calculated by a registered compiled kernel.
 
 `precipQC_dryspell` aggregates native observations to wet/dry calendar
 days, locates long dry runs, and flags target values only where the

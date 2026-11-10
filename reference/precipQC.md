@@ -13,7 +13,9 @@ No files are written.
 ``` r
 precipQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
+  verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -37,6 +39,11 @@ precipQC(
   Arguments passed unchanged to the selected QC function. Because the
   daily and sub-daily functions have resolution-specific arguments, only
   arguments accepted by the detected workflow should be supplied.
+
+- max.candidates, selection.samples:
+
+  Scalability controls passed to the selected workflow. See
+  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md).
 
 - verbose:
 
@@ -99,7 +106,7 @@ qc <- precipQC(
 )
 #> [precipQC] Detected daily data; dispatching to precipQC_daily() ...
 #> [precipQC] Starting daily QC for 40 observations at 2 station(s) ...
-#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
+#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmwuk1x.
 #> [precipQC] Running physical-range check ...
 #> [precipQC] Running copied-block check ...
 #> [precipQC] Running frequent-value check ...

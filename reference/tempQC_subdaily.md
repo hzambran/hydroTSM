@@ -26,7 +26,8 @@ tempQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -126,6 +127,13 @@ tempQC_subdaily(
 
   Minimum eligible target-neighbour Pearson correlation.
 
+- max.candidates, selection.samples:
+
+  Maximum candidate stations per target and maximum timestamps for
+  initial neighbour screening. The bounded defaults support large
+  networks; `Inf` requests exhaustive behaviour. See
+  [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md).
+
 - spatial.f:
 
   Minimum standardized spatial residual.
@@ -194,7 +202,9 @@ terrain.
 
 With multiple workers, station-local tests, neighbour selection, and
 target-station spatial regressions are divided into balanced station
-chunks. The serial, socket, and fork backends preserve input station
+chunks. Spatial metadata are cached in compact candidate lists, and
+vectorized regression formulas replace station-pair and timestamp-level
+R loops. The serial, socket, and fork backends preserve input station
 order and QC results. The effective backend, workers, and distinct nodes
 are reported when `verbose=TRUE`, and created socket workers are stopped
 on exit.
@@ -293,7 +303,7 @@ qc <- tempQC_subdaily(
   min.years=0, max.missing=1
 )
 #> [tempQC] Starting sub-daily QC for 72 observations at 2 station(s) ...
-#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
+#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmwuk1x.
 #> [tempQC] Running physical-range check ...
 #> [tempQC] Running persistence check ...
 #> [tempQC] Running isolated-spike check ...

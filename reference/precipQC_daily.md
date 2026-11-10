@@ -32,7 +32,8 @@ precipQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -204,6 +205,22 @@ precipQC_daily(
   too few preferred neighbours remain, the best eligible neighbours are
   used.
 
+- max.candidates:
+
+  Maximum candidate stations retained per target before exact neighbour
+  selection. Located targets retain the nearest candidates after
+  distance and elevation filtering; targets without usable coordinates
+  use a deterministic low-cost correlation screen. The default bounds
+  work and memory for large networks. Use `Inf` for exhaustive
+  selection.
+
+- selection.samples:
+
+  Maximum evenly spaced timestamps used for target–candidate correlation
+  and regression screening. All timestamps are used when the record is
+  shorter. The overlap threshold is scaled to the sample size. Use `Inf`
+  for exhaustive selection.
+
 - dryspell.days:
 
   Length of a target-station dry window to compare with neighbours.
@@ -298,11 +315,13 @@ The workflow combines tests that address different error mechanisms
 instead of treating one statistical anomaly as proof of error.
 
 Station-local tests are evaluated in balanced, contiguous column chunks.
-Neighbour selection and target-station spatial calculations are also
-distributed, while already vectorized range checks remain in the master
-process. Result columns retain their input order and serial and parallel
-calls use the same algorithms. Socket workers copy their assigned
-station chunks; `"fork"` can use less memory on a single Unix-like
+Spatial geometry is cached once, candidate pools are bounded before
+exact statistics are computed, and one native-scale neighbour graph is
+reused for all accumulation scales. Row-wise robust spatial statistics
+use compiled code. Target-station calculations are distributed, while
+already vectorized range checks remain in the master process. Result
+columns retain their input order and serial and parallel calls use the
+same algorithms. `"fork"` can use less memory on a single Unix-like
 machine. The verbose startup message reports the effective backend,
 worker count, and distinct nodes, and all workers created by the call
 are stopped on exit.
@@ -498,7 +517,8 @@ qc <- precipQC_daily(pcp, metadata=meta, station.id="code",
                      elevation="altitude_m", min.years=0,
                      checks=c(breakpoint=FALSE))
 #> [precipQC] Starting daily QC for 400 observations at 3 station(s) ...
-#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmtai0g.
+#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmwuk1x.
+#> [precipQC] Spatial screening uses up to 200 candidate(s) and 2048 timestamp(s) per target.
 #> [precipQC] Running physical-range check ...
 #> [precipQC] Running copied-block check ...
 #> [precipQC] Running frequent-value check ...
