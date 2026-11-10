@@ -6,6 +6,8 @@ importFrom("methods", as, hasArg, is, slot)
 importFrom("graphics", barplot, grid, axTicks, Axis, abline, axis, boxplot, hist, legend, lines, mtext, par, plot)
 importFrom("classInt", classIntervals)
 
+useDynLib(hydroTSM, .registration=TRUE)
+
 importFrom("zoo", is.zoo, as.Date, as.zoo, zoo, coredata, as.yearmon, rollapply, index, "time<-", na.approx, na.spline)
 importFrom("xts", axTicksByTime, to.period, .index, periodicity)
 #importFrom("zoo", aggregate) # aggregate is not exported from zoo
