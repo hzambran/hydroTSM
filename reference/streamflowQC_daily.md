@@ -36,7 +36,8 @@ streamflowQC_daily(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL, from=start(x), to=end(x)
+  cluster.nodes=NULL, from=start(x), to=end(x),
+  max.candidates=200L, selection.samples=2048L
 )
 ```
 
@@ -282,6 +283,18 @@ streamflowQC_daily(
   retain the complete time span of `x`. Bounds are validated against the
   available index.
 
+- max.candidates:
+
+  Maximum reusable spatial candidates retained per target station. The
+  default limits large-network work; `Inf` requests exhaustive
+  legacy-style selection. It must not be smaller than `n.neighbours`.
+
+- selection.samples:
+
+  Maximum deterministic time positions used for spatial neighbour
+  selection. Final regressions and flags use all observations. Use `Inf`
+  for exhaustive selection.
+
 ## Details
 
 The daily climatology test reproduces the GSIM structure: it compares
@@ -305,6 +318,15 @@ divided by catchment area, and flags a rare event only when its
 regression residual is large and too few selected neighbours show high
 flow within the search window.
 
+Spatial QC constructs compact geographic candidate lists once, caches
+their distance and elevation similarities, and evaluates each reciprocal
+correlation only once. Targets without complete coordinates fall back to
+deterministic correlation screening. Regression sufficient statistics
+and event-window support are vectorized, while spatial estimates are
+processed in bounded time blocks. This avoids dense station-by-station
+matrices and supports long records without changing station order or the
+returned `zoo` classes.
+
 Station acceptance requires all user-defined completeness, review,
 confirmed suspicion, duration, and optional breakpoint criteria. Point
 and station decisions are therefore related but distinct.
@@ -314,8 +336,9 @@ Neighbour selection and target-station spatial calculations are
 distributed over the same backend, while the vectorized range check
 stays in the master process. Input column order and algorithms are
 identical in serial and parallel calls. Socket workers copy assigned
-data; `"fork"` may reduce memory use on one Unix-like machine. Workers
-created by the call are stopped on exit.
+data; `"fork"` may reduce memory use on one Unix-like machine. Large
+socket inputs are broadcast once per worker rather than once per station
+task. Workers created by the call are stopped on exit.
 
 ## Value
 

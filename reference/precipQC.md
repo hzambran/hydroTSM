@@ -75,7 +75,14 @@ valid at those resolutions. Progress is emitted with
 captured or suppressed without redirecting returned values. The default
 `ncores=1L` is serial and preserves the historical behaviour. When
 `checks` is not supplied through `...`, spatial QC is enabled by default
-only when `metadata` is supplied.
+only when `metadata` is supplied. Spatial QC caches compact
+geographic/elevation candidate lists and symmetric pair statistics,
+reuses one precipitation neighbour graph across accumulation scales and
+the dry-spell check, and processes station-time calculations in bounded
+row blocks. Non-native accumulation scales retain flags only. With a
+PSOCK backend, large read-only data are broadcast once per worker.
+Setting `max.candidates=Inf` or `selection.samples=Inf` requests the
+corresponding exhaustive legacy-style selection.
 
 ## Value
 

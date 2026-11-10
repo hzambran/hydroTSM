@@ -11,7 +11,7 @@ streamflowQC_subdaily. No files are written."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-29</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-30</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,8 @@ daily data to <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></co
 <span>  <span class="va">x</span>, metadata<span class="op">=</span><span class="cn">NULL</span>, station.id<span class="op">=</span><span class="st">"station"</span>, coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, <span class="va">...</span>,</span>
 <span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
-<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span>, from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span>, from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>  max.candidates<span class="op">=</span><span class="fl">200L</span>, selection.samples<span class="op">=</span><span class="fl">2048L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -107,6 +108,16 @@ workflow. See <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></co
 detection and quality control. Defaults retain the complete time span of
 <code>x</code>.</p></dd>
 
+  <dt id="arg-max-candidates">max.candidates<a class="anchor" aria-label="anchor" href="#arg-max-candidates"></a></dt>
+<dd><p>Maximum reusable spatial candidates retained per
+target station. The default limits work for large networks; <code>Inf</code>
+requests exhaustive legacy-style selection.</p></dd>
+
+  <dt id="arg-selection-samples">selection.samples<a class="anchor" aria-label="anchor" href="#arg-selection-samples"></a></dt>
+<dd><p>Maximum deterministic time positions used to
+select spatial neighbours. Final regressions and flags still use all
+observations. Use <code>Inf</code> for exhaustive selection.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -128,7 +139,9 @@ the sub-daily artefact and event-corroboration framework of Fileni et al.
 (2026).</p>
 <p>Progress is emitted with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>, so it can be captured or suppressed
 without redirecting the returned object.
-The default <code>ncores=1L</code> is serial and preserves the historical behaviour.</p>
+The default <code>ncores=1L</code> is serial and preserves the historical behaviour.
+When spatial QC is active, verbose output also reports the effective candidate
+and timestamp limits. Large PSOCK inputs are broadcast once per worker.</p>
     </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>

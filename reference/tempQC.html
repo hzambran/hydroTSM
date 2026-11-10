@@ -11,7 +11,7 @@ tempQC_subdaily. No files are written."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-29</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-30</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,7 +107,13 @@ inter-variable, and inter-station QC categories described by Brunet et al.
 (2020).
 The default <code>ncores=1L</code> is serial and preserves the historical behaviour.
 When <code>checks</code> is not supplied through <code>...</code>, spatial QC is enabled
-by default only when <code>metadata</code> is supplied.</p>
+by default only when <code>metadata</code> is supplied.
+Spatial QC caches compact geographic/elevation candidate lists and symmetric
+pair statistics, uses vectorized sufficient-statistic regressions, and
+processes station-time prediction calculations in bounded row blocks. With a
+PSOCK backend, large read-only data are broadcast once per worker. Setting
+<code>max.candidates=Inf</code> or <code>selection.samples=Inf</code> requests the
+corresponding exhaustive legacy-style selection.</p>
     </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>

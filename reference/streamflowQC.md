@@ -14,7 +14,8 @@ streamflowQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL, from=start(x), to=end(x)
+  cluster.nodes=NULL, from=start(x), to=end(x),
+  max.candidates=200L, selection.samples=2048L
 )
 ```
 
@@ -71,6 +72,18 @@ streamflowQC(
   Start and end of the period retained before frequency detection and
   quality control. Defaults retain the complete time span of `x`.
 
+- max.candidates:
+
+  Maximum reusable spatial candidates retained per target station. The
+  default limits work for large networks; `Inf` requests exhaustive
+  legacy-style selection.
+
+- selection.samples:
+
+  Maximum deterministic time positions used to select spatial
+  neighbours. Final regressions and flags still use all observations.
+  Use `Inf` for exhaustive selection.
+
 ## Details
 
 The wrapper changes only the resolution-specific workflow. Test
@@ -96,6 +109,9 @@ Progress is emitted with
 [`message()`](https://rdrr.io/r/base/message.html), so it can be
 captured or suppressed without redirecting the returned object. The
 default `ncores=1L` is serial and preserves the historical behaviour.
+When spatial QC is active, verbose output also reports the effective
+candidate and timestamp limits. Large PSOCK inputs are broadcast once
+per worker.
 
 ## Value
 

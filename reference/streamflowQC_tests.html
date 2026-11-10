@@ -11,7 +11,7 @@ evidence can be run, inspected, deactivated, and tuned independently."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-29</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-30</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,7 +91,8 @@ evidence can be run, inspected, deactivated, and tuned independently.</p>
 <span>  min.support<span class="op">=</span><span class="fl">1L</span>, min.overlap<span class="op">=</span><span class="fl">90L</span>, min.correlation<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span>  window<span class="op">=</span><span class="fl">3L</span>, high.prob<span class="op">=</span><span class="fl">0.99</span>, support.prob<span class="op">=</span><span class="fl">0.95</span>, f<span class="op">=</span><span class="fl">3</span>,</span>
 <span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
-<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span></span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span>, max.candidates<span class="op">=</span><span class="fl">200L</span>,</span>
+<span>  selection.samples<span class="op">=</span><span class="fl">2048L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">streamflowQC_breakpoint</span><span class="op">(</span></span>
@@ -233,6 +234,15 @@ regression.</p></dd>
   <dt id="arg-min-correlation">min.correlation<a class="anchor" aria-label="anchor" href="#arg-min-correlation"></a></dt>
 <dd><p>Minimum preferred Spearman log-flow correlation.</p></dd>
 
+  <dt id="arg-max-candidates">max.candidates<a class="anchor" aria-label="anchor" href="#arg-max-candidates"></a></dt>
+<dd><p>Maximum reusable candidates retained per target.
+Use <code>Inf</code> for exhaustive legacy-style selection. It must not be smaller
+than <code>n.neighbours</code>.</p></dd>
+
+  <dt id="arg-selection-samples">selection.samples<a class="anchor" aria-label="anchor" href="#arg-selection-samples"></a></dt>
+<dd><p>Maximum deterministic time positions used for
+neighbour selection. Use <code>Inf</code> to use all observations.</p></dd>
+
   <dt id="arg-support-prob">support.prob<a class="anchor" aria-label="anchor" href="#arg-support-prob"></a></dt>
 <dd><p>Neighbour high-flow quantile.</p></dd>
 
@@ -291,8 +301,12 @@ log-specific-discharge space when catchment area is available, and combines
 predictions using inverse-error weighted medians. A rare target event is
 flagged only when its residual score exceeds <code>f</code> and fewer than
 <code>min.support</code> neighbours exceed their support quantile in the search
-window. Neighbour selection and target-station calculations are divided into
-balanced station chunks when multiple workers are requested.</p>
+window. Compact geographic candidates, distances, elevation similarities, and
+reciprocal correlations are reused. Regression sufficient statistics and
+event-window support are vectorized; weighted medians and MADs use compiled C
+inside bounded time blocks. Neighbour selection and target-station calculations
+are divided into balanced station chunks when multiple workers are requested,
+and large PSOCK data are broadcast once per worker.</p>
 <p><code>streamflowQC_breakpoint</code> aggregates sub-daily input to daily means,
 calculates complete annual indicators, applies Pettitt rank tests, and
 Holm-adjusts p-values. Its station flag is separate from point QC because an

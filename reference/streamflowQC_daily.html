@@ -11,7 +11,7 @@ flags and station acceptance recommendations without writing files."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-29</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-30</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,8 @@ flags and station acceptance recommendations without writing files.</p>
 <span>  max.suspicious<span class="op">=</span><span class="fl">0.05</span>, min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
 <span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
-<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span>, from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span>, from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>  max.candidates<span class="op">=</span><span class="fl">200L</span>, selection.samples<span class="op">=</span><span class="fl">2048L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -291,6 +292,17 @@ version in a visible or shared library.</p></dd>
 control. Defaults retain the complete time span of <code>x</code>. Bounds are
 validated against the available index.</p></dd>
 
+  <dt id="arg-max-candidates">max.candidates<a class="anchor" aria-label="anchor" href="#arg-max-candidates"></a></dt>
+<dd><p>Maximum reusable spatial candidates retained per
+target station. The default limits large-network work; <code>Inf</code> requests
+exhaustive legacy-style selection. It must not be smaller than
+<code>n.neighbours</code>.</p></dd>
+
+  <dt id="arg-selection-samples">selection.samples<a class="anchor" aria-label="anchor" href="#arg-selection-samples"></a></dt>
+<dd><p>Maximum deterministic time positions used for
+spatial neighbour selection. Final regressions and flags use all observations.
+Use <code>Inf</code> for exhaustive selection.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -311,6 +323,13 @@ statistics are not counted as independent proof. Spatial QC fits pairwise
 log-flow regressions, optionally on flow divided by catchment area, and flags a
 rare event only when its regression residual is large and too few selected
 neighbours show high flow within the search window.</p>
+<p>Spatial QC constructs compact geographic candidate lists once, caches their
+distance and elevation similarities, and evaluates each reciprocal correlation
+only once. Targets without complete coordinates fall back to deterministic
+correlation screening. Regression sufficient statistics and event-window
+support are vectorized, while spatial estimates are processed in bounded time
+blocks. This avoids dense station-by-station matrices and supports long records
+without changing station order or the returned <code>zoo</code> classes.</p>
 <p>Station acceptance requires all user-defined completeness, review, confirmed
 suspicion, duration, and optional breakpoint criteria. Point and station
 decisions are therefore related but distinct.</p>
@@ -319,8 +338,9 @@ Neighbour selection and target-station spatial calculations are distributed
 over the same backend, while the vectorized range check stays in the master
 process. Input column order and algorithms are identical in serial and
 parallel calls. Socket workers copy assigned data; <code>"fork"</code> may reduce
-memory use on one Unix-like machine. Workers created by the call are stopped
-on exit.</p>
+memory use on one Unix-like machine. Large socket inputs are broadcast once per
+worker rather than once per station task. Workers created by the call are
+stopped on exit.</p>
     </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>

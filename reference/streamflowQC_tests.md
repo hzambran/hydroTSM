@@ -51,7 +51,8 @@ streamflowQC_spatial(
   min.support=1L, min.overlap=90L, min.correlation=0.5,
   window=3L, high.prob=0.99, support.prob=0.95, f=3,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL
+  cluster.nodes=NULL, max.candidates=200L,
+  selection.samples=2048L
 )
 
 streamflowQC_breakpoint(
@@ -220,6 +221,17 @@ streamflowQC_breakpoint(
 
   Minimum preferred Spearman log-flow correlation.
 
+- max.candidates:
+
+  Maximum reusable candidates retained per target. Use `Inf` for
+  exhaustive legacy-style selection. It must not be smaller than
+  `n.neighbours`.
+
+- selection.samples:
+
+  Maximum deterministic time positions used for neighbour selection. Use
+  `Inf` to use all observations.
+
 - support.prob:
 
   Neighbour high-flow quantile.
@@ -290,8 +302,13 @@ log-specific-discharge space when catchment area is available, and
 combines predictions using inverse-error weighted medians. A rare target
 event is flagged only when its residual score exceeds `f` and fewer than
 `min.support` neighbours exceed their support quantile in the search
-window. Neighbour selection and target-station calculations are divided
-into balanced station chunks when multiple workers are requested.
+window. Compact geographic candidates, distances, elevation
+similarities, and reciprocal correlations are reused. Regression
+sufficient statistics and event-window support are vectorized; weighted
+medians and MADs use compiled C inside bounded time blocks. Neighbour
+selection and target-station calculations are divided into balanced
+station chunks when multiple workers are requested, and large PSOCK data
+are broadcast once per worker.
 
 `streamflowQC_breakpoint` aggregates sub-daily input to daily means,
 calculates complete annual indicators, applies Pettitt rank tests, and

@@ -13,7 +13,7 @@ files."><meta property="og:image" content="https://hzambran.github.io/hydroTSM/l
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-29</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-30</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,8 @@ files.</p>
 <span>  max.suspicious<span class="op">=</span><span class="fl">0.05</span>, min.years<span class="op">=</span><span class="fl">1</span>, discard.breakpoint<span class="op">=</span><span class="cn">FALSE</span>,</span>
 <span>  area<span class="op">=</span><span class="cn">NULL</span>, elevation<span class="op">=</span><span class="cn">NULL</span>, elevation.scale<span class="op">=</span><span class="fl">500</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>  ncores<span class="op">=</span><span class="fl">1L</span>, parallel.type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"socket"</span>, <span class="st">"fork"</span>, <span class="st">"serial"</span><span class="op">)</span>,</span>
-<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span>, from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>  cluster.nodes<span class="op">=</span><span class="cn">NULL</span>, from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>  max.candidates<span class="op">=</span><span class="fl">200L</span>, selection.samples<span class="op">=</span><span class="fl">2048L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -282,6 +283,17 @@ requirements.</p></dd>
 control. Defaults retain the complete time span of <code>x</code>. Bounds are
 validated against the available index.</p></dd>
 
+  <dt id="arg-max-candidates">max.candidates<a class="anchor" aria-label="anchor" href="#arg-max-candidates"></a></dt>
+<dd><p>Maximum reusable spatial candidates retained per
+target station. The default limits large-network work; <code>Inf</code> requests
+exhaustive legacy-style selection. It must not be smaller than
+<code>n.neighbours</code>.</p></dd>
+
+  <dt id="arg-selection-samples">selection.samples<a class="anchor" aria-label="anchor" href="#arg-selection-samples"></a></dt>
+<dd><p>Maximum deterministic time positions used for
+spatial neighbour selection. Final regressions and flags use all observations.
+Use <code>Inf</code> for exhaustive selection.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -301,6 +313,12 @@ residual, and insufficient high-flow support among selected neighbours within
 the default 72-hour window. Catchment area, coordinates, and elevation are
 optional; correlation-based spatial comparison remains available without
 metadata.</p>
+<p>Spatial QC uses compact reusable candidate lists rather than dense geographic
+matrices. It caches distance and elevation similarity, calculates reciprocal
+correlations once, vectorizes regression sufficient statistics and event
+support, and processes spatial estimates in bounded time blocks. Incomplete
+coordinates use deterministic correlation screening. Large PSOCK inputs are
+broadcast once per worker.</p>
 <p>Only physical range failure is hard evidence by default. The three-family
 default reduces the risk of rejecting genuine flash floods, reservoir
 operations, tidal behaviour, intermittent zeros, or high-baseflow plateaus.

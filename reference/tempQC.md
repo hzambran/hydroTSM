@@ -74,7 +74,13 @@ design follows the gross-error, tolerance, temporal, inter-variable, and
 inter-station QC categories described by Brunet et al. (2020). The
 default `ncores=1L` is serial and preserves the historical behaviour.
 When `checks` is not supplied through `...`, spatial QC is enabled by
-default only when `metadata` is supplied.
+default only when `metadata` is supplied. Spatial QC caches compact
+geographic/elevation candidate lists and symmetric pair statistics, uses
+vectorized sufficient-statistic regressions, and processes station-time
+prediction calculations in bounded row blocks. With a PSOCK backend,
+large read-only data are broadcast once per worker. Setting
+`max.candidates=Inf` or `selection.samples=Inf` requests the
+corresponding exhaustive legacy-style selection.
 
 ## Value
 
