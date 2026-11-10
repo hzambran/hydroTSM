@@ -193,9 +193,9 @@
 } # '.precipQC_metadata' END
 
 
-.precipQC_neighbour_chunk <- function(targets, selection.values, context,
+.precipQC_neighbour_chunk <- function(targets, context, pair.cache,
                                       n.neighbours, min.overlap,
-                                      min.correlation, exact.ranks=FALSE) {
+                                      min.correlation) {
 
   # Select neighbours from bounded pools using vectorized pair statistics.
   out <- vector("list", length(targets))
@@ -207,30 +207,9 @@
       next
     }
 
-    if (exact.ranks) {
-      correlations <- rep(NA_real_, length(candidates))
-      overlaps <- integer(length(candidates))
-      for (k in seq_along(candidates)) {
-        neighbour <- candidates[k]
-        ok <- is.finite(selection.values[, j]) &
-              is.finite(selection.values[, neighbour])
-        overlaps[k] <- sum(ok)
-        if (overlaps[k] >= min.overlap)
-          correlations[k] <- suppressWarnings(stats::cor(
-            log1p(pmax(selection.values[ok, j], 0)),
-            log1p(pmax(selection.values[ok, neighbour], 0)),
-            method="spearman"
-          ))
-      }
-      eligible <- overlaps >= min.overlap & is.finite(correlations)
-    } else {
-      statistics <- .QC_pairwise_lm_stats(
-        selection.values[, j],
-        selection.values[, candidates, drop=FALSE], min.overlap
-      )
-      correlations <- statistics$correlation
-      eligible <- statistics$n >= min.overlap & is.finite(correlations)
-    }
+    correlations <- pair.cache$correlation[[j]]
+    overlaps <- pair.cache$n[[j]]
+    eligible <- overlaps >= min.overlap & is.finite(correlations)
     preferred <- eligible & correlations >= min.correlation
     distance <- context$distance[[j]]
     similarity <- context$elevation.similarity[[j]]
@@ -294,23 +273,28 @@
   if (!exact.ranks)
     selection.values <- .QC_rank_columns(selection.values,
                                            log.transform=TRUE)
+  pair.cache <- .QC_pair_cache(
+    selection.values, context, sampled.overlap,
+    method=if (exact.ranks) "spearman" else "ranked"
+  )
 
   # Use the caller's backend or a zero-overhead serial fallback.
   if (is.null(backend))
     backend <- .QC_parallel_setup(1L, "serial", NULL, nstations)
   chunks <- .QC_parallel_chunks(nstations, backend$nworkers)
-  parts <- .QC_parallel_apply(
+  parts <- .QC_parallel_apply_shared(
     backend, chunks, ".precipQC_neighbour_chunk",
-    selection.values=selection.values, context=context,
+    shared=list(context=context, pair.cache=pair.cache),
     n.neighbours=n.neighbours, min.overlap=sampled.overlap,
-    min.correlation=min.correlation, exact.ranks=exact.ranks
+    min.correlation=min.correlation
   )
   out <- vector("list", nstations)
   for (i in seq_along(chunks))
     out[chunks[[i]]] <- parts[[i]]
   names(out) <- stations
 
-  list(index=out, context=context, selected.rows=selected.rows,
+  list(index=out, context=context, pair.cache=pair.cache,
+       selected.rows=selected.rows,
        sampled.overlap=sampled.overlap, metadata=context$metadata,
        has.coords=context$has.coords,
        has.elevation=context$has.elevation,
@@ -771,7 +755,8 @@ precipQC_accumulation <- function(x, interval.hours,
                                     neighbour.index, context,
                                     max.distance, min.neighbours,
                                     cr.threshold, wet.threshold,
-                                    keep.diagnostics=TRUE) {
+                                    keep.diagnostics=TRUE,
+                                    block.size=8192L) {
 
   # Calculate spatial estimates and flags for independent target stations.
   estimate.t <- matrix(NA_real_, nrow=NROW(values), ncol=length(targets),
@@ -805,12 +790,15 @@ precipQC_accumulation <- function(x, interval.hours,
     } else {
       weights <- rep(1, length(neighbours))
     }
-    row.statistics <- .QC_precip_row_stats(
-      transformed[, neighbours, drop=FALSE], weights,
-      min.neighbours, weighted
-    )
-    estimate.t[, position] <- row.statistics[, 1L]
-    local.scale <- row.statistics[, 2L]
+    local.scale <- rep(NA_real_, NROW(values))
+    for (rows in .QC_time_blocks(NROW(values), block.size)) {
+      row.statistics <- .QC_precip_row_stats(
+        transformed[rows, neighbours, drop=FALSE], weights,
+        min.neighbours, weighted
+      )
+      estimate.t[rows, position] <- row.statistics[, 1L]
+      local.scale[rows] <- row.statistics[, 2L]
+    }
 
     residual <- transformed[, j] - estimate.t[, position]
     historical.scale <- stats::mad(residual, na.rm=TRUE, constant=1.4826)
@@ -869,18 +857,18 @@ precipQC_accumulation <- function(x, interval.hours,
 
   transformed <- log1p(pmax(values, 0))
   chunks <- .QC_parallel_chunks(NCOL(values), backend$nworkers)
-  parts <- .QC_parallel_apply(
-    backend, chunks, ".precipQC_spatial_chunk", values=values,
-    transformed=transformed, neighbour.index=neighbours$index,
-    context=context, max.distance=max.distance,
+  parts <- .QC_parallel_apply_shared(
+    backend, chunks, ".precipQC_spatial_chunk",
+    shared=list(values=values, transformed=transformed,
+                neighbour.index=neighbours$index, context=context),
+    max.distance=max.distance,
     min.neighbours=min.neighbours, cr.threshold=cr.threshold,
     wet.threshold=wet.threshold, keep.diagnostics=keep.diagnostics
   )
   flags <- do.call(cbind, lapply(parts, `[[`, "flags"))
 
   if (!keep.diagnostics)
-    return(list(flags=.precipQC_zoo(flags, x), context=context,
-                neighbour.selection=neighbours))
+    return(list(flags=.precipQC_zoo(flags, x)))
 
   estimate.t <- do.call(cbind, lapply(parts, `[[`, "estimate.t"))
   scores <- do.call(cbind, lapply(parts, `[[`, "scores"))
@@ -930,7 +918,7 @@ precipQC_spatial <- function(
   neighbour.wet.days=3L, neighbour.fraction=1,
   wet.threshold=0.1, elevation=NULL, elevation.scale=500,
   max.candidates=200L, selection.samples=2048L,
-  context=NULL, backend) {
+  context=NULL, neighbours=NULL, backend) {
 
   values <- .precipQC_matrix(x)
   window.days <- .precipQC_check_positive_integer(window.days,
@@ -943,14 +931,15 @@ precipQC_spatial <- function(
       neighbour.fraction > 1)
     stop("Invalid argument: 'neighbour.fraction' must be in (0, 1] !")
 
-  neighbours <- .precipQC_neighbours(
-    values=values, metadata=metadata, station.id=station.id, coords=coords,
-    n.neighbours=n.neighbours, max.distance=max.distance,
-    min.overlap=max(2L, window.days), min.correlation=-1,
-    elevation=elevation, elevation.scale=elevation.scale,
-    max.candidates=max.candidates, selection.samples=selection.samples,
-    context=context, backend=backend
-  )
+  if (is.null(neighbours))
+    neighbours <- .precipQC_neighbours(
+      values=values, metadata=metadata, station.id=station.id, coords=coords,
+      n.neighbours=n.neighbours, max.distance=max.distance,
+      min.overlap=max(2L, window.days), min.correlation=-1,
+      elevation=elevation, elevation.scale=elevation.scale,
+      max.candidates=max.candidates, selection.samples=selection.samples,
+      context=context, backend=backend
+    )
 
   dates <- as.Date(zoo::index(x))
   all.dates <- seq(min(dates), max(dates), by="day")

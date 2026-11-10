@@ -211,11 +211,12 @@ tempQC_spike <- function(x, threshold=25) {
 } # '.tempQC_linear_fit' END
 
 
-.tempQC_spatial_chunk <- function(targets, values, selection.values,
-                                  groups, context, n.neighbours,
-                                  max.distance, min.neighbours, min.overlap,
+.tempQC_spatial_chunk <- function(targets, values, groups, context,
+                                  pair.cache, n.neighbours,
+                                  max.distance, min.neighbours,
                                   min.group.overlap, min.correlation,
-                                  spatial.f, min.difference, min.se) {
+                                  spatial.f, min.difference, min.se,
+                                  block.size=8192L) {
 
   # Fit spatial-regression models for independent target stations.
   estimate <- score <- matrix(
@@ -233,12 +234,8 @@ tempQC_spike <- function(x, threshold=25) {
     if (length(candidates) == 0L)
       next
 
-    selection <- .QC_pairwise_lm_stats(
-      selection.values[, j],
-      selection.values[, candidates, drop=FALSE], min.overlap
-    )
-    correlations <- selection$correlation
-    errors <- selection$rmse
+    correlations <- pair.cache$correlation[[j]]
+    errors <- pair.cache$rmse[[j]]
     eligible <- is.finite(correlations) & is.finite(errors) &
                 correlations >= min.correlation
     distance <- context$distance[[j]][eligible]
@@ -269,34 +266,38 @@ tempQC_spike <- function(x, threshold=25) {
 
     for (group in unique(groups)) {
       rows <- which(groups == group)
-      predictors <- values[rows, candidates, drop=FALSE]
-      fit <- .QC_pairwise_lm_stats(values[rows, j], predictors,
+      fit <- .QC_pairwise_lm_stats(
+        values[rows, j], values[rows, candidates, drop=FALSE],
                                    min.group.overlap)
       standard.errors <- pmax(fit$rmse, min.se)
       weights <- proximity / standard.errors^2
-      predictions <- sweep(predictors, 2L, fit$slope, "*")
-      predictions <- sweep(predictions, 2L, fit$intercept, "+")
-      available <- is.finite(predictions) &
-                   matrix(is.finite(weights), NROW(predictions),
-                          NCOL(predictions), byrow=TRUE)
-      predictions[!available] <- 0
-      weight.matrix <- available *
-                       matrix(weights, NROW(predictions),
-                              NCOL(predictions), byrow=TRUE)
-      counts <- rowSums(available)
-      weight.sum <- rowSums(weight.matrix)
-      ok <- counts >= min.neighbours & is.finite(weight.sum) &
-            weight.sum > 0
-      group.estimate <- rep(NA_real_, length(rows))
-      group.estimate[ok] <- rowSums(predictions * weight.matrix)[ok] /
-                            weight.sum[ok]
-      estimate[rows, position] <- group.estimate
-      combined.se <- sqrt(counts / weight.sum)
-      residual <- values[rows, j] - group.estimate
-      score[rows[ok], position] <- abs(residual[ok]) / combined.se[ok]
-      flags[rows[ok], position] <- is.finite(residual[ok]) &
-        abs(residual[ok]) >= min.difference &
-        score[rows[ok], position] >= spatial.f
+      for (block in .QC_time_blocks(length(rows), block.size)) {
+        block.rows <- rows[block]
+        predictors <- values[block.rows, candidates, drop=FALSE]
+        predictions <- sweep(predictors, 2L, fit$slope, "*")
+        predictions <- sweep(predictions, 2L, fit$intercept, "+")
+        available <- is.finite(predictions) &
+          matrix(is.finite(weights), NROW(predictions),
+                 NCOL(predictions), byrow=TRUE)
+        predictions[!available] <- 0
+        weight.matrix <- available *
+          matrix(weights, NROW(predictions), NCOL(predictions), byrow=TRUE)
+        counts <- rowSums(available)
+        weight.sum <- rowSums(weight.matrix)
+        ok <- counts >= min.neighbours & is.finite(weight.sum) &
+          weight.sum > 0
+        block.estimate <- rep(NA_real_, length(block.rows))
+        block.estimate[ok] <- rowSums(predictions * weight.matrix)[ok] /
+          weight.sum[ok]
+        estimate[block.rows, position] <- block.estimate
+        combined.se <- sqrt(counts / weight.sum)
+        residual <- values[block.rows, j] - block.estimate
+        score[block.rows[ok], position] <- abs(residual[ok]) /
+          combined.se[ok]
+        flags[block.rows[ok], position] <- is.finite(residual[ok]) &
+          abs(residual[ok]) >= min.difference &
+          score[block.rows[ok], position] >= spatial.f
+      }
     }
   }
 
@@ -353,14 +354,19 @@ tempQC_spike <- function(x, threshold=25) {
   sampled.overlap <- .QC_selection_overlap(min.overlap, selected.rows,
                                              NROW(values))
   selection.values <- values[selected.rows, , drop=FALSE]
+  pair.cache <- .QC_pair_cache(
+    selection.values, context, sampled.overlap,
+    method="pearson", keep.rmse=TRUE
+  )
   groups <- .tempQC_group(x, group)
   chunks <- .QC_parallel_chunks(NCOL(values), backend$nworkers)
-  parts <- .QC_parallel_apply(
-    backend, chunks, ".tempQC_spatial_chunk", values=values,
-    selection.values=selection.values, groups=groups, context=context,
+  parts <- .QC_parallel_apply_shared(
+    backend, chunks, ".tempQC_spatial_chunk",
+    shared=list(values=values, groups=groups, context=context,
+                pair.cache=pair.cache),
     n.neighbours=n.neighbours,
     max.distance=max.distance, min.neighbours=min.neighbours,
-    min.overlap=sampled.overlap, min.group.overlap=min.group.overlap,
+    min.group.overlap=min.group.overlap,
     min.correlation=min.correlation, spatial.f=f,
     min.difference=min.difference, min.se=min.se
   )

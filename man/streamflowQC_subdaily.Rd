@@ -43,7 +43,8 @@ streamflowQC_subdaily(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL, from=start(x), to=end(x)
+  cluster.nodes=NULL, from=start(x), to=end(x),
+  max.candidates=200L, selection.samples=2048L
 )
 }
 
@@ -140,6 +141,13 @@ requirements.}
   \item{from, to}{Start and end of the period retained before quality
 control. Defaults retain the complete time span of \code{x}. Bounds are
 validated against the available index.}
+  \item{max.candidates}{Maximum reusable spatial candidates retained per
+target station. The default limits large-network work; \code{Inf} requests
+exhaustive legacy-style selection. It must not be smaller than
+\code{n.neighbours}.}
+  \item{selection.samples}{Maximum deterministic time positions used for
+spatial neighbour selection. Final regressions and flags use all observations.
+Use \code{Inf} for exhaustive selection.}
 }
 
 \details{
@@ -161,6 +169,13 @@ residual, and insufficient high-flow support among selected neighbours within
 the default 72-hour window. Catchment area, coordinates, and elevation are
 optional; correlation-based spatial comparison remains available without
 metadata.
+
+Spatial QC uses compact reusable candidate lists rather than dense geographic
+matrices. It caches distance and elevation similarity, calculates reciprocal
+correlations once, vectorizes regression sufficient statistics and event
+support, and processes spatial estimates in bounded time blocks. Incomplete
+coordinates use deterministic correlation screening. Large PSOCK inputs are
+broadcast once per worker.
 
 Only physical range failure is hard evidence by default. The three-family
 default reduces the risk of rejecting genuine flash floods, reservoir

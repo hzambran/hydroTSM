@@ -56,6 +56,12 @@ inter-variable, and inter-station QC categories described by Brunet et al.
 The default \code{ncores=1L} is serial and preserves the historical behaviour.
 When \code{checks} is not supplied through \code{...}, spatial QC is enabled
 by default only when \code{metadata} is supplied.
+Spatial QC caches compact geographic/elevation candidate lists and symmetric
+pair statistics, uses vectorized sufficient-statistic regressions, and
+processes station-time prediction calculations in bounded row blocks. With a
+PSOCK backend, large read-only data are broadcast once per worker. Setting
+\code{max.candidates=Inf} or \code{selection.samples=Inf} requests the
+corresponding exhaustive legacy-style selection.
 }
 
 \value{

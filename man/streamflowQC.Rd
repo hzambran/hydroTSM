@@ -18,7 +18,8 @@ streamflowQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL, from=start(x), to=end(x)
+  cluster.nodes=NULL, from=start(x), to=end(x),
+  max.candidates=200L, selection.samples=2048L
 )
 }
 
@@ -47,6 +48,12 @@ workflow. See \code{\link{streamflowQC_daily}}.}
   \item{from, to}{Start and end of the period retained before frequency
 detection and quality control. Defaults retain the complete time span of
 \code{x}.}
+  \item{max.candidates}{Maximum reusable spatial candidates retained per
+target station. The default limits work for large networks; \code{Inf}
+requests exhaustive legacy-style selection.}
+  \item{selection.samples}{Maximum deterministic time positions used to
+select spatial neighbours. Final regressions and flags still use all
+observations. Use \code{Inf} for exhaustive selection.}
 }
 
 \details{
@@ -72,6 +79,8 @@ the sub-daily artefact and event-corroboration framework of Fileni et al.
 Progress is emitted with \code{message()}, so it can be captured or suppressed
 without redirecting the returned object.
 The default \code{ncores=1L} is serial and preserves the historical behaviour.
+When spatial QC is active, verbose output also reports the effective candidate
+and timestamp limits. Large PSOCK inputs are broadcast once per worker.
 }
 
 \value{

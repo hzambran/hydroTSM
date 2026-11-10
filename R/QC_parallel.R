@@ -130,6 +130,58 @@
 } # '.QC_parallel_apply' END
 
 
+.QC_parallel_apply_shared <- function(backend, x, fun, shared, ...) {
+
+  # Broadcast named read-only data once per PSOCK worker, not once per task.
+  if (!is.list(shared) || is.null(names(shared)) ||
+      any(!nzchar(names(shared))) || anyDuplicated(names(shared)))
+    stop("Invalid argument: 'shared' must be a uniquely named list !")
+  arguments <- list(...)
+  worker.name <- if (is.character(fun) && length(fun) == 1L) fun else NULL
+  worker <- if (is.null(worker.name)) match.fun(fun) else
+    utils::getFromNamespace(worker.name, "hydroTSM")
+
+  if (backend$type == "socket") {
+    if (is.null(worker.name))
+      stop("Socket shared-data workers must be identified by function name !")
+    shared.name <- ".hydroTSM_QC_shared"
+    assign.shared <- function(value, name) {
+      assign(name, value, envir=.GlobalEnv)
+      TRUE
+    } # 'assign.shared' END
+    remove.shared <- function(name) {
+      if (exists(name, envir=.GlobalEnv, inherits=FALSE))
+        rm(list=name, envir=.GlobalEnv)
+      TRUE
+    } # 'remove.shared' END
+    task.worker <- function(item, name, arguments, shared.name) {
+      worker <- utils::getFromNamespace(name, "hydroTSM")
+      shared <- get(shared.name, envir=.GlobalEnv, inherits=FALSE)
+      do.call(worker, c(list(item), shared, arguments))
+    } # 'task.worker' END
+    invisible(parallel::clusterCall(backend$cluster, assign.shared,
+                                    shared, shared.name))
+    on.exit(invisible(parallel::clusterCall(backend$cluster, remove.shared,
+                                            shared.name)), add=TRUE)
+    return(parallel::parLapply(
+      backend$cluster, x, task.worker, name=worker.name,
+      arguments=arguments, shared.name=shared.name
+    ))
+  }
+
+  # Forked workers inherit shared data by copy-on-write; serial uses it directly.
+  call.worker <- function(item) {
+    do.call(worker, c(list(item), shared, arguments))
+  } # 'call.worker' END
+  if (backend$type == "fork")
+    return(parallel::mclapply(x, call.worker, mc.cores=backend$nworkers,
+                              mc.preschedule=TRUE))
+
+  lapply(x, call.worker)
+
+} # '.QC_parallel_apply_shared' END
+
+
 .QC_parallel_chunks <- function(nstations, nworkers) {
 
   # Contiguous chunks make result reconstruction deterministic and inexpensive.

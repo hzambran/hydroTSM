@@ -60,6 +60,8 @@ stopifnot(
   is.na(daily.qc$accepted.corrected[10, "S1"]),
   inherits(daily.qc$highflow, "streamflowQC_highflow"),
   identical(daily.qc$settings$area, "area_km2"),
+  identical(daily.qc$settings$max.candidates, 200L),
+  identical(daily.qc$settings$selection.samples, 2048L),
   isTRUE(daily.qc$settings$checks["spatial"])
 )
 
@@ -329,7 +331,8 @@ parallel.serial <- streamflowQC_daily(
   coords=c("lon", "lat"), area="area_km2", elevation="elevation",
   checks=parallel.checks, rate.max.rise=rep(Inf, 4),
   rate.max.fall=rep(Inf, 4), min.overlap=30, min.correlation=-1,
-  max.distance=1000, min.years=0, max.missing=1,
+  max.distance=1000, n.neighbours=3L, max.candidates=3L,
+  selection.samples=60L, min.years=0, max.missing=1,
   max.review=1, max.suspicious=1, verbose=FALSE
 )
 parallel.messages <- capture.output(
@@ -338,7 +341,8 @@ parallel.messages <- capture.output(
     coords=c("lon", "lat"), area="area_km2", elevation="elevation",
     checks=parallel.checks, rate.max.rise=rep(Inf, 4),
     rate.max.fall=rep(Inf, 4), min.overlap=30, min.correlation=-1,
-    max.distance=1000, min.years=0, max.missing=1,
+    max.distance=1000, n.neighbours=3L, max.candidates=3L,
+    selection.samples=60L, min.years=0, max.missing=1,
     max.review=1, max.suspicious=1, verbose=TRUE,
     ncores=2L, parallel.type="socket", cluster.nodes="localhost"
   ), type="message"
@@ -351,7 +355,11 @@ stopifnot(
   identical(parallel.serial$highflow, parallel.socket$highflow),
   identical(parallel.socket$settings$ncores, 2L),
   identical(parallel.socket$settings$parallel.type, "socket"),
+  identical(parallel.socket$settings$max.candidates, 3L),
+  identical(parallel.socket$settings$selection.samples, 60L),
   any(grepl("Using socket backend with 2 worker(s) across 1 node(s)",
+            parallel.messages, fixed=TRUE)),
+  any(grepl("Spatial screening uses up to 3 candidate(s) and 60 timestamp(s)",
             parallel.messages, fixed=TRUE))
 )
 

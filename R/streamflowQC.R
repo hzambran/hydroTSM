@@ -304,7 +304,8 @@ streamflowQC_daily <- function(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL, from=start(x), to=end(x)) {
+  cluster.nodes=NULL, from=start(x), to=end(x),
+  max.candidates=200L, selection.samples=2048L) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -331,6 +332,9 @@ streamflowQC_daily <- function(
                          NROW(prepared$values), " observations at ",
                          NCOL(prepared$values), " station(s) ...")
   .streamflowQC_progress(verbose, .QC_parallel_description(backend))
+  if (checks["spatial"])
+    .streamflowQC_progress(verbose, .QC_spatial_description(
+      max.candidates, selection.samples))
   if (checks["range"]) {
     .streamflowQC_progress(verbose, "Running physical-range check ...")
     flags$range <- streamflowQC_range(prepared$x, lower=lower, upper=upper)
@@ -404,7 +408,9 @@ streamflowQC_daily <- function(
         min.neighbours=min.neighbours, min.support=min.support,
         min.overlap=min.overlap, min.correlation=min.correlation,
         window=spatial.window.days, high.prob=spatial.high.prob,
-        support.prob=spatial.support.prob, f=spatial.f, backend=backend
+        support.prob=spatial.support.prob, f=spatial.f,
+        max.candidates=max.candidates,
+        selection.samples=selection.samples, backend=backend
       )
       flags$spatial <- spatial$flags
       spatial.estimate <- spatial$estimate
@@ -430,6 +436,7 @@ streamflowQC_daily <- function(
     spatial.window.days=spatial.window.days, spatial.f=spatial.f,
     station.id=prepared$station.id, coords=coords, area=area,
     elevation=elevation, elevation.scale=elevation.scale,
+    max.candidates=max.candidates, selection.samples=selection.samples,
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.review=max.review,
     max.suspicious=max.suspicious, min.years=min.years,
@@ -490,7 +497,8 @@ streamflowQC_subdaily <- function(
   max.suspicious=0.05, min.years=1, discard.breakpoint=FALSE,
   area=NULL, elevation=NULL, elevation.scale=500, verbose=TRUE,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
-  cluster.nodes=NULL, from=start(x), to=end(x)) {
+  cluster.nodes=NULL, from=start(x), to=end(x),
+  max.candidates=200L, selection.samples=2048L) {
 
   # Validate controls before emitting any informational output.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -532,6 +540,9 @@ streamflowQC_subdaily <- function(
                          NROW(prepared$values), " observations at ",
                          NCOL(prepared$values), " station(s) ...")
   .streamflowQC_progress(verbose, .QC_parallel_description(backend))
+  if (checks["spatial"])
+    .streamflowQC_progress(verbose, .QC_spatial_description(
+      max.candidates, selection.samples))
   if (checks["range"]) {
     .streamflowQC_progress(verbose, "Running physical-range check ...")
     flags$range <- streamflowQC_range(prepared$x, lower=lower, upper=upper)
@@ -607,7 +618,9 @@ streamflowQC_subdaily <- function(
         min.neighbours=min.neighbours, min.support=min.support,
         min.overlap=min.overlap, min.correlation=min.correlation,
         window=spatial.window, high.prob=spatial.high.prob,
-        support.prob=spatial.support.prob, f=spatial.f, backend=backend
+        support.prob=spatial.support.prob, f=spatial.f,
+        max.candidates=max.candidates,
+        selection.samples=selection.samples, backend=backend
       )
       flags$spatial <- spatial$flags
       spatial.estimate <- spatial$estimate
@@ -636,6 +649,7 @@ streamflowQC_subdaily <- function(
     spatial.window=spatial.window, spatial.f=spatial.f,
     station.id=prepared$station.id, coords=coords, area=area,
     elevation=elevation, elevation.scale=elevation.scale,
+    max.candidates=max.candidates, selection.samples=selection.samples,
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.review=max.review,
     max.suspicious=max.suspicious, min.years=min.years,
@@ -673,7 +687,8 @@ streamflowQC <- function(x, metadata=NULL, station.id="station",
                          area=NULL, elevation=NULL,
                          elevation.scale=500, verbose=TRUE, ncores=1L,
                          parallel.type=c("socket", "fork", "serial"),
-                         cluster.nodes=NULL, from=start(x), to=end(x)) {
+                         cluster.nodes=NULL, from=start(x), to=end(x),
+                         max.candidates=200L, selection.samples=2048L) {
 
   # Validate verbosity at the dispatch boundary for consistent errors.
   verbose <- .precipQC_validate_logical(verbose, "verbose")
@@ -689,7 +704,8 @@ streamflowQC <- function(x, metadata=NULL, station.id="station",
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
       area=area, elevation=elevation, elevation.scale=elevation.scale,
       verbose=verbose, ncores=ncores, parallel.type=parallel.type,
-      cluster.nodes=cluster.nodes
+      cluster.nodes=cluster.nodes, max.candidates=max.candidates,
+      selection.samples=selection.samples
     ))
   }
   if (frequency %in% c("minute", "hourly")) {
@@ -701,7 +717,8 @@ streamflowQC <- function(x, metadata=NULL, station.id="station",
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
       area=area, elevation=elevation, elevation.scale=elevation.scale,
       verbose=verbose, ncores=ncores, parallel.type=parallel.type,
-      cluster.nodes=cluster.nodes
+      cluster.nodes=cluster.nodes, max.candidates=max.candidates,
+      selection.samples=selection.samples
     ))
   }
 

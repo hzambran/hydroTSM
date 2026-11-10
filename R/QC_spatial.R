@@ -51,7 +51,7 @@
 .QC_spatial_screen <- function(values, method=c("pearson", "spearman"),
                                max.rows=64L) {
 
-  # Build a deterministic low-cost station similarity matrix for screening.
+  # Build a deterministic low-cost station workspace for screening.
   method <- match.arg(method)
   rows <- .QC_spatial_rows(NROW(values), max.rows)
   work <- values[rows, , drop=FALSE]
@@ -83,12 +83,34 @@
     }
   }
 
-  # Cross-products provide a fast approximate correlation ranking.
-  out <- crossprod(work)
-  diag(out) <- -Inf
-  out
+  # Retain the compact standardized workspace for target-wise screening.
+  work
 
 } # '.QC_spatial_screen' END
+
+
+.QC_spatial_screen_target <- function(work, target, candidates) {
+
+  # Calculate only one target vector instead of a dense station matrix.
+  if (length(candidates) == 0L)
+    return(numeric())
+
+  as.numeric(crossprod(work[, target], work[, candidates, drop=FALSE]))
+
+} # '.QC_spatial_screen_target' END
+
+
+.QC_time_blocks <- function(n, block.size=8192L) {
+
+  # Bound temporary station-time matrices while preserving row order.
+  block.size <- .precipQC_check_positive_integer(block.size, "block.size")
+  starts <- seq.int(1L, n, by=block.size)
+  time.block <- function(first) {
+    first:min(n, first + block.size - 1L)
+  } # 'time.block' END
+  lapply(starts, time.block)
+
+} # '.QC_time_blocks' END
 
 
 .QC_haversine_target <- function(lon, lat, target) {
@@ -155,13 +177,14 @@
     candidate <- which(seq_len(nstations) != j &
                        (!is.finite(distance) | distance <= max.distance))
     raw[[j]] <- list(index=candidate, distance=distance[candidate])
+    candidate.distance <- distance[candidate]
     needs.screen <- needs.screen ||
-                    (!meta$coordinate.available[j] &&
-                     is.finite(max.candidates) &&
-                     length(candidate) > max.candidates)
+      (is.finite(max.candidates) && length(candidate) > max.candidates &&
+       (!meta$coordinate.available[j] ||
+        sum(is.finite(candidate.distance)) < max.candidates))
   }
 
-  # Calculate the approximate similarity matrix only when a pool needs capping.
+  # Build an approximate workspace only when a pool needs capping.
   screen <- if (needs.screen)
     .QC_spatial_screen(values, screen.method) else NULL
 
@@ -177,9 +200,20 @@
         known <- is.finite(distance)
         effective <- pmax(distance, 0.1) /
                      pmax(similarity, .Machine$double.xmin)
-        order.index <- order(!known, effective, na.last=TRUE)
+        known.order <- which(known)[order(effective[known])]
+        unknown.order <- which(!known)
+        if (length(known.order) < max.candidates &&
+            length(unknown.order) > 0L) {
+          screen.value <- .QC_spatial_screen_target(
+            screen, j, candidate[unknown.order]
+          )
+          unknown.order <- unknown.order[
+            order(-screen.value, -similarity[unknown.order], na.last=TRUE)
+          ]
+        }
+        order.index <- c(known.order, unknown.order)
       } else {
-        screen.value <- screen[j, candidate]
+        screen.value <- .QC_spatial_screen_target(screen, j, candidate)
         order.index <- order(-screen.value, -similarity, na.last=TRUE)
       }
       keep <- utils::head(order.index, max.candidates)
@@ -263,6 +297,13 @@
          2 * intercept * sy - 2 * slope * sxy +
          2 * intercept * slope * sx
   rmse <- sqrt(pmax(sse, 0) / pmax(n, 1))
+  reverse.slope <- covariance / centred.y
+  reverse.intercept <- (sx - reverse.slope * sy) / pmax(n, 1)
+  reverse.sse <- sxx + n * reverse.intercept^2 +
+    reverse.slope^2 * syy - 2 * reverse.intercept * sx -
+    2 * reverse.slope * sxy +
+    2 * reverse.intercept * reverse.slope * sy
+  reverse.rmse <- sqrt(pmax(reverse.sse, 0) / pmax(n, 1))
 
   invalid <- n < minimum | !is.finite(centred.x) |
              centred.x <= sqrt(.Machine$double.eps) |
@@ -270,12 +311,86 @@
              centred.y <= sqrt(.Machine$double.eps) |
              !is.finite(correlation) | !is.finite(rmse)
   correlation[invalid] <- slope[invalid] <- intercept[invalid] <-
-    rmse[invalid] <- NA_real_
+    rmse[invalid] <- reverse.rmse[invalid] <- NA_real_
 
   list(n=n, correlation=correlation, intercept=intercept,
-       slope=slope, rmse=rmse)
+       slope=slope, rmse=rmse, reverse.rmse=reverse.rmse)
 
 } # '.QC_pairwise_lm_stats' END
+
+
+.QC_pair_cache <- function(values, context, minimum,
+                           method=c("pearson", "ranked", "spearman"),
+                           keep.rmse=FALSE) {
+
+  # Represent every directed candidate edge and its undirected pair once.
+  method <- match.arg(method)
+  minimum <- .precipQC_check_positive_integer(minimum, "minimum")
+  nstations <- NCOL(values)
+  lengths.candidates <- lengths(context$candidates)
+  targets <- rep.int(seq_len(nstations), lengths.candidates)
+  candidates <- unlist(context$candidates, use.names=FALSE)
+  lower <- pmin(targets, candidates)
+  upper <- pmax(targets, candidates)
+  keys <- (lower - 1) * nstations + upper
+  unique.keys <- unique(keys)
+  pair.index <- match(keys, unique.keys)
+  pair.lower <- (unique.keys - 1) %/% nstations + 1
+  pair.upper <- (unique.keys - 1) %% nstations + 1
+  pair.correlation <- rep(NA_real_, length(unique.keys))
+  pair.n <- integer(length(unique.keys))
+  forward.rmse <- reverse.rmse <- rep(NA_real_, length(unique.keys))
+
+  # Vectorize all pairs sharing the lower-numbered station.
+  for (j in unique(pair.lower)) {
+    positions <- which(pair.lower == j)
+    neighbours <- pair.upper[positions]
+    if (method == "spearman") {
+      for (k in seq_along(neighbours)) {
+        ok <- is.finite(values[, j]) & is.finite(values[, neighbours[k]])
+        pair.n[positions[k]] <- sum(ok)
+        if (pair.n[positions[k]] >= minimum)
+          pair.correlation[positions[k]] <- suppressWarnings(stats::cor(
+            log1p(pmax(values[ok, j], 0)),
+            log1p(pmax(values[ok, neighbours[k]], 0)), method="spearman"
+          ))
+      }
+    } else {
+      statistics <- .QC_pairwise_lm_stats(
+        values[, j], values[, neighbours, drop=FALSE], minimum
+      )
+      pair.n[positions] <- statistics$n
+      pair.correlation[positions] <- statistics$correlation
+      if (keep.rmse) {
+        forward.rmse[positions] <- statistics$rmse
+        reverse.rmse[positions] <- statistics$reverse.rmse
+      }
+    }
+  }
+
+  # Expand compact pair statistics to each target's candidate-list order.
+  correlations <- split(pair.correlation[pair.index], targets)
+  overlaps <- split(pair.n[pair.index], targets)
+  correlations <- correlations[as.character(seq_len(nstations))]
+  overlaps <- overlaps[as.character(seq_len(nstations))]
+  correlations[lengths.candidates == 0L] <- list(numeric())
+  overlaps[lengths.candidates == 0L] <- list(integer())
+  names(correlations) <- names(overlaps) <- context$stations
+  out <- list(correlation=correlations, n=overlaps,
+              npairs=length(unique.keys))
+  if (keep.rmse) {
+    directed.rmse <- ifelse(targets == lower,
+                            forward.rmse[pair.index],
+                            reverse.rmse[pair.index])
+    errors <- split(directed.rmse, targets)
+    errors <- errors[as.character(seq_len(nstations))]
+    errors[lengths.candidates == 0L] <- list(numeric())
+    names(errors) <- context$stations
+    out$rmse <- errors
+  }
+  out
+
+} # '.QC_pair_cache' END
 
 
 .QC_precip_row_stats <- function(x, weights, min.neighbours, weighted) {

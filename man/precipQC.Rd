@@ -72,6 +72,13 @@ redirecting returned values.
 The default \code{ncores=1L} is serial and preserves the historical behaviour.
 When \code{checks} is not supplied through \code{...}, spatial QC is enabled
 by default only when \code{metadata} is supplied.
+Spatial QC caches compact geographic/elevation candidate lists and symmetric
+pair statistics, reuses one precipitation neighbour graph across accumulation
+scales and the dry-spell check, and processes station-time calculations in
+bounded row blocks. Non-native accumulation scales retain flags only. With a
+PSOCK backend, large read-only data are broadcast once per worker. Setting
+\code{max.candidates=Inf} or \code{selection.samples=Inf} requests the
+corresponding exhaustive legacy-style selection.
 }
 
 \value{

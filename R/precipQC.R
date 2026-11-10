@@ -243,7 +243,8 @@
   }
 
   list(flags=flags, estimate=native.estimate, score=native.score,
-       neighbours=neighbours, context=context)
+       neighbours=neighbours, context=context,
+       neighbour.selection=neighbour.selection)
 
 } # '.precipQC_add_spatial' END
 
@@ -648,7 +649,8 @@ precipQC_daily <- function(
   on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
-  spatial.estimate <- spatial.score <- neighbours <- spatial.context <- NULL
+  spatial.estimate <- spatial.score <- neighbours <- spatial.context <-
+    spatial.neighbours <- NULL
 
   # Run each enabled test and announce it immediately before computation.
   .precipQC_progress(verbose, "Starting daily QC for ",
@@ -727,6 +729,7 @@ precipQC_daily <- function(
       spatial.score <- spatial$score
       neighbours <- spatial$neighbours
       spatial.context <- spatial$context
+      spatial.neighbours <- spatial$neighbour.selection
     }
   }
   if (checks["dryspell"] && NCOL(prepared$values) >= 2L) {
@@ -740,7 +743,7 @@ precipQC_daily <- function(
       wet.threshold=wet.threshold, elevation=elevation,
       elevation.scale=elevation.scale, max.candidates=max.candidates,
       selection.samples=selection.samples, context=spatial.context,
-      backend=backend
+      neighbours=spatial.neighbours, backend=backend
     )
   }
   settings <- list(resolution="daily", checks=checks, lower=lower,
@@ -837,7 +840,8 @@ precipQC_subdaily <- function(
   on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
-  spatial.estimate <- spatial.score <- neighbours <- spatial.context <- NULL
+  spatial.estimate <- spatial.score <- neighbours <- spatial.context <-
+    spatial.neighbours <- NULL
 
   if (!is.numeric(max.rate) || length(max.rate) != 1L || is.na(max.rate) ||
       !is.finite(max.rate) || max.rate <= 0)
@@ -923,6 +927,7 @@ precipQC_subdaily <- function(
       spatial.score <- spatial$score
       neighbours <- spatial$neighbours
       spatial.context <- spatial$context
+      spatial.neighbours <- spatial$neighbour.selection
     }
   }
   if (checks["dryspell"] && NCOL(prepared$values) >= 2L) {
@@ -936,7 +941,7 @@ precipQC_subdaily <- function(
       wet.threshold=wet.threshold, elevation=elevation,
       elevation.scale=elevation.scale, max.candidates=max.candidates,
       selection.samples=selection.samples, context=spatial.context,
-      backend=backend
+      neighbours=spatial.neighbours, backend=backend
     )
   }
   settings <- list(resolution="subdaily", checks=checks, lower=lower,
