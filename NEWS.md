@@ -41,6 +41,7 @@ NEWS/ChangeLog for hydroTSM
         o 'extract' now handles numeric month vectors explicitly, including vectors that span the end of the calendar year such as c(9,10,11,12,1,2,3), accepts the new 'trgt="SONDJFM"' shortcut for September to March, and rejects mixed month/year numeric vectors. Month-vector order is considered: c(9,10,11,12,1,2,3) treats January-March as belonging to the next calendar year, while c(1,2,3,9,10,11,12) keeps all months in the same calendar year. 'time2season' now supports the corresponding 'type="SONDJFM"' selector.
 
 ## New vignettes
+        o 'Temporal and spatial quality control in hydroTSM': Quarto vignette summarising the temporal and spatial tests applied to daily and sub-daily precipitation, air-temperature, and streamflow datasets, including default activation, thresholds, station metadata, evidence combination, and returned audit information.
         o 'Theory, computation, and validation of SPI and SPEI with hydroTSM': theoretical guidance on drought-index construction, temporal scales, distributions, fitting methods, and arguments; practical usage; and versioned numerical and graphical comparisons against the SCI and SPEI packages at accumulation scales 1, 3, 6, and 12.
 
 ## Bug fixes
