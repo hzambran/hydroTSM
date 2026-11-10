@@ -47,6 +47,7 @@
 ### New vignettes
 
 ``` R
+    o 'Temporal and spatial quality control in hydroTSM': Quarto vignette summarising the temporal and spatial tests applied to daily and sub-daily precipitation, air-temperature, and streamflow datasets, including default activation, thresholds, station metadata, evidence combination, and returned audit information.
     o 'Theory, computation, and validation of SPI and SPEI with hydroTSM': theoretical guidance on drought-index construction, temporal scales, distributions, fitting methods, and arguments; practical usage; and versioned numerical and graphical comparisons against the SCI and SPEI packages at accumulation scales 1, 3, 6, and 12.
 ```
 
