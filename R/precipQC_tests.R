@@ -193,54 +193,55 @@
 } # '.precipQC_metadata' END
 
 
-.precipQC_neighbour_chunk <- function(targets, values, distances,
-                                      effective.distance,
-                                      elevation.similarity,
-                                      coordinate.available, has.coords,
-                                      n.neighbours, max.distance,
-                                      min.overlap, min.correlation) {
+.precipQC_neighbour_chunk <- function(targets, selection.values, context,
+                                      n.neighbours, min.overlap,
+                                      min.correlation, exact.ranks=FALSE) {
 
-  # Select neighbours independently for each target in this worker chunk.
-  nstations <- NCOL(values)
+  # Select neighbours from bounded pools using vectorized pair statistics.
   out <- vector("list", length(targets))
   for (position in seq_along(targets)) {
     j <- targets[position]
-    if (has.coords) {
-      candidates <- which(seq_len(nstations) != j &
-                          (!is.finite(distances[j, ]) |
-                           distances[j, ] <= max.distance))
-    } else {
-      candidates <- which(seq_len(nstations) != j)
-    }
+    candidates <- context$candidates[[j]]
     if (length(candidates) == 0L) {
       out[[position]] <- integer()
       next
     }
 
-    correlations <- rep(NA_real_, length(candidates))
-    overlaps <- integer(length(candidates))
-    for (k in seq_along(candidates)) {
-      neighbour <- candidates[k]
-      ok <- is.finite(values[, j]) & is.finite(values[, neighbour])
-      overlaps[k] <- sum(ok)
-      if (overlaps[k] >= min.overlap)
-        correlations[k] <- suppressWarnings(stats::cor(
-          log1p(pmax(values[ok, j], 0)),
-          log1p(pmax(values[ok, neighbour], 0)), method="spearman"
-        ))
+    if (exact.ranks) {
+      correlations <- rep(NA_real_, length(candidates))
+      overlaps <- integer(length(candidates))
+      for (k in seq_along(candidates)) {
+        neighbour <- candidates[k]
+        ok <- is.finite(selection.values[, j]) &
+              is.finite(selection.values[, neighbour])
+        overlaps[k] <- sum(ok)
+        if (overlaps[k] >= min.overlap)
+          correlations[k] <- suppressWarnings(stats::cor(
+            log1p(pmax(selection.values[ok, j], 0)),
+            log1p(pmax(selection.values[ok, neighbour], 0)),
+            method="spearman"
+          ))
+      }
+      eligible <- overlaps >= min.overlap & is.finite(correlations)
+    } else {
+      statistics <- .QC_pairwise_lm_stats(
+        selection.values[, j],
+        selection.values[, candidates, drop=FALSE], min.overlap
+      )
+      correlations <- statistics$correlation
+      eligible <- statistics$n >= min.overlap & is.finite(correlations)
     }
-
-    eligible <- overlaps >= min.overlap & is.finite(correlations)
     preferred <- eligible & correlations >= min.correlation
-    if (coordinate.available[j]) {
-      known.distance <- is.finite(distances[j, candidates])
-      rank.distance <- ifelse(known.distance,
-                              effective.distance[j, candidates], Inf)
-      ordered <- order(!known.distance, rank.distance, -correlations,
+    distance <- context$distance[[j]]
+    similarity <- context$elevation.similarity[[j]]
+    if (context$coordinate.available[j]) {
+      known.distance <- is.finite(distance)
+      effective <- pmax(distance, 0.1) /
+                   pmax(similarity, .Machine$double.xmin)
+      ordered <- order(!known.distance, effective, -correlations,
                        na.last=TRUE)
     } else {
-      ordered <- order(-correlations,
-                       -elevation.similarity[j, candidates], na.last=TRUE)
+      ordered <- order(-correlations, -similarity, na.last=TRUE)
     }
 
     selected <- candidates[ordered][preferred[ordered]]
@@ -254,80 +255,66 @@
 } # '.precipQC_neighbour_chunk' END
 
 
-.precipQC_neighbours <- function(values, metadata=NULL, station.id="station",
-                                  coords=c("lon", "lat"), n.neighbours=10L,
-                                  max.distance=Inf, min.overlap=30L,
-                                  min.correlation=0, elevation=NULL,
-                                  elevation.scale=500, backend=NULL) {
+.precipQC_neighbours <- function(
+  values, metadata=NULL, station.id="station", coords=c("lon", "lat"),
+  n.neighbours=10L, max.distance=Inf, min.overlap=30L,
+  min.correlation=0, elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
+  context=NULL, backend=NULL) {
 
+  # Validate selection controls and build geometry only once when needed.
   stations <- colnames(values)
   nstations <- NCOL(values)
   n.neighbours <- .precipQC_check_positive_integer(n.neighbours,
                                                     "n.neighbours")
   min.overlap <- .precipQC_check_positive_integer(min.overlap,
                                                    "min.overlap")
-
-  if (!is.numeric(max.distance) || length(max.distance) != 1L ||
-      is.na(max.distance) || max.distance <= 0)
-    stop("Invalid argument: 'max.distance' must be a positive number !")
-
+  selection.samples <- .QC_spatial_limit(selection.samples,
+                                          "selection.samples", 2L)
   if (!is.numeric(min.correlation) || length(min.correlation) != 1L ||
       is.na(min.correlation) || min.correlation < -1 || min.correlation > 1)
     stop("Invalid argument: 'min.correlation' must be in [-1, 1] !")
-  if (!is.numeric(elevation.scale) || length(elevation.scale) != 1L ||
-      is.na(elevation.scale) || !is.finite(elevation.scale) ||
-      elevation.scale <= 0)
-    stop("Invalid argument: 'elevation.scale' must be a positive finite number !")
-
-  meta <- .precipQC_metadata(stations, metadata, station.id, coords,
-                             elevation)
-  distances <- matrix(1, nrow=nstations, ncol=nstations,
-                      dimnames=list(stations, stations))
-
-  if (meta$has.coords) {
-    distances <- .precipQC_haversine(
-      as.numeric(meta$metadata[[coords[1L]]]),
-      as.numeric(meta$metadata[[coords[2L]]])
+  if (is.null(context))
+    context <- .QC_spatial_context(
+      values, metadata=metadata, station.id=station.id, coords=coords,
+      max.distance=max.distance, n.neighbours=n.neighbours,
+      max.candidates=max.candidates, elevation=elevation,
+      elevation.scale=elevation.scale, screen.method="spearman"
     )
-    dimnames(distances) <- list(stations, stations)
-  } else {
-    diag(distances) <- 0
-  }
-  elevation.similarity <- matrix(1, nrow=nstations, ncol=nstations,
-                                 dimnames=list(stations, stations))
-  if (meta$has.elevation) {
-    heights <- as.numeric(meta$metadata[[meta$elevation]])
-    height.difference <- abs(outer(heights, heights, "-"))
-    elevation.similarity <- exp(-height.difference / elevation.scale)
-  }
-  effective.distance <- pmax(distances, 0.1) /
-                        pmax(elevation.similarity,
-                             .Machine$double.xmin)
-  diag(effective.distance) <- 0
+
+  # Rank only a deterministic sample used for neighbour selection.
+  selected.rows <- .QC_spatial_rows(NROW(values), selection.samples)
+  sampled.overlap <- .QC_selection_overlap(min.overlap, selected.rows,
+                                             NROW(values))
+  exact.ranks <- !is.finite(selection.samples) ||
+    (length(selected.rows) == NROW(values) &&
+     (!is.finite(context$max.candidates) ||
+      nstations <= context$max.candidates + 1L))
+  selection.values <- values[selected.rows, , drop=FALSE]
+  if (!exact.ranks)
+    selection.values <- .QC_rank_columns(selection.values,
+                                           log.transform=TRUE)
 
   # Use the caller's backend or a zero-overhead serial fallback.
   if (is.null(backend))
     backend <- .QC_parallel_setup(1L, "serial", NULL, nstations)
   chunks <- .QC_parallel_chunks(nstations, backend$nworkers)
   parts <- .QC_parallel_apply(
-    backend, chunks, ".precipQC_neighbour_chunk", values=values,
-    distances=distances, effective.distance=effective.distance,
-    elevation.similarity=elevation.similarity,
-    coordinate.available=meta$coordinate.available,
-    has.coords=meta$has.coords, n.neighbours=n.neighbours,
-    max.distance=max.distance, min.overlap=min.overlap,
-    min.correlation=min.correlation
+    backend, chunks, ".precipQC_neighbour_chunk",
+    selection.values=selection.values, context=context,
+    n.neighbours=n.neighbours, min.overlap=sampled.overlap,
+    min.correlation=min.correlation, exact.ranks=exact.ranks
   )
   out <- vector("list", nstations)
   for (i in seq_along(chunks))
     out[chunks[[i]]] <- parts[[i]]
   names(out) <- stations
 
-  list(index=out, distance=distances,
-       elevation.similarity=elevation.similarity,
-       metadata=meta$metadata, has.coords=meta$has.coords,
-       has.elevation=meta$has.elevation,
-       coordinate.available=meta$coordinate.available)
+  list(index=out, context=context, selected.rows=selected.rows,
+       sampled.overlap=sampled.overlap, metadata=context$metadata,
+       has.coords=context$has.coords,
+       has.elevation=context$has.elevation,
+       coordinate.available=context$coordinate.available)
 
 } # '.precipQC_neighbours' END
 
@@ -781,11 +768,10 @@ precipQC_accumulation <- function(x, interval.hours,
 
 
 .precipQC_spatial_chunk <- function(targets, values, transformed,
-                                    neighbour.index, distances,
-                                    elevation.similarity,
-                                    coordinate.available, has.elevation,
+                                    neighbour.index, context,
                                     max.distance, min.neighbours,
-                                    cr.threshold, wet.threshold) {
+                                    cr.threshold, wet.threshold,
+                                    keep.diagnostics=TRUE) {
 
   # Calculate spatial estimates and flags for independent target stations.
   estimate.t <- matrix(NA_real_, nrow=NROW(values), ncol=length(targets),
@@ -800,38 +786,31 @@ precipQC_accumulation <- function(x, interval.hours,
     neighbours <- neighbour.index[[j]]
     if (length(neighbours) < min.neighbours)
       next
-    local.scale <- rep(NA_real_, NROW(values))
-
-    for (i in seq_len(NROW(values))) {
-      ok <- neighbours[is.finite(transformed[i, neighbours])]
-      if (length(ok) < min.neighbours)
-        next
-      y <- transformed[i, ok]
-
-      if (coordinate.available[j] || has.elevation) {
-        distance <- distances[j, ok]
-        known.distance <- is.finite(distance)
-        if (any(known.distance)) {
-          fallback <- if (is.finite(max.distance)) max.distance else
-                      2 * max(distance[known.distance], 0.1)
-          distance[!known.distance] <- max(
-            fallback, max(distance[known.distance], 0.1)
-          )
-        } else {
-          distance[] <- 1
-        }
-        weights <- elevation.similarity[j, ok] / pmax(distance, 0.1)^2
-        ordered <- order(y)
-        y.ordered <- y[ordered]
-        weights <- weights[ordered] / sum(weights[ordered])
-        estimate.t[i, position] <- y.ordered[
-          which(cumsum(weights) >= 0.5)[1L]
-        ]
+    candidate.position <- match(neighbours, context$candidates[[j]])
+    distance <- context$distance[[j]][candidate.position]
+    similarity <- context$elevation.similarity[[j]][candidate.position]
+    weighted <- context$coordinate.available[j] || context$has.elevation
+    if (weighted) {
+      known.distance <- is.finite(distance)
+      if (any(known.distance)) {
+        fallback <- if (is.finite(max.distance)) max.distance else
+                    2 * max(distance[known.distance], 0.1)
+        distance[!known.distance] <- max(
+          fallback, max(distance[known.distance], 0.1)
+        )
       } else {
-        estimate.t[i, position] <- stats::median(y)
+        distance[] <- 1
       }
-      local.scale[i] <- stats::mad(y, constant=1.4826)
+      weights <- similarity / pmax(distance, 0.1)^2
+    } else {
+      weights <- rep(1, length(neighbours))
     }
+    row.statistics <- .QC_precip_row_stats(
+      transformed[, neighbours, drop=FALSE], weights,
+      min.neighbours, weighted
+    )
+    estimate.t[, position] <- row.statistics[, 1L]
+    local.scale <- row.statistics[, 2L]
 
     residual <- transformed[, j] - estimate.t[, position]
     historical.scale <- stats::mad(residual, na.rm=TRUE, constant=1.4826)
@@ -850,6 +829,10 @@ precipQC_accumulation <- function(x, interval.hours,
                          scores[, position] >= cr.threshold
   }
 
+  # Coarser scales only need flags, avoiding large unused return objects.
+  if (!keep.diagnostics)
+    return(list(flags=flags))
+
   list(estimate.t=estimate.t, scores=scores, flags=flags)
 
 } # '.precipQC_spatial_chunk' END
@@ -859,7 +842,9 @@ precipQC_accumulation <- function(x, interval.hours,
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   n.neighbours=10L, max.distance=Inf, min.neighbours=2L,
   min.overlap=30L, min.correlation=0, cr.threshold=3,
-  wet.threshold=0.1, elevation=NULL, elevation.scale=500, backend) {
+  wet.threshold=0.1, elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
+  context=NULL, neighbours=NULL, keep.diagnostics=TRUE, backend) {
 
   values <- .precipQC_matrix(x)
   min.neighbours <- .precipQC_check_positive_integer(min.neighbours,
@@ -868,28 +853,37 @@ precipQC_accumulation <- function(x, interval.hours,
       is.na(cr.threshold) || !is.finite(cr.threshold) || cr.threshold <= 0)
     stop("Invalid argument: 'cr.threshold' must be a positive number !")
 
-  neighbours <- .precipQC_neighbours(
-    values=values, metadata=metadata, station.id=station.id, coords=coords,
-    n.neighbours=n.neighbours, max.distance=max.distance,
-    min.overlap=min.overlap, min.correlation=min.correlation,
-    elevation=elevation, elevation.scale=elevation.scale, backend=backend
-  )
+  if (is.null(context))
+    context <- .QC_spatial_context(
+      values, metadata=metadata, station.id=station.id, coords=coords,
+      max.distance=max.distance, n.neighbours=n.neighbours,
+      max.candidates=max.candidates, elevation=elevation,
+      elevation.scale=elevation.scale, screen.method="spearman"
+    )
+  if (is.null(neighbours))
+    neighbours <- .precipQC_neighbours(
+      values=values, n.neighbours=n.neighbours,
+      min.overlap=min.overlap, min.correlation=min.correlation,
+      selection.samples=selection.samples, context=context, backend=backend
+    )
 
   transformed <- log1p(pmax(values, 0))
   chunks <- .QC_parallel_chunks(NCOL(values), backend$nworkers)
   parts <- .QC_parallel_apply(
     backend, chunks, ".precipQC_spatial_chunk", values=values,
     transformed=transformed, neighbour.index=neighbours$index,
-    distances=neighbours$distance,
-    elevation.similarity=neighbours$elevation.similarity,
-    coordinate.available=neighbours$coordinate.available,
-    has.elevation=neighbours$has.elevation, max.distance=max.distance,
+    context=context, max.distance=max.distance,
     min.neighbours=min.neighbours, cr.threshold=cr.threshold,
-    wet.threshold=wet.threshold
+    wet.threshold=wet.threshold, keep.diagnostics=keep.diagnostics
   )
+  flags <- do.call(cbind, lapply(parts, `[[`, "flags"))
+
+  if (!keep.diagnostics)
+    return(list(flags=.precipQC_zoo(flags, x), context=context,
+                neighbour.selection=neighbours))
+
   estimate.t <- do.call(cbind, lapply(parts, `[[`, "estimate.t"))
   scores <- do.call(cbind, lapply(parts, `[[`, "scores"))
-  flags <- do.call(cbind, lapply(parts, `[[`, "flags"))
 
   out <- list(flags=.precipQC_zoo(flags, x),
               scores=.precipQC_zoo(scores, x),
@@ -907,6 +901,7 @@ precipQC_spatial <- function(
   n.neighbours=10L, max.distance=Inf, min.neighbours=2L,
   min.overlap=30L, min.correlation=0, cr.threshold=3,
   wet.threshold=0.1, elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
   cluster.nodes=NULL) {
 
@@ -922,7 +917,8 @@ precipQC_spatial <- function(
     min.neighbours=min.neighbours, min.overlap=min.overlap,
     min.correlation=min.correlation, cr.threshold=cr.threshold,
     wet.threshold=wet.threshold, elevation=elevation,
-    elevation.scale=elevation.scale, backend=backend
+    elevation.scale=elevation.scale, max.candidates=max.candidates,
+    selection.samples=selection.samples, backend=backend
   )
 
 } # 'precipQC_spatial' END
@@ -932,7 +928,9 @@ precipQC_spatial <- function(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"),
   n.neighbours=10L, max.distance=Inf, window.days=15L,
   neighbour.wet.days=3L, neighbour.fraction=1,
-  wet.threshold=0.1, elevation=NULL, elevation.scale=500, backend) {
+  wet.threshold=0.1, elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
+  context=NULL, backend) {
 
   values <- .precipQC_matrix(x)
   window.days <- .precipQC_check_positive_integer(window.days,
@@ -949,7 +947,9 @@ precipQC_spatial <- function(
     values=values, metadata=metadata, station.id=station.id, coords=coords,
     n.neighbours=n.neighbours, max.distance=max.distance,
     min.overlap=max(2L, window.days), min.correlation=-1,
-    elevation=elevation, elevation.scale=elevation.scale, backend=backend
+    elevation=elevation, elevation.scale=elevation.scale,
+    max.candidates=max.candidates, selection.samples=selection.samples,
+    context=context, backend=backend
   )
 
   dates <- as.Date(zoo::index(x))
@@ -1009,6 +1009,7 @@ precipQC_dryspell <- function(
   n.neighbours=10L, max.distance=Inf, window.days=15L,
   neighbour.wet.days=3L, neighbour.fraction=1,
   wet.threshold=0.1, elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
   ncores=1L, parallel.type=c("socket", "fork", "serial"),
   cluster.nodes=NULL) {
 
@@ -1024,7 +1025,8 @@ precipQC_dryspell <- function(
     window.days=window.days, neighbour.wet.days=neighbour.wet.days,
     neighbour.fraction=neighbour.fraction,
     wet.threshold=wet.threshold, elevation=elevation,
-    elevation.scale=elevation.scale, backend=backend
+    elevation.scale=elevation.scale, max.candidates=max.candidates,
+    selection.samples=selection.samples, backend=backend
   )
 
 } # 'precipQC_dryspell' END

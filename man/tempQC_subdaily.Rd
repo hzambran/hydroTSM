@@ -33,7 +33,8 @@ tempQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -77,6 +78,10 @@ maximum distance in km, and minimum simultaneous estimates.}
 samples for neighbour selection and regression fitting.}
   \item{min.correlation}{Minimum eligible target-neighbour Pearson
 correlation.}
+  \item{max.candidates, selection.samples}{Maximum candidate stations per
+target and maximum timestamps for initial neighbour screening. The bounded
+defaults support large networks; \code{Inf} requests exhaustive behaviour.
+See \code{\link{tempQC_daily}}.}
   \item{spatial.f}{Minimum standardized spatial residual.}
   \item{spatial.min.difference}{Minimum absolute spatial residual in degrees
 Celsius. Both spatial thresholds must be exceeded.}
@@ -112,6 +117,8 @@ terrain.
 
 With multiple workers, station-local tests, neighbour selection, and
 target-station spatial regressions are divided into balanced station chunks.
+Spatial metadata are cached in compact candidate lists, and vectorized
+regression formulas replace station-pair and timestamp-level R loops.
 The serial, socket, and fork backends preserve input station order and QC
 results. The effective backend, workers, and distinct nodes are reported when
 \code{verbose=TRUE}, and created socket workers are stopped on exit.

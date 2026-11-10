@@ -36,7 +36,8 @@ tempQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -92,6 +93,15 @@ selection.}
 for fitting an individual regression.}
   \item{min.correlation}{Minimum Pearson correlation for an eligible
 neighbour.}
+  \item{max.candidates}{Maximum candidate stations retained per target
+before exact regression screening. Located targets retain the nearest
+distance/elevation candidates; targets without usable coordinates use a
+deterministic low-cost correlation screen. Use \code{Inf} for exhaustive
+selection.}
+  \item{selection.samples}{Maximum evenly spaced timestamps used for
+initial target--candidate correlation and regression errors. All timestamps
+are used for records shorter than this value and for the final grouped models.
+Use \code{Inf} for exhaustive initial fitting.}
   \item{spatial.f}{Minimum standardized spatial-regression residual.}
   \item{spatial.min.difference}{Minimum absolute observed-estimated difference
 in degrees Celsius. Both spatial criteria must be exceeded.}
@@ -139,12 +149,14 @@ version in a visible or shared library.}
 The tests represent independent error mechanisms and are deliberately combined
 as evidence instead of interpreting every statistical outlier as an error.
 
-Station-local tests are evaluated in balanced, contiguous column chunks, and
-neighbour selection plus target-station spatial regressions are distributed
-over the same backend. Already vectorized range checks remain in the master
-process. Result columns retain input order and use the same algorithm in
-serial and parallel calls. Socket workers copy assigned data, whereas
-\code{"fork"} may reduce memory use on one Unix-like machine. Workers created
+Station-local tests are evaluated in balanced, contiguous column chunks.
+Spatial metadata are cached as compact target-specific candidate lists;
+candidate and timestamp bounds prevent exhaustive all-pairs fitting. Pairwise
+regression statistics and timestamp predictions are calculated with vectorized
+sufficient-statistic formulas. Spatial target chunks are distributed over the
+same backend. Result columns retain input order and use the same algorithm in
+serial and parallel calls. \code{"fork"} may reduce memory use on one
+Unix-like machine. Workers created
 by the call are stopped on exit.
 
 \enumerate{

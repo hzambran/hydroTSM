@@ -24,7 +24,9 @@
                                 min.neighbours, min.overlap,
                                 min.group.overlap, min.correlation,
                                 f, min.difference, elevation=NULL,
-                                elevation.scale=500, backend) {
+                                elevation.scale=500,
+                                max.candidates=200L,
+                                selection.samples=2048L, backend) {
 
   if (NCOL(prepared$values) < min.neighbours + 1L) {
     warning("Spatial checks require the target plus at least 'min.neighbours' station columns; the spatial check was skipped.")
@@ -37,7 +39,8 @@
     min.overlap=min.overlap, min.group.overlap=min.group.overlap,
     min.correlation=min.correlation, f=f,
     min.difference=min.difference, elevation=elevation,
-    elevation.scale=elevation.scale, backend=backend
+    elevation.scale=elevation.scale, max.candidates=max.candidates,
+    selection.samples=selection.samples, backend=backend
   )
 
 } # '.tempQC_run_spatial' END
@@ -154,7 +157,8 @@ tempQC_daily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)) {
 
@@ -182,6 +186,9 @@ tempQC_daily <- function(
                    NROW(prepared$values), " observations at ",
                    NCOL(prepared$values), " station(s) ...")
   .tempQC_progress(verbose, .QC_parallel_description(backend))
+  if (checks["spatial"])
+    .tempQC_progress(verbose, .QC_spatial_description(
+      max.candidates, selection.samples))
   if (checks["range"]) {
     .tempQC_progress(verbose, "Running physical-range check ...")
     flags$range <- tempQC_range(prepared$x, lower=lower, upper=upper)
@@ -231,7 +238,7 @@ tempQC_daily <- function(
       coords, n.neighbours, max.distance, min.neighbours,
       min.overlap, min.group.overlap, min.correlation,
       spatial.f, spatial.min.difference, elevation, elevation.scale,
-      backend
+      max.candidates, selection.samples, backend
     )
     if (!is.null(spatial)) {
       flags$spatial <- spatial$flags
@@ -253,6 +260,7 @@ tempQC_daily <- function(
     spatial.min.difference=spatial.min.difference,
     station.id=prepared$station.id, coords=coords,
     elevation=elevation, elevation.scale=elevation.scale,
+    max.candidates=max.candidates, selection.samples=selection.samples,
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.suspicious=max.suspicious,
     min.years=min.years, verbose=verbose, ncores=backend$nworkers,
@@ -303,7 +311,8 @@ tempQC_subdaily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)) {
 
@@ -338,6 +347,9 @@ tempQC_subdaily <- function(
                    NROW(prepared$values), " observations at ",
                    NCOL(prepared$values), " station(s) ...")
   .tempQC_progress(verbose, .QC_parallel_description(backend))
+  if (checks["spatial"])
+    .tempQC_progress(verbose, .QC_spatial_description(
+      max.candidates, selection.samples))
   if (checks["range"]) {
     .tempQC_progress(verbose, "Running physical-range check ...")
     flags$range <- tempQC_range(prepared$x, lower=lower, upper=upper)
@@ -382,7 +394,7 @@ tempQC_subdaily <- function(
       coords, n.neighbours, max.distance, min.neighbours,
       min.overlap, min.group.overlap, min.correlation,
       spatial.f, spatial.min.difference, elevation, elevation.scale,
-      backend
+      max.candidates, selection.samples, backend
     )
     if (!is.null(spatial)) {
       flags$spatial <- spatial$flags
@@ -404,6 +416,7 @@ tempQC_subdaily <- function(
     spatial.min.difference=spatial.min.difference,
     station.id=prepared$station.id, coords=coords,
     elevation=elevation, elevation.scale=elevation.scale,
+    max.candidates=max.candidates, selection.samples=selection.samples,
     correction=match.arg(correction), min.evidence=min.evidence,
     max.missing=max.missing, max.suspicious=max.suspicious,
     min.years=min.years, verbose=verbose, ncores=backend$nworkers,
@@ -437,7 +450,9 @@ tempQC_subdaily <- function(
 
 tempQC <- function(x, metadata=NULL, station.id="station",
                    coords=c("lon", "lat"), ...,
-                   elevation=NULL, elevation.scale=500, verbose=TRUE,
+                   elevation=NULL, elevation.scale=500,
+                   max.candidates=200L, selection.samples=2048L,
+                   verbose=TRUE,
                    ncores=1L,
                    parallel.type=c("socket", "fork", "serial"),
                    cluster.nodes=NULL, from=start(x), to=end(x)) {
@@ -461,7 +476,9 @@ tempQC <- function(x, metadata=NULL, station.id="station",
                      "Detected daily data; dispatching to tempQC_daily() ...")
     return(tempQC_daily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose,
+      elevation=elevation, elevation.scale=elevation.scale,
+      max.candidates=max.candidates, selection.samples=selection.samples,
+      verbose=verbose,
       ncores=ncores, parallel.type=parallel.type,
       cluster.nodes=cluster.nodes
     ))
@@ -471,7 +488,9 @@ tempQC <- function(x, metadata=NULL, station.id="station",
                      " data; dispatching to tempQC_subdaily() ...")
     return(tempQC_subdaily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose,
+      elevation=elevation, elevation.scale=elevation.scale,
+      max.candidates=max.candidates, selection.samples=selection.samples,
+      verbose=verbose,
       ncores=ncores, parallel.type=parallel.type,
       cluster.nodes=cluster.nodes
     ))

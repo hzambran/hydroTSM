@@ -47,7 +47,8 @@ tempQC_spatial(
   max.distance=200, min.neighbours=2L, min.overlap=90L,
   min.group.overlap=20L, min.correlation=0.6,
   f=4, min.difference=8, min.se=0.1, elevation=NULL,
-  elevation.scale=500, ncores=1L,
+  elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL
 )
 
@@ -97,6 +98,11 @@ and network requirements.}
 selection.}
   \item{min.group.overlap}{Minimum paired observations in a model group.}
   \item{min.correlation}{Minimum target-neighbour Pearson correlation.}
+  \item{max.candidates}{Maximum candidate stations retained per target
+before exact regression screening, or \code{Inf} for all candidates.}
+  \item{selection.samples}{Maximum evenly spaced timestamps used for
+initial neighbour screening, or \code{Inf} for the full record. Final
+calendar-group regressions use all timestamps.}
   \item{f}{Standardized residual threshold for spatial regression.}
   \item{min.difference}{Absolute spatial residual threshold.}
   \item{min.se}{Positive lower bound on each regression standard error.}
@@ -152,8 +158,10 @@ an absolute and a standardized residual. The equations follow the spatial
 regression test of Hubbard et al. (2007) and Estevez et al. (2018); grouping
 and correlation screening incorporate findings of Cheng et al. (2016) and
 Xiong et al. (2022, 2024).
-Neighbour selection and target-station regressions are divided into balanced
-station chunks when multiple workers are requested.
+Candidate geometry is cached, initial selection is bounded by
+\code{max.candidates} and \code{selection.samples}, and pairwise/model
+calculations use vectorized sufficient statistics. Target-station regressions
+are divided into balanced station chunks when multiple workers are requested.
 
 \code{tempQC_internal} flags Tmin above Tmax, possible interchange relative to
 the adjacent three-day window, and the 40-degree lagged range conditions in

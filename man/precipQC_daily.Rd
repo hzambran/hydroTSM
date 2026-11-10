@@ -41,7 +41,8 @@ precipQC_daily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -174,6 +175,19 @@ Minimum number of paired observations required when selecting neighbours.
 Minimum Spearman correlation preferred when selecting neighbours. When too
 few preferred neighbours remain, the best eligible neighbours are used.
 }
+  \item{max.candidates}{
+Maximum candidate stations retained per target before exact neighbour
+selection. Located targets retain the nearest candidates after distance and
+elevation filtering; targets without usable coordinates use a deterministic
+low-cost correlation screen. The default bounds work and memory for large
+networks. Use \code{Inf} for exhaustive selection.
+}
+  \item{selection.samples}{
+Maximum evenly spaced timestamps used for target--candidate correlation and
+regression screening. All timestamps are used when the record is shorter.
+The overlap threshold is scaled to the sample size. Use \code{Inf} for
+exhaustive selection.
+}
   \item{dryspell.days}{
 Length of a target-station dry window to compare with neighbours.
 }
@@ -252,11 +266,13 @@ The workflow combines tests that address different error mechanisms instead
 of treating one statistical anomaly as proof of error.
 
 Station-local tests are evaluated in balanced, contiguous column chunks.
-Neighbour selection and target-station spatial calculations are also
-distributed, while already vectorized range checks remain in the master
-process. Result columns retain their input order and serial and parallel calls
-use the same algorithms. Socket workers copy their assigned station chunks;
-\code{"fork"} can use less memory on a single Unix-like machine. The verbose
+Spatial geometry is cached once, candidate pools are bounded before exact
+statistics are computed, and one native-scale neighbour graph is reused for
+all accumulation scales. Row-wise robust spatial statistics use compiled code.
+Target-station calculations are distributed, while already vectorized range
+checks remain in the master process. Result columns retain their input order
+and serial and parallel calls use the same algorithms. \code{"fork"} can use
+less memory on a single Unix-like machine. The verbose
 startup message reports the effective backend, worker count, and distinct
 nodes, and all workers created by the call are stopped on exit.
 

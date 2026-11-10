@@ -192,11 +192,29 @@
                                   min.overlap, min.correlation,
                                   cr.threshold, wet.threshold,
                                   elevation=NULL, elevation.scale=500,
+                                  max.candidates=200L,
+                                  selection.samples=2048L,
                                   verbose=FALSE, backend) {
 
   native.estimate <- NULL
   native.score <- NULL
   neighbours <- NULL
+
+  # Build geometry and select neighbours once for all accumulation scales.
+  values <- .precipQC_matrix(x)
+  context <- .QC_spatial_context(
+    values, metadata=metadata, station.id=station.id, coords=coords,
+    max.distance=max.distance, n.neighbours=n.neighbours,
+    max.candidates=max.candidates, elevation=elevation,
+    elevation.scale=elevation.scale, screen.method="spearman"
+  )
+  neighbour.selection <- .precipQC_neighbours(
+    values, n.neighbours=n.neighbours, min.overlap=min.overlap,
+    min.correlation=min.correlation, selection.samples=selection.samples,
+    context=context, backend=backend
+  )
+  neighbour.names <- lapply(neighbour.selection$index,
+                            function(i) colnames(values)[i])
 
   for (i in seq_along(widths)) {
     # Report each scale because spatial checks are usually the slowest stage.
@@ -210,19 +228,22 @@
       min.neighbours=min.neighbours, min.overlap=min.overlap,
       min.correlation=min.correlation, cr.threshold=cr.threshold,
       wet.threshold=wet.threshold, elevation=elevation,
-      elevation.scale=elevation.scale, backend=backend
+      elevation.scale=elevation.scale, max.candidates=max.candidates,
+      selection.samples=selection.samples, context=context,
+      neighbours=neighbour.selection, keep.diagnostics=width == 1L,
+      backend=backend
     )
     flags[[labels[i]]] <- .precipQC_expand_aggregate_flags(result$flags,
                                                             width, x)
     if (width == 1L) {
       native.estimate <- result$estimate
       native.score <- result$scores
-      neighbours <- result$neighbours
+      neighbours <- neighbour.names
     }
   }
 
   list(flags=flags, estimate=native.estimate, score=native.score,
-       neighbours=neighbours)
+       neighbours=neighbours, context=context)
 
 } # '.precipQC_add_spatial' END
 
@@ -604,7 +625,8 @@ precipQC_daily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)) {
 
@@ -626,13 +648,16 @@ precipQC_daily <- function(
   on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
-  spatial.estimate <- spatial.score <- neighbours <- NULL
+  spatial.estimate <- spatial.score <- neighbours <- spatial.context <- NULL
 
   # Run each enabled test and announce it immediately before computation.
   .precipQC_progress(verbose, "Starting daily QC for ",
                      NROW(prepared$values), " observations at ",
                      NCOL(prepared$values), " station(s) ...")
   .precipQC_progress(verbose, .QC_parallel_description(backend))
+  if (checks["spatial"] || checks["dryspell"])
+    .precipQC_progress(verbose, .QC_spatial_description(
+      max.candidates, selection.samples))
   if (checks["range"]) {
     .precipQC_progress(verbose, "Running physical-range check ...")
     flags$range <- precipQC_range(prepared$x, lower=lower, upper=upper)
@@ -694,12 +719,14 @@ precipQC_daily <- function(
         flags, prepared$x, widths, labels, metadata,
         prepared$station.id, coords, n.neighbours, max.distance,
         min.neighbours, min.overlap, min.correlation, spatial.cr,
-        wet.threshold, elevation, elevation.scale, verbose, backend
+        wet.threshold, elevation, elevation.scale, max.candidates,
+        selection.samples, verbose, backend
       )
       flags <- spatial$flags
       spatial.estimate <- spatial$estimate
       spatial.score <- spatial$score
       neighbours <- spatial$neighbours
+      spatial.context <- spatial$context
     }
   }
   if (checks["dryspell"] && NCOL(prepared$values) >= 2L) {
@@ -711,7 +738,9 @@ precipQC_daily <- function(
       window.days=dryspell.days, neighbour.wet.days=neighbour.wet.days,
       neighbour.fraction=neighbour.fraction,
       wet.threshold=wet.threshold, elevation=elevation,
-      elevation.scale=elevation.scale, backend=backend
+      elevation.scale=elevation.scale, max.candidates=max.candidates,
+      selection.samples=selection.samples, context=spatial.context,
+      backend=backend
     )
   }
   settings <- list(resolution="daily", checks=checks, lower=lower,
@@ -728,6 +757,8 @@ precipQC_daily <- function(
                    weekday.ratio=weekday.ratio,
                    station.id=prepared$station.id, coords=coords,
                    elevation=elevation, elevation.scale=elevation.scale,
+                   max.candidates=max.candidates,
+                   selection.samples=selection.samples,
                    spatial.days=spatial.days, correction=match.arg(correction),
                    min.evidence=min.evidence, max.missing=max.missing,
                    max.suspicious=max.suspicious, min.years=min.years,
@@ -783,7 +814,8 @@ precipQC_subdaily <- function(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)) {
 
@@ -805,7 +837,7 @@ precipQC_subdaily <- function(
   on.exit(.QC_parallel_stop(backend), add=TRUE)
   flags <- list()
   breakpoint <- .precipQC_empty_breakpoint(prepared$stations)
-  spatial.estimate <- spatial.score <- neighbours <- NULL
+  spatial.estimate <- spatial.score <- neighbours <- spatial.context <- NULL
 
   if (!is.numeric(max.rate) || length(max.rate) != 1L || is.na(max.rate) ||
       !is.finite(max.rate) || max.rate <= 0)
@@ -819,6 +851,9 @@ precipQC_subdaily <- function(
                      NROW(prepared$values), " observations at ",
                      NCOL(prepared$values), " station(s) ...")
   .precipQC_progress(verbose, .QC_parallel_description(backend))
+  if (checks["spatial"] || checks["dryspell"])
+    .precipQC_progress(verbose, .QC_spatial_description(
+      max.candidates, selection.samples))
   if (checks["range"]) {
     .precipQC_progress(verbose, "Running physical-range check ...")
     flags$range <- precipQC_range(prepared$x, lower=lower, upper=upper)
@@ -880,12 +915,14 @@ precipQC_subdaily <- function(
         flags, prepared$x, widths, labels, metadata,
         prepared$station.id, coords, n.neighbours, max.distance,
         min.neighbours, min.overlap, min.correlation, spatial.cr,
-        wet.threshold, elevation, elevation.scale, verbose, backend
+        wet.threshold, elevation, elevation.scale, max.candidates,
+        selection.samples, verbose, backend
       )
       flags <- spatial$flags
       spatial.estimate <- spatial$estimate
       spatial.score <- spatial$score
       neighbours <- spatial$neighbours
+      spatial.context <- spatial$context
     }
   }
   if (checks["dryspell"] && NCOL(prepared$values) >= 2L) {
@@ -897,7 +934,9 @@ precipQC_subdaily <- function(
       window.days=dryspell.days, neighbour.wet.days=neighbour.wet.days,
       neighbour.fraction=neighbour.fraction,
       wet.threshold=wet.threshold, elevation=elevation,
-      elevation.scale=elevation.scale, backend=backend
+      elevation.scale=elevation.scale, max.candidates=max.candidates,
+      selection.samples=selection.samples, context=spatial.context,
+      backend=backend
     )
   }
   settings <- list(resolution="subdaily", checks=checks, lower=lower,
@@ -909,6 +948,8 @@ precipQC_subdaily <- function(
                    weekday.min.coverage=weekday.min.coverage,
                    station.id=prepared$station.id, coords=coords,
                    elevation=elevation, elevation.scale=elevation.scale,
+                   max.candidates=max.candidates,
+                   selection.samples=selection.samples,
                    spatial.hours=spatial.hours,
                    correction=match.arg(correction),
                    min.evidence=min.evidence, max.missing=max.missing,
@@ -945,7 +986,9 @@ precipQC_subdaily <- function(
 
 precipQC <- function(x, metadata=NULL, station.id="station",
                      coords=c("lon", "lat"), ...,
-                     elevation=NULL, elevation.scale=500, verbose=TRUE,
+                   elevation=NULL, elevation.scale=500,
+                   max.candidates=200L, selection.samples=2048L,
+                   verbose=TRUE,
                      ncores=1L,
                      parallel.type=c("socket", "fork", "serial"),
                      cluster.nodes=NULL, from=start(x), to=end(x)) {
@@ -969,7 +1012,9 @@ precipQC <- function(x, metadata=NULL, station.id="station",
                        "Detected daily data; dispatching to precipQC_daily() ...")
     return(precipQC_daily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose,
+      elevation=elevation, elevation.scale=elevation.scale,
+      max.candidates=max.candidates, selection.samples=selection.samples,
+      verbose=verbose,
       ncores=ncores, parallel.type=parallel.type,
       cluster.nodes=cluster.nodes
     ))
@@ -979,7 +1024,9 @@ precipQC <- function(x, metadata=NULL, station.id="station",
                        " data; dispatching to precipQC_subdaily() ...")
     return(precipQC_subdaily(
       x, metadata=metadata, station.id=station.id, coords=coords, ...,
-      elevation=elevation, elevation.scale=elevation.scale, verbose=verbose,
+      elevation=elevation, elevation.scale=elevation.scale,
+      max.candidates=max.candidates, selection.samples=selection.samples,
+      verbose=verbose,
       ncores=ncores, parallel.type=parallel.type,
       cluster.nodes=cluster.nodes
     ))

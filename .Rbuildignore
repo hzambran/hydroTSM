@@ -6,3 +6,4 @@ _config.yml
 ^docs$
 ^pkgdown$
 ^_pkgdown\.yml$
+^precipQC_temporal_spatial_tests_summary\.docx$

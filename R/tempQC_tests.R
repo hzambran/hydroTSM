@@ -211,10 +211,9 @@ tempQC_spike <- function(x, threshold=25) {
 } # '.tempQC_linear_fit' END
 
 
-.tempQC_spatial_chunk <- function(targets, values, groups, distances,
-                                  proximity, coordinate.available,
-                                  has.coords, n.neighbours, max.distance,
-                                  min.neighbours, min.overlap,
+.tempQC_spatial_chunk <- function(targets, values, selection.values,
+                                  groups, context, n.neighbours,
+                                  max.distance, min.neighbours, min.overlap,
                                   min.group.overlap, min.correlation,
                                   spatial.f, min.difference, min.se) {
 
@@ -230,80 +229,74 @@ tempQC_spike <- function(x, threshold=25) {
 
   for (position in seq_along(targets)) {
     j <- targets[position]
-    if (has.coords) {
-      candidates <- which(seq_len(NCOL(values)) != j &
-                          (!is.finite(distances[j, ]) |
-                           distances[j, ] <= max.distance))
-    } else {
-      candidates <- which(seq_len(NCOL(values)) != j)
-    }
+    candidates <- context$candidates[[j]]
     if (length(candidates) == 0L)
       next
 
-    correlations <- errors <- rep(NA_real_, length(candidates))
-    for (k in seq_along(candidates)) {
-      neighbour <- candidates[k]
-      ok <- is.finite(values[, j]) & is.finite(values[, neighbour])
-      if (sum(ok) < min.overlap)
-        next
-      correlations[k] <- suppressWarnings(stats::cor(
-        values[ok, j], values[ok, neighbour]
-      ))
-      fit <- .tempQC_linear_fit(values[, neighbour], values[, j],
-                                min.overlap)
-      if (!is.null(fit))
-        errors[k] <- fit$rmse
-    }
-
+    selection <- .QC_pairwise_lm_stats(
+      selection.values[, j],
+      selection.values[, candidates, drop=FALSE], min.overlap
+    )
+    correlations <- selection$correlation
+    errors <- selection$rmse
     eligible <- is.finite(correlations) & is.finite(errors) &
                 correlations >= min.correlation
+    distance <- context$distance[[j]][eligible]
+    proximity <- context$elevation.similarity[[j]][eligible]
     candidates <- candidates[eligible]
     errors <- errors[eligible]
     if (length(candidates) < min.neighbours)
       next
-    adjusted.errors <- errors /
-                       sqrt(pmax(proximity[j, candidates],
-                                 .Machine$double.xmin))
-    if (coordinate.available[j]) {
-      known.distance <- is.finite(distances[j, candidates])
-      candidates <- candidates[order(!known.distance, adjusted.errors)]
-    } else {
-      candidates <- candidates[order(adjusted.errors)]
+    if (context$has.coords) {
+      known.distance <- is.finite(distance)
+      proximity[known.distance] <- proximity[known.distance] *
+                                   exp(-distance[known.distance] /
+                                       max.distance)
+      if (context$coordinate.available[j])
+        proximity[!known.distance] <- proximity[!known.distance] * exp(-1)
     }
-    candidates <- utils::head(candidates, n.neighbours)
+    adjusted.errors <- errors /
+                       sqrt(pmax(proximity, .Machine$double.xmin))
+    if (context$coordinate.available[j]) {
+      ordering <- order(!is.finite(distance), adjusted.errors)
+    } else {
+      ordering <- order(adjusted.errors)
+    }
+    ordering <- utils::head(ordering, n.neighbours)
+    candidates <- candidates[ordering]
+    proximity <- proximity[ordering]
     selected[[position]] <- colnames(values)[candidates]
 
     for (group in unique(groups)) {
       rows <- which(groups == group)
-      predictions <- matrix(NA_real_, nrow=length(rows),
-                            ncol=length(candidates))
-      standard.errors <- rep(NA_real_, length(candidates))
-      for (k in seq_along(candidates)) {
-        neighbour <- candidates[k]
-        fit <- .tempQC_linear_fit(values[rows, neighbour],
-                                  values[rows, j], min.group.overlap)
-        if (is.null(fit))
-          next
-        predictions[, k] <- fit$coefficients[1L] +
-                             fit$coefficients[2L] * values[rows, neighbour]
-        standard.errors[k] <- max(fit$rmse, min.se)
-      }
-      for (i in seq_along(rows)) {
-        ok <- is.finite(predictions[i, ]) & is.finite(standard.errors)
-        if (sum(ok) < min.neighbours)
-          next
-        weights <- proximity[j, candidates[ok]] / standard.errors[ok]^2
-        estimate[rows[i], position] <-
-          sum(predictions[i, ok] * weights) / sum(weights)
-        combined.se <- sqrt(sum(ok) / sum(weights))
-        residual <- values[rows[i], j] - estimate[rows[i], position]
-        if (is.finite(residual)) {
-          score[rows[i], position] <- abs(residual) / combined.se
-          flags[rows[i], position] <-
-            abs(residual) >= min.difference &&
-            score[rows[i], position] >= spatial.f
-        }
-      }
+      predictors <- values[rows, candidates, drop=FALSE]
+      fit <- .QC_pairwise_lm_stats(values[rows, j], predictors,
+                                   min.group.overlap)
+      standard.errors <- pmax(fit$rmse, min.se)
+      weights <- proximity / standard.errors^2
+      predictions <- sweep(predictors, 2L, fit$slope, "*")
+      predictions <- sweep(predictions, 2L, fit$intercept, "+")
+      available <- is.finite(predictions) &
+                   matrix(is.finite(weights), NROW(predictions),
+                          NCOL(predictions), byrow=TRUE)
+      predictions[!available] <- 0
+      weight.matrix <- available *
+                       matrix(weights, NROW(predictions),
+                              NCOL(predictions), byrow=TRUE)
+      counts <- rowSums(available)
+      weight.sum <- rowSums(weight.matrix)
+      ok <- counts >= min.neighbours & is.finite(weight.sum) &
+            weight.sum > 0
+      group.estimate <- rep(NA_real_, length(rows))
+      group.estimate[ok] <- rowSums(predictions * weight.matrix)[ok] /
+                            weight.sum[ok]
+      estimate[rows, position] <- group.estimate
+      combined.se <- sqrt(counts / weight.sum)
+      residual <- values[rows, j] - group.estimate
+      score[rows[ok], position] <- abs(residual[ok]) / combined.se[ok]
+      flags[rows[ok], position] <- is.finite(residual[ok]) &
+        abs(residual[ok]) >= min.difference &
+        score[rows[ok], position] >= spatial.f
     }
   }
 
@@ -319,7 +312,8 @@ tempQC_spike <- function(x, threshold=25) {
   max.distance=200, min.neighbours=2L, min.overlap=90L,
   min.group.overlap=20L, min.correlation=0.6,
   f=4, min.difference=8, min.se=0.1, elevation=NULL,
-  elevation.scale=500, backend) {
+  elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, backend) {
 
   values <- .precipQC_matrix(x)
   group <- match.arg(group)
@@ -329,6 +323,8 @@ tempQC_spike <- function(x, threshold=25) {
                                                       "min.neighbours")
   min.overlap <- .precipQC_check_positive_integer(min.overlap,
                                                    "min.overlap")
+  selection.samples <- .QC_spatial_limit(selection.samples,
+                                          "selection.samples", 2L)
   min.group.overlap <- .precipQC_check_positive_integer(
     min.group.overlap, "min.group.overlap")
   for (arg in c("max.distance", "f", "min.difference", "min.se")) {
@@ -347,42 +343,24 @@ tempQC_spike <- function(x, threshold=25) {
     stop("Invalid argument: 'elevation.scale' must be a positive finite number !")
 
   stations <- colnames(values)
-  meta <- .precipQC_metadata(stations, metadata, station.id, coords,
-                             elevation)
-  distances <- matrix(1, NCOL(values), NCOL(values),
-                      dimnames=list(stations, stations))
-  if (meta$has.coords) {
-    distances <- .precipQC_haversine(
-      as.numeric(meta$metadata[[coords[1L]]]),
-      as.numeric(meta$metadata[[coords[2L]]])
-    )
-    dimnames(distances) <- list(stations, stations)
-  }
-  diag(distances) <- 0
-  proximity <- matrix(1, NCOL(values), NCOL(values),
-                      dimnames=list(stations, stations))
-  if (meta$has.coords) {
-    known.distance <- is.finite(distances)
-    proximity[known.distance] <- exp(-distances[known.distance] /
-                                      max.distance)
-    for (j in which(meta$coordinate.available))
-      proximity[j, !meta$coordinate.available] <- exp(-1)
-  }
-  if (meta$has.elevation) {
-    heights <- as.numeric(meta$metadata[[meta$elevation]])
-    height.difference <- abs(outer(heights, heights, "-"))
-    proximity <- proximity * exp(-height.difference / elevation.scale)
-  }
-  diag(proximity) <- 1
+  context <- .QC_spatial_context(
+    values, metadata=metadata, station.id=station.id, coords=coords,
+    max.distance=max.distance, n.neighbours=n.neighbours,
+    max.candidates=max.candidates, elevation=elevation,
+    elevation.scale=elevation.scale, screen.method="pearson"
+  )
+  selected.rows <- .QC_spatial_rows(NROW(values), selection.samples)
+  sampled.overlap <- .QC_selection_overlap(min.overlap, selected.rows,
+                                             NROW(values))
+  selection.values <- values[selected.rows, , drop=FALSE]
   groups <- .tempQC_group(x, group)
   chunks <- .QC_parallel_chunks(NCOL(values), backend$nworkers)
   parts <- .QC_parallel_apply(
-    backend, chunks, ".tempQC_spatial_chunk", values=values, groups=groups,
-    distances=distances, proximity=proximity,
-    coordinate.available=meta$coordinate.available,
-    has.coords=meta$has.coords, n.neighbours=n.neighbours,
+    backend, chunks, ".tempQC_spatial_chunk", values=values,
+    selection.values=selection.values, groups=groups, context=context,
+    n.neighbours=n.neighbours,
     max.distance=max.distance, min.neighbours=min.neighbours,
-    min.overlap=min.overlap, min.group.overlap=min.group.overlap,
+    min.overlap=sampled.overlap, min.group.overlap=min.group.overlap,
     min.correlation=min.correlation, spatial.f=f,
     min.difference=min.difference, min.se=min.se
   )
@@ -408,7 +386,8 @@ tempQC_spatial <- function(
   max.distance=200, min.neighbours=2L, min.overlap=90L,
   min.group.overlap=20L, min.correlation=0.6,
   f=4, min.difference=8, min.se=0.1, elevation=NULL,
-  elevation.scale=500, ncores=1L,
+  elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL) {
 
   # Create and clean up a backend for standalone spatial-test calls.
@@ -425,7 +404,8 @@ tempQC_spatial <- function(
     min.correlation=min.correlation, f=f,
     min.difference=min.difference, min.se=min.se,
     elevation=elevation, elevation.scale=elevation.scale,
-    backend=backend
+    max.candidates=max.candidates,
+    selection.samples=selection.samples, backend=backend
   )
 
 } # 'tempQC_spatial' END

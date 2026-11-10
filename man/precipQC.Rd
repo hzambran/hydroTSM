@@ -18,7 +18,9 @@ Detects the sampling frequency of a precipitation \code{zoo} object with
 \usage{
 precipQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
+  verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -37,6 +39,10 @@ passed to the selected workflow. See \code{\link{precipQC_daily}}.
 Arguments passed unchanged to the selected QC function. Because the daily and
 sub-daily functions have resolution-specific arguments, only arguments
 accepted by the detected workflow should be supplied.
+}
+  \item{max.candidates, selection.samples}{
+Scalability controls passed to the selected workflow. See
+\code{\link{precipQC_daily}}.
 }
   \item{verbose}{
 Logical. If \code{TRUE}, informative messages report the detected frequency,

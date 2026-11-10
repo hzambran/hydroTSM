@@ -39,7 +39,8 @@ precipQC_subdaily(
   correction=c("none", "set_na", "spatial"),
   min.evidence=2L, max.missing=0.2, max.suspicious=0.05,
   min.years=1, discard.breakpoint=FALSE,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500, max.candidates=200L,
+  selection.samples=2048L, verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -126,6 +127,12 @@ Controls for selecting up to \code{n.neighbours}, normally within
 \code{max.distance} km, and for calculating spatial estimates. See
 \code{\link{precipQC_daily}}.
 }
+  \item{max.candidates, selection.samples}{
+Maximum candidate stations per target and maximum timestamps used for
+neighbour screening. These bounded defaults are intended for large station
+networks; \code{Inf} requests exhaustive behaviour. See
+\code{\link{precipQC_daily}}.
+}
   \item{dryspell.days, neighbour.wet.days, neighbour.fraction}{
 Controls for flagging target-station dry windows that selected neighbours do
 not corroborate.
@@ -171,6 +178,9 @@ The sub-daily workflow follows a layered rule base:
 
 Station-local tests, neighbour selection, and target-station spatial
 calculations are divided into balanced station chunks when \code{ncores > 1}.
+Spatial geometry and neighbour selection are calculated once and reused at all
+requested accumulation scales; candidate and time-sample bounds prevent the
+quadratic all-pairs fitting that otherwise dominates large networks.
 Column order and QC results are preserved across serial, socket, and fork
 execution. The effective backend, worker count, and distinct node count are
 reported when \code{verbose=TRUE}; created socket workers are stopped on exit.

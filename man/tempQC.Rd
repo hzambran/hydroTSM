@@ -16,7 +16,9 @@ Detects the sampling frequency of a numeric \code{zoo} object with
 \usage{
 tempQC(
   x, metadata=NULL, station.id="station", coords=c("lon", "lat"), ...,
-  elevation=NULL, elevation.scale=500, verbose=TRUE, ncores=1L,
+  elevation=NULL, elevation.scale=500,
+  max.candidates=200L, selection.samples=2048L,
+  verbose=TRUE, ncores=1L,
   parallel.type=c("socket", "fork", "serial"), cluster.nodes=NULL,
   from=start(x), to=end(x)
 )
@@ -28,6 +30,8 @@ tempQC(
 station metadata, field-name selectors, and elevation-decay control passed to
 the selected workflow. See \code{\link{tempQC_daily}}.}
   \item{...}{Arguments passed unchanged to the selected workflow.}
+  \item{max.candidates, selection.samples}{Candidate and time-sample
+bounds passed to the selected workflow. See \code{\link{tempQC_daily}}.}
   \item{verbose}{Logical. If \code{TRUE}, informative messages report the
 detected frequency, parallel workers/nodes, active QC stages, and final QC summary. If \code{FALSE},
 these informational messages are suppressed; warnings and errors are
