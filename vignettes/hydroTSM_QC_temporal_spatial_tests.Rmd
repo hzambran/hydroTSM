@@ -3,21 +3,17 @@ title: "Temporal and spatial quality control in hydroTSM"
 subtitle: "Daily and sub-daily precipitation, air temperature, and streamflow"
 author: "Mauricio Zambrano-Bigiarini"
 date: "2026-11-10"
-format:
-  html:
+output:
+  rmarkdown::html_vignette:
     toc: true
-    toc-depth: 3
-    number-sections: true
-    embed-resources: true
-    code-copy: true
-    theme: cosmo
+    toc_depth: 3
+    number_sections: true
 bibliography: hydroTSM_QC_references.bib
 link-citations: true
-reference-location: margin
 lang: en
 vignette: >
   %\VignetteIndexEntry{Temporal and spatial quality control in hydroTSM}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -39,12 +35,10 @@ the evidence-combination stage classifies observations as **review** or
 provided, although users may explicitly enable correlation-only spatial QC
 without coordinates.
 
-::: {.callout-note title="In-memory contract"}
-The QC functions do not write files. They return flags, suspicious-point
-tables, station summaries, accepted/discarded metadata, accepted `zoo` series,
-corrected accepted `zoo` series, spatial diagnostics when available, and all
-resolved settings.
-:::
+> **In-memory contract.** The QC functions do not write files. They return
+> flags, suspicious-point tables, station summaries, accepted/discarded
+> metadata, accepted `zoo` series, corrected accepted `zoo` series, spatial
+> diagnostics when available, and all resolved settings.
 
 ## Workflow map
 
