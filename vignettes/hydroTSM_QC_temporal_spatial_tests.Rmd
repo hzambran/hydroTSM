@@ -4,6 +4,12 @@ subtitle: "Daily and sub-daily precipitation, air temperature, and streamflow"
 author: "Mauricio Zambrano-Bigiarini"
 date: "2026-11-10"
 output:
+  pdf_document: 
+    number_sections: true
+    fig_caption: true
+  html_document:
+    df_print: paged
+    number_sections: yes
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
@@ -13,8 +19,8 @@ link-citations: true
 lang: en
 vignette: >
   %\VignetteIndexEntry{Temporal and spatial quality control in hydroTSM}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ## Purpose and scope
