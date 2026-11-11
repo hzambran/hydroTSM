@@ -1,6 +1,6 @@
 # Temporal and spatial quality control in hydroTSM
 
-## 1 Purpose and scope
+## Purpose and scope
 
 This vignette summarises the quality-control (QC) tests implemented by
 the frequency-aware
@@ -24,14 +24,13 @@ deactivated through the named `checks` argument. Spatial QC is enabled
 by default only when `metadata` is provided, although users may
 explicitly enable correlation-only spatial QC without coordinates.
 
-> **In-memory contract**
->
-> The QC functions do not write files. They return flags,
-> suspicious-point tables, station summaries, accepted/discarded
-> metadata, accepted `zoo` series, corrected accepted `zoo` series,
-> spatial diagnostics when available, and all resolved settings.
+> **In-memory contract.** The QC functions do not write files. They
+> return flags, suspicious-point tables, station summaries,
+> accepted/discarded metadata, accepted `zoo` series, corrected accepted
+> `zoo` series, spatial diagnostics when available, and all resolved
+> settings.
 
-## 2 Workflow map
+## Workflow map
 
 In the following table, **Yes** means that the test is active by
 default, **Metadata** means that it defaults to active only when station
@@ -60,9 +59,9 @@ workflow does not apply that test.
 | Homogeneity breakpoint | Yes | Yes | Yes | Yes | Yes | Yes |
 | Paired Tmin/Tmax consistency | — | — | Adjunct | Adjunct | — | — |
 
-## 3 Shared validation, metadata, and decision rules
+## Shared validation, metadata, and decision rules
 
-### 3.1 Structural and temporal validation
+### Structural and temporal validation
 
 All workflows reject non-numeric data, duplicated or non-increasing
 timestamps, empty or duplicated station names, unsupported index
@@ -74,7 +73,7 @@ optional `from` and `to` arguments subset the in-memory record before
 completeness, thresholds, spatial models, and station decisions are
 calculated.
 
-### 3.2 Station metadata and incomplete coordinates
+### Station metadata and incomplete coordinates
 
 Metadata are supplied as a data frame. Users identify the station,
 longitude, latitude, and optional elevation fields with `station.id`,
@@ -95,7 +94,7 @@ coordinate does not disable QC:
 - streamflow area metadata allow regressions in specific-discharge space
   before estimates are converted back to the target station’s units.
 
-### 3.3 Spatial scalability
+### Spatial scalability
 
 Spatial tests use compact target-specific candidate lists rather than
 dense station-by-station distance matrices. `max.candidates=200L` bounds
@@ -107,7 +106,7 @@ exhaustive behaviour. Work can be distributed with `ncores`,
 `parallel.type` (`"serial"`, `"socket"`, or `"fork"`), and optional
 `cluster.nodes`.
 
-### 3.4 Evidence and station recommendations
+### Evidence and station recommendations
 
 The workflows distinguish **hard** tests from tests that normally
 require corroboration:
@@ -131,7 +130,7 @@ criteria. The default correction is `"none"`; `"set_na"` removes
 confirmed points, and `"spatial"` substitutes an available spatial
 estimate and otherwise uses `NA`.
 
-## 4 Precipitation QC
+## Precipitation QC
 
 The precipitation design combines gross-error, temporal, climatological,
 and neighbour-consistency checks used in operational rain-gauge QC
@@ -139,16 +138,16 @@ and neighbour-consistency checks used in operational rain-gauge QC
 2011](#ref-scherrer2011); [Lewis et al. 2021](#ref-lewis2021); [El
 Hachem et al. 2022](#ref-elhachem2022)).
 
-### 4.1 Daily precipitation
+### Daily precipitation
 
 | Check key and function | Default behaviour | What is flagged |
 |----|----|----|
-| `range` — [`precipQC_range()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | `lower=0`, `upper=1825` mm d(^{-1}) | Negative values or values above the configured physical limit. The upper default is a conservative 24-hour record screen, not a regional design threshold. |
+| `range` — [`precipQC_range()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | `lower=0`, `upper=1825` mm d$`^{-1}`$ | Negative values or values above the configured physical limit. The upper default is a conservative 24-hour record screen, not a regional design threshold. |
 | `duplicate` — [`precipQC_duplicate()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | At least 20 paired month positions or 300 paired year positions, with at least three wet values | Entire calendar months or years copied exactly at corresponding positions ([Durre et al. 2010](#ref-durre2010)). |
 | `frequency` — [`precipQC_frequency()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | Consecutive wet reports with 9/10, 8/10, 7/10, or 5/10 identical values, screened by 0.3, 0.5, 0.7, or 0.9 climatological probabilities | Suspicious clustering caused by rounding, coding, or repeated manual entries ([Durre et al. 2010](#ref-durre2010)). |
 | `gap` — [`precipQC_gap()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | A gap of at least 300 mm in a calendar-month wet-value distribution | Values in the separated upper tail above the first large distribution gap ([Durre et al. 2010](#ref-durre2010)). |
 | `climatology` — [`precipQC_climatology()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | 15-day circular day-of-year window; probability 0.999; robust score 8; at least 30 samples | Upper extremes beyond both an empirical quantile and a robust iterative `log1p` median/MAD limit. |
-| `persistence` — [`precipQC_persistence()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | Five identical consecutive values of at least 10 mm d(^{-1}) | Repeated high values consistent with stuck, copied, or artificial reports. |
+| `persistence` — [`precipQC_persistence()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | Five identical consecutive values of at least 10 mm d$`^{-1}`$ | Repeated high values consistent with stuck, copied, or artificial reports. |
 | `accumulation` — [`precipQC_accumulation()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | Candidate exceeds twice the station mean wet-day depth and follows a missing previous day | A multi-day amount plausibly assigned to one daily timestamp. It is a candidate flag, not proof of accumulation. |
 | `weekday` — [`precipQC_weekday()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | At least 20 wet days in a station-year; chi-squared `alpha=0.001`; observed/expected ratio at most 0.5 | Dry reports on a strongly under-recorded weekday, targeting systematic false zeros in manually observed networks ([Estevez et al. 2022](#ref-estevez2022)). |
 | `breakpoint` — [`precipQC_breakpoint()`](https://hzambran.github.io/hydroTSM/reference/precipQC_tests.md) | Pettitt tests on annual total, wet-day count, maximum, and extreme-day count; Holm adjustment | A station-level homogeneity change. It is diagnostic and does not discard a station unless `discard.breakpoint=TRUE` ([Stepanek et al. 2009](#ref-stepanek2009)). |
@@ -174,11 +173,11 @@ an upper-outlier test cannot detect ([Lewis et al.
 2021](#ref-lewis2021); [Golkhatmi and Farzandi
 2024](#ref-golkhatmi2024)).
 
-### 4.2 Sub-daily precipitation
+### Sub-daily precipitation
 
 | Check key | Default behaviour and difference from daily QC |
 |----|----|
-| `range` | The upper limit is `max.rate=401` mm h(^{-1}) multiplied by the detected interval duration; negative depths are invalid ([Lewis et al. 2021](#ref-lewis2021)). |
+| `range` | The upper limit is `max.rate=401` mm h$`^{-1}`$ multiplied by the detected interval duration; negative depths are invalid ([Lewis et al. 2021](#ref-lewis2021)). |
 | `climatology` | Month-specific `log1p` limits use probability 0.999, robust score 8, and at least 100 observations. |
 | `persistence` | Two identical high values are suspicious. When no high threshold is supplied, it is twice the station mean wet-day depth. Any identical wet value persisting for 24 hours is also flagged. |
 | `daily.accumulation` | A large interval is screened against 23 dry hours before and after it. |
@@ -195,7 +194,7 @@ inter-tip checks cannot be reconstructed from already accumulated `zoo`
 values; they require the original tip timestamps ([Villalobos-Herrera et
 al. 2022](#ref-villalobos2022)).
 
-## 5 Air-temperature QC
+## Air-temperature QC
 
 Temperature QC combines physical limits, robust seasonal references,
 temporal consistency, spatial regression, and homogeneity diagnostics
@@ -203,11 +202,11 @@ temporal consistency, spatial regression, and homogeneity diagnostics
 [Hubbard et al. 2007](#ref-hubbard2007); [Brunet et al.
 2020](#ref-brunet2020)).
 
-### 5.1 Daily air temperature
+### Daily air temperature
 
 | Check key and function | Default behaviour | What is flagged |
 |----|----|----|
-| `range` — [`tempQC_range()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md) | (-89.4) to (57.7) degrees C | Values outside global physical screening limits. Regional limits should be supplied when authoritative. |
+| `range` — [`tempQC_range()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md) | $`-89.4`$ to $`57.7`$ degrees C | Values outside global physical screening limits. Regional limits should be supplied when authoritative. |
 | `duplicate` — [`tempQC_duplicate()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md) | At least 20 paired month or 300 paired year positions | Exactly copied complete months or years ([Durre et al. 2010](#ref-durre2010)). |
 | `climatology` — [`tempQC_climatology()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md) | Circular 15-day day-of-year window; robust absolute score 6; at least 100 samples | Values far from the local seasonal median relative to MAD/IQR dispersion ([Feng et al. 2004](#ref-feng2004); [Durre et al. 2010](#ref-durre2010)). |
 | `persistence` — [`tempQC_persistence()`](https://hzambran.github.io/hydroTSM/reference/tempQC_tests.md) | Seven observations with range no greater than zero | Exact flat lines consistent with a stuck sensor. `persistence.tolerance` can admit near-flat lines. |
@@ -228,7 +227,7 @@ complex terrain ([Hubbard et al. 2007](#ref-hubbard2007); [Estevez et
 al. 2018](#ref-estevez2018); [Xiong et al. 2022](#ref-xiong2022),
 [2024](#ref-xiong2024)).
 
-### 5.2 Sub-daily air temperature
+### Sub-daily air temperature
 
 | Check key | Default behaviour and difference from daily QC |
 |----|----|
@@ -248,7 +247,7 @@ This test is intentionally separate because a single generic temperature
 matrix cannot reveal which member of an inconsistent Tmin/Tmax pair is
 wrong.
 
-## 6 Streamflow QC
+## Streamflow QC
 
 Streamflow QC is cautious about hydrologically real extremes,
 intermittent zeros, regulation, tidal behaviour, and rapidly responding
@@ -258,7 +257,7 @@ one evidence family ([Gudmundsson et al. 2018](#ref-gudmundsson2018);
 [Crochemore et al. 2020](#ref-crochemore2020); [U.S. Integrated Ocean
 Observing System 2018](#ref-ioos2018)).
 
-### 6.1 Daily streamflow
+### Daily streamflow
 
 | Check key and function | Default behaviour | What is flagged |
 |----|----|----|
@@ -281,7 +280,7 @@ one neighbour above its 0.95 quantile) within three days before or after
 the event. Thus a genuine regional flood is corroborated rather than
 rejected solely because it is extreme.
 
-### 6.2 Sub-daily streamflow
+### Sub-daily streamflow
 
 | Check key | Default behaviour and difference from daily QC |
 |----|----|
@@ -303,7 +302,7 @@ generalise operational sub-daily flow QC to the actual modal interval
 ([Fileni et al. 2023](#ref-fileni2023); [Zhao et al.
 2018](#ref-zhao2018)).
 
-## 7 Activating and deactivating tests
+## Activating and deactivating tests
 
 Names omitted from `checks` retain their workflow defaults. This allows
 a small override rather than restating the complete vector:
@@ -336,7 +335,7 @@ practices are known. The defaults are screening values grounded in the
 cited literature; they are not universal proof that an observation is
 wrong.
 
-## 8 Returned audit trail
+## Returned audit trail
 
 The three result classes share a common audit structure:
 
@@ -362,7 +361,7 @@ and
 summarise station recommendations, the most affected stations, flags by
 test, and the timing of confirmed suspicious observations.
 
-## 9 Limitations
+## Limitations
 
 These workflows evaluate the `zoo` observations and metadata supplied to
 them. They cannot reconstruct logger diagnostics, raw tipping-bucket tip

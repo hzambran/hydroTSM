@@ -27,6 +27,7 @@
 ### User-visible changes
 
 ``` R
+    o The temporal and spatial quality-control vignette was converted to R Markdown, so all package vignettes now build with knitr while preserving their content, citations, and HTML output.
     o 'streamflowQC*' spatial checks now use cached compact geographic candidates, bounded deterministic neighbour screening, once-per-pair symmetric correlations, vectorized regression and event-support calculations, bounded time blocks, and compiled weighted median/MAD summaries. Large PSOCK inputs are broadcast once per worker. The new 'max.candidates=200L' and 'selection.samples=2048L' defaults support large networks and long sub-daily records, while 'Inf' requests exhaustive legacy-style selection; incomplete-coordinate fallbacks, station order, zoo classes, in-memory-only output, and serial, fork, or PSOCK execution are preserved.
     o 'precipQC*' and 'tempQC*' spatial checks now scale to large station networks with cached compact geometry, bounded candidate pools ('max.candidates'), deterministic timestamp sampling for neighbour selection ('selection.samples'), once-per-pair symmetric correlations, vectorized temperature regressions, bounded station-time blocks, and a compiled precipitation median/MAD kernel. Precipitation reuses one neighbour graph across accumulation scales and the dry-spell check, while non-native scales retain flags only. Large PSOCK inputs are broadcast once per worker. Setting either new bound to 'Inf' requests exhaustive behaviour; incomplete-coordinate fallbacks, station order, zoo classes, and serial, fork, or PSOCK execution are preserved.
     o 'streamflowQC', 'streamflowQC_daily', and 'streamflowQC_subdaily' now accept 'from=start(x)' and 'to=end(x)' to quality-control an in-memory time subset. Spatial QC now defaults to enabled only when station metadata are supplied, while an explicit 'checks["spatial"]' value remains authoritative. The result-class documentation is directly available through '?streamflowQC_class' (or '?"streamflowQC-class"' for the legacy topic).
@@ -47,7 +48,7 @@
 ### New vignettes
 
 ``` R
-    o 'Temporal and spatial quality control in hydroTSM': Quarto vignette summarising the temporal and spatial tests applied to daily and sub-daily precipitation, air-temperature, and streamflow datasets, including default activation, thresholds, station metadata, evidence combination, and returned audit information.
+    o 'Temporal and spatial quality control in hydroTSM': R Markdown vignette summarising the temporal and spatial tests applied to daily and sub-daily precipitation, air-temperature, and streamflow datasets, including default activation, thresholds, station metadata, evidence combination, and returned audit information.
     o 'Theory, computation, and validation of SPI and SPEI with hydroTSM': theoretical guidance on drought-index construction, temporal scales, distributions, fitting methods, and arguments; practical usage; and versioned numerical and graphical comparisons against the SCI and SPEI packages at accumulation scales 1, 3, 6, and 12.
 ```
 
