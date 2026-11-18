@@ -39,7 +39,15 @@ streamflowQC(
 
 - ...:
 
-  Arguments passed unchanged to the selected workflow.
+  Arguments passed unchanged to the selected workflow. Because the daily
+  and sub-daily functions have resolution-specific arguments, only
+  arguments accepted by the detected workflow should be supplied. This
+  includes `max.suspicious`, the maximum proportion of finite
+  observations that may be confirmed as suspicious before a station is
+  recommended for discard; see
+  [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md)
+  and
+  [`streamflowQC_subdaily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_subdaily.md).
 
 - area:
 
@@ -61,10 +69,27 @@ streamflowQC(
   evidence combination, and final QC summary. If `FALSE`, these messages
   are suppressed; warnings and errors remain visible.
 
-- ncores, parallel.type, cluster.nodes:
+- ncores:
 
-  Requested worker count, parallel backend, and optional PSOCK host
-  names passed to the selected workflow. See
+  Positive integer giving the total requested number of worker R
+  processes across all machines, rather than per machine. The effective
+  number is capped at the number of station columns. `ncores=1L` uses
+  the serial path and does not create a cluster. See
+  [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md).
+
+- parallel.type:
+
+  Parallel backend passed to the selected workflow: `"socket"`,
+  `"fork"`, or `"serial"`. Network hosts can be used only with
+  `"socket"`. See
+  [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md).
+
+- cluster.nodes:
+
+  `NULL` to place all socket workers on the local machine, or a
+  character vector of host names on which PSOCK workers will be started.
+  This argument selects worker locations; it does not set their number.
+  Host names are recycled to the effective `ncores`. See
   [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md).
 
 - from, to:
@@ -156,7 +181,7 @@ qc <- streamflowQC(
 )
 #> [streamflowQC] Detected daily data; dispatching to streamflowQC_daily() ...
 #> [streamflowQC] Starting daily QC for 30 observations at 2 station(s) ...
-#> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.
+#> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.
 #> [streamflowQC] Running physical-range check ...
 #> [streamflowQC] Combining evidence and station recommendations ...
 #> [streamflowQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).
@@ -173,4 +198,7 @@ qc$station.summary
 #>   breakpoint.flag record.years recommendation                   reason
 #> A           FALSE   0.08213552         accept within acceptance limits
 #> B           FALSE   0.08213552         accept within acceptance limits
+#>   suspicious.tests
+#> A             <NA>
+#> B             <NA>
 ```

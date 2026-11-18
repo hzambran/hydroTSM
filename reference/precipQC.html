@@ -11,7 +11,7 @@ precipQC_subdaily. No files are written."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-33</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-34</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,10 @@ passed to the selected workflow. See <code><a href="precipQC_daily.html">precipQ
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Arguments passed unchanged to the selected QC function. Because the daily and
 sub-daily functions have resolution-specific arguments, only arguments
-accepted by the detected workflow should be supplied.</p></dd>
+accepted by the detected workflow should be supplied. This includes
+<code>max.suspicious</code>, the maximum proportion of finite observations that may
+be confirmed as suspicious before a station is recommended for discard; see
+<code><a href="precipQC_daily.html">precipQC_daily</a></code> and <code><a href="precipQC_subdaily.html">precipQC_subdaily</a></code>.</p></dd>
 
   <dt id="arg-max-candidates-selection-samples">max.candidates, selection.samples<a class="anchor" aria-label="anchor" href="#arg-max-candidates-selection-samples"></a></dt>
 <dd><p>Scalability controls passed to the selected workflow. See
@@ -87,9 +90,22 @@ the active QC stages, parallel workers/nodes, spatial scales, and the final QC s
 <code>FALSE</code>, these informational messages are suppressed; warnings and errors
 are unaffected.</p></dd>
 
-  <dt id="arg-ncores-parallel-type-cluster-nodes">ncores, parallel.type, cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-ncores-parallel-type-cluster-nodes"></a></dt>
-<dd><p>Parallel worker count, backend, and optional PSOCK host names passed to the
-selected workflow. See <code><a href="precipQC_daily.html">precipQC_daily</a></code>.</p></dd>
+  <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
+<dd><p>Positive integer giving the total requested number of worker R processes,
+across all machines rather than per machine. The effective number is capped at
+the number of station columns. <code>ncores=1L</code> uses the serial path and does
+not create a cluster. See <code><a href="precipQC_daily.html">precipQC_daily</a></code>.</p></dd>
+
+  <dt id="arg-parallel-type">parallel.type<a class="anchor" aria-label="anchor" href="#arg-parallel-type"></a></dt>
+<dd><p>Parallel backend passed to the selected workflow: <code>"socket"</code>,
+<code>"fork"</code>, or <code>"serial"</code>. Network hosts can be used only with
+<code>"socket"</code>. See <code><a href="precipQC_daily.html">precipQC_daily</a></code>.</p></dd>
+
+  <dt id="arg-cluster-nodes">cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-cluster-nodes"></a></dt>
+<dd><p><code>NULL</code> to place all socket workers on the local machine, or a character
+vector of host names on which PSOCK workers will be started. This argument
+selects worker locations; it does not set their number. Host names are recycled
+to the effective <code>ncores</code>. See <code><a href="precipQC_daily.html">precipQC_daily</a></code>.</p></dd>
 
   <dt id="arg-from-to">from, to<a class="anchor" aria-label="anchor" href="#arg-from-to"></a></dt>
 <dd><p>Starting and ending index bounds used to subset <code>x</code> before frequency
@@ -143,7 +159,7 @@ corresponding exhaustive legacy-style selection.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Detected daily data; dispatching to precipQC_daily() ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Starting daily QC for 40 observations at 2 station(s) ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Running physical-range check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Running copied-block check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Running frequent-value check ...</span>

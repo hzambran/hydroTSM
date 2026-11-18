@@ -11,7 +11,7 @@ streamflowQC."><meta property="og:image" content="https://hzambran.github.io/hyd
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-33</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-34</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,9 @@ list with:</p><ul><li><p><code>accepted.metadata</code> and <code>discarded.meta
 <li><p><code>flags</code>, <code>flag.count</code>, and <code>rejected</code>: individual
   logical flag objects, evidence counts, and confirmed decisions;</p></li>
 <li><p><code>station.summary</code>: station completeness, review/rejected
-  fractions, breakpoint diagnostics, recommendation, and reason;</p></li>
+  fractions, the <code>suspicious.tests</code> that contributed to confirmed
+  rejections, breakpoint diagnostics, recommendation, and reason. When the
+  suspicious fraction causes a discard, <code>reason</code> also names these tests;</p></li>
 <li><p><code>breakpoint</code>: annual-indicator Pettitt-test diagnostics;</p></li>
 <li><p><code>spatial.estimate</code>, <code>spatial.score</code>,
   <code>spatial.support</code>, and <code>neighbours</code>: spatial-test diagnostics;</p></li>

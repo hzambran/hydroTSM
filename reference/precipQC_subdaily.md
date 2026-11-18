@@ -164,10 +164,38 @@ precipQC_subdaily(
   therefore remains for review unless another active test corroborates
   it.
 
-- max.missing, max.suspicious, min.years:
+- max.missing:
 
-  Maximum missing fraction, maximum confirmed-suspicious fraction, and
-  minimum record length used for station acceptance recommendations.
+  Maximum missing proportion allowed for station acceptance. Missing
+  expected intervals are assessed separately from suspicious finite
+  observations.
+
+- max.suspicious:
+
+  Maximum proportion of finite observations that may be confirmed as
+  suspicious while retaining a station recommendation of `"accept"`. It
+  must be in `[0, 1]`; `0.05` means 5 percent. The numerator is the
+  number of timestamps classified as `"reject"`, counting a timestamp
+  once even if several tests flag it. The denominator is the number of
+  finite observations, so missing intervals are excluded and handled by
+  `max.missing`.
+
+  Hard-test flags are confirmed immediately; other flags contribute only
+  after at least `min.evidence` tests agree. Review-only flags do not
+  enter the proportion. Exceeding the limit changes only the station
+  recommendation and membership of the accepted-series outputs; it does
+  not change point flags, corrections, or the audit tables. The
+  `suspicious.tests` column and the recommendation reason identify the
+  tests that flagged the confirmed suspicious observations. Zero permits
+  no confirmed suspicious values, whereas one disables this particular
+  discard criterion. See
+  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md)
+  for the common evidence and output semantics.
+
+- min.years:
+
+  Minimum record length in years required for a station recommendation
+  of `"accept"`.
 
 - discard.breakpoint:
 
@@ -183,12 +211,30 @@ precipQC_subdaily(
   `FALSE`, only these informational messages are suppressed; warnings
   and errors remain visible.
 
-- ncores, parallel.type, cluster.nodes:
+- ncores:
 
-  Requested worker count, parallel backend, and optional PSOCK host
-  names. See
-  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md)
-  for backend behaviour and network requirements.
+  Positive integer giving the total requested number of worker R
+  processes across all machines, not per machine. The effective count is
+  capped at `NCOL(x)` and is stored in `result$settings$ncores`.
+  `ncores=1L` uses the serial path and creates no cluster.
+
+- parallel.type:
+
+  Parallel backend: `"socket"` for local or network PSOCK workers,
+  `"fork"` for local copy-on-write workers on Unix-like systems, or
+  `"serial"`, which requires `ncores=1L`.
+
+- cluster.nodes:
+
+  `NULL` to run all socket workers locally, or a character vector of
+  host names on which PSOCK workers are started. The names are recycled
+  or truncated to the effective `ncores`; they select worker locations
+  but do not determine the total worker count. For example, `ncores=8L`
+  and `cluster.nodes=c("node1", "node2")` request eight workers
+  distributed across those two hosts. The argument is valid only with
+  `parallel.type="socket"`. Remote hosts require non-interactive access,
+  compatible R installations, and the same hydroTSM version in a visible
+  or shared library.
 
 - from, to:
 
@@ -289,7 +335,11 @@ An object of class `"precipQC"`. It contains accepted and discarded
 metadata data.frames, unmodified and optionally corrected `zoo` series
 for accepted stations, a long-form `suspicious` table, a `corrections`
 audit table, logical flag series for every active test, station
-diagnostics, spatial diagnostics, neighbours, and settings. See
+diagnostics including `suspicious.tests`, spatial diagnostics,
+neighbours, and settings. For a station exceeding `max.suspicious`,
+`suspicious.tests` lists the tests that flagged its confirmed suspicious
+observations and the same list is included in the recommendation reason.
+See
 [`precipQC-class`](https://hzambran.github.io/hydroTSM/reference/precipQC-class.md)
 for the complete structure.
 
@@ -376,7 +426,7 @@ qc <- precipQC_subdaily(
   checks=c(monthly.accumulation=FALSE, breakpoint=FALSE)
 )
 #> [precipQC] Starting sub-daily QC for 960 observations at 3 station(s) ...
-#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.
+#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.
 #> [precipQC] Spatial screening uses up to 200 candidate(s) and 2048 timestamp(s) per target.
 #> [precipQC] Running physical-range check ...
 #> [precipQC] Running climatological-plausibility check ...
@@ -401,10 +451,18 @@ qc$station.summary
 #> A                 NA                         NA                       0
 #> B                 NA                         NA                       0
 #> C                 NA                         NA                       0
-#>   breakpoint.flag record.years recommendation                            reason
-#> A           FALSE     0.109514        discard suspicious fraction exceeds limit
-#> B           FALSE     0.109514        discard suspicious fraction exceeds limit
-#> C           FALSE     0.109514        discard suspicious fraction exceeds limit
+#>   breakpoint.flag record.years recommendation
+#> A           FALSE     0.109514        discard
+#> B           FALSE     0.109514        discard
+#> C           FALSE     0.109514        discard
+#>                                                                                      reason
+#> A suspicious fraction exceeds limit (tests: range, climatology, spatial_native, spatial_3h)
+#> B        suspicious fraction exceeds limit (tests: climatology, spatial_native, spatial_3h)
+#> C        suspicious fraction exceeds limit (tests: climatology, spatial_native, spatial_3h)
+#>                                 suspicious.tests
+#> A range, climatology, spatial_native, spatial_3h
+#> B        climatology, spatial_native, spatial_3h
+#> C        climatology, spatial_native, spatial_3h
 head(qc$suspicious)
 #>                  time station  original spatial.estimate spatial.score n.tests
 #> 1 2020-01-01 09:00:00       A -1.000000                0       0.00000       1

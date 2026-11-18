@@ -11,7 +11,7 @@ flags and station acceptance recommendations without writing files."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-33</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-34</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -239,10 +239,38 @@ available spatial estimate and otherwise <code>NA</code>.</p></dd>
 <dd><p>Number of independent flag families needed to confirm
 a point that did not fail a hard test.</p></dd>
 
-  <dt id="arg-max-missing-max-review-max-suspicious">max.missing, max.review, max.suspicious<a class="anchor" aria-label="anchor" href="#arg-max-missing-max-review-max-suspicious"></a></dt>
-<dd><p>Maximum station fractions of
-missing expected values, any flagged observations, and confirmed suspicious
-observations.</p></dd>
+  <dt id="arg-max-missing">max.missing<a class="anchor" aria-label="anchor" href="#arg-max-missing"></a></dt>
+<dd><p>Maximum missing proportion allowed for a station
+recommendation of <code>"accept"</code>. Missing expected timestamps inside the
+record span are included and are assessed separately from finite observations.</p></dd>
+
+  <dt id="arg-max-review">max.review<a class="anchor" aria-label="anchor" href="#arg-max-review"></a></dt>
+<dd><p>Maximum proportion of finite observations flagged by at
+least one active test while retaining a station recommendation of
+<code>"accept"</code>. Each timestamp is counted once even if several tests flag it.
+Exceeding this limit discards the station but does not by itself classify every
+reviewed observation as a confirmed rejection.</p></dd>
+
+  <dt id="arg-max-suspicious">max.suspicious<a class="anchor" aria-label="anchor" href="#arg-max-suspicious"></a></dt>
+<dd><p>Maximum proportion of a station's finite observations
+that may be confirmed as suspicious while retaining a recommendation of
+<code>"accept"</code>. It must be a single number in <code>[0, 1]</code>; the default
+<code>0.05</code> means 5 percent, not 0.05 percent. The proportion is the number of
+timestamps classified as <code>"reject"</code> divided by the number of finite
+observed values. Each timestamp is counted once even when several tests flag
+it, and missing values are excluded because they are assessed separately by
+<code>max.missing</code>.</p>
+<p>Range and copied-block flags are hard evidence and are confirmed immediately;
+other flags are confirmed when at least <code>min.evidence</code> active tests agree.
+Review-only flags therefore do not contribute to this proportion. Exceeding
+<code>max.suspicious</code> changes the station recommendation to <code>"discard"</code>
+and excludes that station from <code>accepted.data</code> and
+<code>accepted.corrected</code>; it does not alter individual flags, evidence
+classification, or corrections. The station summary and metadata report the
+contributing test names in <code>suspicious.tests</code>, and the discard
+<code>reason</code> includes those names. A value of zero allows no confirmed
+suspicious observations, whereas one disables this particular station-discard
+criterion.</p></dd>
 
   <dt id="arg-min-years">min.years<a class="anchor" aria-label="anchor" href="#arg-min-years"></a></dt>
 <dd><p>Minimum record duration for station acceptance.</p></dd>
@@ -272,10 +300,12 @@ these informational messages are suppressed; warnings and errors remain
 visible.</p></dd>
 
   <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
-<dd><p>Positive integer giving the requested number of worker
-processes. The effective count is capped at the number of stations, reported
-when <code>verbose=TRUE</code>, and stored in <code>result$settings$ncores</code>. One is
-the serial default.</p></dd>
+<dd><p>Positive integer giving the total requested number of worker R
+processes over all machines, not the number of workers per machine. The
+effective count is <code>min(ncores, NCOL(x))</code>, so the function never creates
+more workers than station columns. The effective count is reported when
+<code>verbose=TRUE</code> and stored in <code>result$settings$ncores</code>. The default
+<code>ncores=1L</code> uses the serial path and creates no socket or fork workers.</p></dd>
 
   <dt id="arg-parallel-type">parallel.type<a class="anchor" aria-label="anchor" href="#arg-parallel-type"></a></dt>
 <dd><p>Parallel backend: <code>"socket"</code> for portable local
@@ -283,8 +313,15 @@ or network PSOCK workers, <code>"fork"</code> for copy-on-write workers on
 Unix-like systems, or <code>"serial"</code> with <code>ncores=1L</code>.</p></dd>
 
   <dt id="arg-cluster-nodes">cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-cluster-nodes"></a></dt>
-<dd><p><code>NULL</code> for local workers, or host names for the
-<code>"socket"</code> backend, recycled to <code>ncores</code>. Network nodes require
+<dd><p>Worker locations for the <code>"socket"</code> backend.
+<code>NULL</code> places every PSOCK worker on <code>"localhost"</code>; otherwise this
+must be a character vector of non-empty host names. The host vector is recycled
+or truncated to the effective worker count, so, for example,
+<code>ncores=8L</code> with <code>cluster.nodes=c("node1", "node2")</code> requests eight
+workers distributed alternately across the two hosts. Thus <code>ncores</code>
+determines the total number of workers, whereas <code>cluster.nodes</code>
+determines where they run. This argument is invalid with
+<code>parallel.type="fork"</code> or <code>"serial"</code>. Remote hosts require
 non-interactive access, compatible R installations, and the same hydroTSM
 version in a visible or shared library.</p></dd>
 
@@ -379,7 +416,7 @@ Quality Control of Stream Flow Data Version 1.0</em>. doi:10.25923/gszc-ha43.</p
 <span class="r-in"><span>  min.years<span class="op">=</span><span class="fl">0</span>, max.missing<span class="op">=</span><span class="fl">1</span>, max.review<span class="op">=</span><span class="fl">1</span>, max.suspicious<span class="op">=</span><span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Starting daily QC for 60 observations at 2 station(s) ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Running physical-range check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Running gap check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Combining evidence and station recommendations ...</span>

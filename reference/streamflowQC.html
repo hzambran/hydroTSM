@@ -11,7 +11,7 @@ streamflowQC_subdaily. No files are written."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-33</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-34</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,12 @@ column.</p></dd>
 that order.</p></dd>
 
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed unchanged to the selected workflow.</p></dd>
+<dd><p>Arguments passed unchanged to the selected workflow. Because the
+daily and sub-daily functions have resolution-specific arguments, only
+arguments accepted by the detected workflow should be supplied. This includes
+<code>max.suspicious</code>, the maximum proportion of finite observations that may
+be confirmed as suspicious before a station is recommended for discard; see
+<code><a href="streamflowQC_daily.html">streamflowQC_daily</a></code> and <code><a href="streamflowQC_subdaily.html">streamflowQC_subdaily</a></code>.</p></dd>
 
   <dt id="arg-area">area<a class="anchor" aria-label="anchor" href="#arg-area"></a></dt>
 <dd><p><code>NULL</code>, or the name of a positive numeric catchment-area
@@ -99,10 +104,23 @@ detected frequency, effective parallel workers and nodes, enabled QC stages,
 evidence combination, and final QC summary. If <code>FALSE</code>, these messages
 are suppressed; warnings and errors remain visible.</p></dd>
 
-  <dt id="arg-ncores-parallel-type-cluster-nodes">ncores, parallel.type, cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-ncores-parallel-type-cluster-nodes"></a></dt>
-<dd><p>Requested worker count,
-parallel backend, and optional PSOCK host names passed to the selected
-workflow. See <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></code>.</p></dd>
+  <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
+<dd><p>Positive integer giving the total requested number of worker
+R processes across all machines, rather than per machine. The effective number
+is capped at the number of station columns. <code>ncores=1L</code> uses the serial
+path and does not create a cluster. See <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></code>.</p></dd>
+
+  <dt id="arg-parallel-type">parallel.type<a class="anchor" aria-label="anchor" href="#arg-parallel-type"></a></dt>
+<dd><p>Parallel backend passed to the selected workflow:
+<code>"socket"</code>, <code>"fork"</code>, or <code>"serial"</code>. Network hosts can be
+used only with <code>"socket"</code>. See <code><a href="streamflowQC_daily.html">streamflowQC_daily</a></code>.</p></dd>
+
+  <dt id="arg-cluster-nodes">cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-cluster-nodes"></a></dt>
+<dd><p><code>NULL</code> to place all socket workers on the local
+machine, or a character vector of host names on which PSOCK workers will be
+started. This argument selects worker locations; it does not set their number.
+Host names are recycled to the effective <code>ncores</code>. See
+<code><a href="streamflowQC_daily.html">streamflowQC_daily</a></code>.</p></dd>
 
   <dt id="arg-from-to">from, to<a class="anchor" aria-label="anchor" href="#arg-from-to"></a></dt>
 <dd><p>Start and end of the period retained before frequency
@@ -182,7 +200,7 @@ Quality Control of Stream Flow Data Version 1.0</em>. doi:10.25923/gszc-ha43.</p
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Detected daily data; dispatching to streamflowQC_daily() ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Starting daily QC for 30 observations at 2 station(s) ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Running physical-range check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Combining evidence and station recommendations ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [streamflowQC] Completed daily QC: 2 accepted, 0 discarded; 0 flagged observation(s), 0 confirmed rejection(s).</span>
@@ -199,6 +217,9 @@ Quality Control of Stream Flow Data Version 1.0</em>. doi:10.25923/gszc-ha43.</p
 <span class="r-out co"><span class="r-pr">#&gt;</span>   breakpoint.flag record.years recommendation                   reason</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A           FALSE   0.08213552         accept within acceptance limits</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> B           FALSE   0.08213552         accept within acceptance limits</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   suspicious.tests</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A             &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B             &lt;NA&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -38,7 +38,13 @@ precipQC(
 
   Arguments passed unchanged to the selected QC function. Because the
   daily and sub-daily functions have resolution-specific arguments, only
-  arguments accepted by the detected workflow should be supplied.
+  arguments accepted by the detected workflow should be supplied. This
+  includes `max.suspicious`, the maximum proportion of finite
+  observations that may be confirmed as suspicious before a station is
+  recommended for discard; see
+  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md)
+  and
+  [`precipQC_subdaily`](https://hzambran.github.io/hydroTSM/reference/precipQC_subdaily.md).
 
 - max.candidates, selection.samples:
 
@@ -52,10 +58,27 @@ precipQC(
   scales, and the final QC summary. If `FALSE`, these informational
   messages are suppressed; warnings and errors are unaffected.
 
-- ncores, parallel.type, cluster.nodes:
+- ncores:
 
-  Parallel worker count, backend, and optional PSOCK host names passed
-  to the selected workflow. See
+  Positive integer giving the total requested number of worker R
+  processes, across all machines rather than per machine. The effective
+  number is capped at the number of station columns. `ncores=1L` uses
+  the serial path and does not create a cluster. See
+  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md).
+
+- parallel.type:
+
+  Parallel backend passed to the selected workflow: `"socket"`,
+  `"fork"`, or `"serial"`. Network hosts can be used only with
+  `"socket"`. See
+  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md).
+
+- cluster.nodes:
+
+  `NULL` to place all socket workers on the local machine, or a
+  character vector of host names on which PSOCK workers will be started.
+  This argument selects worker locations; it does not set their number.
+  Host names are recycled to the effective `ncores`. See
   [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md).
 
 - from, to:
@@ -113,7 +136,7 @@ qc <- precipQC(
 )
 #> [precipQC] Detected daily data; dispatching to precipQC_daily() ...
 #> [precipQC] Starting daily QC for 40 observations at 2 station(s) ...
-#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.
+#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.
 #> [precipQC] Running physical-range check ...
 #> [precipQC] Running copied-block check ...
 #> [precipQC] Running frequent-value check ...

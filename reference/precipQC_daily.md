@@ -258,8 +258,25 @@ precipQC_daily(
 
 - max.suspicious:
 
-  Maximum fraction of confirmed suspicious observations allowed for a
-  station recommendation of `"accept"`.
+  Maximum proportion of a station's finite observations that may be
+  confirmed as suspicious while retaining a recommendation of
+  `"accept"`. It must be a single number in `[0, 1]`; the default `0.05`
+  means 5 percent, not 0.05 percent. The proportion is calculated as the
+  number of timestamps classified as `"reject"` divided by the number of
+  finite observed values. Each timestamp is counted once even when
+  several tests flag it, and missing values are excluded because they
+  are assessed separately by `max.missing`.
+
+  An observation is confirmed when a hard test flags it or when at least
+  `min.evidence` active tests agree. Review-only flags therefore do not
+  contribute to this proportion. Exceeding `max.suspicious` changes the
+  station recommendation to `"discard"` and excludes that station from
+  `accepted.data` and `accepted.corrected`; it does not alter individual
+  flags, evidence classification, or corrections. In that case,
+  `station.summary$suspicious.tests` and the recommendation reason
+  identify the tests that flagged the confirmed suspicious observations.
+  A value of zero allows no confirmed suspicious observations, whereas
+  one disables this particular station-discard criterion.
 
 - min.years:
 
@@ -283,10 +300,13 @@ precipQC_daily(
 
 - ncores:
 
-  Positive integer giving the requested number of worker processes. The
-  effective count is capped at the number of station columns and is
-  recorded in `result$settings$ncores`. The CRAN-safe default, one, uses
-  no parallel workers.
+  Positive integer giving the total requested number of worker R
+  processes over all machines, not the number of workers per machine.
+  The effective count is `min(ncores, NCOL(x))`, so the function never
+  creates more workers than station columns. The effective count is
+  recorded in `result$settings$ncores`. The CRAN-safe default
+  `ncores=1L` uses the zero-overhead serial path and creates no socket
+  or fork workers.
 
 - parallel.type:
 
@@ -297,10 +317,17 @@ precipQC_daily(
 
 - cluster.nodes:
 
-  `NULL` for local workers, or a character vector of host names used by
-  the `"socket"` backend. Host names are recycled to `ncores`. Remote
-  nodes require non-interactive access, a compatible R installation, and
-  the same hydroTSM version in a visible or shared library.
+  Worker locations for the `"socket"` backend. `NULL` places every PSOCK
+  worker on `"localhost"`; otherwise this must be a character vector of
+  non-empty host names. The host vector is recycled or truncated to the
+  effective worker count, so, for example, `ncores=8L` with
+  `cluster.nodes=c("node1", "node2")` requests eight workers distributed
+  alternately across the two hosts. Thus `ncores` determines the total
+  number of workers, whereas `cluster.nodes` determines where they run.
+  This argument is invalid with `parallel.type="fork"` or `"serial"`.
+  Remote hosts require non-interactive access, compatible R
+  installations, and the same hydroTSM version in a visible or shared
+  library.
 
 - from, to:
 
@@ -431,8 +458,15 @@ An object of class `"precipQC"`, which is a list containing:
 
 - `flags`: named logical `zoo` objects returned by the individual tests;
 
-- `flag.count`, `rejected`, `station.summary`, `breakpoint`, spatial
-  diagnostics, neighbours, and settings.
+- `flag.count` and `rejected`: evidence counts and confirmed point
+  decisions;
+
+- `station.summary`: completeness, review and suspicious fractions, the
+  tests associated with confirmed suspicious observations in
+  `suspicious.tests`, breakpoint diagnostics, recommendation, and
+  reason; and
+
+- `breakpoint`, spatial diagnostics, neighbours, and settings.
 
 ## References
 
@@ -517,7 +551,7 @@ qc <- precipQC_daily(pcp, metadata=meta, station.id="code",
                      elevation="altitude_m", min.years=0,
                      checks=c(breakpoint=FALSE))
 #> [precipQC] Starting daily QC for 400 observations at 3 station(s) ...
-#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.
+#> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.
 #> [precipQC] Spatial screening uses up to 200 candidate(s) and 2048 timestamp(s) per target.
 #> [precipQC] Running physical-range check ...
 #> [precipQC] Running copied-block check ...
@@ -546,10 +580,18 @@ qc$station.summary
 #> A                 NA                         NA                       0
 #> B                 NA                         NA                       0
 #> C                 NA                         NA                       0
-#>   breakpoint.flag record.years recommendation                            reason
-#> A           FALSE      1.09514        discard suspicious fraction exceeds limit
-#> B           FALSE      1.09514        discard suspicious fraction exceeds limit
-#> C           FALSE      1.09514         accept          within acceptance limits
+#>   breakpoint.flag record.years recommendation
+#> A           FALSE      1.09514        discard
+#> B           FALSE      1.09514        discard
+#> C           FALSE      1.09514         accept
+#>                                                                        reason
+#> A    suspicious fraction exceeds limit (tests: range, spatial_1d, spatial_3d)
+#> B suspicious fraction exceeds limit (tests: spatial_1d, spatial_3d, dryspell)
+#> C                                                    within acceptance limits
+#>                   suspicious.tests
+#> A    range, spatial_1d, spatial_3d
+#> B spatial_1d, spatial_3d, dryspell
+#> C                         dryspell
 head(qc$suspicious)
 #>         time station  original spatial.estimate spatial.score n.tests
 #> 1 2018-01-03       A  0.000000                0       0.00000       1

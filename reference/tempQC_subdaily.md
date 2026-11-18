@@ -160,9 +160,38 @@ tempQC_subdaily(
   Number of coincident non-hard tests needed to reject a point. Range,
   persistence, and isolated-spike flags are hard evidence.
 
-- max.missing, max.suspicious, min.years:
+- max.missing:
 
-  Station acceptance limits.
+  Maximum missing proportion allowed for station acceptance. Missing
+  expected intervals are assessed separately from suspicious finite
+  observations.
+
+- max.suspicious:
+
+  Maximum proportion of finite observations that may be confirmed as
+  suspicious while retaining a station recommendation of `"accept"`. It
+  must be in `[0, 1]`; `0.05` means 5 percent. The numerator is the
+  number of timestamps classified as `"reject"`, counting a timestamp
+  once even if several tests flag it. The denominator is the number of
+  finite observations, so missing intervals are excluded and handled by
+  `max.missing`.
+
+  Hard-test flags are confirmed immediately; other flags contribute only
+  after at least `min.evidence` tests agree. Review-only flags do not
+  enter the proportion. Exceeding the limit changes only the station
+  recommendation and membership of the accepted-series outputs; it does
+  not change point flags, corrections, or the audit tables. The
+  `suspicious.tests` column and the recommendation reason identify the
+  tests that flagged the confirmed suspicious observations. Zero permits
+  no confirmed suspicious values, whereas one disables this particular
+  discard criterion. See
+  [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md)
+  for the common evidence and output semantics.
+
+- min.years:
+
+  Minimum record length in years required for a station recommendation
+  of `"accept"`.
 
 - discard.breakpoint:
 
@@ -177,12 +206,30 @@ tempQC_subdaily(
   informational messages are suppressed; warnings and errors remain
   visible.
 
-- ncores, parallel.type, cluster.nodes:
+- ncores:
 
-  Requested worker count, parallel backend, and optional PSOCK host
-  names. See
-  [`tempQC_daily`](https://hzambran.github.io/hydroTSM/reference/tempQC_daily.md)
-  for backend behaviour and network requirements.
+  Positive integer giving the total requested number of worker R
+  processes across all machines, not per machine. The effective count is
+  capped at `NCOL(x)` and is stored in `result$settings$ncores`.
+  `ncores=1L` uses the serial path and creates no cluster.
+
+- parallel.type:
+
+  Parallel backend: `"socket"` for local or network PSOCK workers,
+  `"fork"` for local copy-on-write workers on Unix-like systems, or
+  `"serial"`, which requires `ncores=1L`.
+
+- cluster.nodes:
+
+  `NULL` to run all socket workers locally, or a character vector of
+  host names on which PSOCK workers are started. The names are recycled
+  or truncated to the effective `ncores`; they select worker locations
+  but do not determine the total worker count. For example, `ncores=8L`
+  and `cluster.nodes=c("node1", "node2")` request eight workers
+  distributed across those two hosts. The argument is valid only with
+  `parallel.type="socket"`. Remote hosts require non-interactive access,
+  compatible R installations, and the same hydroTSM version in a visible
+  or shared library.
 
 - from, to:
 
@@ -303,7 +350,7 @@ qc <- tempQC_subdaily(
   min.years=0, max.missing=1
 )
 #> [tempQC] Starting sub-daily QC for 72 observations at 2 station(s) ...
-#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.
+#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.
 #> [tempQC] Running physical-range check ...
 #> [tempQC] Running persistence check ...
 #> [tempQC] Running isolated-spike check ...
@@ -322,4 +369,7 @@ qc$station.summary
 #>   breakpoint.flag record.years recommendation                   reason
 #> A           FALSE  0.008213552         accept within acceptance limits
 #> B           FALSE  0.008213552         accept within acceptance limits
+#>   suspicious.tests
+#> A             <NA>
+#> B             <NA>
 ```

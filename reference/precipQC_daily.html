@@ -13,7 +13,7 @@ discarding, and no files are written."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-33</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-34</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -255,8 +255,24 @@ hard evidence. A value with less evidence remains in the
 <code>"accept"</code>. Missing timestamps inside the record span are included.</p></dd>
 
   <dt id="arg-max-suspicious">max.suspicious<a class="anchor" aria-label="anchor" href="#arg-max-suspicious"></a></dt>
-<dd><p>Maximum fraction of confirmed suspicious observations allowed for a station
-recommendation of <code>"accept"</code>.</p></dd>
+<dd><p>Maximum proportion of a station's finite observations that may be confirmed as
+suspicious while retaining a recommendation of <code>"accept"</code>. It must be a
+single number in <code>[0, 1]</code>; the default <code>0.05</code> means 5 percent, not
+0.05 percent. The proportion is calculated as the number of timestamps
+classified as <code>"reject"</code> divided by the number of finite observed
+values. Each timestamp is counted once even when several tests flag it, and
+missing values are excluded because they are assessed separately by
+<code>max.missing</code>.</p>
+<p>An observation is confirmed when a hard test flags it or when at least
+<code>min.evidence</code> active tests agree. Review-only flags therefore do not
+contribute to this proportion. Exceeding <code>max.suspicious</code> changes the
+station recommendation to <code>"discard"</code> and excludes that station from
+<code>accepted.data</code> and <code>accepted.corrected</code>; it does not alter
+individual flags, evidence classification, or corrections. In that case,
+<code>station.summary$suspicious.tests</code> and the recommendation reason identify
+the tests that flagged the confirmed suspicious observations. A value of zero
+allows no confirmed suspicious observations, whereas one disables this
+particular station-discard criterion.</p></dd>
 
   <dt id="arg-min-years">min.years<a class="anchor" aria-label="anchor" href="#arg-min-years"></a></dt>
 <dd><p>Minimum record length in years required for a station recommendation of
@@ -275,10 +291,12 @@ station/observation summary. If <code>FALSE</code>, only these informational mes
 are suppressed; warnings and errors remain visible.</p></dd>
 
   <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
-<dd><p>Positive integer giving the requested number of worker processes. The
-effective count is capped at the number of station columns and is recorded in
-<code>result$settings$ncores</code>. The CRAN-safe default, one, uses no parallel
-workers.</p></dd>
+<dd><p>Positive integer giving the total requested number of worker R processes over
+all machines, not the number of workers per machine. The effective count is
+<code>min(ncores, NCOL(x))</code>, so the function never creates more workers than
+station columns. The effective count is recorded in
+<code>result$settings$ncores</code>. The CRAN-safe default <code>ncores=1L</code> uses the
+zero-overhead serial path and creates no socket or fork workers.</p></dd>
 
   <dt id="arg-parallel-type">parallel.type<a class="anchor" aria-label="anchor" href="#arg-parallel-type"></a></dt>
 <dd><p>Parallel backend. <code>"socket"</code> uses portable PSOCK workers and supports
@@ -287,10 +305,16 @@ systems and is unavailable on Windows; <code>"serial"</code> explicitly requires
 <code>ncores=1L</code>.</p></dd>
 
   <dt id="arg-cluster-nodes">cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-cluster-nodes"></a></dt>
-<dd><p><code>NULL</code> for local workers, or a character vector of host names used by the
-<code>"socket"</code> backend. Host names are recycled to <code>ncores</code>. Remote
-nodes require non-interactive access, a compatible R installation, and the
-same hydroTSM version in a visible or shared library.</p></dd>
+<dd><p>Worker locations for the <code>"socket"</code> backend. <code>NULL</code> places every
+PSOCK worker on <code>"localhost"</code>; otherwise this must be a character vector
+of non-empty host names. The host vector is recycled or truncated to the
+effective worker count, so, for example, <code>ncores=8L</code> with
+<code>cluster.nodes=c("node1", "node2")</code> requests eight workers distributed
+alternately across the two hosts. Thus <code>ncores</code> determines the total
+number of workers, whereas <code>cluster.nodes</code> determines where they run.
+This argument is invalid with <code>parallel.type="fork"</code> or <code>"serial"</code>.
+Remote hosts require non-interactive access, compatible R installations, and
+the same hydroTSM version in a visible or shared library.</p></dd>
 
   <dt id="arg-from-to">from, to<a class="anchor" aria-label="anchor" href="#arg-from-to"></a></dt>
 <dd><p>Starting and ending bounds used by <code>window</code> to subset <code>x</code> before
@@ -397,8 +421,13 @@ proximity cannot be verified.</p>
 <li><p><code>corrections</code>: an audit table of changed values;</p></li>
 <li><p><code>flags</code>: named logical <code>zoo</code> objects returned by the
   individual tests;</p></li>
-<li><p><code>flag.count</code>, <code>rejected</code>, <code>station.summary</code>,
-  <code>breakpoint</code>, spatial diagnostics, neighbours, and settings.</p></li>
+<li><p><code>flag.count</code> and <code>rejected</code>: evidence counts and confirmed
+  point decisions;</p></li>
+<li><p><code>station.summary</code>: completeness, review and suspicious fractions,
+  the tests associated with confirmed suspicious observations in
+  <code>suspicious.tests</code>, breakpoint diagnostics, recommendation, and reason;
+  and</p></li>
+<li><p><code>breakpoint</code>, spatial diagnostics, neighbours, and settings.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -471,7 +500,7 @@ creation of monthly and daily station-based gridded precipitation datasets.
 <span class="r-in"><span>                     elevation<span class="op">=</span><span class="st">"altitude_m"</span>, min.years<span class="op">=</span><span class="fl">0</span>,</span></span>
 <span class="r-in"><span>                     checks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>breakpoint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Starting daily QC for 400 observations at 3 station(s) ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Spatial screening uses up to 200 candidate(s) and 2048 timestamp(s) per target.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Running physical-range check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [precipQC] Running copied-block check ...</span>
@@ -500,10 +529,18 @@ creation of monthly and daily station-based gridded precipitation datasets.
 <span class="r-out co"><span class="r-pr">#&gt;</span> A                 NA                         NA                       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> B                 NA                         NA                       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> C                 NA                         NA                       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   breakpoint.flag record.years recommendation                            reason</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A           FALSE      1.09514        discard suspicious fraction exceeds limit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> B           FALSE      1.09514        discard suspicious fraction exceeds limit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> C           FALSE      1.09514         accept          within acceptance limits</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   breakpoint.flag record.years recommendation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A           FALSE      1.09514        discard</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B           FALSE      1.09514        discard</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C           FALSE      1.09514         accept</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                        reason</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A    suspicious fraction exceeds limit (tests: range, spatial_1d, spatial_3d)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B suspicious fraction exceeds limit (tests: spatial_1d, spatial_3d, dryspell)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C                                                    within acceptance limits</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   suspicious.tests</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A    range, spatial_1d, spatial_3d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B spatial_1d, spatial_3d, dryspell</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C                         dryspell</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">qc</span><span class="op">$</span><span class="va">suspicious</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         time station  original spatial.estimate spatial.score n.tests</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 2018-01-03       A  0.000000                0       0.00000       1</span>

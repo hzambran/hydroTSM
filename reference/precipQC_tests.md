@@ -193,12 +193,28 @@ precipQC_breakpoint(
   `exp(-abs(dz) / elevation.scale)` and influences neighbour ranking and
   spatial weights. It is ignored when `elevation=NULL`.
 
-- ncores, parallel.type, cluster.nodes:
+- ncores:
 
-  Requested worker count, parallel backend, and optional PSOCK host
-  names for the spatial and dry-spell tests. See
-  [`precipQC_daily`](https://hzambran.github.io/hydroTSM/reference/precipQC_daily.md)
-  for backend behaviour and network requirements.
+  Positive integer giving the total requested number of worker R
+  processes for the standalone spatial and dry-spell tests. The
+  effective count is capped at the number of station columns.
+  `ncores=1L` uses the serial path and creates no cluster.
+
+- parallel.type:
+
+  Parallel backend: `"socket"` for local or network PSOCK workers,
+  `"fork"` for local copy-on-write workers on Unix-like systems, or
+  `"serial"`, which requires `ncores=1L`.
+
+- cluster.nodes:
+
+  `NULL` to run all socket workers locally, or a character vector of
+  non-empty host names on which PSOCK workers are started. Host names
+  are recycled or truncated to the effective `ncores`; they choose
+  worker locations but do not determine the total worker count. This
+  argument is valid only with `parallel.type="socket"`. Remote hosts
+  require non-interactive access, compatible R installations, and the
+  same hydroTSM version in a visible or shared library.
 
 - n.neighbours:
 

@@ -74,7 +74,9 @@ with:
   objects, evidence counts, and confirmed decisions;
 
 - `station.summary`: station completeness, review/rejected fractions,
-  breakpoint diagnostics, recommendation, and reason;
+  the `suspicious.tests` that contributed to confirmed rejections,
+  breakpoint diagnostics, recommendation, and reason. When the
+  suspicious fraction causes a discard, `reason` also names these tests;
 
 - `breakpoint`: annual-indicator Pettitt-test diagnostics;
 

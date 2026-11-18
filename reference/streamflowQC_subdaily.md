@@ -223,10 +223,41 @@ streamflowQC_subdaily(
 
   Independent flag families needed to confirm a non-hard-failure point.
 
-- max.missing, max.review, max.suspicious:
+- max.missing:
 
-  Maximum station fractions of missing expected values, any flagged
-  observations, and confirmed suspicious observations.
+  Maximum missing proportion allowed for station acceptance. Missing
+  expected intervals are assessed separately from suspicious finite
+  observations.
+
+- max.review:
+
+  Maximum proportion of finite observations flagged by at least one
+  active test while retaining a station recommendation of `"accept"`. A
+  timestamp is counted once regardless of how many tests flag it.
+  Exceeding the limit changes the station recommendation but does not
+  turn review-only flags into confirmed rejections.
+
+- max.suspicious:
+
+  Maximum proportion of finite observations that may be confirmed as
+  suspicious while retaining a station recommendation of `"accept"`. It
+  must be in `[0, 1]`; `0.05` means 5 percent. The numerator is the
+  number of timestamps classified as `"reject"`, counting a timestamp
+  once even if several tests flag it. The denominator is the number of
+  finite observations, so missing intervals are excluded and handled by
+  `max.missing`.
+
+  Range flags are hard evidence and are confirmed immediately; other
+  flags are confirmed only after at least `min.evidence` tests agree.
+  Review-only flags do not enter the proportion. Exceeding the limit
+  changes only the station recommendation and membership of the
+  accepted-series outputs; it does not change point flags, corrections,
+  or audit tables. The station summary and metadata report contributing
+  test names in `suspicious.tests`, and the discard `reason` includes
+  those names. Zero permits no confirmed suspicious values, whereas one
+  disables this particular discard criterion. See
+  [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md)
+  for the common evidence and output semantics.
 
 - min.years:
 
@@ -257,12 +288,30 @@ streamflowQC_subdaily(
   informational messages are suppressed; warnings and errors remain
   visible.
 
-- ncores, parallel.type, cluster.nodes:
+- ncores:
 
-  Requested worker count, parallel backend, and optional PSOCK host
-  names. See
-  [`streamflowQC_daily`](https://hzambran.github.io/hydroTSM/reference/streamflowQC_daily.md)
-  for backend behaviour and network requirements.
+  Positive integer giving the total requested number of worker R
+  processes across all machines, not per machine. The effective count is
+  capped at `NCOL(x)` and is stored in `result$settings$ncores`.
+  `ncores=1L` uses the serial path and creates no cluster.
+
+- parallel.type:
+
+  Parallel backend: `"socket"` for local or network PSOCK workers,
+  `"fork"` for local copy-on-write workers on Unix-like systems, or
+  `"serial"`, which requires `ncores=1L`.
+
+- cluster.nodes:
+
+  `NULL` to run all socket workers locally, or a character vector of
+  host names on which PSOCK workers are started. The names are recycled
+  or truncated to the effective `ncores`; they select worker locations
+  but do not determine the total worker count. For example, `ncores=8L`
+  and `cluster.nodes=c("node1", "node2")` request eight workers
+  distributed across those two hosts. The argument is valid only with
+  `parallel.type="socket"`. Remote hosts require non-interactive access,
+  compatible R installations, and the same hydroTSM version in a visible
+  or shared library.
 
 - from, to:
 
@@ -367,7 +416,7 @@ qc <- streamflowQC_subdaily(
   min.years=0, max.missing=1, max.review=1, max.suspicious=1
 )
 #> [streamflowQC] Starting sub-daily QC for 72 observations at 2 station(s) ...
-#> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.
+#> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.
 #> [streamflowQC] Running physical-range check ...
 #> [streamflowQC] Running gap check ...
 #> [streamflowQC] Combining evidence and station recommendations ...

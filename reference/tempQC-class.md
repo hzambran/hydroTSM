@@ -69,8 +69,10 @@ Both methods return `x` invisibly. A `"tempQC"` object is a list with:
 - `flags`, `flag.count`, and `rejected`: individual logical flag
   objects, evidence counts, and confirmed decisions;
 
-- `station.summary`: completeness, flag fractions, breakpoint
-  diagnostics, recommendation, and reason;
+- `station.summary`: completeness, flag fractions, the point-level tests
+  associated with confirmed suspicious observations in
+  `suspicious.tests`, breakpoint diagnostics, recommendation, and
+  reason;
 
 - `breakpoint`: station homogeneity diagnostics;
 
@@ -78,6 +80,12 @@ Both methods return `x` invisibly. A `"tempQC"` object is a list with:
   diagnostics; and
 
 - `settings`: resolved workflow settings.
+
+When a station exceeds `max.suspicious`, `suspicious.tests` lists the
+tests that flagged its confirmed suspicious observations and the same
+list is appended to the recommendation `reason`. Review-only flags are
+not included. The diagnostic is also propagated to `accepted.metadata`
+and `discarded.metadata`.
 
 ## References
 

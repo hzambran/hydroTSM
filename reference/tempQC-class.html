@@ -11,7 +11,7 @@ tempQC."><meta property="og:image" content="https://hzambran.github.io/hydroTSM/
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-33</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-34</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,13 +101,19 @@ with:</p><ul><li><p><code>accepted.metadata</code> and <code>discarded.metadata<
 <li><p><code>corrections</code>: an audit table of changed values;</p></li>
 <li><p><code>flags</code>, <code>flag.count</code>, and <code>rejected</code>: individual
   logical flag objects, evidence counts, and confirmed decisions;</p></li>
-<li><p><code>station.summary</code>: completeness, flag fractions, breakpoint
-  diagnostics, recommendation, and reason;</p></li>
+<li><p><code>station.summary</code>: completeness, flag fractions, the point-level
+  tests associated with confirmed suspicious observations in
+  <code>suspicious.tests</code>, breakpoint diagnostics, recommendation, and reason;</p></li>
 <li><p><code>breakpoint</code>: station homogeneity diagnostics;</p></li>
 <li><p><code>spatial.estimate</code>, <code>spatial.score</code>, and
   <code>neighbours</code>: spatial-test diagnostics; and</p></li>
 <li><p><code>settings</code>: resolved workflow settings.</p></li>
-</ul></div>
+</ul><p>When a station exceeds <code>max.suspicious</code>, <code>suspicious.tests</code> lists
+the tests that flagged its confirmed suspicious observations and the same list
+is appended to the recommendation <code>reason</code>. Review-only flags are not
+included. The diagnostic is also propagated to <code>accepted.metadata</code> and
+<code>discarded.metadata</code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Brunet, M. et al. (2020). <em>Best Practice Guidelines for Climate Data

@@ -205,10 +205,32 @@ tempQC_daily(
   range, copied-block, flat-line, and isolated-spike flags are hard
   evidence.
 
-- max.missing, max.suspicious:
+- max.missing:
 
-  Maximum missing and confirmed-suspicious fractions for recommending a
-  station for acceptance.
+  Maximum missing proportion allowed for a station recommendation of
+  `"accept"`. Missing timestamps inside the record span are included.
+
+- max.suspicious:
+
+  Maximum proportion of a station's finite observations that may be
+  confirmed as suspicious while retaining a recommendation of
+  `"accept"`. It must be a single number in `[0, 1]`; the default `0.05`
+  means 5 percent, not 0.05 percent. The proportion is the number of
+  timestamps classified as `"reject"` divided by the number of finite
+  observed values. Each timestamp is counted once even when several
+  tests flag it, and missing values are excluded because they are
+  assessed separately by `max.missing`.
+
+  An observation is confirmed when a hard test flags it or when at least
+  `min.evidence` active tests agree. Review-only flags therefore do not
+  contribute to this proportion. Exceeding `max.suspicious` changes the
+  station recommendation to `"discard"` and excludes that station from
+  `accepted.data` and `accepted.corrected`; it does not alter individual
+  flags, evidence classification, or corrections. In that case,
+  `station.summary$suspicious.tests` and the recommendation reason
+  identify the tests that flagged the confirmed suspicious observations.
+  A value of zero allows no confirmed suspicious observations, whereas
+  one disables this particular station-discard criterion.
 
 - min.years:
 
@@ -230,10 +252,13 @@ tempQC_daily(
 
 - ncores:
 
-  Positive integer giving the requested number of worker processes. The
-  effective count is capped at the number of stations, reported when
-  `verbose=TRUE`, and stored in `result$settings$ncores`. One is the
-  serial default.
+  Positive integer giving the total requested number of worker R
+  processes over all machines, not the number of workers per machine.
+  The effective count is `min(ncores, NCOL(x))`, so the function never
+  creates more workers than station columns. The effective count is
+  reported when `verbose=TRUE` and stored in `result$settings$ncores`.
+  The default `ncores=1L` uses the serial path and creates no socket or
+  fork workers.
 
 - parallel.type:
 
@@ -243,10 +268,17 @@ tempQC_daily(
 
 - cluster.nodes:
 
-  `NULL` for local workers, or host names for the `"socket"` backend,
-  recycled to `ncores`. Network nodes require non-interactive access,
-  compatible R installations, and the same hydroTSM version in a visible
-  or shared library.
+  Worker locations for the `"socket"` backend. `NULL` places every PSOCK
+  worker on `"localhost"`; otherwise this must be a character vector of
+  non-empty host names. The host vector is recycled or truncated to the
+  effective worker count, so, for example, `ncores=8L` with
+  `cluster.nodes=c("node1", "node2")` requests eight workers distributed
+  alternately across the two hosts. Thus `ncores` determines the total
+  number of workers, whereas `cluster.nodes` determines where they run.
+  This argument is invalid with `parallel.type="fork"` or `"serial"`.
+  Remote hosts require non-interactive access, compatible R
+  installations, and the same hydroTSM version in a visible or shared
+  library.
 
 - from, to:
 
@@ -382,7 +414,7 @@ qc <- tempQC_daily(
   min.years=0, max.missing=1
 )
 #> [tempQC] Starting daily QC for 90 observations at 2 station(s) ...
-#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.
+#> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.
 #> [tempQC] Running physical-range check ...
 #> [tempQC] Running persistence check ...
 #> [tempQC] Running isolated-spike check ...
@@ -401,4 +433,7 @@ qc$station.summary
 #>   breakpoint.flag record.years recommendation                   reason
 #> A           FALSE    0.2464066         accept within acceptance limits
 #> B           FALSE    0.2464066         accept within acceptance limits
+#>   suspicious.tests
+#> A             <NA>
+#> B             <NA>
 ```

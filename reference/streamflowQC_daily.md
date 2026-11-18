@@ -221,10 +221,42 @@ streamflowQC_daily(
   Number of independent flag families needed to confirm a point that did
   not fail a hard test.
 
-- max.missing, max.review, max.suspicious:
+- max.missing:
 
-  Maximum station fractions of missing expected values, any flagged
-  observations, and confirmed suspicious observations.
+  Maximum missing proportion allowed for a station recommendation of
+  `"accept"`. Missing expected timestamps inside the record span are
+  included and are assessed separately from finite observations.
+
+- max.review:
+
+  Maximum proportion of finite observations flagged by at least one
+  active test while retaining a station recommendation of `"accept"`.
+  Each timestamp is counted once even if several tests flag it.
+  Exceeding this limit discards the station but does not by itself
+  classify every reviewed observation as a confirmed rejection.
+
+- max.suspicious:
+
+  Maximum proportion of a station's finite observations that may be
+  confirmed as suspicious while retaining a recommendation of
+  `"accept"`. It must be a single number in `[0, 1]`; the default `0.05`
+  means 5 percent, not 0.05 percent. The proportion is the number of
+  timestamps classified as `"reject"` divided by the number of finite
+  observed values. Each timestamp is counted once even when several
+  tests flag it, and missing values are excluded because they are
+  assessed separately by `max.missing`.
+
+  Range and copied-block flags are hard evidence and are confirmed
+  immediately; other flags are confirmed when at least `min.evidence`
+  active tests agree. Review-only flags therefore do not contribute to
+  this proportion. Exceeding `max.suspicious` changes the station
+  recommendation to `"discard"` and excludes that station from
+  `accepted.data` and `accepted.corrected`; it does not alter individual
+  flags, evidence classification, or corrections. The station summary
+  and metadata report the contributing test names in `suspicious.tests`,
+  and the discard `reason` includes those names. A value of zero allows
+  no confirmed suspicious observations, whereas one disables this
+  particular station-discard criterion.
 
 - min.years:
 
@@ -259,10 +291,13 @@ streamflowQC_daily(
 
 - ncores:
 
-  Positive integer giving the requested number of worker processes. The
-  effective count is capped at the number of stations, reported when
-  `verbose=TRUE`, and stored in `result$settings$ncores`. One is the
-  serial default.
+  Positive integer giving the total requested number of worker R
+  processes over all machines, not the number of workers per machine.
+  The effective count is `min(ncores, NCOL(x))`, so the function never
+  creates more workers than station columns. The effective count is
+  reported when `verbose=TRUE` and stored in `result$settings$ncores`.
+  The default `ncores=1L` uses the serial path and creates no socket or
+  fork workers.
 
 - parallel.type:
 
@@ -272,10 +307,17 @@ streamflowQC_daily(
 
 - cluster.nodes:
 
-  `NULL` for local workers, or host names for the `"socket"` backend,
-  recycled to `ncores`. Network nodes require non-interactive access,
-  compatible R installations, and the same hydroTSM version in a visible
-  or shared library.
+  Worker locations for the `"socket"` backend. `NULL` places every PSOCK
+  worker on `"localhost"`; otherwise this must be a character vector of
+  non-empty host names. The host vector is recycled or truncated to the
+  effective worker count, so, for example, `ncores=8L` with
+  `cluster.nodes=c("node1", "node2")` requests eight workers distributed
+  alternately across the two hosts. Thus `ncores` determines the total
+  number of workers, whereas `cluster.nodes` determines where they run.
+  This argument is invalid with `parallel.type="fork"` or `"serial"`.
+  Remote hosts require non-interactive access, compatible R
+  installations, and the same hydroTSM version in a visible or shared
+  library.
 
 - from, to:
 
@@ -380,7 +422,7 @@ qc <- streamflowQC_daily(
   min.years=0, max.missing=1, max.review=1, max.suspicious=1
 )
 #> [streamflowQC] Starting daily QC for 60 observations at 2 station(s) ...
-#> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.
+#> [streamflowQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.
 #> [streamflowQC] Running physical-range check ...
 #> [streamflowQC] Running gap check ...
 #> [streamflowQC] Combining evidence and station recommendations ...

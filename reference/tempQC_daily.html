@@ -13,7 +13,7 @@ recommendations without writing to disk."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-33</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-34</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -228,9 +228,30 @@ spatial estimate where available and <code>NA</code> otherwise.</p></dd>
 point. Physical range, copied-block, flat-line, and isolated-spike flags are
 hard evidence.</p></dd>
 
-  <dt id="arg-max-missing-max-suspicious">max.missing, max.suspicious<a class="anchor" aria-label="anchor" href="#arg-max-missing-max-suspicious"></a></dt>
-<dd><p>Maximum missing and confirmed-suspicious
-fractions for recommending a station for acceptance.</p></dd>
+  <dt id="arg-max-missing">max.missing<a class="anchor" aria-label="anchor" href="#arg-max-missing"></a></dt>
+<dd><p>Maximum missing proportion allowed for a station
+recommendation of <code>"accept"</code>. Missing timestamps inside the record span
+are included.</p></dd>
+
+  <dt id="arg-max-suspicious">max.suspicious<a class="anchor" aria-label="anchor" href="#arg-max-suspicious"></a></dt>
+<dd><p>Maximum proportion of a station's finite observations
+that may be confirmed as suspicious while retaining a recommendation of
+<code>"accept"</code>. It must be a single number in <code>[0, 1]</code>; the default
+<code>0.05</code> means 5 percent, not 0.05 percent. The proportion is the number of
+timestamps classified as <code>"reject"</code> divided by the number of finite
+observed values. Each timestamp is counted once even when several tests flag
+it, and missing values are excluded because they are assessed separately by
+<code>max.missing</code>.</p>
+<p>An observation is confirmed when a hard test flags it or when at least
+<code>min.evidence</code> active tests agree. Review-only flags therefore do not
+contribute to this proportion. Exceeding <code>max.suspicious</code> changes the
+station recommendation to <code>"discard"</code> and excludes that station from
+<code>accepted.data</code> and <code>accepted.corrected</code>; it does not alter
+individual flags, evidence classification, or corrections. In that case,
+<code>station.summary$suspicious.tests</code> and the recommendation reason identify
+the tests that flagged the confirmed suspicious observations. A value of zero
+allows no confirmed suspicious observations, whereas one disables this
+particular station-discard criterion.</p></dd>
 
   <dt id="arg-min-years">min.years<a class="anchor" aria-label="anchor" href="#arg-min-years"></a></dt>
 <dd><p>Minimum record length for station acceptance.</p></dd>
@@ -247,10 +268,12 @@ station/observation summary. If <code>FALSE</code>, only these informational mes
 are suppressed; warnings and errors remain visible.</p></dd>
 
   <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
-<dd><p>Positive integer giving the requested number of worker
-processes. The effective count is capped at the number of stations, reported
-when <code>verbose=TRUE</code>, and stored in <code>result$settings$ncores</code>. One is
-the serial default.</p></dd>
+<dd><p>Positive integer giving the total requested number of worker R
+processes over all machines, not the number of workers per machine. The
+effective count is <code>min(ncores, NCOL(x))</code>, so the function never creates
+more workers than station columns. The effective count is reported when
+<code>verbose=TRUE</code> and stored in <code>result$settings$ncores</code>. The default
+<code>ncores=1L</code> uses the serial path and creates no socket or fork workers.</p></dd>
 
   <dt id="arg-parallel-type">parallel.type<a class="anchor" aria-label="anchor" href="#arg-parallel-type"></a></dt>
 <dd><p>Parallel backend: <code>"socket"</code> for portable local
@@ -258,8 +281,15 @@ or network PSOCK workers, <code>"fork"</code> for copy-on-write workers on
 Unix-like systems, or <code>"serial"</code> with <code>ncores=1L</code>.</p></dd>
 
   <dt id="arg-cluster-nodes">cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-cluster-nodes"></a></dt>
-<dd><p><code>NULL</code> for local workers, or host names for the
-<code>"socket"</code> backend, recycled to <code>ncores</code>. Network nodes require
+<dd><p>Worker locations for the <code>"socket"</code> backend.
+<code>NULL</code> places every PSOCK worker on <code>"localhost"</code>; otherwise this
+must be a character vector of non-empty host names. The host vector is recycled
+or truncated to the effective worker count, so, for example,
+<code>ncores=8L</code> with <code>cluster.nodes=c("node1", "node2")</code> requests eight
+workers distributed alternately across the two hosts. Thus <code>ncores</code>
+determines the total number of workers, whereas <code>cluster.nodes</code>
+determines where they run. This argument is invalid with
+<code>parallel.type="fork"</code> or <code>"serial"</code>. Remote hosts require
 non-interactive access, compatible R installations, and the same hydroTSM
 version in a visible or shared library.</p></dd>
 
@@ -373,7 +403,7 @@ temperature observations for complex physical geography.
 <span class="r-in"><span>  min.years<span class="op">=</span><span class="fl">0</span>, max.missing<span class="op">=</span><span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Starting daily QC for 90 observations at 2 station(s) ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): ip-10-0-143-52.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Using serial backend with 1 worker(s) across 1 node(s): runnervmccnms.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Running physical-range check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Running persistence check ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [tempQC] Running isolated-spike check ...</span>
@@ -392,6 +422,9 @@ temperature observations for complex physical geography.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   breakpoint.flag record.years recommendation                   reason</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A           FALSE    0.2464066         accept within acceptance limits</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> B           FALSE    0.2464066         accept within acceptance limits</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   suspicious.tests</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A             &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B             &lt;NA&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

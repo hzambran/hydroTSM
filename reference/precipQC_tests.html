@@ -11,7 +11,7 @@ evidence can be inspected or tuned independently."><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-33</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-34</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -207,10 +207,25 @@ range-checked.</p></dd>
 <code>exp(-abs(dz) / elevation.scale)</code> and influences neighbour ranking and
 spatial weights. It is ignored when <code>elevation=NULL</code>.</p></dd>
 
-  <dt id="arg-ncores-parallel-type-cluster-nodes">ncores, parallel.type, cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-ncores-parallel-type-cluster-nodes"></a></dt>
-<dd><p>Requested worker count, parallel backend, and optional PSOCK host names for
-the spatial and dry-spell tests. See <code><a href="precipQC_daily.html">precipQC_daily</a></code> for backend
-behaviour and network requirements.</p></dd>
+  <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
+<dd><p>Positive integer giving the total requested number of worker R processes for
+the standalone spatial and dry-spell tests. The effective count is capped at
+the number of station columns. <code>ncores=1L</code> uses the serial path and creates
+no cluster.</p></dd>
+
+  <dt id="arg-parallel-type">parallel.type<a class="anchor" aria-label="anchor" href="#arg-parallel-type"></a></dt>
+<dd><p>Parallel backend: <code>"socket"</code> for local or network PSOCK workers,
+<code>"fork"</code> for local copy-on-write workers on Unix-like systems, or
+<code>"serial"</code>, which requires <code>ncores=1L</code>.</p></dd>
+
+  <dt id="arg-cluster-nodes">cluster.nodes<a class="anchor" aria-label="anchor" href="#arg-cluster-nodes"></a></dt>
+<dd><p><code>NULL</code> to run all socket workers locally, or a character vector of
+non-empty host names on which PSOCK workers are started. Host names are recycled
+or truncated to the effective <code>ncores</code>; they choose worker locations but
+do not determine the total worker count. This argument is valid only with
+<code>parallel.type="socket"</code>. Remote hosts require non-interactive access,
+compatible R installations, and the same hydroTSM version in a visible or
+shared library.</p></dd>
 
   <dt id="arg-n-neighbours">n.neighbours<a class="anchor" aria-label="anchor" href="#arg-n-neighbours"></a></dt>
 <dd><p>Maximum number of neighbours.</p></dd>
