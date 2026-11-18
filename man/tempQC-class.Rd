@@ -58,13 +58,20 @@ with:
   \item \code{corrections}: an audit table of changed values;
   \item \code{flags}, \code{flag.count}, and \code{rejected}: individual
   logical flag objects, evidence counts, and confirmed decisions;
-  \item \code{station.summary}: completeness, flag fractions, breakpoint
-  diagnostics, recommendation, and reason;
+  \item \code{station.summary}: completeness, flag fractions, the point-level
+  tests associated with confirmed suspicious observations in
+  \code{suspicious.tests}, breakpoint diagnostics, recommendation, and reason;
   \item \code{breakpoint}: station homogeneity diagnostics;
   \item \code{spatial.estimate}, \code{spatial.score}, and
   \code{neighbours}: spatial-test diagnostics; and
   \item \code{settings}: resolved workflow settings.
 }
+
+When a station exceeds \code{max.suspicious}, \code{suspicious.tests} lists
+the tests that flagged its confirmed suspicious observations and the same list
+is appended to the recommendation \code{reason}. Review-only flags are not
+included. The diagnostic is also propagated to \code{accepted.metadata} and
+\code{discarded.metadata}.
 }
 
 \references{

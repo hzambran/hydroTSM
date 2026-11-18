@@ -31,7 +31,12 @@ column.}
 \code{metadata}.}
   \item{coords}{Names of longitude and latitude fields in \code{metadata}, in
 that order.}
-  \item{...}{Arguments passed unchanged to the selected workflow.}
+  \item{...}{Arguments passed unchanged to the selected workflow. Because the
+daily and sub-daily functions have resolution-specific arguments, only
+arguments accepted by the detected workflow should be supplied. This includes
+\code{max.suspicious}, the maximum proportion of finite observations that may
+be confirmed as suspicious before a station is recommended for discard; see
+\code{\link{streamflowQC_daily}} and \code{\link{streamflowQC_subdaily}}.}
   \item{area}{\code{NULL}, or the name of a positive numeric catchment-area
 field. Units may be chosen by the user but must be consistent among stations.}
   \item{elevation}{\code{NULL}, or the name of a numeric station-elevation
@@ -42,9 +47,18 @@ neighbour ranking.}
 detected frequency, effective parallel workers and nodes, enabled QC stages,
 evidence combination, and final QC summary. If \code{FALSE}, these messages
 are suppressed; warnings and errors remain visible.}
-  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
-parallel backend, and optional PSOCK host names passed to the selected
-workflow. See \code{\link{streamflowQC_daily}}.}
+  \item{ncores}{Positive integer giving the total requested number of worker
+R processes across all machines, rather than per machine. The effective number
+is capped at the number of station columns. \code{ncores=1L} uses the serial
+path and does not create a cluster. See \code{\link{streamflowQC_daily}}.}
+  \item{parallel.type}{Parallel backend passed to the selected workflow:
+\code{"socket"}, \code{"fork"}, or \code{"serial"}. Network hosts can be
+used only with \code{"socket"}. See \code{\link{streamflowQC_daily}}.}
+  \item{cluster.nodes}{\code{NULL} to place all socket workers on the local
+machine, or a character vector of host names on which PSOCK workers will be
+started. This argument selects worker locations; it does not set their number.
+Host names are recycled to the effective \code{ncores}. See
+\code{\link{streamflowQC_daily}}.}
   \item{from, to}{Start and end of the period retained before frequency
 detection and quality control. Defaults retain the complete time span of
 \code{x}.}

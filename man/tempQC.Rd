@@ -29,16 +29,30 @@ tempQC(
   \item{metadata, station.id, coords, elevation, elevation.scale}{Optional
 station metadata, field-name selectors, and elevation-decay control passed to
 the selected workflow. See \code{\link{tempQC_daily}}.}
-  \item{...}{Arguments passed unchanged to the selected workflow.}
+  \item{...}{Arguments passed unchanged to the selected workflow. Because the
+daily and sub-daily functions have resolution-specific arguments, only
+arguments accepted by the detected workflow should be supplied. This includes
+\code{max.suspicious}, the maximum proportion of finite observations that may
+be confirmed as suspicious before a station is recommended for discard; see
+\code{\link{tempQC_daily}} and \code{\link{tempQC_subdaily}}.}
   \item{max.candidates, selection.samples}{Candidate and time-sample
 bounds passed to the selected workflow. See \code{\link{tempQC_daily}}.}
   \item{verbose}{Logical. If \code{TRUE}, informative messages report the
 detected frequency, parallel workers/nodes, active QC stages, and final QC summary. If \code{FALSE},
 these informational messages are suppressed; warnings and errors are
 unaffected.}
-  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
-parallel backend, and optional PSOCK host names passed to the selected
-workflow. See \code{\link{tempQC_daily}}.}
+  \item{ncores}{Positive integer giving the total requested number of worker
+R processes, across all machines rather than per machine. The effective number
+is capped at the number of station columns. \code{ncores=1L} uses the serial
+path and does not create a cluster. See \code{\link{tempQC_daily}}.}
+  \item{parallel.type}{Parallel backend passed to the selected workflow:
+\code{"socket"}, \code{"fork"}, or \code{"serial"}. Network hosts can be
+used only with \code{"socket"}. See \code{\link{tempQC_daily}}.}
+  \item{cluster.nodes}{\code{NULL} to place all socket workers on the local
+machine, or a character vector of host names on which PSOCK workers will be
+started. This argument selects worker locations; it does not set their number.
+Host names are recycled to the effective \code{ncores}. See
+\code{\link{tempQC_daily}}.}
   \item{from, to}{Starting and ending index bounds used to subset \code{x}
 before frequency detection and QC. See \code{\link{tempQC_daily}}.}
 }

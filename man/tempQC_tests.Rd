@@ -87,10 +87,20 @@ non-missing values are range-checked.}
 column containing elevation in metres.}
   \item{elevation.scale}{Positive elevation-decay scale in metres used to
 penalize neighbours with large height differences.}
-  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
-parallel backend, and optional PSOCK host names for
-\code{tempQC_spatial}. See \code{\link{tempQC_daily}} for backend behaviour
-and network requirements.}
+  \item{ncores}{Positive integer giving the total requested number of worker R
+processes for \code{tempQC_spatial}. The effective count is capped at the
+number of station columns. \code{ncores=1L} uses the serial path and creates no
+cluster.}
+  \item{parallel.type}{Parallel backend: \code{"socket"} for local or network
+PSOCK workers, \code{"fork"} for local copy-on-write workers on Unix-like
+systems, or \code{"serial"}, which requires \code{ncores=1L}.}
+  \item{cluster.nodes}{\code{NULL} to run all socket workers locally, or a
+character vector of non-empty host names on which PSOCK workers are started.
+Host names are recycled or truncated to the effective \code{ncores}; they
+choose worker locations but do not determine the total worker count. This
+argument is valid only with \code{parallel.type="socket"}. Remote hosts require
+non-interactive access, compatible R installations, and the same hydroTSM
+version in a visible or shared library.}
   \item{n.neighbours}{Maximum selected spatial-regression neighbours.}
   \item{max.distance}{Maximum target-neighbour distance in km.}
   \item{min.neighbours}{Minimum simultaneous valid regression estimates.}

@@ -77,6 +77,21 @@ stopifnot(
   all(daily.none$station.summary$recommendation == "accept")
 )
 
+# Report the tests behind a suspicious-fraction station discard.
+discard.checks <- no.checks
+discard.checks["range"] <- TRUE
+daily.discard <- precipQC_daily(
+  daily[, "S1", drop=FALSE], checks=discard.checks,
+  min.years=0, max.missing=1, max.suspicious=0, verbose=FALSE
+)
+stopifnot(
+  identical(daily.discard$station.summary$recommendation, "discard"),
+  identical(daily.discard$station.summary$suspicious.tests, "range"),
+  identical(daily.discard$discarded.metadata$suspicious.tests, "range"),
+  grepl("suspicious fraction exceeds limit (tests: range)",
+        daily.discard$station.summary$reason, fixed=TRUE)
+)
+
 custom.metadata <- data.frame(
   gauge_id=rev(colnames(daily)[1:3]),
   longitude=rev(metadata$lon[1:3]),

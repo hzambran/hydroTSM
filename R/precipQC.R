@@ -264,7 +264,8 @@
                              min.years, min.evidence, hard.tests,
                              discard.breakpoint, spatial.estimate,
                              spatial.score, neighbours, resolution,
-                             settings, object.class="precipQC") {
+                             settings, object.class="precipQC",
+                             report.suspicious.tests=TRUE) {
 
   correction <- match.arg(correction, c("none", "set_na", "spatial"))
   min.evidence <- .precipQC_check_positive_integer(min.evidence,
@@ -329,6 +330,21 @@
   denominator <- pmax(1, observed)
   review.percent <- review.count / denominator
   suspicious.percent <- suspicious.count / denominator
+
+  # Identify tests that flagged observations retained as confirmed rejections.
+  suspicious.tests <- rep(NA_character_, NCOL(values))
+  if (report.suspicious.tests && length(flag.matrices) > 0L) {
+    for (j in seq_len(NCOL(values))) {
+      contributing.tests <- character()
+      for (test.name in names(flag.matrices)) {
+        contributes <- flag.matrices[[test.name]][, j] & confirmed[, j]
+        if (any(contributes, na.rm=TRUE))
+          contributing.tests <- c(contributing.tests, test.name)
+      } # FOR test.name end
+      if (length(contributing.tests) > 0L)
+        suspicious.tests[j] <- paste(contributing.tests, collapse=", ")
+    } # FOR j end
+  }
   record.years <- if (resolution == "daily") {
     prepared$expected / 365.25
   } else {
@@ -348,8 +364,13 @@
     why <- character()
     if (missing.percent[j] > max.missing)
       why <- c(why, "missing fraction exceeds limit")
-    if (suspicious.percent[j] > max.suspicious)
-      why <- c(why, "suspicious fraction exceeds limit")
+    if (suspicious.percent[j] > max.suspicious) {
+      suspicious.reason <- "suspicious fraction exceeds limit"
+      if (report.suspicious.tests && !is.na(suspicious.tests[j]))
+        suspicious.reason <- paste0(suspicious.reason, " (tests: ",
+                                    suspicious.tests[j], ")")
+      why <- c(why, suspicious.reason)
+    }
     if (record.years < min.years)
       why <- c(why, "record is shorter than required")
     if (discard.breakpoint && isTRUE(bp$flagged[j]))
@@ -378,6 +399,8 @@
     reason=reasons,
     stringsAsFactors=FALSE
   )
+  if (report.suspicious.tests)
+    station.summary$suspicious.tests <- suspicious.tests
 
   metadata <- prepared$metadata
   diagnostics <- station.summary[, setdiff(names(station.summary), "station"),

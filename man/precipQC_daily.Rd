@@ -216,8 +216,25 @@ Maximum missing fraction allowed for a station recommendation of
 \code{"accept"}. Missing timestamps inside the record span are included.
 }
   \item{max.suspicious}{
-Maximum fraction of confirmed suspicious observations allowed for a station
-recommendation of \code{"accept"}.
+Maximum proportion of a station's finite observations that may be confirmed as
+suspicious while retaining a recommendation of \code{"accept"}. It must be a
+single number in \code{[0, 1]}; the default \code{0.05} means 5 percent, not
+0.05 percent. The proportion is calculated as the number of timestamps
+classified as \code{"reject"} divided by the number of finite observed
+values. Each timestamp is counted once even when several tests flag it, and
+missing values are excluded because they are assessed separately by
+\code{max.missing}.
+
+An observation is confirmed when a hard test flags it or when at least
+\code{min.evidence} active tests agree. Review-only flags therefore do not
+contribute to this proportion. Exceeding \code{max.suspicious} changes the
+station recommendation to \code{"discard"} and excludes that station from
+\code{accepted.data} and \code{accepted.corrected}; it does not alter
+individual flags, evidence classification, or corrections. In that case,
+\code{station.summary$suspicious.tests} and the recommendation reason identify
+the tests that flagged the confirmed suspicious observations. A value of zero
+allows no confirmed suspicious observations, whereas one disables this
+particular station-discard criterion.
 }
   \item{min.years}{
 Minimum record length in years required for a station recommendation of
@@ -236,10 +253,12 @@ station/observation summary. If \code{FALSE}, only these informational messages
 are suppressed; warnings and errors remain visible.
 }
   \item{ncores}{
-Positive integer giving the requested number of worker processes. The
-effective count is capped at the number of station columns and is recorded in
-\code{result$settings$ncores}. The CRAN-safe default, one, uses no parallel
-workers.
+Positive integer giving the total requested number of worker R processes over
+all machines, not the number of workers per machine. The effective count is
+\code{min(ncores, NCOL(x))}, so the function never creates more workers than
+station columns. The effective count is recorded in
+\code{result$settings$ncores}. The CRAN-safe default \code{ncores=1L} uses the
+zero-overhead serial path and creates no socket or fork workers.
 }
   \item{parallel.type}{
 Parallel backend. \code{"socket"} uses portable PSOCK workers and supports
@@ -248,10 +267,16 @@ systems and is unavailable on Windows; \code{"serial"} explicitly requires
 \code{ncores=1L}.
 }
   \item{cluster.nodes}{
-\code{NULL} for local workers, or a character vector of host names used by the
-\code{"socket"} backend. Host names are recycled to \code{ncores}. Remote
-nodes require non-interactive access, a compatible R installation, and the
-same hydroTSM version in a visible or shared library.
+Worker locations for the \code{"socket"} backend. \code{NULL} places every
+PSOCK worker on \code{"localhost"}; otherwise this must be a character vector
+of non-empty host names. The host vector is recycled or truncated to the
+effective worker count, so, for example, \code{ncores=8L} with
+\code{cluster.nodes=c("node1", "node2")} requests eight workers distributed
+alternately across the two hosts. Thus \code{ncores} determines the total
+number of workers, whereas \code{cluster.nodes} determines where they run.
+This argument is invalid with \code{parallel.type="fork"} or \code{"serial"}.
+Remote hosts require non-interactive access, compatible R installations, and
+the same hydroTSM version in a visible or shared library.
 }
   \item{from, to}{
 Starting and ending bounds used by \code{window} to subset \code{x} before
@@ -373,8 +398,13 @@ An object of class \code{"precipQC"}, which is a list containing:
   \item \code{corrections}: an audit table of changed values;
   \item \code{flags}: named logical \code{zoo} objects returned by the
   individual tests;
-  \item \code{flag.count}, \code{rejected}, \code{station.summary},
-  \code{breakpoint}, spatial diagnostics, neighbours, and settings.
+  \item \code{flag.count} and \code{rejected}: evidence counts and confirmed
+  point decisions;
+  \item \code{station.summary}: completeness, review and suspicious fractions,
+  the tests associated with confirmed suspicious observations in
+  \code{suspicious.tests}, breakpoint diagnostics, recommendation, and reason;
+  and
+  \item \code{breakpoint}, spatial diagnostics, neighbours, and settings.
 }
 }
 

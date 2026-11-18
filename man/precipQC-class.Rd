@@ -50,6 +50,13 @@ missing and confirmed-suspicious percentages for the most affected stations;
 flag counts by individual test; and the number of confirmed suspicious values
 through time.
 
+The \code{station.summary$suspicious.tests} column lists the point-level tests
+that flagged at least one confirmed suspicious observation at each station.
+When a station exceeds \code{max.suspicious}, the same names are appended to
+its recommendation \code{reason}. Review-only flags are not included. These
+diagnostics are also propagated to \code{accepted.metadata} and
+\code{discarded.metadata}.
+
 Because an unquoted hyphen is the subtraction operator in R, use
 \code{?precipQC_class}, \code{?`precipQC-class`}, or
 \code{help("precipQC-class")} to open this page.

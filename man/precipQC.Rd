@@ -38,7 +38,10 @@ passed to the selected workflow. See \code{\link{precipQC_daily}}.
   \item{...}{
 Arguments passed unchanged to the selected QC function. Because the daily and
 sub-daily functions have resolution-specific arguments, only arguments
-accepted by the detected workflow should be supplied.
+accepted by the detected workflow should be supplied. This includes
+\code{max.suspicious}, the maximum proportion of finite observations that may
+be confirmed as suspicious before a station is recommended for discard; see
+\code{\link{precipQC_daily}} and \code{\link{precipQC_subdaily}}.
 }
   \item{max.candidates, selection.samples}{
 Scalability controls passed to the selected workflow. See
@@ -50,9 +53,22 @@ the active QC stages, parallel workers/nodes, spatial scales, and the final QC s
 \code{FALSE}, these informational messages are suppressed; warnings and errors
 are unaffected.
 }
-  \item{ncores, parallel.type, cluster.nodes}{
-Parallel worker count, backend, and optional PSOCK host names passed to the
-selected workflow. See \code{\link{precipQC_daily}}.
+  \item{ncores}{
+Positive integer giving the total requested number of worker R processes,
+across all machines rather than per machine. The effective number is capped at
+the number of station columns. \code{ncores=1L} uses the serial path and does
+not create a cluster. See \code{\link{precipQC_daily}}.
+}
+  \item{parallel.type}{
+Parallel backend passed to the selected workflow: \code{"socket"},
+\code{"fork"}, or \code{"serial"}. Network hosts can be used only with
+\code{"socket"}. See \code{\link{precipQC_daily}}.
+}
+  \item{cluster.nodes}{
+\code{NULL} to place all socket workers on the local machine, or a character
+vector of host names on which PSOCK workers will be started. This argument
+selects worker locations; it does not set their number. Host names are recycled
+to the effective \code{ncores}. See \code{\link{precipQC_daily}}.
 }
   \item{from, to}{
 Starting and ending index bounds used to subset \code{x} before frequency

@@ -62,7 +62,9 @@ list with:
   \item \code{flags}, \code{flag.count}, and \code{rejected}: individual
   logical flag objects, evidence counts, and confirmed decisions;
   \item \code{station.summary}: station completeness, review/rejected
-  fractions, breakpoint diagnostics, recommendation, and reason;
+  fractions, the \code{suspicious.tests} that contributed to confirmed
+  rejections, breakpoint diagnostics, recommendation, and reason. When the
+  suspicious fraction causes a discard, \code{reason} also names these tests;
   \item \code{breakpoint}: annual-indicator Pettitt-test diagnostics;
   \item \code{spatial.estimate}, \code{spatial.score},
   \code{spatial.support}, and \code{neighbours}: spatial-test diagnostics;

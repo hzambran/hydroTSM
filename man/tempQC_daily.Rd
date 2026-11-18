@@ -119,8 +119,28 @@ spatial estimate where available and \code{NA} otherwise.}
   \item{min.evidence}{Number of coincident non-hard flags needed to reject a
 point. Physical range, copied-block, flat-line, and isolated-spike flags are
 hard evidence.}
-  \item{max.missing, max.suspicious}{Maximum missing and confirmed-suspicious
-fractions for recommending a station for acceptance.}
+  \item{max.missing}{Maximum missing proportion allowed for a station
+recommendation of \code{"accept"}. Missing timestamps inside the record span
+are included.}
+  \item{max.suspicious}{Maximum proportion of a station's finite observations
+that may be confirmed as suspicious while retaining a recommendation of
+\code{"accept"}. It must be a single number in \code{[0, 1]}; the default
+\code{0.05} means 5 percent, not 0.05 percent. The proportion is the number of
+timestamps classified as \code{"reject"} divided by the number of finite
+observed values. Each timestamp is counted once even when several tests flag
+it, and missing values are excluded because they are assessed separately by
+\code{max.missing}.
+
+An observation is confirmed when a hard test flags it or when at least
+\code{min.evidence} active tests agree. Review-only flags therefore do not
+contribute to this proportion. Exceeding \code{max.suspicious} changes the
+station recommendation to \code{"discard"} and excludes that station from
+\code{accepted.data} and \code{accepted.corrected}; it does not alter
+individual flags, evidence classification, or corrections. In that case,
+\code{station.summary$suspicious.tests} and the recommendation reason identify
+the tests that flagged the confirmed suspicious observations. A value of zero
+allows no confirmed suspicious observations, whereas one disables this
+particular station-discard criterion.}
   \item{min.years}{Minimum record length for station acceptance.}
   \item{discard.breakpoint}{Logical. If \code{TRUE}, a flagged breakpoint
 causes a discard recommendation. The default is conservative because a change
@@ -129,15 +149,24 @@ may be climatic.}
 workflow start, effective workers/nodes, each enabled test, evidence combination, and the final
 station/observation summary. If \code{FALSE}, only these informational messages
 are suppressed; warnings and errors remain visible.}
-  \item{ncores}{Positive integer giving the requested number of worker
-processes. The effective count is capped at the number of stations, reported
-when \code{verbose=TRUE}, and stored in \code{result$settings$ncores}. One is
-the serial default.}
+  \item{ncores}{Positive integer giving the total requested number of worker R
+processes over all machines, not the number of workers per machine. The
+effective count is \code{min(ncores, NCOL(x))}, so the function never creates
+more workers than station columns. The effective count is reported when
+\code{verbose=TRUE} and stored in \code{result$settings$ncores}. The default
+\code{ncores=1L} uses the serial path and creates no socket or fork workers.}
   \item{parallel.type}{Parallel backend: \code{"socket"} for portable local
 or network PSOCK workers, \code{"fork"} for copy-on-write workers on
 Unix-like systems, or \code{"serial"} with \code{ncores=1L}.}
-  \item{cluster.nodes}{\code{NULL} for local workers, or host names for the
-\code{"socket"} backend, recycled to \code{ncores}. Network nodes require
+  \item{cluster.nodes}{Worker locations for the \code{"socket"} backend.
+\code{NULL} places every PSOCK worker on \code{"localhost"}; otherwise this
+must be a character vector of non-empty host names. The host vector is recycled
+or truncated to the effective worker count, so, for example,
+\code{ncores=8L} with \code{cluster.nodes=c("node1", "node2")} requests eight
+workers distributed alternately across the two hosts. Thus \code{ncores}
+determines the total number of workers, whereas \code{cluster.nodes}
+determines where they run. This argument is invalid with
+\code{parallel.type="fork"} or \code{"serial"}. Remote hosts require
 non-interactive access, compatible R installations, and the same hydroTSM
 version in a visible or shared library.}
   \item{from, to}{Starting and ending time-index bounds used to subset

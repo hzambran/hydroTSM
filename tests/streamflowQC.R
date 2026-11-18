@@ -79,6 +79,30 @@ stopifnot(length(daily.none$flags) == 0L,
           is.null(daily.none$highflow),
           NCOL(daily.none$discarded.data) == 0L)
 
+# A suspicious-fraction discard names every test contributing confirmed flags.
+rejection.values <- daily[1:60, 1:2]
+rejection.values[5, "S1"] <- -1
+rejection.values[20:35, "S1"] <- 10
+rejection.checks <- daily.checks.off
+rejection.checks[c("range", "flatline")] <- TRUE
+rejection.qc <- streamflowQC_daily(
+  rejection.values, checks=rejection.checks, min.evidence=1L,
+  min.years=0, max.missing=1, max.review=1, max.suspicious=0,
+  verbose=FALSE
+)
+rejection.row <- match("S1", rejection.qc$station.summary$station)
+rejection.tests <- strsplit(
+  rejection.qc$station.summary$suspicious.tests[rejection.row], ", ",
+  fixed=TRUE
+)[[1L]]
+stopifnot(
+  identical(rejection.tests, c("range", "flatline")),
+  grepl("suspicious fraction exceeds limit (tests: range, flatline)",
+        rejection.qc$station.summary$reason[rejection.row], fixed=TRUE),
+  identical(rejection.qc$discarded.metadata$suspicious.tests,
+            "range, flatline")
+)
+
 # Date bounds subset before QC and retain the resolved period in settings.
 daily.window <- streamflowQC_daily(
   daily[, 1:2], checks=daily.checks.off,

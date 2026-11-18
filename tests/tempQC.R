@@ -65,6 +65,22 @@ daily.none <- tempQC_daily(
 )
 stopifnot(length(daily.none$flags) == 0L)
 
+# Report every test behind a suspicious-fraction station discard.
+discard.checks <- no.checks
+discard.checks[c("range", "spike")] <- TRUE
+daily.discard <- tempQC_daily(
+  daily[, "S1", drop=FALSE], checks=discard.checks,
+  min.years=0, max.missing=1, max.suspicious=0, verbose=FALSE
+)
+stopifnot(
+  identical(daily.discard$station.summary$recommendation, "discard"),
+  identical(daily.discard$station.summary$suspicious.tests, "range, spike"),
+  identical(daily.discard$discarded.metadata$suspicious.tests,
+            "range, spike"),
+  grepl("suspicious fraction exceeds limit (tests: range, spike)",
+        daily.discard$station.summary$reason, fixed=TRUE)
+)
+
 # Verify daily progress output, argument defaults, and the fully quiet mode.
 progress.checks <- no.checks
 progress.checks["range"] <- TRUE

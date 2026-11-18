@@ -30,7 +30,7 @@
     prepared, flags, breakpoint, correction, max.missing, max.suspicious,
     min.years, min.evidence, hard.tests, discard.breakpoint,
     spatial.estimate, spatial.score, neighbours, resolution, settings,
-    object.class="streamflowQC"
+    object.class="streamflowQC", report.suspicious.tests=TRUE
   )
 
   # Excessive review flags may discard a station without rejecting every point.

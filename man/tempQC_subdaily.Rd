@@ -93,16 +93,50 @@ the homogeneity diagnostic.}
 \code{\link{tempQC_daily}}.}
   \item{min.evidence}{Number of coincident non-hard tests needed to reject a
 point. Range, persistence, and isolated-spike flags are hard evidence.}
-  \item{max.missing, max.suspicious, min.years}{Station acceptance limits.}
+  \item{max.missing}{Maximum missing proportion allowed for station
+acceptance. Missing expected intervals are assessed separately from suspicious
+finite observations.}
+  \item{max.suspicious}{Maximum proportion of finite observations that may be
+confirmed as suspicious while retaining a station recommendation of
+\code{"accept"}. It must be in \code{[0, 1]}; \code{0.05} means 5 percent.
+The numerator is the number of timestamps classified as \code{"reject"},
+counting a timestamp once even if several tests flag it. The denominator is the
+number of finite observations, so missing intervals are excluded and handled
+by \code{max.missing}.
+
+Hard-test flags are confirmed immediately; other flags contribute only after
+at least \code{min.evidence} tests agree. Review-only flags do not enter the
+proportion. Exceeding the limit changes only the station recommendation and
+membership of the accepted-series outputs; it does not change point flags,
+corrections, or the audit tables. The \code{suspicious.tests} column and the
+recommendation reason identify the tests that flagged the confirmed suspicious
+observations. Zero permits no confirmed suspicious values, whereas one
+disables this particular discard criterion. See
+\code{\link{tempQC_daily}} for the common evidence and output semantics.}
+  \item{min.years}{Minimum record length in years required for a station
+recommendation of \code{"accept"}.}
   \item{discard.breakpoint}{Whether a flagged breakpoint should cause a
 station discard recommendation.}
   \item{verbose}{Logical. If \code{TRUE}, informative messages identify the
 workflow start, effective workers/nodes, each enabled test, evidence combination, and the final
 station/observation summary. If \code{FALSE}, only these informational messages
 are suppressed; warnings and errors remain visible.}
-  \item{ncores, parallel.type, cluster.nodes}{Requested worker count,
-parallel backend, and optional PSOCK host names. See
-\code{\link{tempQC_daily}} for backend behaviour and network requirements.}
+  \item{ncores}{Positive integer giving the total requested number of worker R
+processes across all machines, not per machine. The effective count is capped
+at \code{NCOL(x)} and is stored in \code{result$settings$ncores}.
+\code{ncores=1L} uses the serial path and creates no cluster.}
+  \item{parallel.type}{Parallel backend: \code{"socket"} for local or network
+PSOCK workers, \code{"fork"} for local copy-on-write workers on Unix-like
+systems, or \code{"serial"}, which requires \code{ncores=1L}.}
+  \item{cluster.nodes}{\code{NULL} to run all socket workers locally, or a
+character vector of host names on which PSOCK workers are started. The names
+are recycled or truncated to the effective \code{ncores}; they select worker
+locations but do not determine the total worker count. For example,
+\code{ncores=8L} and \code{cluster.nodes=c("node1", "node2")} request eight
+workers distributed across those two hosts. The argument is valid only with
+\code{parallel.type="socket"}. Remote hosts require non-interactive access,
+compatible R installations, and the same hydroTSM version in a visible or
+shared library.}
   \item{from, to}{Starting and ending time-index bounds used to subset
 \code{x} before QC. See \code{\link{tempQC_daily}}.}
 }

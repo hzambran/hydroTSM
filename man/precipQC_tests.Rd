@@ -181,10 +181,25 @@ Positive elevation-decay scale in metres. Height similarity is
 \code{exp(-abs(dz) / elevation.scale)} and influences neighbour ranking and
 spatial weights. It is ignored when \code{elevation=NULL}.
 }
-  \item{ncores, parallel.type, cluster.nodes}{
-Requested worker count, parallel backend, and optional PSOCK host names for
-the spatial and dry-spell tests. See \code{\link{precipQC_daily}} for backend
-behaviour and network requirements.
+  \item{ncores}{
+Positive integer giving the total requested number of worker R processes for
+the standalone spatial and dry-spell tests. The effective count is capped at
+the number of station columns. \code{ncores=1L} uses the serial path and creates
+no cluster.
+}
+  \item{parallel.type}{
+Parallel backend: \code{"socket"} for local or network PSOCK workers,
+\code{"fork"} for local copy-on-write workers on Unix-like systems, or
+\code{"serial"}, which requires \code{ncores=1L}.
+}
+  \item{cluster.nodes}{
+\code{NULL} to run all socket workers locally, or a character vector of
+non-empty host names on which PSOCK workers are started. Host names are recycled
+or truncated to the effective \code{ncores}; they choose worker locations but
+do not determine the total worker count. This argument is valid only with
+\code{parallel.type="socket"}. Remote hosts require non-interactive access,
+compatible R installations, and the same hydroTSM version in a visible or
+shared library.
 }
   \item{n.neighbours}{
 Maximum number of neighbours.
