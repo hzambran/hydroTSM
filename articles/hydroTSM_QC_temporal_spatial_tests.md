@@ -302,6 +302,292 @@ generalise operational sub-daily flow QC to the actual modal interval
 ([Fileni et al. 2023](#ref-fileni2023); [Zhao et al.
 2018](#ref-zhao2018)).
 
+## Basic reproducible workflow
+
+The following daily examples use the three frequency-aware wrappers.
+Each dataset contains two plausible stations and one station named
+`S_bad` with a deliberately impossible observation. The examples
+activate only the tests needed to identify that observation, disable
+spatial checking, and run serially so that they remain fast and
+deterministic during vignette builds. The deliberately strict
+`max.suspicious=0` then makes one confirmed suspicious observation
+sufficient to demonstrate a station-level discard. These settings are
+pedagogical; production analyses should retain relevant default tests
+and choose acceptance limits appropriate to the network.
+
+### Shared station metadata
+
+The metadata row order need not match the data-column order, but
+identifiers must match `colnames(x)`. Elevation is included here to show
+the expected interface; it would be used when spatial checks are active.
+
+``` r
+
+library(hydroTSM)
+
+# Create a short daily time axis and metadata for three stations.
+dates <- as.Date("2020-01-01") + 0:39
+stations <- c("S_good_1", "S_good_2", "S_bad")
+metadata <- data.frame(
+  station=stations, lon=c(-71.2, -71.1, -71.0),
+  lat=c(-33.2, -33.1, -33.0), elevation=c(450, 510, 480)
+)
+```
+
+### Run precipitation QC
+
+Here a negative daily precipitation value is a confirmed physical-range
+failure. All checks are named explicitly because omitted names retain
+their workflow defaults.
+
+``` r
+
+# Construct plausible series and insert one impossible precipitation value.
+p.values <- cbind(
+  S_good_1=rep(c(0, 1, 0, 3), 10),
+  S_good_2=rep(c(0, 2, 0, 4), 10),
+  S_bad=rep(c(0, 1.5, 0, 2.5), 10)
+)
+p.values[10, "S_bad"] <- -1
+precipitation <- zoo::zoo(p.values, dates)
+
+# Isolate the physical-range test for this basic example.
+p.checks <- c(range=TRUE, duplicate=FALSE, frequency=FALSE, gap=FALSE,
+              climatology=FALSE, persistence=FALSE, accumulation=FALSE,
+              weekday=FALSE, spatial=FALSE, dryspell=FALSE,
+              breakpoint=FALSE)
+p.qc <- precipQC(
+  precipitation, metadata=metadata, checks=p.checks, min.years=0,
+  max.missing=1, max.suspicious=0, verbose=FALSE,
+  parallel.type="serial"
+)
+```
+
+### Run air-temperature QC
+
+The impossible temperature is also an isolated spike, so two test names
+will appear in the audit trail for the same observation.
+
+``` r
+
+# Construct smooth temperature series and insert one isolated extreme.
+t.base <- 15 + sin(seq_along(dates) / 5)
+t.values <- cbind(S_good_1=t.base, S_good_2=t.base + 0.5,
+                  S_bad=t.base - 0.5)
+t.values[20, "S_bad"] <- 100
+temperature <- zoo::zoo(t.values, dates)
+
+# Retain range and spike checks to demonstrate overlapping evidence.
+t.checks <- c(range=TRUE, duplicate=FALSE, climatology=FALSE,
+              persistence=FALSE, step=FALSE, spike=TRUE,
+              spatial=FALSE, breakpoint=FALSE)
+t.qc <- tempQC(
+  temperature, metadata=metadata, checks=t.checks, min.years=0,
+  max.missing=1, max.suspicious=0, verbose=FALSE,
+  parallel.type="serial"
+)
+```
+
+### Run streamflow QC
+
+Streamflow uses the same wrapper pattern. `max.review=1` prevents the
+separate review-fraction rule from obscuring the deliberately tested
+rejection rule.
+
+``` r
+
+# Construct positive streamflow series and insert one impossible value.
+q.base <- 5 + 0.2 * sin(seq_along(dates) / 4)
+q.values <- cbind(S_good_1=q.base, S_good_2=q.base + 0.3,
+                  S_bad=q.base - 0.2)
+q.values[30, "S_bad"] <- -1
+discharge <- zoo::zoo(q.values, dates)
+
+# Isolate the physical-range test for this basic example.
+q.checks <- c(range=TRUE, duplicate=FALSE, gap=FALSE,
+              climatology=FALSE, flatline=FALSE, spike=FALSE,
+              rate=FALSE, highflow=FALSE, spatial=FALSE,
+              breakpoint=FALSE)
+q.qc <- streamflowQC(
+  discharge, metadata=metadata, checks=q.checks, min.years=0,
+  max.missing=1, max.review=1, max.suspicious=0, verbose=FALSE,
+  parallel.type="serial"
+)
+```
+
+### Inspect results and audit a discarded station
+
+Printing a result gives the main counts. The detailed station decision
+is in `station.summary`; the same diagnostic columns are appended to
+`accepted.metadata` and `discarded.metadata`. The original and corrected
+accepted series are in `accepted.data` and `accepted.corrected`,
+respectively.
+
+``` r
+
+# Print concise summaries for all three variables.
+p.qc
+```
+
+    ## Precipitation quality-control result
+    ##   resolution : daily 
+    ##   stations   : 3 
+    ##   accepted   : 2 
+    ##   discarded  : 1 
+    ##   review data: 1 
+    ##   rejected   : 1
+
+``` r
+
+t.qc
+```
+
+    ## Air-temperature quality-control result
+    ##   resolution : daily 
+    ##   stations   : 3 
+    ##   accepted   : 2 
+    ##   discarded  : 1 
+    ##   review data: 1 
+    ##   rejected   : 1
+
+``` r
+
+q.qc
+```
+
+    ## Streamflow quality-control result
+    ##   resolution : daily 
+    ##   stations   : 3 
+    ##   accepted   : 2 
+    ##   discarded  : 1 
+    ##   review data: 1 
+    ##   rejected   : 1
+
+``` r
+
+# Inspect the decision and contributing tests for every precipitation station.
+audit.columns <- c("station", "recommendation", "reason",
+                   "suspicious.count", "suspicious.percent",
+                   "suspicious.tests")
+p.qc$station.summary[, audit.columns]
+```
+
+    ##           station recommendation
+    ## S_good_1 S_good_1         accept
+    ## S_good_2 S_good_2         accept
+    ## S_bad       S_bad        discard
+    ##                                                    reason suspicious.count
+    ## S_good_1                         within acceptance limits                0
+    ## S_good_2                         within acceptance limits                0
+    ## S_bad    suspicious fraction exceeds limit (tests: range)                1
+    ##          suspicious.percent suspicious.tests
+    ## S_good_1              0.000             <NA>
+    ## S_good_2              0.000             <NA>
+    ## S_bad                 0.025            range
+
+``` r
+
+# Inspect the returned station partitions and point-level precipitation audit.
+colnames(p.qc$accepted.data)
+```
+
+    ## [1] "S_good_1" "S_good_2"
+
+``` r
+
+p.qc$discarded.metadata[, audit.columns]
+```
+
+    ##       station recommendation                                           reason
+    ## S_bad   S_bad        discard suspicious fraction exceeds limit (tests: range)
+    ##       suspicious.count suspicious.percent suspicious.tests
+    ## S_bad                1              0.025            range
+
+``` r
+
+p.qc$suspicious
+```
+
+    ##         time station original spatial.estimate spatial.score n.tests tests
+    ## 1 2020-01-10   S_bad       -1               NA            NA       1 range
+    ##   action corrected correction
+    ## 1 reject        -1       none
+
+There are three related, but distinct, levels in that output:
+
+1.  `flags` records whether each individual test flagged each
+    observation.
+2.  `suspicious` records every flagged observation and labels its
+    combined action as `"review"` or `"reject"`; `rejected` is the
+    corresponding logical `zoo` mask for confirmed rejections.
+3.  `station.summary` applies the station acceptance limits and
+    recommends `"accept"` or `"discard"`.
+
+For a particular discarded station, first read `reason` and
+`suspicious.tests`, then select its observation rows from `suspicious`.
+This shows both why the station crossed an acceptance limit and which
+tests flagged each underlying observation.
+
+``` r
+
+# Select one station and inspect its station-level decision.
+target.station <- "S_bad"
+t.qc$station.summary[
+  t.qc$station.summary$station == target.station, audit.columns
+]
+```
+
+    ##       station recommendation
+    ## S_bad   S_bad        discard
+    ##                                                        reason suspicious.count
+    ## S_bad suspicious fraction exceeds limit (tests: range, spike)                1
+    ##       suspicious.percent suspicious.tests
+    ## S_bad              0.025     range, spike
+
+``` r
+
+# Inspect every flagged observation and its combined review/reject action.
+t.qc$suspicious[t.qc$suspicious$station == target.station, ]
+```
+
+    ##         time station original spatial.estimate spatial.score n.tests
+    ## 1 2020-01-20   S_bad      100               NA            NA       2
+    ##          tests action corrected correction
+    ## 1 range, spike reject       100       none
+
+``` r
+
+# Count confirmed observations attributable to each individual test.
+confirmed <- as.matrix(zoo::coredata(t.qc$rejected))[, target.station]
+test.counts <- setNames(integer(length(t.qc$flags)), names(t.qc$flags))
+for (test in names(t.qc$flags)) {
+  test.flag <- as.matrix(zoo::coredata(t.qc$flags[[test]]))[, target.station]
+  test.counts[test] <- sum(test.flag & confirmed, na.rm=TRUE)
+} # FOR test end
+sort(test.counts[test.counts > 0L], decreasing=TRUE)
+```
+
+    ## range spike 
+    ##     1     1
+
+The temperature example reports one confirmed observation for both
+`range` and `spike`. Therefore, per-test counts can sum to more than
+`suspicious.count`: several tests may identify the same rejected
+observation. Replace `t.qc` with `p.qc` or `q.qc` to apply the same
+audit to precipitation or streamflow. The standard plot method provides
+a compact graphical overview.
+
+``` r
+
+# Plot station decisions, affected stations, test counts, and rejection times.
+plot(t.qc)
+```
+
+![Temperature QC summary for the reproducible
+example.](hydroTSM_QC_temporal_spatial_tests_files/figure-html/qc-example-plot-1.png)
+
+Temperature QC summary for the reproducible example.
+
 ## Activating and deactivating tests
 
 Names omitted from `checks` retain their workflow defaults. This allows
@@ -311,12 +597,12 @@ a small override rather than restating the complete vector:
 
 # Keep daily precipitation defaults but disable weekday and breakpoint tests.
 p.qc <- precipQC_daily(
-  p, metadata=stations,
+  precipitation, metadata=metadata,
   checks=c(weekday=FALSE, breakpoint=FALSE)
 )
 
 # Explicitly enable correlation-only spatial temperature QC without metadata.
-t.qc <- tempQC_subdaily(
+t.qc <- tempQC_daily(
   temperature,
   checks=c(spatial=TRUE),
   ncores=4, parallel.type="socket"
@@ -341,7 +627,7 @@ The three result classes share a common audit structure:
 
 - `accepted.metadata` and `discarded.metadata` preserve user metadata;
 - `accepted.data` contains accepted station series without modification;
-- `corrected.data` applies the requested correction only to accepted
+- `accepted.corrected` applies the requested correction only to accepted
   stations;
 - `flags` retains every enabled point-level test separately;
 - `suspicious` lists station, timestamp, value, contributing tests,

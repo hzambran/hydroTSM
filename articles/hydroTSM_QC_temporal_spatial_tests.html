@@ -19,7 +19,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">hydroTSM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-34</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8-35</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@ precipitation, air temperature, and streamflow</h3>
                         <h4 data-toc-skip class="author">Mauricio
 Zambrano-Bigiarini</h4>
             
-            <h4 data-toc-skip class="date">2026-11-10</h4>
+            <h4 data-toc-skip class="date">2026-11-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/hzambran/hydroTSM/blob/master/vignettes/hydroTSM_QC_temporal_spatial_tests.Rmd" class="external-link"><code>vignettes/hydroTSM_QC_temporal_spatial_tests.Rmd</code></a></small>
       <div class="d-none name"><code>hydroTSM_QC_temporal_spatial_tests.Rmd</code></div>
@@ -929,20 +929,264 @@ al.</span> 2018</a>)</span>.</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="basic-reproducible-workflow">Basic reproducible workflow<a class="anchor" aria-label="anchor" href="#basic-reproducible-workflow"></a>
+</h2>
+<p>The following daily examples use the three frequency-aware wrappers.
+Each dataset contains two plausible stations and one station named
+<code>S_bad</code> with a deliberately impossible observation. The
+examples activate only the tests needed to identify that observation,
+disable spatial checking, and run serially so that they remain fast and
+deterministic during vignette builds. The deliberately strict
+<code>max.suspicious=0</code> then makes one confirmed suspicious
+observation sufficient to demonstrate a station-level discard. These
+settings are pedagogical; production analyses should retain relevant
+default tests and choose acceptance limits appropriate to the
+network.</p>
+<div class="section level3">
+<h3 id="shared-station-metadata">Shared station metadata<a class="anchor" aria-label="anchor" href="#shared-station-metadata"></a>
+</h3>
+<p>The metadata row order need not match the data-column order, but
+identifiers must match <code>colnames(x)</code>. Elevation is included
+here to show the expected interface; it would be used when spatial
+checks are active.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hzambran.github.io/hydroTSM/">hydroTSM</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create a short daily time axis and metadata for three stations.</span></span>
+<span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">39</span></span>
+<span><span class="va">stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S_good_1"</span>, <span class="st">"S_good_2"</span>, <span class="st">"S_bad"</span><span class="op">)</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  station<span class="op">=</span><span class="va">stations</span>, lon<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">71.2</span>, <span class="op">-</span><span class="fl">71.1</span>, <span class="op">-</span><span class="fl">71.0</span><span class="op">)</span>,</span>
+<span>  lat<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">33.2</span>, <span class="op">-</span><span class="fl">33.1</span>, <span class="op">-</span><span class="fl">33.0</span><span class="op">)</span>, elevation<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">450</span>, <span class="fl">510</span>, <span class="fl">480</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="run-precipitation-qc">Run precipitation QC<a class="anchor" aria-label="anchor" href="#run-precipitation-qc"></a>
+</h3>
+<p>Here a negative daily precipitation value is a confirmed
+physical-range failure. All checks are named explicitly because omitted
+names retain their workflow defaults.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Construct plausible series and insert one impossible precipitation value.</span></span>
+<span><span class="va">p.values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
+<span>  S_good_1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  S_good_2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  S_bad<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">p.values</span><span class="op">[</span><span class="fl">10</span>, <span class="st">"S_bad"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">1</span></span>
+<span><span class="va">precipitation</span> <span class="op">&lt;-</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/zoo.html" class="external-link">zoo</a></span><span class="op">(</span><span class="va">p.values</span>, <span class="va">dates</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Isolate the physical-range test for this basic example.</span></span>
+<span><span class="va">p.checks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>range<span class="op">=</span><span class="cn">TRUE</span>, duplicate<span class="op">=</span><span class="cn">FALSE</span>, frequency<span class="op">=</span><span class="cn">FALSE</span>, gap<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>              climatology<span class="op">=</span><span class="cn">FALSE</span>, persistence<span class="op">=</span><span class="cn">FALSE</span>, accumulation<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>              weekday<span class="op">=</span><span class="cn">FALSE</span>, spatial<span class="op">=</span><span class="cn">FALSE</span>, dryspell<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>              breakpoint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">p.qc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/precipQC.html">precipQC</a></span><span class="op">(</span></span>
+<span>  <span class="va">precipitation</span>, metadata<span class="op">=</span><span class="va">metadata</span>, checks<span class="op">=</span><span class="va">p.checks</span>, min.years<span class="op">=</span><span class="fl">0</span>,</span>
+<span>  max.missing<span class="op">=</span><span class="fl">1</span>, max.suspicious<span class="op">=</span><span class="fl">0</span>, verbose<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>  parallel.type<span class="op">=</span><span class="st">"serial"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="run-air-temperature-qc">Run air-temperature QC<a class="anchor" aria-label="anchor" href="#run-air-temperature-qc"></a>
+</h3>
+<p>The impossible temperature is also an isolated spike, so two test
+names will appear in the audit trail for the same observation.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Construct smooth temperature series and insert one isolated extreme.</span></span>
+<span><span class="va">t.base</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">dates</span><span class="op">)</span> <span class="op">/</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">t.values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>S_good_1<span class="op">=</span><span class="va">t.base</span>, S_good_2<span class="op">=</span><span class="va">t.base</span> <span class="op">+</span> <span class="fl">0.5</span>,</span>
+<span>                  S_bad<span class="op">=</span><span class="va">t.base</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="va">t.values</span><span class="op">[</span><span class="fl">20</span>, <span class="st">"S_bad"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">temperature</span> <span class="op">&lt;-</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/zoo.html" class="external-link">zoo</a></span><span class="op">(</span><span class="va">t.values</span>, <span class="va">dates</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Retain range and spike checks to demonstrate overlapping evidence.</span></span>
+<span><span class="va">t.checks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>range<span class="op">=</span><span class="cn">TRUE</span>, duplicate<span class="op">=</span><span class="cn">FALSE</span>, climatology<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>              persistence<span class="op">=</span><span class="cn">FALSE</span>, step<span class="op">=</span><span class="cn">FALSE</span>, spike<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>              spatial<span class="op">=</span><span class="cn">FALSE</span>, breakpoint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">t.qc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tempQC.html">tempQC</a></span><span class="op">(</span></span>
+<span>  <span class="va">temperature</span>, metadata<span class="op">=</span><span class="va">metadata</span>, checks<span class="op">=</span><span class="va">t.checks</span>, min.years<span class="op">=</span><span class="fl">0</span>,</span>
+<span>  max.missing<span class="op">=</span><span class="fl">1</span>, max.suspicious<span class="op">=</span><span class="fl">0</span>, verbose<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>  parallel.type<span class="op">=</span><span class="st">"serial"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="run-streamflow-qc">Run streamflow QC<a class="anchor" aria-label="anchor" href="#run-streamflow-qc"></a>
+</h3>
+<p>Streamflow uses the same wrapper pattern. <code>max.review=1</code>
+prevents the separate review-fraction rule from obscuring the
+deliberately tested rejection rule.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Construct positive streamflow series and insert one impossible value.</span></span>
+<span><span class="va">q.base</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="op">+</span> <span class="fl">0.2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">dates</span><span class="op">)</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">q.values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>S_good_1<span class="op">=</span><span class="va">q.base</span>, S_good_2<span class="op">=</span><span class="va">q.base</span> <span class="op">+</span> <span class="fl">0.3</span>,</span>
+<span>                  S_bad<span class="op">=</span><span class="va">q.base</span> <span class="op">-</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<span><span class="va">q.values</span><span class="op">[</span><span class="fl">30</span>, <span class="st">"S_bad"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">1</span></span>
+<span><span class="va">discharge</span> <span class="op">&lt;-</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/zoo.html" class="external-link">zoo</a></span><span class="op">(</span><span class="va">q.values</span>, <span class="va">dates</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Isolate the physical-range test for this basic example.</span></span>
+<span><span class="va">q.checks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>range<span class="op">=</span><span class="cn">TRUE</span>, duplicate<span class="op">=</span><span class="cn">FALSE</span>, gap<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>              climatology<span class="op">=</span><span class="cn">FALSE</span>, flatline<span class="op">=</span><span class="cn">FALSE</span>, spike<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>              rate<span class="op">=</span><span class="cn">FALSE</span>, highflow<span class="op">=</span><span class="cn">FALSE</span>, spatial<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>              breakpoint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">q.qc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/streamflowQC.html">streamflowQC</a></span><span class="op">(</span></span>
+<span>  <span class="va">discharge</span>, metadata<span class="op">=</span><span class="va">metadata</span>, checks<span class="op">=</span><span class="va">q.checks</span>, min.years<span class="op">=</span><span class="fl">0</span>,</span>
+<span>  max.missing<span class="op">=</span><span class="fl">1</span>, max.review<span class="op">=</span><span class="fl">1</span>, max.suspicious<span class="op">=</span><span class="fl">0</span>, verbose<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>  parallel.type<span class="op">=</span><span class="st">"serial"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="inspect-results-and-audit-a-discarded-station">Inspect results and audit a discarded station<a class="anchor" aria-label="anchor" href="#inspect-results-and-audit-a-discarded-station"></a>
+</h3>
+<p>Printing a result gives the main counts. The detailed station
+decision is in <code>station.summary</code>; the same diagnostic columns
+are appended to <code>accepted.metadata</code> and
+<code>discarded.metadata</code>. The original and corrected accepted
+series are in <code>accepted.data</code> and
+<code>accepted.corrected</code>, respectively.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Print concise summaries for all three variables.</span></span>
+<span><span class="va">p.qc</span></span></code></pre></div>
+<pre><code><span><span class="co">## Precipitation quality-control result</span></span>
+<span><span class="co">##   resolution : daily </span></span>
+<span><span class="co">##   stations   : 3 </span></span>
+<span><span class="co">##   accepted   : 2 </span></span>
+<span><span class="co">##   discarded  : 1 </span></span>
+<span><span class="co">##   review data: 1 </span></span>
+<span><span class="co">##   rejected   : 1</span></span></code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t.qc</span></span></code></pre></div>
+<pre><code><span><span class="co">## Air-temperature quality-control result</span></span>
+<span><span class="co">##   resolution : daily </span></span>
+<span><span class="co">##   stations   : 3 </span></span>
+<span><span class="co">##   accepted   : 2 </span></span>
+<span><span class="co">##   discarded  : 1 </span></span>
+<span><span class="co">##   review data: 1 </span></span>
+<span><span class="co">##   rejected   : 1</span></span></code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">q.qc</span></span></code></pre></div>
+<pre><code><span><span class="co">## Streamflow quality-control result</span></span>
+<span><span class="co">##   resolution : daily </span></span>
+<span><span class="co">##   stations   : 3 </span></span>
+<span><span class="co">##   accepted   : 2 </span></span>
+<span><span class="co">##   discarded  : 1 </span></span>
+<span><span class="co">##   review data: 1 </span></span>
+<span><span class="co">##   rejected   : 1</span></span></code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Inspect the decision and contributing tests for every precipitation station.</span></span>
+<span><span class="va">audit.columns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"station"</span>, <span class="st">"recommendation"</span>, <span class="st">"reason"</span>,</span>
+<span>                   <span class="st">"suspicious.count"</span>, <span class="st">"suspicious.percent"</span>,</span>
+<span>                   <span class="st">"suspicious.tests"</span><span class="op">)</span></span>
+<span><span class="va">p.qc</span><span class="op">$</span><span class="va">station.summary</span><span class="op">[</span>, <span class="va">audit.columns</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##           station recommendation</span></span>
+<span><span class="co">## S_good_1 S_good_1         accept</span></span>
+<span><span class="co">## S_good_2 S_good_2         accept</span></span>
+<span><span class="co">## S_bad       S_bad        discard</span></span>
+<span><span class="co">##                                                    reason suspicious.count</span></span>
+<span><span class="co">## S_good_1                         within acceptance limits                0</span></span>
+<span><span class="co">## S_good_2                         within acceptance limits                0</span></span>
+<span><span class="co">## S_bad    suspicious fraction exceeds limit (tests: range)                1</span></span>
+<span><span class="co">##          suspicious.percent suspicious.tests</span></span>
+<span><span class="co">## S_good_1              0.000             &lt;NA&gt;</span></span>
+<span><span class="co">## S_good_2              0.000             &lt;NA&gt;</span></span>
+<span><span class="co">## S_bad                 0.025            range</span></span></code></pre>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Inspect the returned station partitions and point-level precipitation audit.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">p.qc</span><span class="op">$</span><span class="va">accepted.data</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "S_good_1" "S_good_2"</span></span></code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p.qc</span><span class="op">$</span><span class="va">discarded.metadata</span><span class="op">[</span>, <span class="va">audit.columns</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##       station recommendation                                           reason</span></span>
+<span><span class="co">## S_bad   S_bad        discard suspicious fraction exceeds limit (tests: range)</span></span>
+<span><span class="co">##       suspicious.count suspicious.percent suspicious.tests</span></span>
+<span><span class="co">## S_bad                1              0.025            range</span></span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p.qc</span><span class="op">$</span><span class="va">suspicious</span></span></code></pre></div>
+<pre><code><span><span class="co">##         time station original spatial.estimate spatial.score n.tests tests</span></span>
+<span><span class="co">## 1 2020-01-10   S_bad       -1               NA            NA       1 range</span></span>
+<span><span class="co">##   action corrected correction</span></span>
+<span><span class="co">## 1 reject        -1       none</span></span></code></pre>
+<p>There are three related, but distinct, levels in that output:</p>
+<ol style="list-style-type: decimal">
+<li>
+<code>flags</code> records whether each individual test flagged each
+observation.</li>
+<li>
+<code>suspicious</code> records every flagged observation and labels
+its combined action as <code>"review"</code> or <code>"reject"</code>;
+<code>rejected</code> is the corresponding logical <code>zoo</code> mask
+for confirmed rejections.</li>
+<li>
+<code>station.summary</code> applies the station acceptance limits
+and recommends <code>"accept"</code> or <code>"discard"</code>.</li>
+</ol>
+<p>For a particular discarded station, first read <code>reason</code>
+and <code>suspicious.tests</code>, then select its observation rows from
+<code>suspicious</code>. This shows both why the station crossed an
+acceptance limit and which tests flagged each underlying
+observation.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Select one station and inspect its station-level decision.</span></span>
+<span><span class="va">target.station</span> <span class="op">&lt;-</span> <span class="st">"S_bad"</span></span>
+<span><span class="va">t.qc</span><span class="op">$</span><span class="va">station.summary</span><span class="op">[</span></span>
+<span>  <span class="va">t.qc</span><span class="op">$</span><span class="va">station.summary</span><span class="op">$</span><span class="va">station</span> <span class="op">==</span> <span class="va">target.station</span>, <span class="va">audit.columns</span></span>
+<span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##       station recommendation</span></span>
+<span><span class="co">## S_bad   S_bad        discard</span></span>
+<span><span class="co">##                                                        reason suspicious.count</span></span>
+<span><span class="co">## S_bad suspicious fraction exceeds limit (tests: range, spike)                1</span></span>
+<span><span class="co">##       suspicious.percent suspicious.tests</span></span>
+<span><span class="co">## S_bad              0.025     range, spike</span></span></code></pre>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Inspect every flagged observation and its combined review/reject action.</span></span>
+<span><span class="va">t.qc</span><span class="op">$</span><span class="va">suspicious</span><span class="op">[</span><span class="va">t.qc</span><span class="op">$</span><span class="va">suspicious</span><span class="op">$</span><span class="va">station</span> <span class="op">==</span> <span class="va">target.station</span>, <span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##         time station original spatial.estimate spatial.score n.tests</span></span>
+<span><span class="co">## 1 2020-01-20   S_bad      100               NA            NA       2</span></span>
+<span><span class="co">##          tests action corrected correction</span></span>
+<span><span class="co">## 1 range, spike reject       100       none</span></span></code></pre>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Count confirmed observations attributable to each individual test.</span></span>
+<span><span class="va">confirmed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/coredata.html" class="external-link">coredata</a></span><span class="op">(</span><span class="va">t.qc</span><span class="op">$</span><span class="va">rejected</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>, <span class="va">target.station</span><span class="op">]</span></span>
+<span><span class="va">test.counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">t.qc</span><span class="op">$</span><span class="va">flags</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t.qc</span><span class="op">$</span><span class="va">flags</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">test</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t.qc</span><span class="op">$</span><span class="va">flags</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">test.flag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/coredata.html" class="external-link">coredata</a></span><span class="op">(</span><span class="va">t.qc</span><span class="op">$</span><span class="va">flags</span><span class="op">[[</span><span class="va">test</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>, <span class="va">target.station</span><span class="op">]</span></span>
+<span>  <span class="va">test.counts</span><span class="op">[</span><span class="va">test</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">test.flag</span> <span class="op">&amp;</span> <span class="va">confirmed</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="co"># FOR test end</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">test.counts</span><span class="op">[</span><span class="va">test.counts</span> <span class="op">&gt;</span> <span class="fl">0L</span><span class="op">]</span>, decreasing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## range spike </span></span>
+<span><span class="co">##     1     1</span></span></code></pre>
+<p>The temperature example reports one confirmed observation for both
+<code>range</code> and <code>spike</code>. Therefore, per-test counts
+can sum to more than <code>suspicious.count</code>: several tests may
+identify the same rejected observation. Replace <code>t.qc</code> with
+<code>p.qc</code> or <code>q.qc</code> to apply the same audit to
+precipitation or streamflow. The standard plot method provides a compact
+graphical overview.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Plot station decisions, affected stations, test counts, and rejection times.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">t.qc</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="hydroTSM_QC_temporal_spatial_tests_files/figure-html/qc-example-plot-1.png" class="r-plt" alt="Temperature QC summary for the reproducible example." width="672"><p class="caption">
+Temperature QC summary for the reproducible example.
+</p>
+</div>
+</div>
+</div>
+<div class="section level2">
 <h2 id="activating-and-deactivating-tests">Activating and deactivating tests<a class="anchor" aria-label="anchor" href="#activating-and-deactivating-tests"></a>
 </h2>
 <p>Names omitted from <code>checks</code> retain their workflow
 defaults. This allows a small override rather than restating the
 complete vector:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Keep daily precipitation defaults but disable weekday and breakpoint tests.</span></span>
 <span><span class="va">p.qc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/precipQC_daily.html">precipQC_daily</a></span><span class="op">(</span></span>
-<span>  <span class="va">p</span>, metadata<span class="op">=</span><span class="va">stations</span>,</span>
+<span>  <span class="va">precipitation</span>, metadata<span class="op">=</span><span class="va">metadata</span>,</span>
 <span>  checks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>weekday<span class="op">=</span><span class="cn">FALSE</span>, breakpoint<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Explicitly enable correlation-only spatial temperature QC without metadata.</span></span>
-<span><span class="va">t.qc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tempQC_subdaily.html">tempQC_subdaily</a></span><span class="op">(</span></span>
+<span><span class="va">t.qc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tempQC_daily.html">tempQC_daily</a></span><span class="op">(</span></span>
 <span>  <span class="va">temperature</span>,</span>
 <span>  checks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>spatial<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  ncores<span class="op">=</span><span class="fl">4</span>, parallel.type<span class="op">=</span><span class="st">"socket"</span></span>
@@ -971,8 +1215,8 @@ preserve user metadata;</li>
 <code>accepted.data</code> contains accepted station series without
 modification;</li>
 <li>
-<code>corrected.data</code> applies the requested correction only to
-accepted stations;</li>
+<code>accepted.corrected</code> applies the requested correction
+only to accepted stations;</li>
 <li>
 <code>flags</code> retains every enabled point-level test
 separately;</li>
