@@ -24,6 +24,7 @@ NEWS/ChangeLog for hydroTSM
         o 'spei'               : for computing the Standardized Precipitation-Evapotranspiration Index from monthly zoo climatic water-balance objects using the four candidate distributions evaluated by Stagge et al. (2015). It provides the same supplied-parameter, starting-value, and progress-message controls as 'spi'. Both drought-index functions use base R and do not require SCI, SPEI, or lmomco.
 
 ## User-visible changes
+        o The temporal and spatial quality-control vignette now includes reproducible daily examples for 'precipQC', 'tempQC', and 'streamflowQC', including result inspection, station partitioning, plots, and a per-test audit of why a station was discarded.
         o 'streamflowQC*' station summaries and metadata now report the test families contributing to confirmed suspicious observations in 'suspicious.tests'. When 'max.suspicious' causes a station discard, the recommendation reason also names those tests.
         o 'precipQC*' and 'tempQC*' station summaries now report the point-level tests associated with confirmed suspicious observations in 'suspicious.tests'. When the suspicious fraction exceeds 'max.suspicious', the recommendation reason also lists those tests, and the same diagnostic is retained in accepted/discarded station metadata.
         o The temporal and spatial quality-control vignette was converted to R Markdown, so all package vignettes now build with knitr while preserving their content, citations, and HTML output.
